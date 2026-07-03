@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .crm-wrap { padding: 18px; }
+      .crm-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+      .crm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+      .card { background: #fff; border: 1px solid #d8dee9; border-radius: 12px; padding: 14px; }
+      input, select, textarea { width: 100%; box-sizing: border-box; padding: 9px; margin: 5px 0 10px; border: 1px solid #cfd8e3; border-radius: 8px; }
+      label { font-size: 12px; font-weight: 700; color: #405064; }
+      table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+      th, td { border-bottom: 1px solid #e4e8f0; padding: 8px; text-align: left; }
+      th { color: #405064; }
+      .muted { color: #68778d; font-size: 12px; }
+      .status { margin-top: 10px; font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <div class="crm-wrap">
+      <div class="crm-header">
+        <div>
+          <h2>CRM</h2>
+          <div class="muted">Create, search, and manage contacts.</div>
+        </div>
+        <button onclick="loadContacts()">Refresh</button>
+      </div>
+
+      <div class="crm-grid">
+        <div class="card">
+          <h3>New Contact</h3>
+          <label>First Name</label>
+          <input id="firstName" placeholder="First name">
+          <label>Last Name</label>
+          <input id="lastName" placeholder="Last name">
+          <label>Email</label>
+          <input id="email" placeholder="email@example.com">
+          <label>Mobile</label>
+          <input id="mobile" placeholder="555-555-5555">
+          <label>Client Type</label>
+          <select id="clientType">
+            <option>Buyer</option>
+            <option>Seller</option>
+            <option>Investor</option>
+            <option>Tenant</option>
+            <option>Vendor</option>
+          </select>
+          <label>Lead Source</label>
+          <input id="leadSource" placeholder="Referral, Website, Open House...">
+          <label>Notes</label>
+          <textarea id="notes" rows="3"></textarea>
+          <button onclick="createContact()">Create Contact</button>
+          <div id="createStatus" class="status"></div>
+        </div>
+
+        <div class="card">
+          <h3>Search Contacts</h3>
+          <input id="search" placeholder="Search name, email, phone, company, tag..." oninput="debouncedSearch()">
+          <div id="searchStatus" class="status"></div>
+          <table>
+            <thead>
+              <tr><th>Name</th><th>Type</th><th>Email</th><th>Mobile</th></tr>
+            </thead>
+            <tbody id="results"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <?!= include('app.js'); ?>
+  </body>
+</html>
