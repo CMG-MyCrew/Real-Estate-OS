@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta name="theme-color" content="#0f2742">
+    <link rel="manifest" href="?page=manifest">
+    <?!= include('mobile.css'); ?>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <div class="brand">REOS</div>
+          <div id="subtitle" class="subtitle">Enterprise Mobile</div>
+        </div>
+        <button onclick="loadPage(currentPage)">Refresh</button>
+      </header>
+
+      <main id="content" class="content">
+        <div class="card">Loading...</div>
+      </main>
+
+      <nav class="bottom-nav">
+        <button onclick="loadPage('home')">Home</button>
+        <button onclick="loadPage('tasks')">Tasks</button>
+        <button onclick="loadPage('crm')">CRM</button>
+        <button onclick="loadPage('transactions')">Deals</button>
+        <button onclick="loadPage('ai')">AI</button>
+      </nav>
+    </div>
+
+    <script>
+      let currentPage = '<?= initialPage ?>' || 'home';
+      function money(value) { return '$' + Number(value || 0).toLocaleString(undefined, { maximumFractionDigits: 0 }); }
+      function escapeHtml(value) { return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;'); }
+      function setSubtitle(text) { document.getElementById('subtitle').textContent = text || ''; }
+      function card(title, body) { return '<section class="card"><h3>' + escapeHtml(title) + '</h3>' + body + '</section>'; }
+      function list(rows, renderer, empty) {
+        if (!rows || !rows.length) return '<div class="muted">' + escapeHtml(empty || 'Nothing to show.') + '</div>';
+        return '<div class="list">' + rows.map(renderer).join('') + '</div>';
+      }
+      function item(title, meta, value) {
+        return '<div class="item"><div><strong>' + escapeHtml(title) + '</strong><div class="muted">' + escapeHtml(meta || '') + '</div></div><div>' + escapeHtml(value || '') + '</div></div>';
+      }
+      function loadPage(page) {
+        currentPage = page || 'home';
+        document.getElementById('content').innerHTML = card('Loading', '<div class="muted">Loading ' + escapeHtml(currentPage) + '...</div>');
+        google.script.run.withSuccessHandler(function (data) { renderPage(currentPage, data); }).withFailureHandler(function (err) {
+          document.getElementById('content').innerHTML = card('Error', '<div class="error">' + escapeHtml(err.message) + '</div>');
+        }).webAppGetPageData(currentPage);
+      }
+      function renderPage(page, data) {
+        setSubtitle('Updated ' + new Date().toLocaleTimeString());
+        if (page === 'tasks') return renderTasks(data);
+        if (page === 'crm') return renderCRM(data);
+        if (page === 'transactions') return renderTransactions(data);
+        if (page === 'documents') return renderDocuments(data);
+        if (page === 'ai') return renderAI(data);
+        if (page === 'agent') return renderAgent(data);
+        return renderHome(data);
+      }
+      function renderHome(data) {
+        const dashboard = data.dashboard || {};
+        const crm = dashboard.crm || {};
+        const tasks = data.tasks || {};
+        const tx = dashboard.transactions || {};
+        const finance = (dashboard.finance || {}).currentMonth || {};
+        document.getElementById('content').innerHTML =
+          '<div class="kpis">' +
+          '<div class="kpi"><span>Leads</span><strong>' + (crm.activeLeadsCount || 0) + '</strong></div>' +
+          '<div class="kpi"><span>Overdue</span><strong>' + ((dashboard.tasks || {}).overdueCount || 0) + '</strong></div>' +
+          '<div class="kpi"><span>Deals</span><strong>' + (tx.activeCount || 0) + '</strong></div>' +
+          '<div class="kpi"><span>Cash Flow</span><strong>' + money(finance.cashFlow) + '</strong></div>' +
+          '</div>' +
+          card('Due Today', list(tasks.dueToday || [], function (t) { return item(t.Task, t.Priority, t['Due Date']); }, 'No tasks due today.')) +
+          card('Quick Links', '<div class="quick-grid">' + (data.quickLinks || []).map(function (l) { return '<button onclick="loadPage(\'' + l.page + '\')">' + escapeHtml(l.label) + '</button>'; }).join('') + '</div>');
+      }
+      function renderTasks(data) {
+        document.getElementById('content').innerHTML =
+          card('Overdue', list(data.overdue || [], function (t) { return item(t.Task, t.Priority, t['Due Date']); }, 'No overdue tasks.')) +
+          card('Due Today', list(data.dueToday || [], function (t) { return item(t.Task, t.Priority, t['Due Date']); }, 'No tasks due today.')) +
+          card('Upcoming', list(data.upcoming || [], function (t) { return item(t.Task, t.Priority, t['Due Date']); }, 'No upcoming tasks.'));
+      }
+      function renderCRM(data) {
+        document.getElementById('content').innerHTML =
+          card('Leads', list(data.leads || [], function (l) { return item(l['Lead ID'], l.Status + ' · ' + l.Priority, money(l['Expected Commission'])); }, 'No leads.')) +
+          card('Contacts', list(data.contacts || [], function (c) { return item(c['Full Name'], c.Email, c.Mobile); }, 'No contacts.'));
+      }
+      function renderTransactions(data) {
+        document.getElementById('content').innerHTML =
+          '<div class="kpis"><div class="kpi"><span>Active</span><strong>' + (data.activeCount || 0) + '</strong></div><div class="kpi"><span>Pending GCI</span><strong>' + money(data.pendingGci) + '</strong></div></div>' +
+          card('Active Deals', list(data.active || [], function (t) { return item(t.Address, t.Status + ' · Close ' + t['Closing Date'], money(t['Gross Commission'])); }, 'No active deals.'));
+      }
+      function renderDocuments(data) {
+        document.getElementById('content').innerHTML = card('Documents', list(data.documents || [], function (d) { return item(d['Document Name'], d.Status + ' · ' + d['Signature Status'], d['Drive URL'] ? 'Open' : ''); }, 'No documents.'));
+      }
+      function renderAI() {
+        document.getElementById('content').innerHTML = card('AI Assistant', '<textarea id="aiPrompt" rows="5" placeholder="Ask REOS AI..."></textarea><button onclick="askAI()">Ask</button><pre id="aiResponse" class="response"></pre>');
+      }
+      function askAI() {
+        document.getElementById('aiResponse').textContent = 'Thinking...';
+        google.script.run.withSuccessHandler(function (row) { document.getElementById('aiResponse').textContent = row.Response || ''; }).withFailureHandler(function (err) { document.getElementById('aiResponse').textContent = err.message; }).aiAsk('Mobile AI', document.getElementById('aiPrompt').value, {});
+      }
+      function renderAgent(data) {
+        renderHome({ dashboard: { crm: { activeLeadsCount: (data.kpis || {}).activeLeads }, tasks: { overdueCount: (data.kpis || {}).overdueTasks }, transactions: { activeCount: (data.kpis || {}).activeTransactions }, finance: { currentMonth: { cashFlow: (data.kpis || {}).monthlyNetProfit } } }, tasks: (data.tasks || {}), quickLinks: [] });
+      }
+      loadPage(currentPage === 'app' ? 'home' : currentPage);
+    </script>
+  </body>
+</html>
