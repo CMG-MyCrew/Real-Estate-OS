@@ -16,6 +16,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open API Platform', 'showAPIPlatform')
     .addItem('Open Enterprise Admin', 'showAdmin')
     .addItem('Open Performance Console', 'showPerformance')
+    .addItem('Open System Audit', 'showSystemAudit')
     .addItem('Open Help Center', 'showHelpCenter')
     .addItem('Open Brokerage Management', 'showBrokerage')
     .addItem('Open Business Intelligence', 'showBI')
@@ -169,4 +170,11 @@ function showHelpCenter() {
     .setWidth(1100)
     .setHeight(760);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Help Center');
+}
+
+function showSystemAudit() {
+  const html = HtmlService.createHtmlOutputFromFile('SystemAudit')
+    .setWidth(1200)
+    .setHeight(800);
+  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Final System Audit');
 }
