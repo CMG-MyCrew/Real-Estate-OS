@@ -13,6 +13,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open AI Assistant', 'showAIAssistant')
     .addItem('Open Mobile App Preview', 'showMobileApp')
     .addItem('Open Integration Hub', 'showIntegrations')
+    .addItem('Open API Platform', 'showAPIPlatform')
     .addItem('Open Brokerage Management', 'showBrokerage')
     .addItem('Open Business Intelligence', 'showBI')
     .addItem('Open SaaS Admin', 'showSaaSAdmin')
@@ -137,4 +138,11 @@ function showSecurity() {
     .setWidth(1100)
     .setHeight(760);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Enterprise Security');
+}
+
+function showAPIPlatform() {
+  const html = HtmlService.createHtmlOutputFromFile('APIPlatform')
+    .setWidth(1100)
+    .setHeight(760);
+  SpreadsheetApp.getUi().showModalDialog(html, 'REOS API Platform');
 }
