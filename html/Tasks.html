@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .wrap { padding: 18px; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+      .card { background: #fff; border: 1px solid #d8dee9; border-radius: 12px; padding: 14px; }
+      input, select, textarea { width: 100%; box-sizing: border-box; padding: 9px; margin: 5px 0 10px; border: 1px solid #cfd8e3; border-radius: 8px; }
+      label { font-size: 12px; font-weight: 700; color: #405064; }
+      table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+      th, td { border-bottom: 1px solid #e4e8f0; padding: 8px; text-align: left; }
+      .muted { color: #68778d; font-size: 12px; }
+      .danger { color: #a61b1b; }
+      .status { margin-top: 10px; font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h2>Tasks</h2>
+      <div class="muted">Daily action center for follow-ups and operational tasks.</div>
+      <div class="grid">
+        <div class="card">
+          <h3>New Task</h3>
+          <label>Task</label>
+          <input id="taskName" placeholder="Call seller lead">
+          <label>Client ID</label>
+          <input id="clientId" placeholder="C-...">
+          <label>Category</label>
+          <select id="category">
+            <option>Follow-up</option>
+            <option>Call</option>
+            <option>Email</option>
+            <option>Meeting</option>
+            <option>Transaction</option>
+            <option>Admin</option>
+          </select>
+          <label>Priority</label>
+          <select id="priority">
+            <option>Critical</option>
+            <option>High</option>
+            <option selected>Medium</option>
+            <option>Low</option>
+          </select>
+          <label>Due Date</label>
+          <input id="dueDate" type="date">
+          <label>Notes</label>
+          <textarea id="notes" rows="3"></textarea>
+          <button onclick="createTask()">Create Task</button>
+          <div id="createStatus" class="status"></div>
+        </div>
+        <div class="card">
+          <h3>Today</h3>
+          <button onclick="loadTasks()">Refresh</button>
+          <h4>Overdue</h4>
+          <table><tbody id="overdue"></tbody></table>
+          <h4>Due Today</h4>
+          <table><tbody id="today"></tbody></table>
+          <h4>Upcoming 7 Days</h4>
+          <table><tbody id="upcoming"></tbody></table>
+        </div>
+      </div>
+    </div>
+    <script>
+      function setText(id, text) { document.getElementById(id).textContent = text || ''; }
+      function escapeHtml(value) {
+        return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+      }
+      function createTask() {
+        const task = {
+          Task: document.getElementById('taskName').value,
+          'Client ID': document.getElementById('clientId').value,
+          Category: document.getElementById('category').value,
+          Priority: document.getElementById('priority').value,
+          'Due Date': document.getElementById('dueDate').value,
+          Notes: document.getElementById('notes').value
+        };
+        setText('createStatus', 'Creating...');
+        google.script.run
+          .withSuccessHandler(function () {
+            setText('createStatus', 'Task created.');
+            ['taskName','clientId','dueDate','notes'].forEach(function (id) { document.getElementById(id).value = ''; });
+            loadTasks();
+          })
+          .withFailureHandler(function (err) { setText('createStatus', 'Error: ' + err.message); })
+          .tasksCreate(task);
+      }
+      function loadTasks() {
+        google.script.run
+          .withSuccessHandler(renderDashboard)
+          .withFailureHandler(function (err) { alert(err.message); })
+          .tasksGetDashboard();
+      }
+      function renderDashboard(data) {
+        renderRows('overdue', data.overdue || [], true);
+        renderRows('today', data.dueToday || [], false);
+        renderRows('upcoming', data.upcoming || [], false);
+      }
+      function renderRows(id, rows, danger) {
+        const tbody = document.getElementById(id);
+        tbody.innerHTML = '';
+        if (!rows.length) {
+          tbody.innerHTML = '<tr><td class="muted">None</td></tr>';
+          return;
+        }
+        rows.forEach(function (task) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = '<td class="' + (danger ? 'danger' : '') + '">' + escapeHtml(task.Task) + '</td><td>' + escapeHtml(task.Priority) + '</td><td><button onclick="completeTask(\'' + escapeHtml(task['Task ID']) + '\')">Done</button></td>';
+          tbody.appendChild(tr);
+        });
+      }
+      function completeTask(taskId) {
+        google.script.run.withSuccessHandler(loadTasks).tasksComplete(taskId);
+      }
+      loadTasks();
+    </script>
+  </body>
+</html>
