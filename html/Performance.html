@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .wrap { padding:18px; }
+      .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px; }
+      .kpi { background:#fff; border:1px solid #d8dee9; border-radius:12px; padding:12px; }
+      .kpi .label { font-size:11px; color:#68778d; }
+      .kpi .value { font-size:18px; font-weight:700; margin-top:6px; }
+      .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }
+      .card { background:#fff; border:1px solid #d8dee9; border-radius:12px; padding:14px; max-height:430px; overflow:auto; }
+      input, select, textarea { width:100%; box-sizing:border-box; padding:9px; margin:5px 0 10px; border:1px solid #cfd8e3; border-radius:8px; }
+      label { font-size:12px; font-weight:700; color:#405064; }
+      table { width:100%; border-collapse:collapse; margin-top:10px; font-size:12px; }
+      th, td { border-bottom:1px solid #e4e8f0; padding:8px; text-align:left; }
+      .muted { color:#68778d; font-size:12px; }
+      .status { margin-top:10px; font-size:12px; white-space:pre-wrap; }
+      pre { white-space:pre-wrap; background:#f6f8fb; padding:12px; border-radius:10px; border:1px solid #d8dee9; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h2>Performance Optimization</h2>
+      <div class="muted">Cache, batch database operations, query optimization, async jobs, workers, profiling, and quota monitoring.</div>
+      <button onclick="loadPerformance()">Refresh</button>
+      <button onclick="captureQuota()">Capture Quota</button>
+      <button onclick="installWorker()">Install Worker Trigger</button>
+      <button onclick="processJobs()">Process Jobs</button>
+      <div id="status" class="status"></div>
+
+      <div class="kpis">
+        <div class="kpi"><div class="label">Avg Duration</div><div id="avgDuration" class="value">0ms</div></div>
+        <div class="kpi"><div class="label">Slow Ops</div><div id="slowCount" class="value">0</div></div>
+        <div class="kpi"><div class="label">Cache Hit Rate</div><div id="hitRate" class="value">0%</div></div>
+        <div class="kpi"><div class="label">Queued Jobs</div><div id="queuedJobs" class="value">0</div></div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Enqueue Job</h3>
+          <label>Queue</label><input id="queue" value="default">
+          <label>Job Type</label><select id="jobType"><option>healthCheck</option><option>usageSnapshot</option><option>backup</option><option>biSnapshot</option><option>automation</option><option>webhook</option></select>
+          <label>Payload JSON</label><textarea id="payload" rows="5">{}</textarea>
+          <button onclick="enqueueJob()">Enqueue</button>
+          <h4>Recent Jobs</h4><table><tbody id="jobs"></tbody></table>
+        </div>
+
+        <div class="card">
+          <h3>Cache Test</h3>
+          <label>Key</label><input id="cacheKey" value="test">
+          <label>Value</label><textarea id="cacheValue" rows="3">{"ok":true}</textarea>
+          <label>TTL Seconds</label><input id="cacheTtl" type="number" value="300">
+          <button onclick="putCache()">Put Cache</button>
+          <button onclick="getCache()">Get Cache</button>
+          <pre id="cacheResult"></pre>
+          <h4>Cache Metrics</h4><table><tbody id="cacheMetrics"></tbody></table>
+        </div>
+
+        <div class="card">
+          <h3>Optimized Query</h3>
+          <label>Sheet Name</label><input id="sheetName" value="TASKS">
+          <label>Options JSON</label><textarea id="queryOptions" rows="5">{"page":1,"pageSize":10}</textarea>
+          <button onclick="runQuery()">Run Query</button>
+          <pre id="queryResult"></pre>
+        </div>
+
+        <div class="card">
+          <h3>Slow Operations</h3>
+          <table><tbody id="slowOperations"></tbody></table>
+        </div>
+
+        <div class="card">
+          <h3>Quota Snapshots</h3>
+          <table><tbody id="quotas"></tbody></table>
+        </div>
+
+        <div class="card">
+          <h3>Batch Database Test</h3>
+          <label>Sheet Name</label><input id="batchSheet" value="USAGE_ANALYTICS">
+          <button onclick="batchRead()">Batch Read</button>
+          <pre id="batchResult"></pre>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function escapeHtml(value){ return String(value || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+      function setText(id,text){ document.getElementById(id).textContent = text === undefined || text === null ? '' : String(text); }
+      function row(cells){ return '<tr>' + cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') + '</tr>'; }
+      function loadPerformance(){ setText('status','Loading...'); google.script.run.withSuccessHandler(render).withFailureHandler(err).performanceDashboard(); }
+      function captureQuota(){ setText('status','Capturing quota...'); google.script.run.withSuccessHandler(function(){ setText('status','Quota captured.'); loadPerformance(); }).withFailureHandler(err).performanceCaptureQuota(); }
+      function installWorker(){ setText('status','Installing worker...'); google.script.run.withSuccessHandler(function(){ setText('status','Worker trigger installed.'); }).withFailureHandler(err).jobQueueInstallWorkerTrigger(); }
+      function processJobs(){ setText('status','Processing jobs...'); google.script.run.withSuccessHandler(function(res){ setText('status',JSON.stringify(res,null,2)); loadPerformance(); }).withFailureHandler(err).jobQueueProcessBatch(); }
+      function enqueueJob(){ let payload={}; try{payload=JSON.parse(document.getElementById('payload').value||'{}');}catch(e){return setText('status','Invalid payload JSON.');} google.script.run.withSuccessHandler(function(){ setText('status','Job queued.'); loadPerformance(); }).withFailureHandler(err).jobQueueEnqueue(document.getElementById('queue').value,document.getElementById('jobType').value,payload,{}); }
+      function putCache(){ let value={}; try{value=JSON.parse(document.getElementById('cacheValue').value||'{}');}catch(e){value=document.getElementById('cacheValue').value;} google.script.run.withSuccessHandler(function(){ setText('cacheResult','Stored.'); loadPerformance(); }).withFailureHandler(err).cachePut(document.getElementById('cacheKey').value,value,Number(document.getElementById('cacheTtl').value||300),'script','PerformanceUI'); }
+      function getCache(){ google.script.run.withSuccessHandler(function(res){ setText('cacheResult',JSON.stringify(res,null,2)); loadPerformance(); }).withFailureHandler(err).cacheGet(document.getElementById('cacheKey').value,'script','PerformanceUI'); }
+      function runQuery(){ let options={}; try{options=JSON.parse(document.getElementById('queryOptions').value||'{}');}catch(e){return setText('queryResult','Invalid options JSON.');} google.script.run.withSuccessHandler(function(res){ setText('queryResult',JSON.stringify(res,null,2)); loadPerformance(); }).withFailureHandler(err).queryOptimized(document.getElementById('sheetName').value,options); }
+      function batchRead(){ google.script.run.withSuccessHandler(function(res){ setText('batchResult','Rows: '+(res||[]).length); loadPerformance(); }).withFailureHandler(err).batchDbRead(document.getElementById('batchSheet').value); }
+      function render(data){
+        setText('status','Updated '+new Date().toLocaleString());
+        setText('avgDuration',(data.averageDurationMs||0)+'ms'); setText('slowCount',data.slowCount||0); setText('hitRate',((data.cache||{}).hitRate||0)+'%'); setText('queuedJobs',((data.jobs||{}).queued)||0);
+        document.getElementById('jobs').innerHTML=(((data.jobs||{}).recent)||[]).map(function(j){return row([escapeHtml(j['Job ID']),escapeHtml(j['Job Type']),escapeHtml(j.Status),escapeHtml(j.Attempts)]);}).join('')||row(['No jobs']);
+        document.getElementById('cacheMetrics').innerHTML=(((data.cache||{}).recent)||[]).map(function(c){return row([escapeHtml(c.Action),escapeHtml(c.Hit),escapeHtml(c.Module)]);}).join('')||row(['No cache metrics']);
+        document.getElementById('slowOperations').innerHTML=(data.slowOperations||[]).map(function(o){return row([escapeHtml(o.Module),escapeHtml(o.Operation),escapeHtml(o['Duration MS']),escapeHtml(o.Status)]);}).join('')||row(['No slow operations']);
+        document.getElementById('quotas').innerHTML=(data.quotaSnapshots||[]).map(function(q){return row([escapeHtml(q.Timestamp),escapeHtml(q['Email Remaining']),escapeHtml(q['Triggers Count']),escapeHtml(q.Status)]);}).join('')||row(['No quota snapshots']);
+      }
+      function err(e){ setText('status','Error: '+e.message); }
+      loadPerformance();
+    </script>
+  </body>
+</html>
