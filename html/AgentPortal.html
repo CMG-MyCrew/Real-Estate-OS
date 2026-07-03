@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .wrap { padding: 18px; }
+      .hero { background: #fff; border: 1px solid #d8dee9; border-radius: 14px; padding: 18px; display:flex; justify-content:space-between; gap:12px; align-items:center; }
+      .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px; }
+      .kpi { background: #fff; border: 1px solid #d8dee9; border-radius: 12px; padding: 12px; }
+      .kpi .label { font-size: 11px; color: #68778d; }
+      .kpi .value { font-size: 18px; font-weight: 700; margin-top: 6px; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+      .card { background: #fff; border: 1px solid #d8dee9; border-radius: 12px; padding: 14px; overflow:auto; max-height: 340px; }
+      table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+      th, td { border-bottom: 1px solid #e4e8f0; padding: 8px; text-align: left; }
+      input, select { width: 100%; box-sizing: border-box; padding: 8px; margin: 5px 0 9px; border: 1px solid #cfd8e3; border-radius: 8px; }
+      label { font-size: 12px; font-weight: 700; color: #405064; }
+      .muted { color: #68778d; font-size: 12px; }
+      .status { margin-top: 10px; font-size: 12px; }
+      .tabs { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+      .tabs button { width:auto; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="hero">
+        <div>
+          <h2>Agent Portal</h2>
+          <div id="subtitle" class="muted">Daily command center</div>
+        </div>
+        <button onclick="loadWorkspace()">Refresh</button>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><div class="label">Active Leads</div><div id="activeLeads" class="value">0</div></div>
+        <div class="kpi"><div class="label">Overdue Tasks</div><div id="overdueTasks" class="value">0</div></div>
+        <div class="kpi"><div class="label">Pending GCI</div><div id="pendingGci" class="value">$0</div></div>
+        <div class="kpi"><div class="label">Projected Net</div><div id="projectedNet" class="value">$0</div></div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Task Center</h3>
+          <h4>Overdue</h4><table><tbody id="overdue"></tbody></table>
+          <h4>Due Today</h4><table><tbody id="dueToday"></tbody></table>
+        </div>
+        <div class="card"><h3>Pipeline</h3><table><tbody id="pipeline"></tbody></table></div>
+        <div class="card"><h3>Active Transactions</h3><table><tbody id="transactions"></tbody></table></div>
+        <div class="card"><h3>Commissions</h3><table><tbody id="commissions"></tbody></table></div>
+        <div class="card"><h3>Rentals</h3><table><tbody id="rentals"></tbody></table></div>
+        <div class="card"><h3>Documents</h3><table><tbody id="documents"></tbody></table></div>
+        <div class="card">
+          <h3>Quick Actions</h3>
+          <label>Client ID</label><input id="clientId" placeholder="C-...">
+          <label>Lead ID</label><input id="leadId" placeholder="L-...">
+          <button onclick="startFollowUp()">Start Lead Follow-up</button>
+          <hr>
+          <label>Client Email</label><input id="clientEmail" placeholder="client@example.com">
+          <label>Record Type</label><select id="recordType"><option>Client</option><option>Transaction</option><option>Rental</option><option>Investment</option></select>
+          <label>Record ID</label><input id="recordId" placeholder="Record ID">
+          <button onclick="createPortalAccess()">Create Client Portal Access</button>
+          <div id="actionStatus" class="status"></div>
+        </div>
+        <div class="card"><h3>Automation</h3><table><tbody id="automation"></tbody></table></div>
+      </div>
+    </div>
+
+    <script>
+      function money(value) { return '$' + Number(value || 0).toLocaleString(undefined, { maximumFractionDigits: 0 }); }
+      function escapeHtml(value) { return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;'); }
+      function setText(id, text) { document.getElementById(id).textContent = text === undefined || text === null ? '' : String(text); }
+      function row(cells) { return '<tr>' + cells.map(function (c) { return '<td>' + c + '</td>'; }).join('') + '</tr>'; }
+      function empty(id, text) { document.getElementById(id).innerHTML = '<tr><td class="muted">' + escapeHtml(text) + '</td></tr>'; }
+      function loadWorkspace() {
+        setText('subtitle', 'Loading...');
+        google.script.run.withSuccessHandler(renderWorkspace).withFailureHandler(function (err) {
+          setText('subtitle', 'Error: ' + err.message);
+        }).agentPortalGetWorkspace();
+      }
+      function renderWorkspace(data) {
+        setText('subtitle', 'Updated ' + new Date().toLocaleString() + ' | ' + ((data.user || {}).email || ''));
+        const k = data.kpis || {};
+        setText('activeLeads', k.activeLeads);
+        setText('overdueTasks', k.overdueTasks);
+        setText('pendingGci', money(k.pendingGci));
+        setText('projectedNet', money(k.projectedNetCommission));
+        renderTasks('overdue', (data.tasks || {}).overdue || []);
+        renderTasks('dueToday', (data.tasks || {}).dueToday || []);
+        renderPipeline(data.pipeline || []);
+        renderTransactions(data.transactions || []);
+        renderCommissions(data.commissions || []);
+        renderRentals(data.rentals || []);
+        renderDocuments(data.documents || []);
+        renderAutomation(data.automation || {});
+      }
+      function renderTasks(id, rows) {
+        const tbody = document.getElementById(id); tbody.innerHTML = '';
+        if (!rows.length) return empty(id, 'None');
+        rows.forEach(function (t) { tbody.innerHTML += row([escapeHtml(t.Task), escapeHtml(t.Priority), escapeHtml(t['Due Date'])]); });
+      }
+      function renderPipeline(rows) {
+        const id = 'pipeline', tbody = document.getElementById(id); tbody.innerHTML = '';
+        if (!rows.length) return empty(id, 'No active leads.');
+        rows.forEach(function (l) { tbody.innerHTML += row([escapeHtml(l['Lead ID']), escapeHtml(l.Status), escapeHtml(l.Priority), money(l['Expected Commission'])]); });
+      }
+      function renderTransactions(rows) {
+        const id = 'transactions', tbody = document.getElementById(id); tbody.innerHTML = '';
+        if (!rows.length) return empty(id, 'No active transactions.');
+        rows.forEach(function (t) { tbody.innerHTML += row([escapeHtml(t.Address), escapeHtml(t.Status), escapeHtml(t['Closing Date']), money(t['Gross Commission'])]); });
+      }
+      function renderCommissions(rows) {
+        const id = 'commissions', tbody = document.getElementById(id); tbody.innerHTML = '';
+        if (!rows.length) return empty(id, 'No commissions.');
+        rows.forEach(function (c) { tbody.innerHTML += row([escapeHtml(c['Transaction ID']), escapeHtml(c['Payment Status']), money(c.GCI), money(c['Net Commission'])]); });
+      }
+      function renderRentals(rows) {
+        const id = 'rentals', tbody = document.getElementById(id); tbody.innerHTML = '';
+        if (!rows.length) return empty(id, 'No rentals.');
+        rows.forEach(function (r) { tbody.innerHTML += row([escapeHtml(r.Address), escapeHtml(r['Occupancy Status']), money(r['Monthly Rent']), money(r['Net Monthly Cash Flow'])]); });
+      }
+      function renderDocuments(rows) {
+        const id = 'documents', tbody = document.getElementById(id); tbody.innerHTML = '';
+        if (!rows.length) return empty(id, 'No documents.');
+        rows.forEach(function (d) {
+          const link = d['Drive URL'] ? '<a target="_blank" href="' + escapeHtml(d['Drive URL']) + '">Open</a>' : '';
+          tbody.innerHTML += row([escapeHtml(d['Document Name']), escapeHtml(d.Status), escapeHtml(d['Signature Status']), link]);
+        });
+      }
+      function renderAutomation(a) {
+        const tbody = document.getElementById('automation'); tbody.innerHTML = '';
+        tbody.innerHTML += row(['Installed Triggers', escapeHtml((a.triggers || []).length)]);
+        tbody.innerHTML += row(['Active Portal Access', escapeHtml(a.activePortalAccess || 0)]);
+      }
+      function startFollowUp() {
+        setText('actionStatus', 'Starting sequence...');
+        google.script.run.withSuccessHandler(function () { setText('actionStatus', 'Follow-up sequence started.'); loadWorkspace(); }).withFailureHandler(function (err) { setText('actionStatus', 'Error: ' + err.message); }).agentPortalQuickCreateLeadFollowUp(document.getElementById('clientId').value, document.getElementById('leadId').value);
+      }
+      function createPortalAccess() {
+        setText('actionStatus', 'Creating portal access...');
+        google.script.run.withSuccessHandler(function (row) { setText('actionStatus', 'Portal token: ' + row['Access Token']); loadWorkspace(); }).withFailureHandler(function (err) { setText('actionStatus', 'Error: ' + err.message); }).agentPortalQuickCreateClientPortal(document.getElementById('clientId').value, document.getElementById('clientEmail').value, document.getElementById('recordType').value, document.getElementById('recordId').value);
+      }
+      loadWorkspace();
+    </script>
+  </body>
+</html>
