@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .wrap { padding: 18px; }
+      .hero { background:#fff; border:1px solid #d8dee9; border-radius:14px; padding:18px; }
+      .grid { display:grid; grid-template-columns: 1fr 1.2fr; gap:16px; margin-top:16px; }
+      .card { background:#fff; border:1px solid #d8dee9; border-radius:12px; padding:14px; }
+      input, select, textarea { width:100%; box-sizing:border-box; padding:9px; margin:5px 0 10px; border:1px solid #cfd8e3; border-radius:8px; }
+      label { font-size:12px; font-weight:700; color:#405064; }
+      .muted { color:#68778d; font-size:12px; }
+      .response { white-space:pre-wrap; background:#f6f8fb; border:1px solid #d8dee9; border-radius:10px; padding:12px; min-height:280px; font-size:13px; }
+      .buttons { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+      button { text-align:center; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="hero">
+        <h2>AI Assistant</h2>
+        <div class="muted">Daily briefings, lead coaching, transaction risk reviews, deal analysis, document summaries, and email drafting.</div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Quick AI Actions</h3>
+          <div class="buttons">
+            <button onclick="runSimple('aiDailyBriefing')">Daily Briefing</button>
+            <button onclick="runSimple('aiRentalPortfolioReview')">Rental Review</button>
+            <button onclick="runSimple('aiFinanceReview')">Finance Review</button>
+          </div>
+
+          <hr>
+          <label>Lead ID</label><input id="leadId" placeholder="L-...">
+          <button onclick="runWithId('aiLeadCoach','leadId')">Lead Coach</button>
+
+          <label>Transaction ID</label><input id="transactionId" placeholder="TX-...">
+          <button onclick="runWithId('aiTransactionRiskReview','transactionId')">Transaction Risk Review</button>
+
+          <label>Investment ID</label><input id="investmentId" placeholder="I-...">
+          <button onclick="runWithId('aiInvestmentDealReview','investmentId')">Investment Deal Review</button>
+
+          <label>Document ID</label><input id="documentId" placeholder="D-...">
+          <button onclick="runWithId('aiDocumentSummary','documentId')">Document Summary</button>
+
+          <hr>
+          <h3>Custom Prompt</h3>
+          <label>Feature</label><input id="feature" value="Custom Assistant">
+          <label>Prompt</label><textarea id="prompt" rows="5" placeholder="Ask REOS AI..."></textarea>
+          <button onclick="customAsk()">Ask AI</button>
+        </div>
+
+        <div class="card">
+          <h3>Response</h3>
+          <div id="status" class="muted"></div>
+          <div id="response" class="response"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function setText(id, text) { document.getElementById(id).textContent = text || ''; }
+      function render(row) {
+        setText('status', 'Completed');
+        setText('response', row.Response || row.response || JSON.stringify(row, null, 2));
+      }
+      function fail(err) { setText('status', 'Error'); setText('response', err.message); }
+      function loading(label) { setText('status', label || 'Loading...'); setText('response', ''); }
+      function runSimple(fn) {
+        loading('Running ' + fn + '...');
+        google.script.run.withSuccessHandler(render).withFailureHandler(fail)[fn]();
+      }
+      function runWithId(fn, id) {
+        const value = document.getElementById(id).value;
+        loading('Running ' + fn + '...');
+        google.script.run.withSuccessHandler(render).withFailureHandler(fail)[fn](value);
+      }
+      function customAsk() {
+        loading('Asking AI...');
+        google.script.run.withSuccessHandler(render).withFailureHandler(fail).aiAsk(
+          document.getElementById('feature').value,
+          document.getElementById('prompt').value,
+          {}
+        );
+      }
+    </script>
+  </body>
+</html>
