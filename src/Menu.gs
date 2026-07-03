@@ -14,6 +14,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open Mobile App Preview', 'showMobileApp')
     .addItem('Open Integration Hub', 'showIntegrations')
     .addItem('Open API Platform', 'showAPIPlatform')
+    .addItem('Open Enterprise Admin', 'showAdmin')
     .addItem('Open Brokerage Management', 'showBrokerage')
     .addItem('Open Business Intelligence', 'showBI')
     .addItem('Open SaaS Admin', 'showSaaSAdmin')
@@ -145,4 +146,11 @@ function showAPIPlatform() {
     .setWidth(1100)
     .setHeight(760);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS API Platform');
+}
+
+function showAdmin() {
+  const html = HtmlService.createHtmlOutputFromFile('Admin')
+    .setWidth(1200)
+    .setHeight(800);
+  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Enterprise Administration');
 }
