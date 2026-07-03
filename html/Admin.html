@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .wrap { padding:18px; }
+      .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px; }
+      .kpi { background:#fff; border:1px solid #d8dee9; border-radius:12px; padding:12px; }
+      .kpi .label { font-size:11px; color:#68778d; }
+      .kpi .value { font-size:18px; font-weight:700; margin-top:6px; }
+      .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }
+      .card { background:#fff; border:1px solid #d8dee9; border-radius:12px; padding:14px; max-height:420px; overflow:auto; }
+      input, select, textarea { width:100%; box-sizing:border-box; padding:9px; margin:5px 0 10px; border:1px solid #cfd8e3; border-radius:8px; }
+      label { font-size:12px; font-weight:700; color:#405064; }
+      table { width:100%; border-collapse:collapse; margin-top:10px; font-size:12px; }
+      th,td { border-bottom:1px solid #e4e8f0; padding:8px; text-align:left; }
+      .muted { color:#68778d; font-size:12px; }
+      .status { margin-top:10px; font-size:12px; white-space:pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h2>Enterprise Administration</h2>
+      <div class="muted">Global administration, configuration, feature flags, licenses, diagnostics, usage, environments, and tenant provisioning.</div>
+      <button onclick="loadAdmin()">Refresh</button>
+      <button onclick="seedDefaults()">Seed Defaults</button>
+      <button onclick="usageSnapshot()">Usage Snapshot</button>
+      <div id="status" class="status"></div>
+
+      <div class="kpis">
+        <div class="kpi"><div class="label">Health</div><div id="health" class="value">-</div></div>
+        <div class="kpi"><div class="label">Tenants</div><div id="tenants" class="value">0</div></div>
+        <div class="kpi"><div class="label">Licenses</div><div id="licenses" class="value">0</div></div>
+        <div class="kpi"><div class="label">API Errors</div><div id="apiErrors" class="value">0</div></div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>System Configuration</h3>
+          <label>Category</label><input id="cfgCategory" value="General">
+          <label>Key</label><input id="cfgKey" placeholder="SETTING_NAME">
+          <label>Value</label><input id="cfgValue">
+          <label>Environment</label><select id="cfgEnv"><option>Production</option><option>Staging</option><option>Testing</option><option>Development</option></select>
+          <button onclick="saveConfig()">Save Config</button>
+          <table><tbody id="configRows"></tbody></table>
+        </div>
+
+        <div class="card">
+          <h3>Feature Flags</h3>
+          <label>Name</label><input id="flagName">
+          <label>Description</label><input id="flagDescription">
+          <label>Rollout %</label><input id="flagRollout" type="number" value="100">
+          <button onclick="createFlag()">Create Flag</button>
+          <table><tbody id="flags"></tbody></table>
+        </div>
+
+        <div class="card">
+          <h3>Licenses</h3>
+          <label>Tenant ID</label><input id="licenseTenantId" placeholder="TEN-...">
+          <label>Customer</label><input id="licenseCustomer">
+          <label>Edition</label><select id="licenseEdition"><option>Starter</option><option>Professional</option><option>Enterprise</option><option>Brokerage</option><option>WhiteLabel</option><option>Unlimited</option></select>
+          <button onclick="createLicense()">Create License</button>
+          <table><tbody id="licenseRows"></tbody></table>
+        </div>
+
+        <div class="card">
+          <h3>Environment Manager</h3>
+          <label>Name</label><select id="envName"><option>Production</option><option>Staging</option><option>Testing</option><option>Development</option></select>
+          <button onclick="createEnv()">Create Environment</button>
+          <button onclick="snapshotEnv()">Snapshot Environment</button>
+          <table><tbody id="envRows"></tbody></table>
+        </div>
+
+        <div class="card">
+          <h3>Tenant Provisioning</h3>
+          <label>Tenant ID</label><input id="provisionTenantId" placeholder="TEN-...">
+          <button onclick="provisionTenant()">Provision Tenant</button>
+          <table><tbody id="provisionRows"></tbody></table>
+        </div>
+
+        <div class="card">
+          <h3>Diagnostics & Usage</h3>
+          <button onclick="runDiagnostics()">Run Diagnostics</button>
+          <table><tbody id="diagnostics"></tbody></table>
+          <h4>Usage Totals</h4>
+          <table><tbody id="usage"></tbody></table>
+        </div>
+
+        <div class="card">
+          <h3>Global Search</h3>
+          <input id="globalQuery" placeholder="Search admin records..." oninput="globalSearch()">
+          <table><tbody id="searchResults"></tbody></table>
+        </div>
+
+        <div class="card">
+          <h3>Recent API Requests</h3>
+          <table><tbody id="apiRequests"></tbody></table>
+        </div>
+      </div>
+    </div>
+    <script>
+      function escapeHtml(value){ return String(value || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+      function setText(id,text){ document.getElementById(id).textContent = text === undefined || text === null ? '' : String(text); }
+      function row(cells){ return '<tr>' + cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') + '</tr>'; }
+      function seedDefaults(){ setText('status','Seeding defaults...'); google.script.run.withSuccessHandler(function(){ google.script.run.withSuccessHandler(function(){ setText('status','Defaults seeded.'); loadAdmin(); }).featureFlagsSeedDefaults(); }).withFailureHandler(err).systemConfigSeedDefaults(); }
+      function usageSnapshot(){ setText('status','Creating usage snapshot...'); google.script.run.withSuccessHandler(function(){ setText('status','Usage snapshot created.'); loadAdmin(); }).withFailureHandler(err).usageSnapshot(); }
+      function saveConfig(){ google.script.run.withSuccessHandler(function(){ setText('status','Config saved.'); loadAdmin(); }).withFailureHandler(err).systemConfigSet(document.getElementById('cfgCategory').value,document.getElementById('cfgKey').value,document.getElementById('cfgValue').value,document.getElementById('cfgEnv').value,false,'Admin console'); }
+      function createFlag(){ const f={Name:document.getElementById('flagName').value,Description:document.getElementById('flagDescription').value,Enabled:true,Environment:'Production','Rollout %':Number(document.getElementById('flagRollout').value||100)}; google.script.run.withSuccessHandler(function(){ setText('status','Flag created.'); loadAdmin(); }).withFailureHandler(err).featureFlagsCreate(f); }
+      function createLicense(){ const l={'Tenant ID':document.getElementById('licenseTenantId').value,Customer:document.getElementById('licenseCustomer').value,Edition:document.getElementById('licenseEdition').value}; google.script.run.withSuccessHandler(function(){ setText('status','License created.'); loadAdmin(); }).withFailureHandler(err).licensingCreate(l); }
+      function createEnv(){ google.script.run.withSuccessHandler(function(){ setText('status','Environment created.'); loadAdmin(); }).withFailureHandler(err).environmentsCreate({Name:document.getElementById('envName').value,Status:'Active'}); }
+      function snapshotEnv(){ google.script.run.withSuccessHandler(function(){ setText('status','Environment snapshot created.'); loadAdmin(); }).withFailureHandler(err).environmentsSnapshot(document.getElementById('envName').value); }
+      function provisionTenant(){ google.script.run.withSuccessHandler(function(){ setText('status','Tenant provisioning complete.'); loadAdmin(); }).withFailureHandler(err).tenantProvisioningRun(document.getElementById('provisionTenantId').value); }
+      function runDiagnostics(){ google.script.run.withSuccessHandler(function(){ setText('status','Diagnostics complete.'); loadAdmin(); }).withFailureHandler(err).diagnosticsRun(); }
+      function globalSearch(){ const q=document.getElementById('globalQuery').value; if(!q){document.getElementById('searchResults').innerHTML='';return;} google.script.run.withSuccessHandler(function(rows){ document.getElementById('searchResults').innerHTML=(rows||[]).map(function(r){return row([escapeHtml(r.type),escapeHtml(r.id),escapeHtml(r.title)]);}).join('')||row(['No results']); }).adminGlobalSearch(q); }
+      function loadAdmin(){
+        setText('status','Loading...');
+        google.script.run.withSuccessHandler(function(data){ renderAdmin(data); }).withFailureHandler(err).adminDashboard();
+        google.script.run.withSuccessHandler(renderConfig).withFailureHandler(err).systemConfigList('Production');
+        google.script.run.withSuccessHandler(renderEnvs).withFailureHandler(err).environmentsList();
+        google.script.run.withSuccessHandler(renderProvision).withFailureHandler(err).tenantProvisioningRecent(20);
+      }
+      function renderAdmin(data){
+        setText('status','Updated '+new Date().toLocaleString());
+        setText('health',(data.system||{}).health||'-'); setText('tenants',(data.tenants||{}).tenantCount||0); setText('licenses',(data.licenses||{}).licenseCount||0); setText('apiErrors',(data.api||{}).errorCount||0);
+        document.getElementById('flags').innerHTML=(data.flags||[]).map(function(f){return row([escapeHtml(f['Flag ID']),escapeHtml(f.Name),escapeHtml(f.Enabled),escapeHtml(f['Rollout %'])]);}).join('')||row(['No flags']);
+        document.getElementById('licenseRows').innerHTML=((data.licenses||{}).licenses||[]).map(function(l){return row([escapeHtml(l['License ID']),escapeHtml(l.Customer),escapeHtml(l.Edition),escapeHtml(l.Status)]);}).join('')||row(['No licenses']);
+        document.getElementById('diagnostics').innerHTML=(((data.diagnostics||{}).checks)||[]).map(function(d){return row([escapeHtml(d.Category),escapeHtml(d.Check),escapeHtml(d.Status),escapeHtml(d.Message)]);}).join('')||row(['No diagnostics']);
+        const totals=(data.usage||{}).totals||{}; document.getElementById('usage').innerHTML=Object.keys(totals).map(function(k){return row([escapeHtml(k),escapeHtml(totals[k])]);}).join('')||row(['No usage']);
+        document.getElementById('apiRequests').innerHTML=((data.api||{}).recentRequests||[]).map(function(r){return row([escapeHtml(r.Method),escapeHtml(r.Path),escapeHtml(r['Status Code']),escapeHtml(r.Status)]);}).join('')||row(['No API requests']);
+      }
+      function renderConfig(rows){ document.getElementById('configRows').innerHTML=(rows||[]).map(function(c){return row([escapeHtml(c.Category),escapeHtml(c.Key),escapeHtml(c.Value)]);}).join('')||row(['No config']); }
+      function renderEnvs(rows){ document.getElementById('envRows').innerHTML=(rows||[]).map(function(e){return row([escapeHtml(e['Environment ID']),escapeHtml(e.Name),escapeHtml(e.Status)]);}).join('')||row(['No environments']); }
+      function renderProvision(rows){ document.getElementById('provisionRows').innerHTML=(rows||[]).map(function(p){return row([escapeHtml(p['Tenant ID']),escapeHtml(p.Step),escapeHtml(p.Status)]);}).join('')||row(['No provisioning runs']); }
+      function err(e){ setText('status','Error: '+e.message); }
+      loadAdmin();
+    </script>
+  </body>
+</html>
