@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .wrap { padding: 18px; }
+      .grid { display:grid; grid-template-columns:1fr 1.2fr; gap:16px; margin-top:16px; }
+      .card { background:#fff; border:1px solid #d8dee9; border-radius:12px; padding:14px; }
+      input, select, textarea { width:100%; box-sizing:border-box; padding:9px; margin:5px 0 10px; border:1px solid #cfd8e3; border-radius:8px; }
+      label { font-size:12px; font-weight:700; color:#405064; }
+      table { width:100%; border-collapse:collapse; margin-top:10px; font-size:12px; }
+      th, td { border-bottom:1px solid #e4e8f0; padding:8px; text-align:left; }
+      .muted { color:#68778d; font-size:12px; }
+      .status { margin-top:10px; font-size:12px; white-space:pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h2>Integration Hub</h2>
+      <div class="muted">Register providers, store credentials, test requests, and manage external connections.</div>
+      <div class="grid">
+        <div class="card">
+          <h3>Register Integration</h3>
+          <label>Provider</label><input id="provider" placeholder="twilio, stripe, quickbooks, docusign, mls">
+          <label>Category</label><select id="category"><option>Communication</option><option>Accounting</option><option>Real Estate</option><option>Documents</option><option>Automation</option><option>AI</option></select>
+          <label>Base URL</label><input id="baseUrl" placeholder="https://...">
+          <label>Auth Type</label><select id="authType"><option>API Key</option><option>OAuth</option><option>Bearer Token</option><option>Basic</option><option>None</option></select>
+          <label>Credential Key</label><input id="credentialKey" placeholder="STRIPE_SECRET_KEY">
+          <label>Notes</label><textarea id="notes" rows="3"></textarea>
+          <button onclick="registerIntegration()">Register</button>
+          <div id="registerStatus" class="status"></div>
+
+          <hr>
+          <h3>Store Credential</h3>
+          <label>Key</label><input id="credKey" placeholder="TWILIO_ACCOUNT_SID">
+          <label>Value</label><input id="credValue" placeholder="Secret value">
+          <button onclick="setCredential()">Save Credential</button>
+          <div id="credentialStatus" class="status"></div>
+        </div>
+
+        <div class="card">
+          <h3>Active Integrations</h3>
+          <button onclick="loadIntegrations()">Refresh</button>
+          <table>
+            <thead><tr><th>Provider</th><th>Category</th><th>Status</th><th>Auth</th></tr></thead>
+            <tbody id="integrations"></tbody>
+          </table>
+
+          <hr>
+          <h3>Test Request</h3>
+          <label>Provider</label><input id="testProvider" placeholder="zapier">
+          <label>Action</label><input id="testAction" placeholder="sendHook">
+          <label>Options JSON</label><textarea id="testOptions" rows="5">{}</textarea>
+          <button onclick="testRequest()">Run Test</button>
+          <div id="testStatus" class="status"></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      function setText(id, text) { document.getElementById(id).textContent = text || ''; }
+      function escapeHtml(value) { return String(value || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+      function registerIntegration() {
+        const config = {
+          Provider: document.getElementById('provider').value,
+          Category: document.getElementById('category').value,
+          'Base URL': document.getElementById('baseUrl').value,
+          'Auth Type': document.getElementById('authType').value,
+          'Credential Key': document.getElementById('credentialKey').value,
+          Notes: document.getElementById('notes').value
+        };
+        setText('registerStatus','Registering...');
+        google.script.run.withSuccessHandler(function(){ setText('registerStatus','Registered.'); loadIntegrations(); }).withFailureHandler(function(err){ setText('registerStatus','Error: '+err.message); }).integrationsRegister(config);
+      }
+      function setCredential() {
+        setText('credentialStatus','Saving...');
+        google.script.run.withSuccessHandler(function(){ setText('credentialStatus','Credential saved.'); }).withFailureHandler(function(err){ setText('credentialStatus','Error: '+err.message); }).integrationsSetCredential(document.getElementById('credKey').value, document.getElementById('credValue').value);
+      }
+      function loadIntegrations() {
+        google.script.run.withSuccessHandler(function(rows){
+          const tbody = document.getElementById('integrations'); tbody.innerHTML='';
+          (rows||[]).forEach(function(r){ tbody.innerHTML += '<tr><td>'+escapeHtml(r.Provider)+'</td><td>'+escapeHtml(r.Category)+'</td><td>'+escapeHtml(r.Status)+'</td><td>'+escapeHtml(r['Auth Type'])+'</td></tr>'; });
+          if (!rows || !rows.length) tbody.innerHTML = '<tr><td colspan="4" class="muted">No integrations configured.</td></tr>';
+        }).withFailureHandler(function(err){ alert(err.message); }).integrationsListActive();
+      }
+      function testRequest() {
+        let options = {};
+        try { options = JSON.parse(document.getElementById('testOptions').value || '{}'); } catch(e) { return setText('testStatus','Invalid JSON.'); }
+        setText('testStatus','Testing...');
+        google.script.run.withSuccessHandler(function(res){ setText('testStatus', JSON.stringify(res, null, 2)); }).withFailureHandler(function(err){ setText('testStatus','Error: '+err.message); }).integrationsRequest(document.getElementById('testProvider').value, document.getElementById('testAction').value, options);
+      }
+      loadIntegrations();
+    </script>
+  </body>
+</html>
