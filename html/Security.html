@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .wrap { padding:18px; }
+      .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px; }
+      .kpi { background:#fff; border:1px solid #d8dee9; border-radius:12px; padding:12px; }
+      .kpi .label { font-size:11px; color:#68778d; }
+      .kpi .value { font-size:18px; font-weight:700; margin-top:6px; }
+      .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }
+      .card { background:#fff; border:1px solid #d8dee9; border-radius:12px; padding:14px; max-height:430px; overflow:auto; }
+      input, select, textarea { width:100%; box-sizing:border-box; padding:9px; margin:5px 0 10px; border:1px solid #cfd8e3; border-radius:8px; }
+      label { font-size:12px; font-weight:700; color:#405064; }
+      table { width:100%; border-collapse:collapse; margin-top:10px; font-size:12px; }
+      th, td { border-bottom:1px solid #e4e8f0; padding:8px; text-align:left; }
+      .muted { color:#68778d; font-size:12px; }
+      .status { margin-top:10px; font-size:12px; white-space:pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h2>Enterprise Security</h2>
+      <div class="muted">Policies, API keys, secrets, tenant isolation, session checks, and security events.</div>
+      <button onclick="seedPolicies()">Seed Policies</button>
+      <button onclick="loadSecurity()">Refresh</button>
+      <div id="status" class="status"></div>
+
+      <div class="kpis">
+        <div class="kpi"><div class="label">Events</div><div id="totalEvents" class="value">0</div></div>
+        <div class="kpi"><div class="label">Critical</div><div id="criticalCount" class="value">0</div></div>
+        <div class="kpi"><div class="label">Denied</div><div id="deniedCount" class="value">0</div></div>
+        <div class="kpi"><div class="label">Secrets Due</div><div id="secretsDue" class="value">0</div></div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Create API Key</h3>
+          <label>Tenant ID</label><input id="tenantId" placeholder="TEN-...">
+          <label>Name</label><input id="apiKeyName" placeholder="External App">
+          <label>Scopes</label><input id="scopes" value="read,write">
+          <label>Rate Limit / Hour</label><input id="rateLimit" type="number" value="1000">
+          <button onclick="createApiKey()">Create API Key</button>
+          <div id="apiKeyResult" class="status"></div>
+          <h4>API Keys</h4><table><tbody id="apiKeys"></tbody></table>
+        </div>
+
+        <div class="card">
+          <h3>Secret Management</h3>
+          <label>Secret Key</label><input id="secretKey" placeholder="OPENAI_API_KEY">
+          <label>Secret Value</label><input id="secretValue" placeholder="Secret value">
+          <label>Category</label><input id="secretCategory" value="Integration">
+          <label>Rotation Days</label><input id="rotationDays" type="number" value="90">
+          <button onclick="setSecret()">Store / Rotate Secret</button>
+          <h4>Rotation Watch</h4><table><tbody id="secretWatch"></tbody></table>
+        </div>
+
+        <div class="card">
+          <h3>Security Events</h3>
+          <table><tbody id="events"></tbody></table>
+        </div>
+
+        <div class="card">
+          <h3>Policies</h3>
+          <table><tbody id="policies"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function escapeHtml(value){ return String(value || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+      function setText(id,text){ document.getElementById(id).textContent = text === undefined || text === null ? '' : String(text); }
+      function row(cells){ return '<tr>' + cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') + '</tr>'; }
+      function seedPolicies(){ setText('status','Seeding policies...'); google.script.run.withSuccessHandler(function(c){ setText('status','Policies ready: '+c); loadSecurity(); }).withFailureHandler(err).securitySeedPolicies(); }
+      function createApiKey(){
+        const scopes = document.getElementById('scopes').value.split(',').map(function(s){return s.trim();});
+        setText('apiKeyResult','Creating key...');
+        google.script.run.withSuccessHandler(function(r){ setText('apiKeyResult','Copy this API key now: '+r.apiKey); loadSecurity(); }).withFailureHandler(err).apiKeysCreate(document.getElementById('tenantId').value, document.getElementById('apiKeyName').value, scopes, Number(document.getElementById('rateLimit').value || 1000));
+      }
+      function setSecret(){
+        setText('status','Storing secret...');
+        google.script.run.withSuccessHandler(function(){ setText('status','Secret stored.'); loadSecurity(); }).withFailureHandler(err).secretsSet(document.getElementById('secretKey').value, document.getElementById('secretValue').value, document.getElementById('secretCategory').value, '', Number(document.getElementById('rotationDays').value || 90));
+      }
+      function loadSecurity(){
+        google.script.run.withSuccessHandler(function(sec){
+          google.script.run.withSuccessHandler(function(keys){
+            google.script.run.withSuccessHandler(function(secrets){ render(sec, keys, secrets); }).withFailureHandler(err).secretsRotationWatch();
+          }).withFailureHandler(err).apiKeysList();
+        }).withFailureHandler(err).securityDashboard();
+      }
+      function render(sec, keys, secrets){
+        setText('status','Updated '+new Date().toLocaleString());
+        setText('totalEvents',sec.totalEvents); setText('criticalCount',sec.criticalCount); setText('deniedCount',sec.deniedCount); setText('secretsDue',(secrets||[]).length);
+        document.getElementById('events').innerHTML = (sec.recentEvents||[]).map(function(e){ return row([escapeHtml(e.Severity), escapeHtml(e.Category), escapeHtml(e.Action), escapeHtml(e.Status), escapeHtml(e.Message)]); }).join('') || row(['No events']);
+        document.getElementById('policies').innerHTML = (sec.policies||[]).map(function(p){ return row([escapeHtml(p['Policy Name']), escapeHtml(p.Category), escapeHtml(p.Severity), escapeHtml(p.Enabled)]); }).join('') || row(['No policies']);
+        document.getElementById('apiKeys').innerHTML = (keys||[]).map(function(k){ return row([escapeHtml(k['API Key ID']), escapeHtml(k.Name), escapeHtml(k.Scopes), escapeHtml(k.Status)]); }).join('') || row(['No API keys']);
+        document.getElementById('secretWatch').innerHTML = (secrets||[]).map(function(s){ return row([escapeHtml(s['Secret ID']), escapeHtml(s['Secret Key']), escapeHtml(s['Next Rotation At']), escapeHtml(s.Status)]); }).join('') || row(['No secrets due']);
+      }
+      function err(e){ setText('status','Error: '+e.message); }
+      loadSecurity();
+    </script>
+  </body>
+</html>
