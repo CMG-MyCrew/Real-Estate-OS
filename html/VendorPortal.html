@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .wrap { padding: 18px; }
+      .login { max-width: 460px; margin: 60px auto; background: #fff; border: 1px solid #d8dee9; border-radius: 16px; padding: 24px; }
+      .hero { background: #fff; border: 1px solid #d8dee9; border-radius: 14px; padding: 18px; display:flex; justify-content:space-between; gap:12px; align-items:center; }
+      .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top:16px; }
+      .card { background:#fff; border:1px solid #d8dee9; border-radius:12px; padding:14px; }
+      input, select, textarea { width:100%; box-sizing:border-box; padding:9px; margin:5px 0 10px; border:1px solid #cfd8e3; border-radius:8px; }
+      label { font-size:12px; font-weight:700; color:#405064; }
+      table { width:100%; border-collapse:collapse; margin-top:10px; font-size:12px; }
+      th, td { border-bottom:1px solid #e4e8f0; padding:8px; text-align:left; }
+      a { color:#145369; }
+      .muted { color:#68778d; font-size:12px; }
+      .status { margin-top:10px; font-size:12px; }
+    </style>
+  </head>
+  <body>
+    <div id="login" class="login">
+      <h2>REOS Vendor Portal</h2>
+      <p class="muted">Enter your Vendor ID and email.</p>
+      <label>Vendor ID</label><input id="vendorId" placeholder="V-...">
+      <label>Email</label><input id="email" type="email" placeholder="vendor@example.com">
+      <button onclick="login()">Open Vendor Portal</button>
+      <div id="loginStatus" class="status"></div>
+    </div>
+
+    <div id="portal" class="wrap" style="display:none;">
+      <div class="hero">
+        <div>
+          <h2 id="vendorName">Vendor Portal</h2>
+          <div id="subtitle" class="muted"></div>
+        </div>
+        <div>
+          <button onclick="refreshPortal()">Refresh</button>
+          <button onclick="logout()">Log Out</button>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Open Assignments</h3>
+          <table>
+            <thead><tr><th>ID</th><th>Work</th><th>Status</th><th>Due</th></tr></thead>
+            <tbody id="assignments"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h3>Update Assignment</h3>
+          <label>Assignment ID</label><input id="assignmentId" placeholder="VA-...">
+          <label>Status</label>
+          <select id="assignmentStatus"><option>In Progress</option><option>Waiting on Info</option><option>Completed</option><option>Cancelled</option></select>
+          <label>Actual Cost</label><input id="actualCost" type="number" min="0" step="0.01">
+          <label>Invoice URL</label><input id="invoiceUrl" placeholder="https://...">
+          <label>Notes</label><textarea id="completionNotes" rows="4"></textarea>
+          <button onclick="updateAssignment()">Submit Update</button>
+          <div id="updateStatus" class="status"></div>
+        </div>
+
+        <div class="card">
+          <h3>Related Documents</h3>
+          <table>
+            <thead><tr><th>Name</th><th>Status</th><th>Link</th></tr></thead>
+            <tbody id="documents"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h3>Assignment History</h3>
+          <table>
+            <thead><tr><th>ID</th><th>Type</th><th>Status</th><th>Cost</th></tr></thead>
+            <tbody id="history"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function setText(id, text) { document.getElementById(id).textContent = text === undefined || text === null ? '' : String(text); }
+      function escapeHtml(value) { return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;'); }
+      function money(value) { return '$' + Number(value || 0).toLocaleString(undefined, { maximumFractionDigits: 0 }); }
+      function row(cells) { return '<tr>' + cells.map(function (c) { return '<td>' + c + '</td>'; }).join('') + '</tr>'; }
+      function empty(id, text) { document.getElementById(id).innerHTML = '<tr><td class="muted" colspan="4">' + escapeHtml(text) + '</td></tr>'; }
+      function login() {
+        const vendorId = document.getElementById('vendorId').value;
+        const email = document.getElementById('email').value;
+        setText('loginStatus', 'Loading...');
+        google.script.run.withSuccessHandler(function (data) {
+          sessionStorage.setItem('reosVendorId', vendorId);
+          sessionStorage.setItem('reosVendorEmail', email);
+          renderPortal(data);
+        }).withFailureHandler(function (err) {
+          setText('loginStatus', 'Error: ' + err.message);
+        }).vendorPortalGetWorkspace(vendorId, email);
+      }
+      function refreshPortal() {
+        const vendorId = sessionStorage.getItem('reosVendorId');
+        const email = sessionStorage.getItem('reosVendorEmail');
+        if (!vendorId || !email) return showLogin();
+        google.script.run.withSuccessHandler(renderPortal).withFailureHandler(showLogin).vendorPortalGetWorkspace(vendorId, email);
+      }
+      function logout() {
+        sessionStorage.removeItem('reosVendorId');
+        sessionStorage.removeItem('reosVendorEmail');
+        showLogin();
+      }
+      function showLogin() {
+        document.getElementById('login').style.display = 'block';
+        document.getElementById('portal').style.display = 'none';
+      }
+      function renderPortal(data) {
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('portal').style.display = 'block';
+        const v = data.vendor || {};
+        setText('vendorName', v.vendorName || 'Vendor Portal');
+        setText('subtitle', (v.company || '') + ' | ' + (v.vendorType || '') + ' | Updated ' + new Date().toLocaleString());
+        renderAssignments(data.openAssignments || []);
+        renderDocuments(data.documents || []);
+        renderHistory(data.allAssignments || []);
+      }
+      function renderAssignments(rows) {
+        const tbody = document.getElementById('assignments');
+        tbody.innerHTML = '';
+        if (!rows.length) return empty('assignments', 'No open assignments.');
+        rows.forEach(function (a) {
+          tbody.innerHTML += row([escapeHtml(a['Assignment ID']), escapeHtml(a['Work Type']), escapeHtml(a.Status), escapeHtml(a['Due Date'])]);
+        });
+      }
+      function renderDocuments(rows) {
+        const tbody = document.getElementById('documents');
+        tbody.innerHTML = '';
+        if (!rows.length) return empty('documents', 'No related documents.');
+        rows.forEach(function (d) {
+          const link = d['Drive URL'] ? '<a target="_blank" href="' + escapeHtml(d['Drive URL']) + '">Open</a>' : '';
+          tbody.innerHTML += row([escapeHtml(d['Document Name']), escapeHtml(d.Status), link]);
+        });
+      }
+      function renderHistory(rows) {
+        const tbody = document.getElementById('history');
+        tbody.innerHTML = '';
+        if (!rows.length) return empty('history', 'No assignment history.');
+        rows.forEach(function (a) {
+          tbody.innerHTML += row([escapeHtml(a['Assignment ID']), escapeHtml(a['Work Type']), escapeHtml(a.Status), money(a['Actual Cost'])]);
+        });
+      }
+      function updateAssignment() {
+        const vendorId = sessionStorage.getItem('reosVendorId');
+        setText('updateStatus', 'Submitting update...');
+        google.script.run.withSuccessHandler(function () {
+          setText('updateStatus', 'Assignment updated.');
+          refreshPortal();
+        }).withFailureHandler(function (err) {
+          setText('updateStatus', 'Error: ' + err.message);
+        }).vendorPortalUpdateAssignment(
+          vendorId,
+          document.getElementById('assignmentId').value,
+          document.getElementById('assignmentStatus').value,
+          document.getElementById('completionNotes').value,
+          document.getElementById('invoiceUrl').value,
+          document.getElementById('actualCost').value
+        );
+      }
+      refreshPortal();
+    </script>
+  </body>
+</html>
