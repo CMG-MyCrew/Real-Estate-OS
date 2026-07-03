@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .wrap { padding: 18px; }
+      .grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 16px; margin-top: 16px; }
+      .card { background: #fff; border: 1px solid #d8dee9; border-radius: 12px; padding: 14px; }
+      input, select, textarea { width: 100%; box-sizing: border-box; padding: 9px; margin: 5px 0 10px; border: 1px solid #cfd8e3; border-radius: 8px; }
+      label { font-size: 12px; font-weight: 700; color: #405064; }
+      table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+      th, td { border-bottom: 1px solid #e4e8f0; padding: 8px; text-align: left; }
+      .muted { color: #68778d; font-size: 12px; }
+      .status { margin-top: 10px; font-size: 12px; }
+      a { color: #145369; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h2>Documents</h2>
+      <div class="muted">Document library, checklists, templates, Drive folders, and eSignature tracking.</div>
+      <div class="grid">
+        <div class="card">
+          <h3>Create Checklist / Folder</h3>
+          <label>Record ID</label><input id="recordId" placeholder="TX-..., C-..., R-...">
+          <label>Record Type</label>
+          <select id="recordType"><option>Transaction</option><option>Rental</option><option>Client</option><option>Investment</option></select>
+          <label>Display Name</label><input id="displayName" placeholder="Client name or property address">
+          <button onclick="createFolder()">Create Drive Folder</button>
+          <button onclick="createChecklist()">Create Document Checklist</button>
+          <div id="setupStatus" class="status"></div>
+
+          <h3>eSignature Request</h3>
+          <label>Document ID</label><input id="esignDocumentId" placeholder="D-...">
+          <label>Recipient Name</label><input id="recipientName">
+          <label>Recipient Email</label><input id="recipientEmail">
+          <label>Subject</label><input id="subject" value="Please review and sign">
+          <label>Message</label><textarea id="message" rows="3"></textarea>
+          <button onclick="createEsign()">Create eSignature Request</button>
+          <div id="esignStatus" class="status"></div>
+        </div>
+
+        <div class="card">
+          <h3>Search Documents</h3>
+          <input id="search" placeholder="Search documents..." oninput="debouncedSearch()">
+          <button onclick="searchDocuments()">Search</button>
+          <div id="searchStatus" class="status"></div>
+          <table>
+            <thead><tr><th>Name</th><th>Type</th><th>Status</th><th>Signature</th><th>Link</th></tr></thead>
+            <tbody id="documents"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let timer = null;
+      let lastFolderId = '';
+      function setText(id, text) { document.getElementById(id).textContent = text || ''; }
+      function escapeHtml(value) { return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;'); }
+      function debouncedSearch() { clearTimeout(timer); timer = setTimeout(searchDocuments, 300); }
+      function createFolder() {
+        setText('setupStatus', 'Creating folder...');
+        google.script.run.withSuccessHandler(function (folder) {
+          lastFolderId = folder['Folder ID'];
+          setText('setupStatus', 'Folder created: ' + folder['Folder URL']);
+        }).withFailureHandler(function (err) { setText('setupStatus', 'Error: ' + err.message); })
+          .driveCreateRecordFolder(document.getElementById('recordId').value, document.getElementById('recordType').value, document.getElementById('displayName').value);
+      }
+      function createChecklist() {
+        setText('setupStatus', 'Creating checklist...');
+        google.script.run.withSuccessHandler(function (rows) {
+          setText('setupStatus', 'Checklist created: ' + rows.length + ' document(s).');
+          searchDocuments();
+        }).withFailureHandler(function (err) { setText('setupStatus', 'Error: ' + err.message); })
+          .documentsCreateChecklist(document.getElementById('recordId').value, document.getElementById('recordType').value, lastFolderId);
+      }
+      function createEsign() {
+        const request = {
+          'Document ID': document.getElementById('esignDocumentId').value,
+          'Recipient Name': document.getElementById('recipientName').value,
+          'Recipient Email': document.getElementById('recipientEmail').value,
+          Subject: document.getElementById('subject').value,
+          Message: document.getElementById('message').value,
+          Provider: 'Manual'
+        };
+        setText('esignStatus', 'Creating request...');
+        google.script.run.withSuccessHandler(function (row) {
+          setText('esignStatus', 'Request created: ' + row['Signature Request ID']);
+          searchDocuments();
+        }).withFailureHandler(function (err) { setText('esignStatus', 'Error: ' + err.message); }).esignCreateRequest(request);
+      }
+      function searchDocuments() {
+        setText('searchStatus', 'Searching...');
+        google.script.run.withSuccessHandler(renderDocuments).withFailureHandler(function (err) {
+          setText('searchStatus', 'Error: ' + err.message);
+        }).documentsSearch(document.getElementById('search').value);
+      }
+      function renderDocuments(rows) {
+        const tbody = document.getElementById('documents');
+        tbody.innerHTML = '';
+        (rows || []).forEach(function (d) {
+          const link = d['Drive URL'] ? '<a target="_blank" href="' + escapeHtml(d['Drive URL']) + '">Open</a>' : '';
+          const tr = document.createElement('tr');
+          tr.innerHTML = '<td>' + escapeHtml(d['Document Name']) + '</td><td>' + escapeHtml(d['Document Type']) + '</td><td>' + escapeHtml(d.Status) + '</td><td>' + escapeHtml(d['Signature Status']) + '</td><td>' + link + '</td>';
+          tbody.appendChild(tr);
+        });
+        setText('searchStatus', (rows || []).length + ' document(s) found.');
+      }
+      searchDocuments();
+    </script>
+  </body>
+</html>
