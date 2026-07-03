@@ -15,6 +15,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open Integration Hub', 'showIntegrations')
     .addItem('Open API Platform', 'showAPIPlatform')
     .addItem('Open Enterprise Admin', 'showAdmin')
+    .addItem('Open Performance Console', 'showPerformance')
     .addItem('Open Brokerage Management', 'showBrokerage')
     .addItem('Open Business Intelligence', 'showBI')
     .addItem('Open SaaS Admin', 'showSaaSAdmin')
@@ -153,4 +154,11 @@ function showAdmin() {
     .setWidth(1200)
     .setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Enterprise Administration');
+}
+
+function showPerformance() {
+  const html = HtmlService.createHtmlOutputFromFile('Performance')
+    .setWidth(1100)
+    .setHeight(760);
+  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Performance Optimization');
 }
