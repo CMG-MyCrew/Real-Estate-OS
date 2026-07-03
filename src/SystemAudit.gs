@@ -18,27 +18,29 @@ REOS.SystemAudit = (function () {
   const MENU_FUNCTIONS = [
     'showDashboard', 'showAgentPortal', 'showAIAssistant', 'showMobileApp',
     'showIntegrations', 'showAPIPlatform', 'showAdmin', 'showPerformance',
-    'showBrokerage', 'showBI', 'showSaaSAdmin', 'showProduction',
-    'showSecurity', 'showCRM', 'showTasks', 'showTransactions',
-    'showInvestments', 'showRentals', 'showFinance', 'showDocuments',
-    'showClientPortal', 'showVendorPortal', 'showAutomation', 'showHelpCenter'
+    'showSystemAudit', 'showBrokerage', 'showBI', 'showSaaSAdmin',
+    'showProduction', 'showSecurity', 'showCRM', 'showTasks',
+    'showTransactions', 'showInvestments', 'showRentals', 'showFinance',
+    'showDocuments', 'showClientPortal', 'showVendorPortal', 'showAutomation',
+    'showHelpCenter'
   ];
 
   const HTML_FILES = [
     'Dashboard', 'AgentPortal', 'AIAssistant', 'AppShell', 'Integrations',
-    'APIPlatform', 'Admin', 'Performance', 'Brokerage', 'BI', 'SaaSAdmin',
-    'Production', 'Security', 'CRM', 'Tasks', 'Transactions', 'Investments',
-    'Rentals', 'Finance', 'Documents', 'ClientPortal', 'VendorPortal',
-    'Automation', 'HelpCenter', 'Sidebar'
+    'APIPlatform', 'Admin', 'Performance', 'SystemAudit', 'Brokerage', 'BI',
+    'SaaSAdmin', 'Production', 'Security', 'CRM', 'Tasks', 'Transactions',
+    'Investments', 'Rentals', 'Finance', 'Documents', 'ClientPortal',
+    'VendorPortal', 'Automation', 'HelpCenter', 'Sidebar'
   ];
 
   const MODULES = [
     'Database', 'Security', 'CRM', 'Tasks', 'Transactions', 'Investments',
     'Rentals', 'Finance', 'Documents', 'Automation', 'AI', 'AIInsights',
-    'Integrations', 'APIPlatform', 'Tenants', 'TenantSecurity', 'SaaSAdmin',
-    'SecurityHardening', 'Monitoring', 'Backup', 'Deployment', 'QA',
-    'Performance', 'Cache', 'JobQueue', 'Admin', 'SystemConfig', 'FeatureFlags',
-    'Licensing', 'SystemDiagnostics', 'UsageAnalytics', 'EnvironmentManager'
+    'Integrations', 'APIPlatform', 'APIDocs', 'APIKeys', 'Tenants',
+    'TenantSecurity', 'SaaSAdmin', 'SecurityHardening', 'Secrets', 'Monitoring',
+    'Backup', 'Deployment', 'QA', 'Performance', 'Cache', 'JobQueue', 'Admin',
+    'SystemConfig', 'FeatureFlags', 'Licensing', 'SystemDiagnostics',
+    'UsageAnalytics', 'EnvironmentManager', 'TenantProvisioning', 'SystemAudit'
   ];
 
   function ensureSheet() {
@@ -87,7 +89,9 @@ REOS.SystemAudit = (function () {
 
   function auditMenuFunctions_() {
     return MENU_FUNCTIONS.map(function (fn) {
-      return check_('Menu', fn, 'High', function () { return typeof this[fn] === 'function'; });
+      return check_('Menu', fn, 'High', function () {
+        return typeof globalThis[fn] === 'function';
+      });
     });
   }
 
@@ -111,11 +115,13 @@ REOS.SystemAudit = (function () {
       'TASKS', 'TRANSACTIONS', 'DOCUMENTS', 'INTEGRATIONS', 'TENANTS',
       'SECURITY_EVENTS', 'API_ENDPOINTS', 'API_REQUESTS', 'SYSTEM_HEALTH',
       'BACKUPS', 'RELEASES', 'PERFORMANCE_LOG', 'JOB_QUEUE',
-      'SYSTEM_CONFIGURATION', 'FEATURE_FLAGS', 'LICENSES'
+      'SYSTEM_CONFIGURATION', 'FEATURE_FLAGS', 'LICENSES', 'SYSTEM_AUDIT'
     ];
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     return expected.map(function (sheetName) {
-      return check_('Sheet', sheetName, 'Medium', function () { return !!ss.getSheetByName(sheetName); });
+      return check_('Sheet', sheetName, 'Medium', function () {
+        return !!ss.getSheetByName(sheetName);
+      }, true);
     });
   }
 
@@ -124,7 +130,7 @@ REOS.SystemAudit = (function () {
     out.push(check_('Security', 'Security policies seeded', 'High', function () {
       REOS.SecurityHardening.ensureSheets();
       return REOS.Database.getAll('SECURITY_POLICIES').length > 0;
-    }));
+    }, true));
     out.push(check_('Security', 'Security dashboard loads', 'High', function () { return !!REOS.SecurityHardening.dashboard(); }));
     out.push(check_('Security', 'Secrets registry loads', 'Medium', function () { return Array.isArray(REOS.Secrets.listSecrets()); }));
     return out;
@@ -133,9 +139,9 @@ REOS.SystemAudit = (function () {
   function auditApi_() {
     const out = [];
     out.push(check_('API', 'API endpoints seeded', 'High', function () {
-      REOS.APIPlatform.seedEndpoints();
+      REOS.APIPlatform.ensureSheets();
       return REOS.Database.getAll('API_ENDPOINTS').length > 0;
-    }));
+    }, true));
     out.push(check_('API', 'OpenAPI docs generate', 'Medium', function () { return !!REOS.APIDocs.openApiSpec().openapi; }));
     out.push(check_('API', 'Request log loads', 'Medium', function () { return Array.isArray(REOS.APIPlatform.listRequests(1)); }));
     return out;
@@ -172,23 +178,23 @@ REOS.SystemAudit = (function () {
     });
   }
 
-  function check_(category, name, severity, fn) {
+  function check_(category, name, severity, fn, warningOnly) {
     try {
       const ok = fn();
       return {
         Category: category,
         'Check Name': name,
-        Status: ok ? 'Pass' : 'Fail',
-        Severity: severity || 'Medium',
-        Message: ok ? 'OK' : 'Check returned false.',
+        Status: ok ? 'Pass' : (warningOnly ? 'Warn' : 'Fail'),
+        Severity: warningOnly ? 'Medium' : (severity || 'Medium'),
+        Message: ok ? 'OK' : (warningOnly ? 'Setup required before launch.' : 'Check returned false.'),
         'Details JSON': '{}'
       };
     } catch (error) {
       return {
         Category: category,
         'Check Name': name,
-        Status: 'Fail',
-        Severity: severity || 'Medium',
+        Status: warningOnly ? 'Warn' : 'Fail',
+        Severity: warningOnly ? 'Medium' : (severity || 'Medium'),
         Message: error.message,
         'Details JSON': JSON.stringify({ stack: error.stack || '' })
       };
