@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .wrap { padding: 18px; }
+      .hero { background: #fff; border: 1px solid #d8dee9; border-radius: 14px; padding: 18px; }
+      .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px; }
+      .kpi { background: #fff; border: 1px solid #d8dee9; border-radius: 12px; padding: 12px; }
+      .kpi .label { font-size: 11px; color: #68778d; }
+      .kpi .value { font-size: 18px; font-weight: 700; margin-top: 6px; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+      .card { background: #fff; border: 1px solid #d8dee9; border-radius: 12px; padding: 14px; }
+      input { width: 100%; box-sizing: border-box; padding: 10px; margin: 6px 0 12px; border: 1px solid #cfd8e3; border-radius: 8px; }
+      table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+      th, td { border-bottom: 1px solid #e4e8f0; padding: 8px; text-align: left; }
+      a { color: #145369; }
+      .muted { color: #68778d; font-size: 12px; }
+      .status { margin-top: 10px; font-size: 12px; }
+      .login { max-width: 440px; margin: 60px auto; background: #fff; border: 1px solid #d8dee9; border-radius: 16px; padding: 24px; }
+    </style>
+  </head>
+  <body>
+    <div id="login" class="login">
+      <h2>REOS Client Portal</h2>
+      <p class="muted">Enter your email and portal access token.</p>
+      <label>Email</label><input id="email" type="email" placeholder="client@example.com">
+      <label>Access Token</label><input id="token" placeholder="Access token">
+      <button onclick="login()">Open Portal</button>
+      <div id="loginStatus" class="status"></div>
+    </div>
+
+    <div id="portal" class="wrap" style="display:none;">
+      <div class="hero">
+        <h2 id="title">Client Portal</h2>
+        <div class="muted" id="subtitle"></div>
+        <button onclick="refreshPortal()">Refresh</button>
+        <button onclick="logout()">Log Out</button>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><div class="label">Status</div><div id="status" class="value">-</div></div>
+        <div class="kpi"><div class="label">Tasks</div><div id="taskCount" class="value">0</div></div>
+        <div class="kpi"><div class="label">Documents</div><div id="docCount" class="value">0</div></div>
+        <div class="kpi"><div class="label">Signatures</div><div id="signatureCount" class="value">0</div></div>
+      </div>
+
+      <div class="grid">
+        <div class="card"><h3>Tasks</h3><table><tbody id="tasks"></tbody></table></div>
+        <div class="card"><h3>Documents</h3><table><tbody id="documents"></tbody></table></div>
+        <div class="card"><h3>Signature Requests</h3><table><tbody id="signatures"></tbody></table></div>
+        <div class="card"><h3>Timeline</h3><table><tbody id="timeline"></tbody></table></div>
+      </div>
+    </div>
+
+    <script>
+      function setText(id, text) { document.getElementById(id).textContent = text === undefined || text === null ? '' : String(text); }
+      function escapeHtml(value) { return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;'); }
+      function money(value) { return '$' + Number(value || 0).toLocaleString(undefined, { maximumFractionDigits: 0 }); }
+      function login() {
+        const email = document.getElementById('email').value;
+        const token = document.getElementById('token').value;
+        setText('loginStatus', 'Loading portal...');
+        google.script.run.withSuccessHandler(function (data) {
+          sessionStorage.setItem('reosPortalEmail', email);
+          sessionStorage.setItem('reosPortalToken', token);
+          renderPortal(data);
+        }).withFailureHandler(function (err) {
+          setText('loginStatus', 'Error: ' + err.message);
+        }).clientPortalGetData(token, email);
+      }
+      function refreshPortal() {
+        const email = sessionStorage.getItem('reosPortalEmail');
+        const token = sessionStorage.getItem('reosPortalToken');
+        if (!email || !token) return showLogin();
+        google.script.run.withSuccessHandler(renderPortal).withFailureHandler(function () { showLogin(); }).clientPortalGetData(token, email);
+      }
+      function showLogin() { document.getElementById('login').style.display = 'block'; document.getElementById('portal').style.display = 'none'; }
+      function logout() { sessionStorage.removeItem('reosPortalEmail'); sessionStorage.removeItem('reosPortalToken'); showLogin(); }
+      function renderPortal(data) {
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('portal').style.display = 'block';
+        const s = data.summary || {};
+        setText('title', s.title || 'Client Portal');
+        setText('subtitle', (s.type || '') + ' portal updated ' + new Date().toLocaleString());
+        setText('status', s.status || '-');
+        setText('taskCount', (data.tasks || []).length);
+        setText('docCount', (data.documents || []).length);
+        setText('signatureCount', (data.signatures || []).length);
+        renderTasks(data.tasks || []);
+        renderDocuments(data.documents || []);
+        renderSignatures(data.signatures || []);
+        renderTimeline(data.timeline || []);
+      }
+      function emptyRow(id, text) { document.getElementById(id).innerHTML = '<tr><td class="muted">' + escapeHtml(text) + '</td></tr>'; }
+      function renderTasks(rows) {
+        const tbody = document.getElementById('tasks');
+        tbody.innerHTML = '';
+        if (!rows.length) return emptyRow('tasks', 'No open tasks.');
+        rows.forEach(function (t) { tbody.innerHTML += '<tr><td>' + escapeHtml(t.Task) + '</td><td>' + escapeHtml(t.Status) + '</td><td>' + escapeHtml(t['Due Date']) + '</td></tr>'; });
+      }
+      function renderDocuments(rows) {
+        const tbody = document.getElementById('documents');
+        tbody.innerHTML = '';
+        if (!rows.length) return emptyRow('documents', 'No documents available.');
+        rows.forEach(function (d) {
+          const link = d['Drive URL'] ? '<a target="_blank" href="' + escapeHtml(d['Drive URL']) + '">Open</a>' : '';
+          tbody.innerHTML += '<tr><td>' + escapeHtml(d['Document Name']) + '</td><td>' + escapeHtml(d.Status) + '</td><td>' + link + '</td></tr>';
+        });
+      }
+      function renderSignatures(rows) {
+        const tbody = document.getElementById('signatures');
+        tbody.innerHTML = '';
+        if (!rows.length) return emptyRow('signatures', 'No signature requests.');
+        rows.forEach(function (r) { tbody.innerHTML += '<tr><td>' + escapeHtml(r.Subject) + '</td><td>' + escapeHtml(r.Status) + '</td><td>' + escapeHtml(r['Recipient Email']) + '</td></tr>'; });
+      }
+      function renderTimeline(rows) {
+        const tbody = document.getElementById('timeline');
+        tbody.innerHTML = '';
+        if (!rows.length) return emptyRow('timeline', 'No timeline activity.');
+        rows.forEach(function (a) { tbody.innerHTML += '<tr><td>' + escapeHtml(a.Date) + '</td><td>' + escapeHtml(a['Activity Type']) + '</td><td>' + escapeHtml(a.Subject) + '</td></tr>'; });
+      }
+      refreshPortal();
+    </script>
+  </body>
+</html>
