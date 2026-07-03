@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .wrap { padding:18px; }
+      .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px; }
+      .kpi { background:#fff; border:1px solid #d8dee9; border-radius:12px; padding:12px; }
+      .kpi .label { font-size:11px; color:#68778d; }
+      .kpi .value { font-size:18px; font-weight:700; margin-top:6px; }
+      .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }
+      .card { background:#fff; border:1px solid #d8dee9; border-radius:12px; padding:14px; max-height:430px; overflow:auto; }
+      table { width:100%; border-collapse:collapse; margin-top:10px; font-size:12px; }
+      th, td { border-bottom:1px solid #e4e8f0; padding:8px; text-align:left; vertical-align:top; }
+      .muted { color:#68778d; font-size:12px; }
+      .status { margin-top:10px; font-size:12px; white-space:pre-wrap; }
+      .pass { font-weight:700; }
+      .fail { font-weight:700; }
+      .warn { font-weight:700; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h2>Final System Audit</h2>
+      <div class="muted">Launch readiness validation for menus, HTML files, modules, sheets, security, API, production, performance, and documentation.</div>
+      <button onclick="runAudit()">Run Full Audit</button>
+      <button onclick="loadRecent()">Load Recent</button>
+      <button onclick="openConsole('showProduction')">Production Console</button>
+      <button onclick="openConsole('showSecurity')">Enterprise Security</button>
+      <button onclick="openConsole('showPerformance')">Performance Console</button>
+      <button onclick="openConsole('showAdmin')">Enterprise Admin</button>
+      <div id="status" class="status"></div>
+
+      <div class="kpis">
+        <div class="kpi"><div class="label">Launch Ready</div><div id="launchReady" class="value">-</div></div>
+        <div class="kpi"><div class="label">Passed</div><div id="passed" class="value">0</div></div>
+        <div class="kpi"><div class="label">Warnings</div><div id="warnings" class="value">0</div></div>
+        <div class="kpi"><div class="label">Failed</div><div id="failed" class="value">0</div></div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Current Audit Results</h3>
+          <table>
+            <thead><tr><th>Category</th><th>Check</th><th>Status</th><th>Severity</th><th>Message</th></tr></thead>
+            <tbody id="results"></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <h3>Recent Audit Log</h3>
+          <table>
+            <thead><tr><th>Run</th><th>Category</th><th>Check</th><th>Status</th></tr></thead>
+            <tbody id="recent"></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <h3>Launch Checklist Summary</h3>
+          <ul>
+            <li>Run full audit and resolve high severity failures.</li>
+            <li>Create backup before deployment.</li>
+            <li>Run smoke tests and release gate.</li>
+            <li>Validate API keys, security policies, and tenant access.</li>
+            <li>Confirm Help Center and documentation are available.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Recommended Follow-Up</h3>
+          <table><tbody id="followup"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function escapeHtml(value){ return String(value || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+      function setText(id,text){ document.getElementById(id).textContent = text === undefined || text === null ? '' : String(text); }
+      function row(cells){ return '<tr>' + cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') + '</tr>'; }
+      function runAudit(){
+        setText('status','Running full audit...');
+        google.script.run.withSuccessHandler(renderAudit).withFailureHandler(err).systemAuditRunFull();
+      }
+      function loadRecent(){
+        setText('status','Loading recent audit log...');
+        google.script.run.withSuccessHandler(renderRecent).withFailureHandler(err).systemAuditRecent(100);
+      }
+      function renderAudit(data){
+        setText('status','Audit complete at ' + new Date().toLocaleString());
+        setText('launchReady', data.launchReady ? 'Yes' : 'No');
+        setText('passed', data.passed || 0);
+        setText('warnings', data.warnings || 0);
+        setText('failed', data.failed || 0);
+        const tbody = document.getElementById('results');
+        tbody.innerHTML = (data.checks || []).map(function(c){
+          return row([escapeHtml(c.Category), escapeHtml(c['Check Name']), escapeHtml(c.Status), escapeHtml(c.Severity), escapeHtml(c.Message)]);
+        }).join('') || row(['No results']);
+        const follow = (data.checks || []).filter(function(c){ return c.Status !== 'Pass'; });
+        document.getElementById('followup').innerHTML = follow.map(function(c){ return row([escapeHtml(c.Severity), escapeHtml(c.Category), escapeHtml(c['Check Name']), escapeHtml(c.Message)]); }).join('') || row(['No follow-up required']);
+        loadRecent();
+      }
+      function renderRecent(rows){
+        setText('status','Recent audit log loaded.');
+        document.getElementById('recent').innerHTML = (rows || []).map(function(r){
+          return row([escapeHtml(r['Run At']), escapeHtml(r.Category), escapeHtml(r['Check Name']), escapeHtml(r.Status)]);
+        }).join('') || row(['No audit history']);
+      }
+      function openConsole(fn){ google.script.run[fn](); }
+      function err(e){ setText('status','Error: ' + e.message); }
+      loadRecent();
+    </script>
+  </body>
+</html>
