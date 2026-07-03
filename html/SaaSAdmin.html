@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .wrap { padding:18px; }
+      .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px; }
+      .kpi { background:#fff; border:1px solid #d8dee9; border-radius:12px; padding:12px; }
+      .kpi .label { font-size:11px; color:#68778d; }
+      .kpi .value { font-size:18px; font-weight:700; margin-top:6px; }
+      .grid { display:grid; grid-template-columns:1fr 1.2fr; gap:16px; margin-top:16px; }
+      .card { background:#fff; border:1px solid #d8dee9; border-radius:12px; padding:14px; max-height:430px; overflow:auto; }
+      input, select, textarea { width:100%; box-sizing:border-box; padding:9px; margin:5px 0 10px; border:1px solid #cfd8e3; border-radius:8px; }
+      label { font-size:12px; font-weight:700; color:#405064; }
+      table { width:100%; border-collapse:collapse; margin-top:10px; font-size:12px; }
+      th, td { border-bottom:1px solid #e4e8f0; padding:8px; text-align:left; }
+      .muted { color:#68778d; font-size:12px; }
+      .status { margin-top:10px; font-size:12px; white-space:pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h2>SaaS Admin</h2>
+      <div class="muted">White-label tenants, branding, access, billing, and provisioning.</div>
+      <button onclick="loadDashboard()">Refresh</button>
+      <div class="kpis">
+        <div class="kpi"><div class="label">Tenants</div><div id="tenantCount" class="value">0</div></div>
+        <div class="kpi"><div class="label">Active Tenants</div><div id="activeTenantCount" class="value">0</div></div>
+        <div class="kpi"><div class="label">MRR</div><div id="mrr" class="value">$0</div></div>
+        <div class="kpi"><div class="label">Past Due</div><div id="pastDueCount" class="value">0</div></div>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <h3>Create Tenant</h3>
+          <label>Tenant Name</label><input id="tenantName">
+          <label>Owner Email</label><input id="ownerEmail">
+          <label>Plan</label><select id="plan"><option>Starter</option><option>Pro</option><option>Enterprise</option></select>
+          <label>Primary Domain</label><input id="domain" placeholder="example.com">
+          <button onclick="createTenant()">Create Tenant</button>
+          <hr>
+          <h3>Grant Access</h3>
+          <label>Tenant ID</label><input id="accessTenantId" placeholder="TEN-...">
+          <label>User Email</label><input id="accessEmail">
+          <label>Role</label><select id="accessRole"><option>Owner</option><option>Admin</option><option>User</option><option>Viewer</option></select>
+          <button onclick="grantAccess()">Grant Access</button>
+          <hr>
+          <h3>Provision Tenant</h3>
+          <label>Tenant ID</label><input id="provisionTenantId" placeholder="TEN-...">
+          <button onclick="provisionTenant()">Run Provisioning</button>
+          <div id="formStatus" class="status"></div>
+        </div>
+        <div class="card">
+          <h3>Tenant Health</h3>
+          <table>
+            <thead><tr><th>Tenant</th><th>Plan</th><th>Billing</th><th>MRR</th><th>Health</th></tr></thead>
+            <tbody id="tenants"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <script>
+      function money(value){ return '$' + Number(value || 0).toLocaleString(undefined,{maximumFractionDigits:0}); }
+      function escapeHtml(value){ return String(value || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+      function setText(id,text){ document.getElementById(id).textContent = text === undefined || text === null ? '' : String(text); }
+      function createTenant(){
+        const record = {'Tenant Name':document.getElementById('tenantName').value,'Owner Email':document.getElementById('ownerEmail').value,Plan:document.getElementById('plan').value,'Primary Domain':document.getElementById('domain').value};
+        setText('formStatus','Creating tenant...');
+        google.script.run.withSuccessHandler(function(row){ setText('formStatus','Tenant created: '+row['Tenant ID']); loadDashboard(); }).withFailureHandler(function(err){ setText('formStatus','Error: '+err.message); }).tenantsCreate(record);
+      }
+      function grantAccess(){
+        setText('formStatus','Granting access...');
+        google.script.run.withSuccessHandler(function(){ setText('formStatus','Access granted.'); loadDashboard(); }).withFailureHandler(function(err){ setText('formStatus','Error: '+err.message); }).tenantSecurityGrantAccess(document.getElementById('accessTenantId').value, document.getElementById('accessEmail').value, document.getElementById('accessRole').value);
+      }
+      function provisionTenant(){
+        setText('formStatus','Provisioning...');
+        google.script.run.withSuccessHandler(function(rows){ setText('formStatus','Provisioning steps created: '+rows.length); loadDashboard(); }).withFailureHandler(function(err){ setText('formStatus','Error: '+err.message); }).saasProvisionTenant(document.getElementById('provisionTenantId').value);
+      }
+      function loadDashboard(){
+        google.script.run.withSuccessHandler(renderDashboard).withFailureHandler(function(err){ alert(err.message); }).saasDashboard();
+      }
+      function renderDashboard(data){
+        setText('tenantCount',data.tenantCount); setText('activeTenantCount',data.activeTenantCount); setText('mrr',money(data.mrr)); setText('pastDueCount',data.pastDueCount);
+        const tbody = document.getElementById('tenants'); tbody.innerHTML='';
+        (data.tenants || []).forEach(function(t){ tbody.innerHTML += '<tr><td>'+escapeHtml(t.tenantName)+'</td><td>'+escapeHtml(t.plan)+'</td><td>'+escapeHtml(t.billingStatus)+'</td><td>'+money(t.mrr)+'</td><td>'+escapeHtml(t.healthScore)+'</td></tr>'; });
+        if (!data.tenants || !data.tenants.length) tbody.innerHTML = '<tr><td colspan="5" class="muted">No tenants yet.</td></tr>';
+      }
+      loadDashboard();
+    </script>
+  </body>
+</html>
