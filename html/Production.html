@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .wrap { padding:18px; }
+      .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px; }
+      .kpi { background:#fff; border:1px solid #d8dee9; border-radius:12px; padding:12px; }
+      .kpi .label { font-size:11px; color:#68778d; }
+      .kpi .value { font-size:18px; font-weight:700; margin-top:6px; }
+      .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }
+      .card { background:#fff; border:1px solid #d8dee9; border-radius:12px; padding:14px; max-height:430px; overflow:auto; }
+      input, select, textarea { width:100%; box-sizing:border-box; padding:9px; margin:5px 0 10px; border:1px solid #cfd8e3; border-radius:8px; }
+      label { font-size:12px; font-weight:700; color:#405064; }
+      table { width:100%; border-collapse:collapse; margin-top:10px; font-size:12px; }
+      th, td { border-bottom:1px solid #e4e8f0; padding:8px; text-align:left; }
+      .muted { color:#68778d; font-size:12px; }
+      .status { margin-top:10px; font-size:12px; white-space:pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h2>Production Hardening</h2>
+      <div class="muted">Monitoring, backups, QA, release gates, incidents, and deployment readiness.</div>
+      <button onclick="loadProduction()">Refresh</button>
+      <button onclick="runHealth()">Run Health</button>
+      <button onclick="runSmoke()">Run Smoke Tests</button>
+      <button onclick="createBackup()">Create Backup</button>
+      <button onclick="releaseGate()">Release Gate</button>
+      <div id="status" class="status"></div>
+
+      <div class="kpis">
+        <div class="kpi"><div class="label">Health</div><div id="healthStatus" class="value">-</div></div>
+        <div class="kpi"><div class="label">Open Incidents</div><div id="incidentCount" class="value">0</div></div>
+        <div class="kpi"><div class="label">Latest Backup</div><div id="latestBackup" class="value">-</div></div>
+        <div class="kpi"><div class="label">Release Ready</div><div id="releaseReady" class="value">-</div></div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Health Checks</h3>
+          <table><tbody id="healthChecks"></tbody></table>
+        </div>
+        <div class="card">
+          <h3>Open Incident</h3>
+          <label>Severity</label><select id="severity"><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select>
+          <label>Module</label><input id="incidentModule" placeholder="CRM, Finance, Integrations...">
+          <label>Title</label><input id="incidentTitle">
+          <label>Description</label><textarea id="incidentDescription" rows="4"></textarea>
+          <button onclick="openIncident()">Open Incident</button>
+          <h4>Open Incidents</h4>
+          <table><tbody id="incidents"></tbody></table>
+        </div>
+        <div class="card">
+          <h3>Backups</h3>
+          <table><tbody id="backups"></tbody></table>
+        </div>
+        <div class="card">
+          <h3>Release</h3>
+          <label>Version</label><input id="releaseVersion" placeholder="3.0.1">
+          <label>Summary</label><textarea id="releaseSummary" rows="3"></textarea>
+          <label>Rollback Plan</label><textarea id="rollbackPlan" rows="3"></textarea>
+          <button onclick="createRelease()">Create Release</button>
+          <table><tbody id="releases"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function escapeHtml(value){ return String(value || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+      function setText(id,text){ document.getElementById(id).textContent = text === undefined || text === null ? '' : String(text); }
+      function row(cells){ return '<tr>' + cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') + '</tr>'; }
+      function runHealth(){ setText('status','Running health...'); google.script.run.withSuccessHandler(function(){ setText('status','Health complete.'); loadProduction(); }).withFailureHandler(err).monitoringRunHealthSuite(); }
+      function runSmoke(){ setText('status','Running smoke tests...'); google.script.run.withSuccessHandler(function(r){ setText('status','Smoke tests: '+r.passed+' passed, '+r.failed+' failed.'); loadProduction(); }).withFailureHandler(err).qaRunSmokeTests(); }
+      function createBackup(){ setText('status','Creating backup...'); google.script.run.withSuccessHandler(function(r){ setText('status','Backup created: '+r['Backup ID']); loadProduction(); }).withFailureHandler(err).backupCreateSpreadsheet('Manual production backup'); }
+      function releaseGate(){ setText('status','Checking release gate...'); google.script.run.withSuccessHandler(function(r){ setText('releaseReady', r.ok ? 'Yes' : 'No'); setText('status', r.message); }).withFailureHandler(err).qaReleaseGate(); }
+      function openIncident(){
+        const inc = { Severity:document.getElementById('severity').value, Module:document.getElementById('incidentModule').value, Title:document.getElementById('incidentTitle').value, Description:document.getElementById('incidentDescription').value };
+        setText('status','Opening incident...');
+        google.script.run.withSuccessHandler(function(){ setText('status','Incident opened.'); loadProduction(); }).withFailureHandler(err).monitoringOpenIncident(inc);
+      }
+      function createRelease(){
+        const rel = { Version:document.getElementById('releaseVersion').value, Summary:document.getElementById('releaseSummary').value, 'Rollback Plan':document.getElementById('rollbackPlan').value, Status:'Planned', Environment:'Production' };
+        setText('status','Creating release...');
+        google.script.run.withSuccessHandler(function(r){ setText('status','Release created: '+r['Release ID']); loadProduction(); }).withFailureHandler(err).deploymentCreateRelease(rel);
+      }
+      function loadProduction(){
+        google.script.run.withSuccessHandler(function(mon){
+          google.script.run.withSuccessHandler(function(dep){ render(mon, dep); }).withFailureHandler(err).deploymentReadinessReport();
+        }).withFailureHandler(err).monitoringDashboard();
+      }
+      function render(mon, dep){
+        const health = mon.health || {};
+        setText('healthStatus', health.overallStatus || '-');
+        setText('incidentCount', (mon.openIncidents || []).length);
+        setText('latestBackup', dep.latestBackup ? dep.latestBackup['Backup ID'] : 'None');
+        document.getElementById('healthChecks').innerHTML = (health.checks || []).map(function(c){ return row([escapeHtml(c.Module), escapeHtml(c['Check Name']), escapeHtml(c.Status), escapeHtml(c.Message)]); }).join('');
+        document.getElementById('incidents').innerHTML = (mon.openIncidents || []).map(function(i){ return row([escapeHtml(i['Incident ID']), escapeHtml(i.Severity), escapeHtml(i.Module), escapeHtml(i.Title)]); }).join('') || row(['No open incidents']);
+        document.getElementById('backups').innerHTML = (dep.latestBackup ? [dep.latestBackup] : []).concat([]).map(function(b){ return row([escapeHtml(b['Backup ID']), escapeHtml(b.Status), escapeHtml(b['Backup Date']), b['Backup URL'] ? '<a target="_blank" href="'+escapeHtml(b['Backup URL'])+'">Open</a>' : '']); }).join('') || row(['No backups yet']);
+        document.getElementById('releases').innerHTML = (dep.releases || []).map(function(r){ return row([escapeHtml(r['Release ID']), escapeHtml(r.Version), escapeHtml(r.Status), escapeHtml(r['Released At'])]); }).join('') || row(['No releases yet']);
+      }
+      function err(e){ setText('status','Error: '+e.message); }
+      loadProduction();
+    </script>
+  </body>
+</html>
