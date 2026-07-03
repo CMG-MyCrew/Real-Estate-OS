@@ -9,6 +9,7 @@ REOS.buildMenu_ = function () {
   ui.createMenu('REOS')
     .addItem('Home', 'goHome')
     .addItem('Open Dashboard', 'showDashboard')
+    .addItem('Open Agent Portal', 'showAgentPortal')
     .addItem('Open Sidebar', 'showSidebar')
     .addSeparator()
     .addItem('Open CRM App', 'showCRM')
@@ -53,4 +54,11 @@ function showClientPortal() {
     .setWidth(1100)
     .setHeight(760);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Client Portal');
+}
+
+function showAgentPortal() {
+  const html = HtmlService.createHtmlOutputFromFile('AgentPortal')
+    .setWidth(1200)
+    .setHeight(800);
+  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Agent Portal');
 }
