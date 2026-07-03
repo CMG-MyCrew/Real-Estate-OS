@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .wrap { padding: 18px; }
+      .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px; }
+      .kpi { background: #fff; border: 1px solid #d8dee9; border-radius: 12px; padding: 12px; }
+      .kpi .label { font-size: 11px; color: #68778d; }
+      .kpi .value { font-size: 20px; font-weight: 700; margin-top: 6px; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+      .card { background: #fff; border: 1px solid #d8dee9; border-radius: 12px; padding: 14px; }
+      table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12px; }
+      th, td { border-bottom: 1px solid #e4e8f0; padding: 7px; text-align: left; }
+      .muted { color: #68778d; font-size: 12px; }
+      .error { color: #a61b1b; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h2>Executive Dashboard</h2>
+      <div class="muted">Live operating view across CRM, tasks, transactions, investments, rentals, and finance.</div>
+      <button onclick="loadDashboard()">Refresh Dashboard</button>
+      <div id="status" class="muted"></div>
+
+      <div class="kpis">
+        <div class="kpi"><div class="label">Active Leads</div><div id="activeLeads" class="value">0</div></div>
+        <div class="kpi"><div class="label">Overdue Tasks</div><div id="overdueTasks" class="value">0</div></div>
+        <div class="kpi"><div class="label">Active Transactions</div><div id="activeTx" class="value">0</div></div>
+        <div class="kpi"><div class="label">Monthly Cash Flow</div><div id="cashFlow" class="value">$0</div></div>
+      </div>
+
+      <div class="grid">
+        <div class="card"><h3>CRM</h3><table id="crm"></table></div>
+        <div class="card"><h3>Tasks</h3><table id="tasks"></table></div>
+        <div class="card"><h3>Transactions</h3><table id="transactions"></table></div>
+        <div class="card"><h3>Investments</h3><table id="investments"></table></div>
+        <div class="card"><h3>Rentals</h3><table id="rentals"></table></div>
+        <div class="card"><h3>Finance</h3><table id="finance"></table></div>
+      </div>
+    </div>
+
+    <script>
+      function money(value) { return '$' + Number(value || 0).toLocaleString(undefined, { maximumFractionDigits: 0 }); }
+      function pct(value) { return (Number(value || 0) * 100).toFixed(1) + '%'; }
+      function setText(id, text) { document.getElementById(id).textContent = text || ''; }
+      function row(label, value) { return '<tr><th>' + label + '</th><td>' + value + '</td></tr>'; }
+      function renderTable(id, rows) { document.getElementById(id).innerHTML = rows.join(''); }
+      function value(obj, key, fallback) { return obj && !obj.error && obj[key] !== undefined ? obj[key] : (fallback || 0); }
+      function loadDashboard() {
+        setText('status', 'Loading...');
+        google.script.run.withSuccessHandler(renderDashboard).withFailureHandler(function (err) {
+          setText('status', 'Error: ' + err.message);
+        }).dashboardGetExecutive();
+      }
+      function renderDashboard(data) {
+        setText('status', 'Updated: ' + new Date().toLocaleString());
+        const financeMonth = value(data.finance, 'currentMonth', {});
+        setText('activeLeads', value(data.crm, 'activeLeadsCount'));
+        setText('overdueTasks', value(data.tasks, 'overdueCount'));
+        setText('activeTx', value(data.transactions, 'activeCount'));
+        setText('cashFlow', money(financeMonth.cashFlow));
+
+        renderTable('crm', [
+          row('Contacts', value(data.crm, 'contactsCount')),
+          row('Leads', value(data.crm, 'leadsCount')),
+          row('Active Leads', value(data.crm, 'activeLeadsCount')),
+          row('Hot Leads', value(data.crm, 'hotLeadsCount')),
+          row('Projected Commission', money(value(data.crm, 'projectedCommission')))
+        ]);
+        renderTable('tasks', [
+          row('Active', value(data.tasks, 'activeCount')),
+          row('Due Today', value(data.tasks, 'dueTodayCount')),
+          row('Overdue', value(data.tasks, 'overdueCount')),
+          row('Upcoming 7 Days', value(data.tasks, 'upcomingCount'))
+        ]);
+        renderTable('transactions', [
+          row('Active', value(data.transactions, 'activeCount')),
+          row('Pending', value(data.transactions, 'pendingCount')),
+          row('Closed', value(data.transactions, 'closedCount')),
+          row('Pending GCI', money(value(data.transactions, 'pendingGci'))),
+          row('Closed GCI', money(value(data.transactions, 'closedGci')))
+        ]);
+        renderTable('investments', [
+          row('Active', value(data.investments, 'activeCount')),
+          row('Flips', value(data.investments, 'flipCount')),
+          row('Rentals', value(data.investments, 'rentalCount')),
+          row('Estimated Profit', money(value(data.investments, 'totalEstimatedProfit'))),
+          row('Investment Cash Flow', money(value(data.investments, 'monthlyCashFlow')))
+        ]);
+        renderTable('rentals', [
+          row('Rentals', value(data.rentals, 'rentalCount')),
+          row('Occupied', value(data.rentals, 'occupiedCount')),
+          row('Vacant', value(data.rentals, 'vacantCount')),
+          row('Occupancy Rate', pct(value(data.rentals, 'occupancyRate'))),
+          row('Rental Cash Flow', money(value(data.rentals, 'monthlyCashFlow')))
+        ]);
+        renderTable('finance', [
+          row('Monthly Income', money(financeMonth.income)),
+          row('Monthly Expenses', money(financeMonth.expenses)),
+          row('Net Profit', money(financeMonth.netProfit)),
+          row('Tax Reserve', money(financeMonth.taxReserve)),
+          row('Cash Flow', money(financeMonth.cashFlow))
+        ]);
+      }
+      loadDashboard();
+    </script>
+  </body>
+</html>
