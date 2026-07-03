@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .wrap { padding: 18px; }
+      .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px; }
+      .kpi { background:#fff; border:1px solid #d8dee9; border-radius:12px; padding:12px; }
+      .kpi .label { font-size:11px; color:#68778d; }
+      .kpi .value { font-size:18px; font-weight:700; margin-top:6px; }
+      .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }
+      .card { background:#fff; border:1px solid #d8dee9; border-radius:12px; padding:14px; max-height:420px; overflow:auto; }
+      table { width:100%; border-collapse:collapse; margin-top:10px; font-size:12px; }
+      th, td { border-bottom:1px solid #e4e8f0; padding:8px; text-align:left; }
+      .muted { color:#68778d; font-size:12px; }
+      .status { margin-top:10px; font-size:12px; }
+      .risk-high { font-weight:700; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h2>Business Intelligence</h2>
+      <div class="muted">Executive BI, predictive analytics, forecasts, and risk scoring.</div>
+      <button onclick="createSnapshot()">Create Snapshot</button>
+      <button onclick="loadBI()">Refresh BI</button>
+      <div id="status" class="status"></div>
+
+      <div class="kpis">
+        <div class="kpi"><div class="label">Lead Health</div><div id="leadHealth" class="value">0</div></div>
+        <div class="kpi"><div class="label">Task Health</div><div id="taskHealth" class="value">0</div></div>
+        <div class="kpi"><div class="label">Pipeline Health</div><div id="pipelineHealth" class="value">0</div></div>
+        <div class="kpi"><div class="label">Finance Health</div><div id="financeHealth" class="value">0</div></div>
+      </div>
+
+      <div class="grid">
+        <div class="card"><h3>Recommendations</h3><table><tbody id="recommendations"></tbody></table></div>
+        <div class="card"><h3>Forecasts</h3><table><tbody id="forecasts"></tbody></table></div>
+        <div class="card"><h3>Lead Conversion Risk</h3><table><tbody id="leadRisks"></tbody></table></div>
+        <div class="card"><h3>Transaction Risk</h3><table><tbody id="transactionRisks"></tbody></table></div>
+        <div class="card"><h3>Rental Risk</h3><table><tbody id="rentalRisks"></tbody></table></div>
+        <div class="card"><h3>Historical Trends</h3><table><tbody id="trends"></tbody></table></div>
+      </div>
+    </div>
+
+    <script>
+      function money(value) { return '$' + Number(value || 0).toLocaleString(undefined, { maximumFractionDigits: 0 }); }
+      function escapeHtml(value) { return String(value || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+      function setText(id, text) { document.getElementById(id).textContent = text === undefined || text === null ? '' : String(text); }
+      function row(cells) { return '<tr>' + cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') + '</tr>'; }
+      function createSnapshot() {
+        setText('status', 'Creating snapshot...');
+        google.script.run.withSuccessHandler(function(){ setText('status','Snapshot created.'); loadBI(); }).withFailureHandler(function(err){ setText('status','Error: '+err.message); }).biCreateSnapshot();
+      }
+      function loadBI() {
+        setText('status', 'Loading BI...');
+        google.script.run.withSuccessHandler(function(bi){
+          google.script.run.withSuccessHandler(function(pred){ render(bi, pred); }).withFailureHandler(function(err){ setText('status','Predictive error: '+err.message); }).predictiveDashboard();
+        }).withFailureHandler(function(err){ setText('status','Error: '+err.message); }).biExecutive();
+      }
+      function render(bi, pred) {
+        setText('status', 'Updated ' + new Date().toLocaleString());
+        const s = bi.scorecard || {};
+        setText('leadHealth', s.leadHealth || 0);
+        setText('taskHealth', s.taskHealth || 0);
+        setText('pipelineHealth', s.pipelineHealth || 0);
+        setText('financeHealth', s.financeHealth || 0);
+        document.getElementById('recommendations').innerHTML = (bi.recommendations || []).map(function(r){ return row([escapeHtml(r)]); }).join('');
+        const rev = (pred.revenueForecast || {}).forecast || [];
+        const cf = (pred.cashFlowForecast || {}).forecast || [];
+        document.getElementById('forecasts').innerHTML = row(['Revenue Forecast', rev.map(money).join(', ')]) + row(['Cash Flow Forecast', cf.map(money).join(', ')]) + row(['Revenue Confidence', escapeHtml((pred.revenueForecast || {}).confidence || '')]);
+        document.getElementById('leadRisks').innerHTML = (pred.leadRisks || []).map(function(l){ return row([escapeHtml(l.leadId), escapeHtml(l.status), l.conversionRisk, escapeHtml(l.recommendation)]); }).join('') || row(['No lead risks']);
+        document.getElementById('transactionRisks').innerHTML = (pred.transactionRisks || []).map(function(t){ return row([escapeHtml(t.address || t.transactionId), escapeHtml(t.status), t.riskScore, escapeHtml(t.recommendation)]); }).join('') || row(['No transaction risks']);
+        document.getElementById('rentalRisks').innerHTML = (pred.rentalRisks || []).map(function(r){ return row([escapeHtml(r.address || r.rentalId), escapeHtml(r.occupancyStatus), r.riskScore, escapeHtml(r.recommendation)]); }).join('') || row(['No rental risks']);
+        const trends = bi.trends || {};
+        document.getElementById('trends').innerHTML = row(['Periods', (trends.periods || []).join(', ')]) + row(['Net Profit', (trends.netProfit || []).map(money).join(', ')]) + row(['Pending GCI', (trends.pendingGci || []).map(money).join(', ')]);
+      }
+      loadBI();
+    </script>
+  </body>
+</html>
