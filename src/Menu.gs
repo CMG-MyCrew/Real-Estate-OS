@@ -20,6 +20,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open Finance App', 'showFinance')
     .addItem('Open Documents App', 'showDocuments')
     .addItem('Open Client Portal', 'showClientPortal')
+    .addItem('Open Vendor Portal', 'showVendorPortal')
     .addItem('Open Automation App', 'showAutomation')
     .addSeparator()
     .addItem('Seed Automation Rules', 'automationSeedDefaults')
@@ -61,4 +62,11 @@ function showAgentPortal() {
     .setWidth(1200)
     .setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Agent Portal');
+}
+
+function showVendorPortal() {
+  const html = HtmlService.createHtmlOutputFromFile('VendorPortal')
+    .setWidth(1100)
+    .setHeight(760);
+  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Vendor Portal');
 }
