@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .wrap { padding:18px; }
+      .hero { background:#fff; border:1px solid #d8dee9; border-radius:14px; padding:18px; }
+      .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }
+      .card { background:#fff; border:1px solid #d8dee9; border-radius:12px; padding:14px; }
+      .muted { color:#68778d; font-size:12px; }
+      button { margin:4px 4px 4px 0; }
+      pre { white-space:pre-wrap; background:#f6f8fb; padding:12px; border-radius:10px; border:1px solid #d8dee9; max-height:420px; overflow:auto; }
+      ul { margin-top:8px; }
+      li { margin-bottom:6px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="hero">
+        <h2>REOS Help Center</h2>
+        <div class="muted">Documentation, guides, shortcuts, and operational checklists.</div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Guides</h3>
+          <button onclick="showGuide('admin')">Admin Guide</button>
+          <button onclick="showGuide('user')">User Guide</button>
+          <button onclick="showGuide('api')">API Guide</button>
+          <button onclick="showGuide('architecture')">Architecture</button>
+          <button onclick="showGuide('data')">Data Dictionary</button>
+          <button onclick="showGuide('deployment')">Deployment</button>
+          <pre id="guide"></pre>
+        </div>
+
+        <div class="card">
+          <h3>Quick Start</h3>
+          <ul>
+            <li>Run <strong>Install / Repair REOS</strong>.</li>
+            <li>Open <strong>Enterprise Admin</strong> and seed defaults.</li>
+            <li>Open <strong>Enterprise Security</strong> and seed policies.</li>
+            <li>Open <strong>API Platform</strong> and seed endpoints.</li>
+            <li>Open <strong>Production Console</strong> and create a backup.</li>
+            <li>Open <strong>Performance Console</strong> and install worker trigger.</li>
+          </ul>
+          <h3>Core Consoles</h3>
+          <button onclick="run('showAdmin')">Enterprise Admin</button>
+          <button onclick="run('showSecurity')">Security</button>
+          <button onclick="run('showProduction')">Production</button>
+          <button onclick="run('showPerformance')">Performance</button>
+          <button onclick="run('showAPIPlatform')">API Platform</button>
+          <button onclick="run('showAIAssistant')">AI Assistant</button>
+
+          <h3>Daily Operations</h3>
+          <ul>
+            <li>Review Agent Portal KPIs and tasks.</li>
+            <li>Clear overdue work.</li>
+            <li>Check transaction risk and document status.</li>
+            <li>Run AI Daily Briefing.</li>
+            <li>Monitor Production Console for issues.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const guides = {
+        admin: '# Administrator Guide\n\nUse Enterprise Admin, SaaS Admin, Enterprise Security, Production Console, API Platform, and Performance Console to operate REOS.\n\nInitial setup:\n1. Install / Repair REOS\n2. Seed defaults\n3. Seed security policies\n4. Seed API endpoints\n5. Create backup\n6. Run diagnostics\n7. Create tenant\n8. Provision tenant',
+        user: '# User Guide\n\nStart with Agent Portal for daily work. Use CRM for contacts and leads, Tasks for work management, Transactions for deals, Rentals for rental operations, Finance for money, Documents for files and signatures, and AI Assistant for summaries and recommendations.',
+        api: '# API Guide\n\nUse API Platform to seed endpoints, create API keys in Enterprise Security, test requests, and generate OpenAPI documentation. Default resources include clients, leads, transactions, rentals, tasks, documents, dashboard, webhooks, and automation.',
+        architecture: '# Architecture\n\nREOS is a modular Apps Script platform backed by Google Sheets, Drive, HtmlService, CacheService, PropertiesService, and triggers. Main layers: business modules, portals, AI/BI, integrations, API, SaaS, security, production, performance, and administration.',
+        data: '# Data Dictionary\n\nMajor sheets include CONTACTS, LEADS, TASKS, TRANSACTIONS, COMMISSIONS, RENTALS, LEASES, FINANCE, DOCUMENTS, TENANTS, API_KEYS, API_REQUESTS, SECURITY_EVENTS, BACKUPS, RELEASES, PERFORMANCE_LOG, JOB_QUEUE, FEATURE_FLAGS, LICENSES, and SYSTEM_CONFIGURATION.',
+        deployment: '# Deployment Guide\n\nDeploy source files to Apps Script, configure manifest scopes, run Install / Repair REOS, authorize scopes, seed defaults, create backup, run health checks, run smoke tests, and monitor production after release.'
+      };
+      function showGuide(name) { document.getElementById('guide').textContent = guides[name] || ''; }
+      function run(fn) { google.script.run[fn](); }
+      showGuide('admin');
+    </script>
+  </body>
+</html>
