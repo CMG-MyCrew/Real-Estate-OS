@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+  </head>
+  <body>
+    <div class="sidebar">
+      <h2>REOS</h2>
+      <button onclick="run('goHome')">Home</button>
+      <button onclick="run('goCRM')">CRM</button>
+      <button onclick="run('goLeads')">Leads</button>
+      <button onclick="run('goTasks')">Tasks</button>
+      <button onclick="run('goSettings')">Settings</button>
+      <hr>
+      <button onclick="run('runHealthCheck')">Health Check</button>
+    </div>
+    <script>
+      function run(fn) {
+        google.script.run[fn]();
+      }
+    </script>
+  </body>
+</html>
