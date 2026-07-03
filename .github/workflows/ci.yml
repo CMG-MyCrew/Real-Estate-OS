@@ -1,0 +1,32 @@
+name: REOS CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate Apps Script files
+        run: |
+          test -f appsscript.json
+          find src -name "*.gs" -print
+          find html -name "*.html" -print
+
+      - name: Basic syntax guard
+        run: |
+          ! grep -R "TODO_PROD_BLOCKER" src html || exit 1
+          ! grep -R "REPLACE_ME_SECRET" src html appsscript.json || exit 1
+
+      - name: Production hardening checklist
+        run: |
+          test -f src/Monitoring.gs
+          test -f src/Backup.gs
+          test -f src/Deployment.gs
+          test -f src/QA.gs
