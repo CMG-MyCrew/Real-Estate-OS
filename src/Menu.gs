@@ -12,6 +12,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open Agent Portal', 'showAgentPortal')
     .addItem('Open AI Assistant', 'showAIAssistant')
     .addItem('Open Mobile App Preview', 'showMobileApp')
+    .addItem('Open Integration Hub', 'showIntegrations')
     .addItem('Open Sidebar', 'showSidebar')
     .addSeparator()
     .addItem('Open CRM App', 'showCRM')
@@ -89,4 +90,11 @@ function showMobileApp() {
     .setWidth(430)
     .setHeight(820);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Mobile App');
+}
+
+function showIntegrations() {
+  const html = HtmlService.createHtmlOutputFromFile('Integrations')
+    .setWidth(1000)
+    .setHeight(720);
+  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Integration Hub');
 }
