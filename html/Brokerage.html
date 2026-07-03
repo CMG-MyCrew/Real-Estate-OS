@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .wrap { padding: 18px; }
+      .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px; }
+      .kpi { background:#fff; border:1px solid #d8dee9; border-radius:12px; padding:12px; }
+      .kpi .label { font-size:11px; color:#68778d; }
+      .kpi .value { font-size:18px; font-weight:700; margin-top:6px; }
+      .grid { display:grid; grid-template-columns:1fr 1.3fr; gap:16px; margin-top:16px; }
+      .card { background:#fff; border:1px solid #d8dee9; border-radius:12px; padding:14px; max-height:420px; overflow:auto; }
+      input, select, textarea { width:100%; box-sizing:border-box; padding:9px; margin:5px 0 10px; border:1px solid #cfd8e3; border-radius:8px; }
+      label { font-size:12px; font-weight:700; color:#405064; }
+      table { width:100%; border-collapse:collapse; margin-top:10px; font-size:12px; }
+      th, td { border-bottom:1px solid #e4e8f0; padding:8px; text-align:left; }
+      .muted { color:#68778d; font-size:12px; }
+      .status { margin-top:10px; font-size:12px; }
+      .tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+      .tabs button { width:auto; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h2>Brokerage Management</h2>
+      <div class="muted">Multi-office, teams, roster, production, and compliance management.</div>
+      <button onclick="loadDashboard()">Refresh</button>
+      <div class="kpis">
+        <div class="kpi"><div class="label">Offices</div><div id="officeCount" class="value">0</div></div>
+        <div class="kpi"><div class="label">Teams</div><div id="teamCount" class="value">0</div></div>
+        <div class="kpi"><div class="label">Active Agents</div><div id="activeAgentCount" class="value">0</div></div>
+        <div class="kpi"><div class="label">YTD GCI</div><div id="ytdGci" class="value">$0</div></div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Create Records</h3>
+          <div class="tabs">
+            <button onclick="showForm('brokerage')">Brokerage</button>
+            <button onclick="showForm('office')">Office</button>
+            <button onclick="showForm('team')">Team</button>
+            <button onclick="showForm('agent')">Agent</button>
+          </div>
+
+          <div id="brokerageForm">
+            <label>Brokerage Name</label><input id="brokerageName">
+            <label>License Number</label><input id="brokerageLicense">
+            <label>Broker of Record</label><input id="brokerOfRecord">
+            <button onclick="createBrokerage()">Create Brokerage</button>
+          </div>
+
+          <div id="officeForm" style="display:none;">
+            <label>Brokerage ID</label><input id="officeBrokerageId" placeholder="BRK-...">
+            <label>Office Name</label><input id="officeName">
+            <label>Market</label><input id="officeMarket">
+            <label>Address</label><input id="officeAddress">
+            <label>City</label><input id="officeCity">
+            <label>State</label><input id="officeState">
+            <label>ZIP</label><input id="officeZip">
+            <label>Managing Broker</label><input id="managingBroker">
+            <button onclick="createOffice()">Create Office</button>
+          </div>
+
+          <div id="teamForm" style="display:none;">
+            <label>Office ID</label><input id="teamOfficeId" placeholder="OFF-...">
+            <label>Team Name</label><input id="teamName">
+            <label>Team Lead</label><input id="teamLead">
+            <label>Market</label><input id="teamMarket">
+            <button onclick="createTeam()">Create Team</button>
+          </div>
+
+          <div id="agentForm" style="display:none;">
+            <label>Office ID</label><input id="agentOfficeId" placeholder="OFF-...">
+            <label>Team ID</label><input id="agentTeamId" placeholder="TEAM-...">
+            <label>Agent Name</label><input id="agentName">
+            <label>Email</label><input id="agentEmail">
+            <label>Phone</label><input id="agentPhone">
+            <label>Role</label><select id="agentRole"><option>Agent</option><option>Team Lead</option><option>Managing Broker</option><option>Admin</option></select>
+            <label>License Number</label><input id="agentLicense">
+            <label>License Expiration</label><input id="agentLicenseExpiration" type="date">
+            <label>Split %</label><input id="agentSplit" type="number" value="0.8" step="0.01">
+            <button onclick="addAgent()">Add Agent</button>
+          </div>
+          <div id="formStatus" class="status"></div>
+        </div>
+
+        <div class="card">
+          <h3>Production & Roster</h3>
+          <h4>Top Agents</h4>
+          <table><tbody id="topAgents"></tbody></table>
+          <h4>Offices</h4>
+          <table><tbody id="offices"></tbody></table>
+          <h4>Compliance Watch</h4>
+          <table><tbody id="compliance"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function money(value) { return '$' + Number(value || 0).toLocaleString(undefined, { maximumFractionDigits: 0 }); }
+      function escapeHtml(value) { return String(value || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+      function setText(id, text) { document.getElementById(id).textContent = text || ''; }
+      function row(cells) { return '<tr>' + cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') + '</tr>'; }
+      function showForm(name) { ['brokerage','office','team','agent'].forEach(function(f){ document.getElementById(f + 'Form').style.display = f === name ? 'block' : 'none'; }); }
+      function createBrokerage() {
+        const r = { 'Brokerage Name': document.getElementById('brokerageName').value, 'License Number': document.getElementById('brokerageLicense').value, 'Broker of Record': document.getElementById('brokerOfRecord').value };
+        save('brokerageCreateBrokerage', r);
+      }
+      function createOffice() {
+        const r = { 'Brokerage ID': document.getElementById('officeBrokerageId').value, 'Office Name': document.getElementById('officeName').value, Market: document.getElementById('officeMarket').value, Address: document.getElementById('officeAddress').value, City: document.getElementById('officeCity').value, State: document.getElementById('officeState').value, ZIP: document.getElementById('officeZip').value, 'Managing Broker': document.getElementById('managingBroker').value };
+        save('brokerageCreateOffice', r);
+      }
+      function createTeam() {
+        const r = { 'Office ID': document.getElementById('teamOfficeId').value, 'Team Name': document.getElementById('teamName').value, 'Team Lead': document.getElementById('teamLead').value, Market: document.getElementById('teamMarket').value };
+        save('brokerageCreateTeam', r);
+      }
+      function addAgent() {
+        const r = { 'Office ID': document.getElementById('agentOfficeId').value, 'Team ID': document.getElementById('agentTeamId').value, 'Agent Name': document.getElementById('agentName').value, Email: document.getElementById('agentEmail').value, Phone: document.getElementById('agentPhone').value, Role: document.getElementById('agentRole').value, 'License Number': document.getElementById('agentLicense').value, 'License Expiration': document.getElementById('agentLicenseExpiration').value, 'Split %': Number(document.getElementById('agentSplit').value || 0.8) };
+        save('brokerageAddAgent', r);
+      }
+      function save(fn, record) {
+        setText('formStatus','Saving...');
+        google.script.run.withSuccessHandler(function(){ setText('formStatus','Saved.'); loadDashboard(); }).withFailureHandler(function(err){ setText('formStatus','Error: '+err.message); })[fn](record);
+      }
+      function loadDashboard() {
+        google.script.run.withSuccessHandler(renderDashboard).withFailureHandler(function(err){ alert(err.message); }).brokerageExecutiveReport();
+      }
+      function renderDashboard(report) {
+        const d = report.dashboard || {};
+        setText('officeCount', d.officeCount);
+        setText('teamCount', d.teamCount);
+        setText('activeAgentCount', d.activeAgentCount);
+        setText('ytdGci', money(d.ytdGci));
+        renderTopAgents(d.topAgents || []);
+        renderOffices(report.officeProduction || []);
+        renderCompliance(report.complianceWatch || []);
+      }
+      function renderTopAgents(rows) {
+        const tbody = document.getElementById('topAgents'); tbody.innerHTML = '';
+        if (!rows.length) { tbody.innerHTML = '<tr><td class="muted">No agents yet.</td></tr>'; return; }
+        rows.forEach(function(a){ tbody.innerHTML += row([escapeHtml(a['Agent Name']), escapeHtml(a['Office ID']), money(a['YTD GCI']), escapeHtml(a['Transactions Closed'])]); });
+      }
+      function renderOffices(rows) {
+        const tbody = document.getElementById('offices'); tbody.innerHTML = '';
+        if (!rows.length) { tbody.innerHTML = '<tr><td class="muted">No offices yet.</td></tr>'; return; }
+        rows.forEach(function(o){ tbody.innerHTML += row([escapeHtml(o.officeName), escapeHtml(o.market), escapeHtml(o.agentCount), money(o.ytdGci)]); });
+      }
+      function renderCompliance(rows) {
+        const tbody = document.getElementById('compliance'); tbody.innerHTML = '';
+        if (!rows.length) { tbody.innerHTML = '<tr><td class="muted">No upcoming license expirations.</td></tr>'; return; }
+        rows.forEach(function(a){ tbody.innerHTML += row([escapeHtml(a.agentName), escapeHtml(a.licenseExpiration), escapeHtml(a.daysRemaining)]); });
+      }
+      loadDashboard();
+    </script>
+  </body>
+</html>
