@@ -16,6 +16,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open Brokerage Management', 'showBrokerage')
     .addItem('Open Business Intelligence', 'showBI')
     .addItem('Open SaaS Admin', 'showSaaSAdmin')
+    .addItem('Open Production Console', 'showProduction')
     .addItem('Open Sidebar', 'showSidebar')
     .addSeparator()
     .addItem('Open CRM App', 'showCRM')
@@ -121,4 +122,11 @@ function showSaaSAdmin() {
     .setWidth(1100)
     .setHeight(760);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS SaaS Admin');
+}
+
+function showProduction() {
+  const html = HtmlService.createHtmlOutputFromFile('Production')
+    .setWidth(1100)
+    .setHeight(760);
+  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Production Console');
 }
