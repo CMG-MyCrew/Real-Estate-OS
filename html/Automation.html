@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .wrap { padding: 18px; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+      .card { background: #fff; border: 1px solid #d8dee9; border-radius: 12px; padding: 14px; }
+      button { text-align: center; }
+      table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+      th, td { border-bottom: 1px solid #e4e8f0; padding: 8px; text-align: left; }
+      .muted { color: #68778d; font-size: 12px; }
+      .status { margin-top: 10px; font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h2>Automation Engine</h2>
+      <div class="muted">Manage default rules, daily jobs, and notification triggers.</div>
+      <div class="grid">
+        <div class="card">
+          <h3>Setup</h3>
+          <button onclick="seedRules()">Seed Default Rules</button>
+          <button onclick="installTriggers()">Install Daily Triggers</button>
+          <button onclick="removeTriggers()">Remove All Triggers</button>
+          <button onclick="sendDigest()">Send Daily Digest Now</button>
+          <div id="setupStatus" class="status"></div>
+        </div>
+        <div class="card">
+          <h3>Triggers</h3>
+          <button onclick="loadTriggers()">Refresh Triggers</button>
+          <table>
+            <thead><tr><th>Function</th><th>Event</th><th>Source</th></tr></thead>
+            <tbody id="triggers"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <script>
+      function setText(id, text) { document.getElementById(id).textContent = text || ''; }
+      function escapeHtml(value) { return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;'); }
+      function seedRules() {
+        setText('setupStatus', 'Seeding rules...');
+        google.script.run.withSuccessHandler(function (count) { setText('setupStatus', 'Default rules ready: ' + count); }).withFailureHandler(showError).automationSeedDefaults();
+      }
+      function installTriggers() {
+        setText('setupStatus', 'Installing triggers...');
+        google.script.run.withSuccessHandler(function () { setText('setupStatus', 'Triggers installed.'); loadTriggers(); }).withFailureHandler(showError).triggersInstallAll();
+      }
+      function removeTriggers() {
+        setText('setupStatus', 'Removing triggers...');
+        google.script.run.withSuccessHandler(function (count) { setText('setupStatus', 'Triggers removed: ' + count); loadTriggers(); }).withFailureHandler(showError).triggersRemoveAll();
+      }
+      function sendDigest() {
+        setText('setupStatus', 'Sending digest...');
+        google.script.run.withSuccessHandler(function () { setText('setupStatus', 'Daily digest sent.'); }).withFailureHandler(showError).notificationsDailyDigest();
+      }
+      function loadTriggers() {
+        google.script.run.withSuccessHandler(function (rows) {
+          const tbody = document.getElementById('triggers');
+          tbody.innerHTML = '';
+          (rows || []).forEach(function (r) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = '<td>' + escapeHtml(r.functionName) + '</td><td>' + escapeHtml(r.eventType) + '</td><td>' + escapeHtml(r.source) + '</td>';
+            tbody.appendChild(tr);
+          });
+          if (!rows || !rows.length) tbody.innerHTML = '<tr><td colspan="3" class="muted">No triggers installed.</td></tr>';
+        }).withFailureHandler(showError).triggersList();
+      }
+      function showError(err) { setText('setupStatus', 'Error: ' + err.message); }
+      loadTriggers();
+    </script>
+  </body>
+</html>
