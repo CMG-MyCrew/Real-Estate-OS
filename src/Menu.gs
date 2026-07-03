@@ -14,6 +14,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open Tasks App', 'showTasks')
     .addItem('Open Transactions App', 'showTransactions')
     .addItem('Open Investments App', 'showInvestments')
+    .addItem('Open Rentals App', 'showRentals')
     .addSeparator()
     .addItem('CRM Sheet', 'goCRM')
     .addItem('Leads Sheet', 'goLeads')
