@@ -1,0 +1,13 @@
+{
+  "name": "reos-enterprise",
+  "version": "3.0.0",
+  "private": true,
+  "scripts": {
+    "push": "clasp push",
+    "pull": "clasp pull",
+    "open": "clasp open"
+  },
+  "devDependencies": {
+    "@google/clasp": "^2.4.2"
+  }
+}
