@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .wrap { padding: 18px; }
+      .grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 16px; margin-top: 16px; }
+      .card { background: #fff; border: 1px solid #d8dee9; border-radius: 12px; padding: 14px; }
+      .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 14px; }
+      .kpi { background: #fff; border: 1px solid #d8dee9; border-radius: 12px; padding: 12px; }
+      .kpi .label { font-size: 11px; color: #68778d; }
+      .kpi .value { font-size: 18px; font-weight: 700; margin-top: 6px; }
+      input, select, textarea { width: 100%; box-sizing: border-box; padding: 9px; margin: 5px 0 10px; border: 1px solid #cfd8e3; border-radius: 8px; }
+      label { font-size: 12px; font-weight: 700; color: #405064; }
+      table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+      th, td { border-bottom: 1px solid #e4e8f0; padding: 8px; text-align: left; }
+      .muted { color: #68778d; font-size: 12px; }
+      .status { margin-top: 10px; font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h2>Investments</h2>
+      <div class="muted">Analyze flips, rentals, BRRRR, and investment properties.</div>
+
+      <div class="kpis">
+        <div class="kpi"><div class="label">Active</div><div id="activeCount" class="value">0</div></div>
+        <div class="kpi"><div class="label">Flips</div><div id="flipCount" class="value">0</div></div>
+        <div class="kpi"><div class="label">Rentals</div><div id="rentalCount" class="value">0</div></div>
+        <div class="kpi"><div class="label">Est. Profit</div><div id="estimatedProfit" class="value">$0</div></div>
+        <div class="kpi"><div class="label">Monthly Cash Flow</div><div id="cashFlow" class="value">$0</div></div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Deal Analyzer</h3>
+          <label>Property ID</label><input id="propertyId" placeholder="P-...">
+          <label>Strategy</label><select id="strategy"><option>Flip</option><option>Rental</option><option>BRRRR</option><option>Wholesale</option></select>
+          <label>Status</label><select id="status"><option>Prospect</option><option>Under Contract</option><option>Owned</option><option>Sold</option></select>
+          <label>Purchase Price</label><input id="purchase" type="number" min="0" step="1000">
+          <label>ARV / Current Value</label><input id="arv" type="number" min="0" step="1000">
+          <label>Rehab Budget</label><input id="rehab" type="number" min="0" step="1000">
+          <label>Holding Costs</label><input id="holding" type="number" min="0" step="100">
+          <label>Closing Costs</label><input id="closing" type="number" min="0" step="100">
+          <label>Selling Costs</label><input id="selling" type="number" min="0" step="100">
+          <label>Financing Costs</label><input id="financing" type="number" min="0" step="100">
+          <label>Monthly Rent</label><input id="rent" type="number" min="0" step="100">
+          <label>Mortgage</label><input id="mortgage" type="number" min="0" step="100">
+          <label>Taxes</label><input id="taxes" type="number" min="0" step="10">
+          <label>Insurance</label><input id="insurance" type="number" min="0" step="10">
+          <label>HOA</label><input id="hoa" type="number" min="0" step="10">
+          <label>Notes</label><textarea id="notes" rows="3"></textarea>
+          <button onclick="analyzeDeal()">Analyze</button>
+          <button onclick="saveInvestment()">Save Investment</button>
+          <div id="analyzeStatus" class="status"></div>
+        </div>
+
+        <div class="card">
+          <h3>Active Investments</h3>
+          <button onclick="loadDashboard()">Refresh</button>
+          <table>
+            <thead><tr><th>Property</th><th>Strategy</th><th>Status</th><th>Profit</th><th>ROI</th><th>Cash Flow</th></tr></thead>
+            <tbody id="investments"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function money(value) { return '$' + Number(value || 0).toLocaleString(undefined, { maximumFractionDigits: 0 }); }
+      function pct(value) { return (Number(value || 0) * 100).toFixed(1) + '%'; }
+      function escapeHtml(value) { return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;'); }
+      function setText(id, text) { document.getElementById(id).textContent = text || ''; }
+      function readForm() {
+        return {
+          'Property ID': document.getElementById('propertyId').value,
+          Strategy: document.getElementById('strategy').value,
+          Status: document.getElementById('status').value,
+          'Purchase Price': Number(document.getElementById('purchase').value || 0),
+          ARV: Number(document.getElementById('arv').value || 0),
+          'Rehab Budget': Number(document.getElementById('rehab').value || 0),
+          'Holding Costs': Number(document.getElementById('holding').value || 0),
+          'Closing Costs': Number(document.getElementById('closing').value || 0),
+          'Selling Costs': Number(document.getElementById('selling').value || 0),
+          'Financing Costs': Number(document.getElementById('financing').value || 0),
+          'Monthly Rent': Number(document.getElementById('rent').value || 0),
+          Mortgage: Number(document.getElementById('mortgage').value || 0),
+          Taxes: Number(document.getElementById('taxes').value || 0),
+          Insurance: Number(document.getElementById('insurance').value || 0),
+          HOA: Number(document.getElementById('hoa').value || 0),
+          Notes: document.getElementById('notes').value
+        };
+      }
+      function analyzeDeal() {
+        setText('analyzeStatus', 'Analyzing...');
+        google.script.run.withSuccessHandler(function (r) {
+          setText('analyzeStatus', 'MAO: ' + money(r.MAO) + ' | Profit: ' + money(r['Estimated Profit']) + ' | ROI: ' + pct(r.ROI) + ' | Cash Flow: ' + money(r['Monthly Cash Flow']));
+        }).withFailureHandler(function (err) { setText('analyzeStatus', 'Error: ' + err.message); }).investmentsAnalyze(readForm());
+      }
+      function saveInvestment() {
+        setText('analyzeStatus', 'Saving...');
+        google.script.run.withSuccessHandler(function () {
+          setText('analyzeStatus', 'Investment saved.');
+          loadDashboard();
+        }).withFailureHandler(function (err) { setText('analyzeStatus', 'Error: ' + err.message); }).investmentsCreate(readForm());
+      }
+      function loadDashboard() {
+        google.script.run.withSuccessHandler(renderDashboard).withFailureHandler(function (err) { alert(err.message); }).investmentsDashboard();
+      }
+      function renderDashboard(data) {
+        setText('activeCount', data.activeCount);
+        setText('flipCount', data.flipCount);
+        setText('rentalCount', data.rentalCount);
+        setText('estimatedProfit', money(data.totalEstimatedProfit));
+        setText('cashFlow', money(data.monthlyCashFlow));
+        const tbody = document.getElementById('investments');
+        tbody.innerHTML = '';
+        (data.active || []).forEach(function (i) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = '<td>' + escapeHtml(i['Property ID']) + '</td><td>' + escapeHtml(i.Strategy) + '</td><td>' + escapeHtml(i.Status) + '</td><td>' + money(i['Estimated Profit']) + '</td><td>' + pct(i.ROI) + '</td><td>' + money(i['Monthly Cash Flow']) + '</td>';
+          tbody.appendChild(tr);
+        });
+      }
+      loadDashboard();
+    </script>
+  </body>
+</html>
