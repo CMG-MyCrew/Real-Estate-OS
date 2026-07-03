@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .wrap { padding: 18px; }
+      .grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 16px; margin-top: 16px; }
+      .card { background: #fff; border: 1px solid #d8dee9; border-radius: 12px; padding: 14px; }
+      .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 14px; }
+      .kpi { background: #fff; border: 1px solid #d8dee9; border-radius: 12px; padding: 12px; }
+      .kpi .label { font-size: 11px; color: #68778d; }
+      .kpi .value { font-size: 18px; font-weight: 700; margin-top: 6px; }
+      input, select, textarea { width: 100%; box-sizing: border-box; padding: 9px; margin: 5px 0 10px; border: 1px solid #cfd8e3; border-radius: 8px; }
+      label { font-size: 12px; font-weight: 700; color: #405064; }
+      table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+      th, td { border-bottom: 1px solid #e4e8f0; padding: 8px; text-align: left; }
+      .muted { color: #68778d; font-size: 12px; }
+      .status { margin-top: 10px; font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h2>Transactions</h2>
+      <div class="muted">Manage active buyer and seller transactions.</div>
+
+      <div class="kpis">
+        <div class="kpi"><div class="label">Active</div><div id="activeCount" class="value">0</div></div>
+        <div class="kpi"><div class="label">Pending</div><div id="pendingCount" class="value">0</div></div>
+        <div class="kpi"><div class="label">Closed</div><div id="closedCount" class="value">0</div></div>
+        <div class="kpi"><div class="label">Pending GCI</div><div id="pendingGci" class="value">$0</div></div>
+        <div class="kpi"><div class="label">Closed GCI</div><div id="closedGci" class="value">$0</div></div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>New Transaction</h3>
+          <label>Client ID</label><input id="clientId" placeholder="C-...">
+          <label>Lead ID</label><input id="leadId" placeholder="L-...">
+          <label>Property ID</label><input id="propertyId" placeholder="P-...">
+          <label>Address</label><input id="address" placeholder="123 Main St">
+          <label>Type</label>
+          <select id="transactionType"><option>Buyer</option><option>Seller</option></select>
+          <label>Status</label>
+          <select id="status">
+            <option>Under Contract</option><option>Inspection</option><option>Appraisal</option><option>Financing</option><option>Clear to Close</option><option>Closed</option><option>Cancelled</option>
+          </select>
+          <label>Contract Date</label><input id="contractDate" type="date">
+          <label>Closing Date</label><input id="closingDate" type="date">
+          <label>Sale Price</label><input id="salePrice" type="number" min="0" step="1000">
+          <label>Commission %</label><input id="commission" type="number" min="0" step="0.001" value="0.03">
+          <label>Brokerage Split %</label><input id="split" type="number" min="0" step="0.01" value="0.80">
+          <label>Notes</label><textarea id="notes" rows="3"></textarea>
+          <button onclick="createTransaction()">Create Transaction</button>
+          <div id="createStatus" class="status"></div>
+        </div>
+
+        <div class="card">
+          <h3>Active Transactions</h3>
+          <button onclick="loadTransactions()">Refresh</button>
+          <table>
+            <thead><tr><th>Address</th><th>Status</th><th>Close</th><th>Sale Price</th><th>GCI</th></tr></thead>
+            <tbody id="transactions"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function money(value) { return '$' + Number(value || 0).toLocaleString(); }
+      function escapeHtml(value) { return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;'); }
+      function setText(id, text) { document.getElementById(id).textContent = text || ''; }
+      function createTransaction() {
+        const tx = {
+          'Client ID': document.getElementById('clientId').value,
+          'Lead ID': document.getElementById('leadId').value,
+          'Property ID': document.getElementById('propertyId').value,
+          Address: document.getElementById('address').value,
+          'Transaction Type': document.getElementById('transactionType').value,
+          Status: document.getElementById('status').value,
+          'Contract Date': document.getElementById('contractDate').value,
+          'Closing Date': document.getElementById('closingDate').value,
+          'Sale Price': Number(document.getElementById('salePrice').value || 0),
+          'Commission %': Number(document.getElementById('commission').value || 0.03),
+          'Brokerage Split %': Number(document.getElementById('split').value || 0.80),
+          Notes: document.getElementById('notes').value
+        };
+        setText('createStatus', 'Creating...');
+        google.script.run
+          .withSuccessHandler(function () { setText('createStatus', 'Transaction created.'); loadTransactions(); })
+          .withFailureHandler(function (err) { setText('createStatus', 'Error: ' + err.message); })
+          .transactionsCreate(tx);
+      }
+      function loadTransactions() {
+        google.script.run
+          .withSuccessHandler(renderDashboard)
+          .withFailureHandler(function (err) { alert(err.message); })
+          .transactionsDashboard();
+      }
+      function renderDashboard(data) {
+        setText('activeCount', data.activeCount);
+        setText('pendingCount', data.pendingCount);
+        setText('closedCount', data.closedCount);
+        setText('pendingGci', money(data.pendingGci));
+        setText('closedGci', money(data.closedGci));
+        const tbody = document.getElementById('transactions');
+        tbody.innerHTML = '';
+        (data.active || []).forEach(function (tx) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = '<td>' + escapeHtml(tx.Address) + '</td><td>' + escapeHtml(tx.Status) + '</td><td>' + escapeHtml(tx['Closing Date']) + '</td><td>' + money(tx['Sale Price']) + '</td><td>' + money(tx['Gross Commission']) + '</td>';
+          tbody.appendChild(tr);
+        });
+      }
+      loadTransactions();
+    </script>
+  </body>
+</html>
