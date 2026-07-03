@@ -10,6 +10,7 @@ REOS.buildMenu_ = function () {
     .addItem('Home', 'goHome')
     .addItem('Open Dashboard', 'showDashboard')
     .addItem('Open Agent Portal', 'showAgentPortal')
+    .addItem('Open AI Assistant', 'showAIAssistant')
     .addItem('Open Sidebar', 'showSidebar')
     .addSeparator()
     .addItem('Open CRM App', 'showCRM')
@@ -22,6 +23,8 @@ REOS.buildMenu_ = function () {
     .addItem('Open Client Portal', 'showClientPortal')
     .addItem('Open Vendor Portal', 'showVendorPortal')
     .addItem('Open Automation App', 'showAutomation')
+    .addSeparator()
+    .addItem('AI Daily Briefing', 'aiDailyBriefing')
     .addSeparator()
     .addItem('Seed Automation Rules', 'automationSeedDefaults')
     .addItem('Install Automation Triggers', 'triggersInstallAll')
@@ -69,4 +72,11 @@ function showVendorPortal() {
     .setWidth(1100)
     .setHeight(760);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Vendor Portal');
+}
+
+function showAIAssistant() {
+  const html = HtmlService.createHtmlOutputFromFile('AIAssistant')
+    .setWidth(1000)
+    .setHeight(720);
+  SpreadsheetApp.getUi().showModalDialog(html, 'REOS AI Assistant');
 }
