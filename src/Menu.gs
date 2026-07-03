@@ -14,6 +14,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open Mobile App Preview', 'showMobileApp')
     .addItem('Open Integration Hub', 'showIntegrations')
     .addItem('Open Brokerage Management', 'showBrokerage')
+    .addItem('Open Business Intelligence', 'showBI')
     .addItem('Open Sidebar', 'showSidebar')
     .addSeparator()
     .addItem('Open CRM App', 'showCRM')
@@ -105,4 +106,11 @@ function showBrokerage() {
     .setWidth(1100)
     .setHeight(760);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Brokerage Management');
+}
+
+function showBI() {
+  const html = HtmlService.createHtmlOutputFromFile('BI')
+    .setWidth(1100)
+    .setHeight(760);
+  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Business Intelligence');
 }
