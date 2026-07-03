@@ -8,6 +8,7 @@ REOS.buildMenu_ = function () {
   const ui = SpreadsheetApp.getUi();
   ui.createMenu('REOS')
     .addItem('Home', 'goHome')
+    .addItem('Open Dashboard', 'showDashboard')
     .addItem('Open Sidebar', 'showSidebar')
     .addSeparator()
     .addItem('Open CRM App', 'showCRM')
