@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      .wrap { padding:18px; }
+      .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }
+      .card { background:#fff; border:1px solid #d8dee9; border-radius:12px; padding:14px; max-height:430px; overflow:auto; }
+      input, select, textarea { width:100%; box-sizing:border-box; padding:9px; margin:5px 0 10px; border:1px solid #cfd8e3; border-radius:8px; }
+      label { font-size:12px; font-weight:700; color:#405064; }
+      table { width:100%; border-collapse:collapse; margin-top:10px; font-size:12px; }
+      th, td { border-bottom:1px solid #e4e8f0; padding:8px; text-align:left; }
+      .muted { color:#68778d; font-size:12px; }
+      .status { margin-top:10px; font-size:12px; white-space:pre-wrap; }
+      pre { white-space:pre-wrap; background:#f6f8fb; padding:12px; border-radius:10px; border:1px solid #d8dee9; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h2>API Platform</h2>
+      <div class="muted">Versioned endpoints, API keys, rate limits, OpenAPI docs, and request logs.</div>
+      <button onclick="seedEndpoints()">Seed Endpoints</button>
+      <button onclick="loadRequests()">Refresh Logs</button>
+      <button onclick="loadDocs()">Generate Docs</button>
+      <div id="status" class="status"></div>
+      <div class="grid">
+        <div class="card">
+          <h3>Test Request</h3>
+          <label>API Key</label><input id="apiKey" placeholder="reos_...">
+          <label>Version</label><input id="version" value="v1">
+          <label>Method</label><select id="method"><option>GET</option><option>POST</option></select>
+          <label>Path</label><input id="path" value="/dashboard">
+          <label>Payload JSON</label><textarea id="payload" rows="6">{}</textarea>
+          <button onclick="testRequest()">Run Request</button>
+          <pre id="response"></pre>
+        </div>
+        <div class="card">
+          <h3>Recent Requests</h3>
+          <table><tbody id="requests"></tbody></table>
+        </div>
+        <div class="card">
+          <h3>API Docs</h3>
+          <pre id="docs"></pre>
+        </div>
+        <div class="card">
+          <h3>OpenAPI JSON</h3>
+          <pre id="openapi"></pre>
+        </div>
+      </div>
+    </div>
+    <script>
+      function escapeHtml(value){ return String(value || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+      function setText(id,text){ document.getElementById(id).textContent = text === undefined || text === null ? '' : String(text); }
+      function row(cells){ return '<tr>' + cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') + '</tr>'; }
+      function seedEndpoints(){ setText('status','Seeding endpoints...'); google.script.run.withSuccessHandler(function(c){ setText('status','Endpoints ready: '+c); }).withFailureHandler(err).apiPlatformSeedEndpoints(); }
+      function testRequest(){
+        let payload = {}; try { payload = JSON.parse(document.getElementById('payload').value || '{}'); } catch(e){ return setText('response','Invalid JSON.'); }
+        const req = { apiKey:document.getElementById('apiKey').value, version:document.getElementById('version').value, method:document.getElementById('method').value, path:document.getElementById('path').value, payload:payload };
+        setText('response','Running...');
+        google.script.run.withSuccessHandler(function(res){ setText('response', JSON.stringify(res, null, 2)); loadRequests(); }).withFailureHandler(err).apiPlatformHandleRequest(req);
+      }
+      function loadRequests(){
+        google.script.run.withSuccessHandler(function(rows){
+          const tbody = document.getElementById('requests'); tbody.innerHTML='';
+          (rows||[]).forEach(function(r){ tbody.innerHTML += row([escapeHtml(r.Timestamp), escapeHtml(r.Method), escapeHtml(r.Path), escapeHtml(r['Status Code']), escapeHtml(r.Status)]); });
+          if (!rows || !rows.length) tbody.innerHTML = row(['No requests yet']);
+        }).withFailureHandler(err).apiPlatformListRequests(50);
+      }
+      function loadDocs(){
+        google.script.run.withSuccessHandler(function(md){ setText('docs', md); }).withFailureHandler(err).apiDocsMarkdown();
+        google.script.run.withSuccessHandler(function(spec){ setText('openapi', JSON.stringify(spec, null, 2)); }).withFailureHandler(err).apiDocsOpenApiSpec();
+      }
+      function err(e){ setText('status','Error: '+e.message); }
+      loadRequests(); loadDocs();
+    </script>
+  </body>
+</html>
