@@ -1,0 +1,87 @@
+<script>
+  let searchTimer = null;
+
+  function setText(id, text) {
+    document.getElementById(id).textContent = text || '';
+  }
+
+  function createContact() {
+    const contact = {
+      'First Name': document.getElementById('firstName').value,
+      'Last Name': document.getElementById('lastName').value,
+      'Email': document.getElementById('email').value,
+      'Mobile': document.getElementById('mobile').value,
+      'Client Type': document.getElementById('clientType').value,
+      'Lead Source': document.getElementById('leadSource').value,
+      'Notes': document.getElementById('notes').value,
+      'Status': 'Lead',
+      'Active': true
+    };
+
+    setText('createStatus', 'Creating...');
+    google.script.run
+      .withSuccessHandler(function (record) {
+        setText('createStatus', 'Created: ' + record['Full Name']);
+        clearContactForm();
+        loadContacts();
+      })
+      .withFailureHandler(function (err) {
+        setText('createStatus', 'Error: ' + err.message);
+      })
+      .crmCreateContact(contact);
+  }
+
+  function clearContactForm() {
+    ['firstName','lastName','email','mobile','leadSource','notes'].forEach(function (id) {
+      document.getElementById(id).value = '';
+    });
+  }
+
+  function debouncedSearch() {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(loadContacts, 300);
+  }
+
+  function loadContacts() {
+    const query = document.getElementById('search') ? document.getElementById('search').value : '';
+    setText('searchStatus', 'Loading...');
+    google.script.run
+      .withSuccessHandler(renderContacts)
+      .withFailureHandler(function (err) {
+        setText('searchStatus', 'Error: ' + err.message);
+      })
+      .crmSearchContacts(query);
+  }
+
+  function renderContacts(records) {
+    const tbody = document.getElementById('results');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    (records || []).forEach(function (record) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td>' + escapeHtml(record['Full Name'] || '') + '</td>' +
+        '<td>' + escapeHtml(record['Client Type'] || '') + '</td>' +
+        '<td>' + escapeHtml(record['Email'] || '') + '</td>' +
+        '<td>' + escapeHtml(record['Mobile'] || '') + '</td>';
+      tbody.appendChild(tr);
+    });
+
+    setText('searchStatus', (records || []).length + ' contact(s) found');
+  }
+
+  function escapeHtml(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadContacts);
+  } else {
+    loadContacts();
+  }
+</script>
