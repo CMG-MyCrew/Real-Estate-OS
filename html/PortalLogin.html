@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    <style>
+      body { background: #f6f8fb; }
+      .login-wrap { max-width: 440px; margin: 60px auto; background: #fff; border: 1px solid #d8dee9; border-radius: 16px; padding: 24px; }
+      input { width: 100%; box-sizing: border-box; padding: 10px; margin: 6px 0 12px; border: 1px solid #cfd8e3; border-radius: 8px; }
+      label { font-size: 12px; font-weight: 700; color: #405064; }
+      .muted { color: #68778d; font-size: 12px; }
+      .status { margin-top: 10px; font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <div class="login-wrap">
+      <h2>REOS Client Portal</h2>
+      <p class="muted">Enter your email and portal access token.</p>
+      <label>Email</label>
+      <input id="email" type="email" placeholder="client@example.com">
+      <label>Access Token</label>
+      <input id="token" placeholder="Access token">
+      <button onclick="login()">Open Portal</button>
+      <div id="status" class="status"></div>
+    </div>
+    <script>
+      function setText(id, text) { document.getElementById(id).textContent = text || ''; }
+      function login() {
+        const email = document.getElementById('email').value;
+        const token = document.getElementById('token').value;
+        setText('status', 'Loading portal...');
+        google.script.run.withSuccessHandler(function (data) {
+          sessionStorage.setItem('reosPortalToken', token);
+          sessionStorage.setItem('reosPortalEmail', email);
+          sessionStorage.setItem('reosPortalData', JSON.stringify(data));
+          document.open();
+          document.write('<!DOCTYPE html><html><head><base target="_top"><?!= include("styles"); ?></head><body><script>location.reload();<\/script></body></html>');
+          document.close();
+        }).withFailureHandler(function (err) {
+          setText('status', 'Error: ' + err.message);
+        }).clientPortalGetData(token, email);
+      }
+    </script>
+  </body>
+</html>
