@@ -36,10 +36,11 @@ function installREOS() {
     REOS.createRequiredSheets_();
     REOS.seedSettings_();
     REOS.seedLookups_();
+    REOS.seedInitialAdmin_();
     REOS.setProperty_('REOS_VERSION', REOS.CONFIG.APP.VERSION);
     REOS.setProperty_('REOS_INSTALLED_AT', new Date().toISOString());
     REOS.log_('INFO', 'REOS installation completed', { version: REOS.CONFIG.APP.VERSION });
-    SpreadsheetApp.getUi().alert('REOS Enterprise installation completed.');
+    SpreadsheetApp.getUi().alert('REOS Enterprise installation completed. Initial admin user verified.');
   } catch (error) {
     REOS.handleError_('installREOS', error);
     throw error;
@@ -134,6 +135,13 @@ REOS.seedLookups_ = function () {
   sheet.clear();
   sheet.getRange(1, 1, rows.length, rows[0].length).setValues(rows);
   REOS.applyDefaultSheetStyle_(sheet);
+};
+
+REOS.seedInitialAdmin_ = function () {
+  if (REOS.Users && typeof REOS.Users.seedAdminIfEmpty === 'function') {
+    return REOS.Users.seedAdminIfEmpty();
+  }
+  return null;
 };
 
 REOS.healthCheck_ = function () {
