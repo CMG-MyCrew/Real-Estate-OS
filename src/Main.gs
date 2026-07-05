@@ -74,6 +74,7 @@ REOS.buildMenu_ = function () {
   ui.createMenu('REOS')
     .addItem('Open Dashboard', 'reosOpenDashboard')
     .addItem('Open CRM', 'showCRM')
+    .addItem('Open CRM Dashboard', 'showCRMDashboard')
     .addItem('Open Acquisitions', 'showAcquisitions')
     .addItem('Open Vendors', 'showVendors')
     .addItem('Open Properties', 'showProperties')
@@ -240,6 +241,12 @@ REOS.healthCheck_ = function () {
 function reosOpenDashboard() {
   const html = HtmlService.createHtmlOutputFromFile('Index').setTitle('REOS Enterprise').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Enterprise');
+}
+
+function showCRMDashboard() {
+  REOS.Security.requirePermission('crm:read');
+  const html = HtmlService.createHtmlOutputFromFile('CRMDashboard').setTitle('REOS CRM Dashboard').setWidth(1200).setHeight(800);
+  SpreadsheetApp.getUi().showModalDialog(html, 'REOS CRM Dashboard');
 }
 
 function showAI() {
