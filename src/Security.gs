@@ -89,12 +89,22 @@ REOS.Security = (function () {
     return record;
   }
 
+  function getAvailableRoles() {
+    return Object.keys(ROLE_PERMISSIONS).map(function (role) {
+      return {
+        role: role,
+        permissions: ROLE_PERMISSIONS[role]
+      };
+    });
+  }
+
   function createUser(user) {
+    requireAdmin();
     user = user || {};
     if (!user.Email || !REOS.isValidEmail_(user.Email)) throw new Error('Valid user email is required.');
     if (findByEmail(user.Email)) throw new Error('User already exists: ' + user.Email);
 
-    return REOS.Database.insert(REOS.CONFIG.SHEETS.USERS, {
+    const created = REOS.Database.insert(REOS.CONFIG.SHEETS.USERS, {
       'User ID': user['User ID'] || REOS.generateId_(REOS.CONFIG.IDS.USER || 'U'),
       'Name': user.Name || user.Email,
       'Email': REOS.normalizeEmail_(user.Email),
@@ -103,20 +113,33 @@ REOS.Security = (function () {
       'Created At': new Date(),
       'Updated At': new Date()
     }, { idField: 'User ID', idPrefix: REOS.CONFIG.IDS.USER || 'U' });
+
+    audit('User created', { email: created.Email, role: created.Role });
+    return created;
   }
 
   function updateUser(email, changes) {
+    requireAdmin();
     const user = findByEmail(email);
     if (!user) throw new Error('User not found: ' + email);
-    return REOS.Database.update(REOS.CONFIG.SHEETS.USERS, 'User ID', user['User ID'], changes || {});
+    changes = changes || {};
+    changes['Updated At'] = new Date();
+    const updated = REOS.Database.update(REOS.CONFIG.SHEETS.USERS, 'User ID', user['User ID'], changes);
+    audit('User updated', { email: email, changes: changes });
+    return updated;
   }
 
   function setUserRole(email, role) {
-    return updateUser(email, { Role: role, 'Updated At': new Date() });
+    if (!ROLE_PERMISSIONS[role]) throw new Error('Invalid role: ' + role);
+    return updateUser(email, { Role: role });
   }
 
   function deactivateUser(email) {
-    return updateUser(email, { Status: STATUS_INACTIVE, 'Updated At': new Date() });
+    return updateUser(email, { Status: STATUS_INACTIVE });
+  }
+
+  function activateUser(email) {
+    return updateUser(email, { Status: STATUS_ACTIVE });
   }
 
   function isActiveUser(user) {
@@ -164,7 +187,12 @@ REOS.Security = (function () {
   }
 
   function requireAdmin() {
-    return requirePermission('*');
+    const user = getCurrentUser();
+    if (!hasPermission('*', user)) {
+      REOS.Logger.warn('Admin permission denied', { user: user.Email || getCurrentUserEmail(), role: user.Role || 'Unknown' });
+      throw new Error('Admin permission required.');
+    }
+    return true;
   }
 
   function audit(action, details) {
@@ -180,10 +208,12 @@ REOS.Security = (function () {
     getAllUsers: getAllUsers,
     findByEmail: findByEmail,
     seedAdminIfEmpty: seedAdminIfEmpty,
+    getAvailableRoles: getAvailableRoles,
     createUser: createUser,
     updateUser: updateUser,
     setUserRole: setUserRole,
     deactivateUser: deactivateUser,
+    activateUser: activateUser,
     isActiveUser: isActiveUser,
     getRolePermissions: getRolePermissions,
     getUserPermissions: getUserPermissions,
@@ -202,4 +232,29 @@ function reosWhoAmI() {
 
 function reosRequireAdmin() {
   return REOS.Security.requireAdmin();
+}
+
+function reosAdminGetUsers() {
+  REOS.Security.requireAdmin();
+  return {
+    users: REOS.Security.getAllUsers(),
+    roles: REOS.Security.getAvailableRoles(),
+    currentUser: REOS.Security.getCurrentUser()
+  };
+}
+
+function reosAdminCreateUser(user) {
+  return REOS.Security.createUser(user || {});
+}
+
+function reosAdminSetUserRole(email, role) {
+  return REOS.Security.setUserRole(email, role);
+}
+
+function reosAdminDeactivateUser(email) {
+  return REOS.Security.deactivateUser(email);
+}
+
+function reosAdminActivateUser(email) {
+  return REOS.Security.activateUser(email);
 }
