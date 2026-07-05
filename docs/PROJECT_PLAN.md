@@ -3,7 +3,7 @@
 Repository: `CMG-MyCrew/Real-Estate-OS`
 Primary platform: Google Apps Script + Google Sheets + GitHub
 
-## Current Sprint: Core Framework
+## Current Sprint: Enterprise Dashboards
 
 Status: In progress
 
@@ -51,6 +51,7 @@ Status: In progress
 - GitHub/Apps Script sync guide added in `docs/APPS_SCRIPT_SYNC.md` with manual sync, clasp option, file mapping, release workflow, and troubleshooting.
 - Dashboard chart data service added in `src/Dashboard.gs` for acquisition pipeline, lead priority, work-order status, property occupancy, maintenance status, and operating snapshot.
 - Dashboard charts and pipeline visualizations added in `src/Index.html`.
+- Dashboard framework Sprint 8.1 added in `src/DashboardService.gs`, `src/DashboardComponents.html`, `src/DashboardFilters.html`, and `src/DashboardCharts.js` with reusable KPI, chart, table, alert, filter, cache, date-range, and CSV export services.
 - AI core framework Sprint 1 rebuilt in `src/AI.gs` with provider abstraction, prompt builder, response parser, OpenAI-ready connector, stub rules engine, token/cost tracking placeholders, config helpers, and AI request audit logging.
 - AI lifecycle wired into `src/Main.gs` initialization and health checks through `AI_REQUESTS`.
 - AI lead qualification engine Sprint 2 added in `src/AI.gs` with seller motivation analysis, distress signal detection, investment scoring, confidence scoring, risk flags, missing-data checks, recommended strategy, next-best-action, and batch qualification.
@@ -66,7 +67,7 @@ Status: In progress
 
 - Keep `REOS` as the shared namespace across all Apps Script files.
 - Standardize lifecycle functions: `onOpen`, `onInstall`, `installREOS`, and `runHealthCheck`.
-- Maintain module-ready architecture for CRM, acquisitions, properties, vendors, automation, and AI agents.
+- Maintain module-ready architecture for CRM, acquisitions, properties, vendors, automation, dashboards, and AI agents.
 - Keep GitHub as the source of truth for all framework code.
 
 ## Phase Roadmap
@@ -83,7 +84,7 @@ Status: In progress
 | 7. Vendors | In Progress | Vendor registry, work orders, field services. |
 | 8. Automation Engine | In Progress | Scheduled jobs, reminders, workflow scans, trigger management, automation UI, rule editor. |
 | 9. AI Agents | In Progress | AI core, provider abstraction, lead qualification, next-best-action, summary generation, AI workspace, report generation, document processing. |
-| 10. Dashboards | In Progress | Executive KPIs, record review, drill-downs, charts, and pipeline visualizations. |
+| 10. Dashboards | In Progress | Dashboard framework, executive KPIs, record review, drill-downs, charts, and pipeline visualizations. |
 | 11. Testing | In Progress | QA scripts, validation, regression checks. |
 | 12. Deployment | In Progress | Production release process, checklists, documentation, sync workflow. |
 
@@ -104,6 +105,7 @@ Status: In progress
 - Test runner can verify setup, schema, services, router, security, validation, and health status.
 - Acquisitions module can create/search/update acquisition leads, calculate priority, move pipeline stages, create follow-up tasks, and return dashboard KPIs.
 - Dashboard records review can display KPIs, recent clients, recent acquisition leads, open task count, and record search results.
+- Dashboard service can return module dashboards with KPIs, charts, tables, alerts, date filters, caching, and CSV export data.
 - Admin UI can create users, list users, update roles, activate users, deactivate users, review security events, review denied permissions, and inspect user activity history.
 - Automation engine can install/remove scheduled jobs, run follow-up scans, escalate overdue tasks, review acquisition leads, write automation run logs, manage automation from UI, and create/edit/validate/run automation rules.
 - Vendor module can create/search/update vendors, create/search/assign/update work orders, and return vendor/work-order KPIs.
@@ -122,8 +124,8 @@ Status: In progress
 
 ## Next Build Items
 
-1. Add charts to module-specific dashboards.
-2. Add external data integration stubs.
-3. Add automation rule templates library.
-4. Add property document/photo links.
-5. Add release notes template.
+1. Build Sprint 8.2 CRM Dashboard UI.
+2. Add acquisitions module dashboard.
+3. Add property operations dashboard.
+4. Add external data integration stubs.
+5. Add automation rule templates library.
