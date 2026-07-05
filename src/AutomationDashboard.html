@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <style>
+      body { margin: 0; font-family: Arial, sans-serif; background: #f6f8fb; color: #1f2937; }
+      .shell { padding: 22px; }
+      .header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
+      h1 { margin: 0 0 6px; font-size: 26px; }
+      h2 { margin: 0 0 10px; font-size: 17px; }
+      .muted { color: #6b7280; }
+      .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; margin-bottom: 16px; }
+      .field { display: flex; flex-direction: column; gap: 4px; }
+      label { font-size: 12px; font-weight: 700; color: #374151; }
+      input, select { padding: 9px; border: 1px solid #d1d5db; border-radius: 8px; min-width: 145px; }
+      button { padding: 9px 12px; border: 0; border-radius: 8px; cursor: pointer; font-weight: 700; }
+      .primary { background: #111827; color: #fff; }
+      .secondary { background: #e5e7eb; color: #111827; }
+      .success { background: #dcfce7; color: #166534; }
+      .danger { background: #fee2e2; color: #991b1b; }
+      .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 15px; margin-bottom: 16px; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05); }
+      .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 12px; margin-bottom: 16px; }
+      .kpi { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; }
+      .kpi span { color: #6b7280; font-size: 12px; font-weight: 700; }
+      .kpi strong { display: block; font-size: 27px; margin-top: 4px; }
+      .charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 16px; }
+      .bar-row { display: grid; grid-template-columns: 140px 1fr 45px; gap: 8px; align-items: center; font-size: 12px; margin-bottom: 8px; }
+      .bar-track { height: 12px; background: #e5e7eb; border-radius: 999px; overflow: hidden; }
+      .bar-fill { height: 100%; background: #111827; border-radius: 999px; min-width: 2px; }
+      .tables { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      th, td { text-align: left; border-bottom: 1px solid #e5e7eb; padding: 8px; vertical-align: top; }
+      th { background: #f9fafb; color: #374151; }
+      pre { white-space: pre-wrap; background: #0f172a; color: #e5e7eb; border-radius: 12px; padding: 12px; max-height: 220px; overflow: auto; }
+      .pill { display: inline-block; border-radius: 999px; padding: 3px 8px; font-size: 12px; font-weight: 700; background: #e5e7eb; }
+      .ok { background: #dcfce7; color: #166534; }
+      .bad { background: #fee2e2; color: #991b1b; }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <div class="header">
+        <div>
+          <h1>Automation Dashboard</h1>
+          <div class="muted">Trigger health, rule execution, failed automations, runtime history, and scheduler controls.</div>
+        </div>
+        <button class="secondary" onclick="loadDashboard()">Refresh</button>
+      </div>
+
+      <div class="toolbar">
+        <div class="field"><label>Start Date</label><input id="startDate" type="date"></div>
+        <div class="field"><label>End Date</label><input id="endDate" type="date"></div>
+        <div class="field"><label>Date Field</label><select id="dateField"><option>Started At</option><option>Created At</option><option>Updated At</option></select></div>
+        <button class="primary" onclick="loadDashboard()">Apply Filters</button>
+        <button class="secondary" onclick="clearFilters()">Clear</button>
+        <button class="secondary" onclick="exportCsv()">Export CSV</button>
+        <button class="success" onclick="installTriggers()">Install Triggers</button>
+        <button class="danger" onclick="removeTriggers()">Remove Triggers</button>
+        <button class="primary" onclick="runAll()">Run All</button>
+      </div>
+
+      <section id="kpis" class="kpis"></section>
+      <section id="alerts"></section>
+      <section id="charts" class="charts"></section>
+      <section id="tables" class="tables"></section>
+      <section class="card"><h2>Trigger Health</h2><table id="triggerHealth"></table></section>
+      <section class="card"><h2>System Output</h2><pre id="output">Ready.</pre></section>
+    </main>
+
+    <script>
+      let adminDashboard = null;
+      function options() { return { startDate: valueOf('startDate'), endDate: valueOf('endDate'), dateField: valueOf('dateField') || 'Started At', useCache: false }; }
+      function loadDashboard() { google.script.run.withSuccessHandler(renderDashboard).withFailureHandler(showError).reosDashboardServiceGet('automation', options()); google.script.run.withSuccessHandler(renderTriggerHealth).withFailureHandler(showError).reosAutomationGetAdminDashboard(); }
+      function renderDashboard(data) { renderKpis(data.kpis || []); renderAlerts(data.alerts || []); renderCharts(data.charts || []); renderTables(data.tables || []); output(data); }
+      function renderKpis(kpis) { document.getElementById('kpis').innerHTML = kpis.map(function(k) { return '<div class="kpi"><span>' + esc(k.label) + '</span><strong>' + esc(k.value) + '</strong></div>'; }).join(''); }
+      function renderAlerts(alerts) { document.getElementById('alerts').innerHTML = alerts.length ? '<div class="card">' + alerts.map(function(a) { return '<div><strong>' + esc(a.level) + '</strong>: ' + esc(a.message) + '</div>'; }).join('') + '</div>' : ''; }
+      function renderCharts(charts) { document.getElementById('charts').innerHTML = charts.map(function(chart) { return '<div class="card"><h2>' + esc(chart.title) + '</h2>' + renderBars(chart.rows || []) + '</div>'; }).join(''); }
+      function renderBars(rows) { if (!rows.length) return '<span class="muted">No chart data.</span>'; const max = rows.reduce(function(m, r) { return Math.max(m, Number(r.value || r.count || 0)); }, 1); return rows.map(function(row) { const value = Number(row.value || row.count || 0); const width = Math.max(2, Math.round((value / max) * 100)); return '<div class="bar-row"><span>' + esc(row.label || row.stage || row.metric || '') + '</span><div class="bar-track"><div class="bar-fill" style="width:' + width + '%"></div></div><strong>' + value + '</strong></div>'; }).join(''); }
+      function renderTables(tables) { document.getElementById('tables').innerHTML = tables.map(function(table) { const cols = table.columns || []; let html = '<div class="card"><h2>' + esc(table.title) + '</h2><table><tr>' + cols.map(function(c) { return '<th>' + esc(c) + '</th>'; }).join('') + '</tr>'; if (!(table.rows || []).length) html += '<tr><td colspan="' + cols.length + '">No records found.</td></tr>'; (table.rows || []).forEach(function(row) { html += '<tr>' + cols.map(function(c) { return '<td>' + esc(row[c] || '') + '</td>'; }).join('') + '</tr>'; }); return html + '</table></div>'; }).join(''); }
+      function renderTriggerHealth(data) { adminDashboard = data; let html = '<tr><th>Job</th><th>Cadence</th><th>Handler</th><th>Trigger</th><th>Action</th></tr>'; if (!data || !(data.jobs || []).length) html += '<tr><td colspan="5">No automation jobs found.</td></tr>'; (data.jobs || []).forEach(function(job) { html += '<tr><td>' + esc(job.name) + '</td><td>' + esc(job.cadence) + '</td><td>' + esc(job.handler) + '</td><td>' + (job.installed ? '<span class="pill ok">Installed</span>' : '<span class="pill bad">Missing</span>') + '</td><td><button class="secondary" onclick="runJob(\'' + escJs(job.key) + '\')">Run</button></td></tr>'; }); document.getElementById('triggerHealth').innerHTML = html; }
+      function installTriggers() { google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); }).withFailureHandler(showError).reosAutomationInstallTriggers(); }
+      function removeTriggers() { google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); }).withFailureHandler(showError).reosAutomationRemoveTriggers(); }
+      function runAll() { google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); }).withFailureHandler(showError).reosAutomationRunAll(); }
+      function runJob(key) { google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); }).withFailureHandler(showError).reosAutomationRunJob(key); }
+      function exportCsv() { google.script.run.withSuccessHandler(function(csv) { output(csv); }).withFailureHandler(showError).reosDashboardServiceExportCsv('automation', options()); }
+      function clearFilters() { document.getElementById('startDate').value = ''; document.getElementById('endDate').value = ''; document.getElementById('dateField').value = 'Started At'; loadDashboard(); }
+      function output(value) { document.getElementById('output').textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2); }
+      function showError(error) { output({ error: error.message }); }
+      function valueOf(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+      function esc(value) { return String(value === null || value === undefined ? '' : value).replace(/[&<>'"]/g, function(ch) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[ch]; }); }
+      function escJs(value) { return String(value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+      loadDashboard();
+    </script>
+  </body>
+</html>
