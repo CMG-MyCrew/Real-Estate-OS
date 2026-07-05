@@ -5,67 +5,112 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-      body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #f6f8fb;
-        color: #1f2937;
-      }
-      .shell {
-        padding: 24px;
-      }
-      .card {
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
-        border-radius: 14px;
-        padding: 24px;
-        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
-      }
-      h1 {
-        margin: 0 0 8px;
-        font-size: 28px;
-      }
-      .muted {
-        color: #6b7280;
-      }
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 16px;
-        margin-top: 24px;
-      }
-      .module {
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        padding: 16px;
-        background: #f9fafb;
-      }
-      .status {
-        display: inline-block;
-        margin-top: 8px;
-        font-size: 12px;
-        font-weight: 700;
-        color: #065f46;
-        background: #d1fae5;
-        border-radius: 999px;
-        padding: 4px 10px;
-      }
+      body { margin: 0; font-family: Arial, sans-serif; background: #f6f8fb; color: #1f2937; }
+      .shell { padding: 24px; }
+      .header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 20px; }
+      .card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 24px; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08); }
+      h1 { margin: 0 0 8px; font-size: 28px; }
+      h2 { margin: 0 0 12px; font-size: 18px; }
+      .muted { color: #6b7280; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-top: 20px; }
+      .module { border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; background: #f9fafb; cursor: pointer; transition: transform 120ms ease, box-shadow 120ms ease; }
+      .module:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08); }
+      .status { display: inline-block; margin-top: 8px; font-size: 12px; font-weight: 700; color: #065f46; background: #d1fae5; border-radius: 999px; padding: 4px 10px; }
+      .toolbar { display: flex; gap: 8px; flex-wrap: wrap; }
+      button { border: 0; border-radius: 8px; padding: 10px 14px; font-weight: 700; cursor: pointer; }
+      .primary { background: #111827; color: #fff; }
+      .secondary { background: #e5e7eb; color: #111827; }
+      .panel { margin-top: 20px; }
+      pre { white-space: pre-wrap; background: #0f172a; color: #e5e7eb; border-radius: 12px; padding: 16px; overflow: auto; max-height: 260px; }
     </style>
   </head>
   <body>
     <main class="shell">
       <section class="card">
-        <h1>REOS Enterprise</h1>
-        <div class="muted">Core Framework v3.0.0</div>
-        <div class="grid">
-          <div class="module"><strong>CRM</strong><br><span class="status">Framework Ready</span></div>
-          <div class="module"><strong>Acquisitions</strong><br><span class="status">Planned</span></div>
-          <div class="module"><strong>Properties</strong><br><span class="status">Planned</span></div>
-          <div class="module"><strong>Vendors</strong><br><span class="status">Planned</span></div>
-          <div class="module"><strong>Automation</strong><br><span class="status">Planned</span></div>
-          <div class="module"><strong>AI Agents</strong><br><span class="status">Planned</span></div>
+        <div class="header">
+          <div>
+            <h1>REOS Enterprise</h1>
+            <div class="muted">Command Center · Core Framework v3.0.0</div>
+          </div>
+          <div class="toolbar">
+            <button class="secondary" onclick="loadNavigation()">Refresh Navigation</button>
+            <button class="secondary" onclick="runHealthCheck()">Health Check</button>
+            <button class="primary" onclick="initializeWorkbook()">Initialize Workbook</button>
+          </div>
+        </div>
+
+        <h2>Modules</h2>
+        <div id="modules" class="grid">
+          <div class="module"><strong>Loading modules...</strong><br><span class="status">Please wait</span></div>
+        </div>
+
+        <div class="panel">
+          <h2>System Output</h2>
+          <pre id="output">Ready.</pre>
         </div>
       </section>
     </main>
+
+    <script>
+      function output(value) {
+        document.getElementById('output').textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+      }
+
+      function renderModules(modules) {
+        const container = document.getElementById('modules');
+        container.innerHTML = '';
+        if (!modules || !modules.length) {
+          container.innerHTML = '<div class="module"><strong>No modules available</strong><br><span class="status">Check permissions</span></div>';
+          return;
+        }
+
+        modules.forEach(function(module) {
+          const el = document.createElement('div');
+          el.className = 'module';
+          el.onclick = function() { openModule(module.key); };
+          el.innerHTML = '<strong>' + escapeHtml(module.name) + '</strong><br>' +
+            '<span class="muted">' + escapeHtml(module.description || '') + '</span><br>' +
+            '<span class="status">Available</span>';
+          container.appendChild(el);
+        });
+      }
+
+      function loadNavigation() {
+        google.script.run
+          .withSuccessHandler(function(nav) { renderModules(nav); output({ navigation: nav }); })
+          .withFailureHandler(function(error) { output({ error: error.message }); })
+          .reosGetNavigation();
+      }
+
+      function openModule(key) {
+        const route = key === 'crm' ? 'crm.open' : key === 'leads' ? 'leads.open' : key === 'tasks' ? 'tasks.open' : key === 'admin' ? 'admin.health' : 'home.open';
+        google.script.run
+          .withSuccessHandler(output)
+          .withFailureHandler(function(error) { output({ error: error.message }); })
+          .reosDispatch(route, {});
+      }
+
+      function runHealthCheck() {
+        google.script.run
+          .withSuccessHandler(output)
+          .withFailureHandler(function(error) { output({ error: error.message }); })
+          .reosDispatch('admin.health', {});
+      }
+
+      function initializeWorkbook() {
+        google.script.run
+          .withSuccessHandler(output)
+          .withFailureHandler(function(error) { output({ error: error.message }); })
+          .reosDispatch('admin.setup', {});
+      }
+
+      function escapeHtml(value) {
+        return String(value || '').replace(/[&<>'"]/g, function(char) {
+          return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char];
+        });
+      }
+
+      loadNavigation();
+    </script>
   </body>
 </html>
