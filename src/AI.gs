@@ -1,10 +1,11 @@
 /**
- * REOS Enterprise v3.0 - AI Core + Lead Qualification Engine
+ * REOS Enterprise v3.0 - AI Core + Lead Qualification + Next Best Action
  *
  * Sprint 1: provider abstraction, prompt building, response parsing, usage tracking,
  * configuration, and audit logging.
- * Sprint 2: rules-first lead qualification engine for seller motivation, distress
- * signals, opportunity score, confidence, risk flags, and recommended strategy.
+ * Sprint 2: rules-first lead qualification engine.
+ * Sprint 3: next-best-action engine with recommended outreach actions,
+ * reasoning, priority, due dates, and optional task creation.
  */
 
 var REOS = REOS || {};
@@ -22,6 +23,19 @@ REOS.AI = (function () {
   ];
 
   const DEFAULT_CONFIG = { provider: 'stub', model: 'reos-local-rules', temperature: 0.2, maxTokens: 1200, enabled: false };
+
+  const NEXT_ACTIONS = {
+    CALL_NOW: 'Call now',
+    SEND_TEXT: 'Send text',
+    SEND_EMAIL: 'Send email',
+    SEND_DIRECT_MAIL: 'Send direct mail',
+    SKIP_TRACE: 'Skip trace',
+    SCHEDULE_INSPECTION: 'Schedule inspection',
+    MAKE_OFFER: 'Make offer',
+    FOLLOW_UP: 'Follow up',
+    RESEARCH: 'Research',
+    HOLD: 'Hold / monitor'
+  };
 
   const PROVIDERS = {
     stub: { name: 'Stub / Rules Engine', invoke: invokeStub_ },
@@ -46,6 +60,23 @@ REOS.AI = (function () {
         '',
         'Lead JSON:',
         '{{leadJson}}'
+      ].join('\n')
+    },
+    nextBestAction: {
+      version: '1.0.0',
+      system: [
+        'You are REOS Enterprise, a real estate acquisitions workflow strategist.',
+        'Recommend the single best next action and a short ranked action plan.',
+        'Return structured JSON only. Do not invent missing facts.'
+      ].join('\n'),
+      userTemplate: [
+        'Lead JSON:',
+        '{{leadJson}}',
+        '',
+        'Qualification JSON:',
+        '{{qualificationJson}}',
+        '',
+        'Return JSON with: primaryAction, priority, dueInDays, dueDate, reasoning, actionPlan, taskTitle, taskNotes.'
       ].join('\n')
     },
     sellerPrep: {
@@ -166,8 +197,7 @@ REOS.AI = (function () {
   function qualifyLead(leadOrId) {
     REOS.Security.requirePermission('ai:use');
     REOS.Security.requirePermission('leads:read');
-    const lead = typeof leadOrId === 'string' ? REOS.Acquisitions.getLead(leadOrId) : leadOrId;
-    if (!lead) throw new Error('Lead not found for AI qualification.');
+    const lead = resolveLead_(leadOrId);
     const config = getConfig();
 
     if (config.provider === 'stub' || !config.enabled) {
@@ -188,8 +218,7 @@ REOS.AI = (function () {
 
   function qualifyLeadRulesOnly(leadOrId) {
     REOS.Security.requirePermission('leads:read');
-    const lead = typeof leadOrId === 'string' ? REOS.Acquisitions.getLead(leadOrId) : leadOrId;
-    if (!lead) throw new Error('Lead not found for rules qualification.');
+    const lead = resolveLead_(leadOrId);
     return { ok: true, parsed: qualificationEngine_(lead) };
   }
 
@@ -199,6 +228,7 @@ REOS.AI = (function () {
     const leads = REOS.Acquisitions.listLeads({ limit: options.limit || 50 });
     return leads.map(function (lead) {
       const analysis = qualificationEngine_(lead);
+      const action = nextBestActionEngine_(lead, analysis, {});
       return {
         'Lead ID': lead['Lead ID'],
         'Property Address': lead['Property Address'],
@@ -206,11 +236,176 @@ REOS.AI = (function () {
         score: analysis.score,
         grade: analysis.grade,
         confidence: analysis.confidence,
-        nextBestAction: analysis.nextBestAction,
+        primaryAction: action.primaryAction,
+        priority: action.priority,
+        dueDate: action.dueDate,
+        nextBestAction: action.nextBestAction,
         riskFlags: analysis.riskFlags,
         motivationTags: analysis.motivationTags
       };
     });
+  }
+
+  function recommendNextBestAction(leadOrId, options) {
+    REOS.Security.requirePermission('ai:use');
+    REOS.Security.requirePermission('leads:read');
+    const lead = resolveLead_(leadOrId);
+    const qualification = qualificationEngine_(lead);
+    const result = nextBestActionEngine_(lead, qualification, options || {});
+    const prompt = buildPrompt('nextBestAction', { leadJson: REOS.toJson_(lead), qualificationJson: REOS.toJson_(qualification) });
+    const text = REOS.toJson_(result);
+    const logId = logRequest_({
+      requestType: 'nextBestAction', provider: 'stub', model: 'reos-action-rules-v1', status: 'Success',
+      usage: estimateUsage_(prompt, text), estimatedCost: 0, recordType: 'Lead', recordId: lead['Lead ID'] || '',
+      promptPreview: preview_(prompt.user), responsePreview: preview_(text), error: '', startedAt: new Date(), finishedAt: new Date()
+    });
+    return { ok: true, logId: logId, lead: lead, qualification: qualification, action: result };
+  }
+
+  function recommendNextBestActionsBatch(options) {
+    REOS.Security.requirePermission('ai:use');
+    options = options || {};
+    const leads = REOS.Acquisitions.listLeads({ limit: options.limit || 50 });
+    return leads.map(function (lead) {
+      const qualification = qualificationEngine_(lead);
+      const action = nextBestActionEngine_(lead, qualification, options);
+      return {
+        'Lead ID': lead['Lead ID'],
+        'Property Address': lead['Property Address'],
+        'Owner Name': lead['Owner Name'],
+        score: qualification.score,
+        grade: qualification.grade,
+        confidence: qualification.confidence,
+        primaryAction: action.primaryAction,
+        priority: action.priority,
+        dueInDays: action.dueInDays,
+        dueDate: action.dueDate,
+        reasoning: action.reasoning,
+        taskTitle: action.taskTitle
+      };
+    }).sort(function (a, b) {
+      const priorityWeight = { Critical: 4, High: 3, Medium: 2, Low: 1 };
+      return (priorityWeight[b.priority] || 0) - (priorityWeight[a.priority] || 0) || Number(b.score || 0) - Number(a.score || 0);
+    });
+  }
+
+  function createNextBestActionTask(leadOrId) {
+    REOS.Security.requirePermission('ai:use');
+    REOS.Security.requirePermission('tasks:write');
+    const recommendation = recommendNextBestAction(leadOrId, {});
+    const lead = recommendation.lead;
+    const action = recommendation.action;
+    if (!REOS.CRM || typeof REOS.CRM.createTask !== 'function') throw new Error('CRM task service unavailable.');
+
+    const task = REOS.CRM.createTask({
+      Title: action.taskTitle,
+      'Related Type': 'Lead',
+      'Related ID': lead['Lead ID'],
+      'Assigned To': lead['Assigned To'] || REOS.Security.getCurrentUserEmail(),
+      Priority: action.priority,
+      Status: 'Open',
+      'Due Date': action.dueDate,
+      Notes: action.taskNotes
+    });
+    REOS.Logger.audit('AI next-best-action task created', { leadId: lead['Lead ID'], taskId: task['Task ID'], action: action.primaryAction });
+    return { ok: true, recommendation: recommendation, task: task };
+  }
+
+  function nextBestActionEngine_(lead, qualification, options) {
+    options = options || {};
+    const hasPhone = hasValue_(lead['Owner Phone']);
+    const hasEmail = hasValue_(lead['Owner Email']);
+    const score = Number(qualification.score || 0);
+    const confidence = Number(qualification.confidence || 0);
+    const riskCount = (qualification.riskFlags || []).length;
+    const missing = qualification.missingData || [];
+    const actions = [];
+
+    if (!hasPhone && !hasEmail) {
+      actions.push(action_(NEXT_ACTIONS.SKIP_TRACE, 'Critical', 0, 98, 'No usable owner contact information is available.'));
+      actions.push(action_(NEXT_ACTIONS.SEND_DIRECT_MAIL, 'High', 1, 70, 'Direct mail can start while contact data is being enriched.'));
+    } else if (score >= 80 && confidence >= 65 && hasPhone) {
+      actions.push(action_(NEXT_ACTIONS.CALL_NOW, 'Critical', 0, 100, 'High score and sufficient confidence justify immediate seller outreach.'));
+      actions.push(action_(NEXT_ACTIONS.MAKE_OFFER, 'High', 1, 80, 'Prepare offer range after confirming seller motivation and property condition.'));
+    } else if (score >= 65 && hasPhone) {
+      actions.push(action_(NEXT_ACTIONS.CALL_NOW, 'High', 1, 90, 'Strong opportunity with phone contact available.'));
+      actions.push(action_(NEXT_ACTIONS.SCHEDULE_INSPECTION, 'Medium', 3, 65, 'Property review may be needed before offer.'));
+    } else if (score >= 55 && hasEmail) {
+      actions.push(action_(NEXT_ACTIONS.SEND_EMAIL, 'Medium', 2, 75, 'Moderate opportunity with email available.'));
+      actions.push(action_(NEXT_ACTIONS.FOLLOW_UP, 'Medium', 5, 60, 'Lead should remain in nurture sequence.'));
+    } else if (score >= 45) {
+      actions.push(action_(NEXT_ACTIONS.SEND_DIRECT_MAIL, 'Medium', 3, 70, 'Motivation exists but direct contact or confidence may be limited.'));
+      actions.push(action_(NEXT_ACTIONS.RESEARCH, 'Medium', 3, 65, 'Verify value, ownership, and distress before stronger outreach.'));
+    } else {
+      actions.push(action_(NEXT_ACTIONS.RESEARCH, 'Low', 7, 60, 'Lead needs more data before active pursuit.'));
+      actions.push(action_(NEXT_ACTIONS.HOLD, 'Low', 14, 45, 'Low score; monitor until new distress or contact data appears.'));
+    }
+
+    if (riskCount >= 2) actions.unshift(action_(NEXT_ACTIONS.RESEARCH, 'High', 1, 95, 'Multiple risk flags require review before aggressive acquisition action.'));
+    if (missing.indexOf('Estimated value') !== -1 || missing.indexOf('Asking price') !== -1) actions.push(action_(NEXT_ACTIONS.RESEARCH, 'Medium', 2, 72, 'Pricing data is incomplete.'));
+    if (hasPhone && score >= 55) actions.push(action_(NEXT_ACTIONS.SEND_TEXT, actions[0].priority, actions[0].dueInDays, 68, 'Text can support call outreach without replacing it.'));
+
+    const ranked = rankActions_(actions);
+    const primary = ranked[0];
+    const dueDate = addDays_(new Date(), primary.dueInDays);
+    const owner = lead['Owner Name'] || 'seller';
+    const address = lead['Property Address'] || 'property';
+
+    return {
+      primaryAction: primary.name,
+      nextBestAction: primary.name,
+      priority: primary.priority,
+      dueInDays: primary.dueInDays,
+      dueDate: formatDate_(dueDate),
+      confidence: primary.confidence,
+      reasoning: primary.reason,
+      actionPlan: ranked.slice(0, 5),
+      taskTitle: primary.name + ': ' + address,
+      taskNotes: buildActionTaskNotes_(owner, address, qualification, primary, ranked),
+      recommendedChannel: getChannelForAction_(primary.name),
+      automationEligible: ['Follow up', 'Send direct mail', 'Research', 'Skip trace'].indexOf(primary.name) !== -1
+    };
+  }
+
+  function action_(name, priority, dueInDays, confidence, reason) {
+    return { name: name, priority: priority, dueInDays: dueInDays, confidence: confidence, reason: reason };
+  }
+
+  function rankActions_(actions) {
+    const priorityWeight = { Critical: 4, High: 3, Medium: 2, Low: 1 };
+    const seen = {};
+    return (actions || []).filter(function (action) {
+      const key = action.name + '|' + action.priority;
+      if (seen[key]) return false;
+      seen[key] = true;
+      return true;
+    }).sort(function (a, b) {
+      return (priorityWeight[b.priority] || 0) - (priorityWeight[a.priority] || 0) ||
+        Number(b.confidence || 0) - Number(a.confidence || 0) ||
+        Number(a.dueInDays || 0) - Number(b.dueInDays || 0);
+    });
+  }
+
+  function buildActionTaskNotes_(owner, address, qualification, primary, ranked) {
+    return [
+      'AI next-best-action recommendation.',
+      'Owner: ' + owner,
+      'Property: ' + address,
+      'Primary action: ' + primary.name,
+      'Reason: ' + primary.reason,
+      'Lead score: ' + qualification.score + ' / Grade: ' + qualification.grade + ' / Confidence: ' + qualification.confidence,
+      'Motivation tags: ' + (qualification.motivationTags || []).join(', '),
+      'Risk flags: ' + (qualification.riskFlags || []).join(', '),
+      'Ranked plan: ' + ranked.slice(0, 3).map(function (item, index) { return (index + 1) + '. ' + item.name + ' (' + item.priority + ')'; }).join(' | ')
+    ].join('\n');
+  }
+
+  function getChannelForAction_(actionName) {
+    if (actionName === NEXT_ACTIONS.CALL_NOW) return 'Phone';
+    if (actionName === NEXT_ACTIONS.SEND_TEXT) return 'SMS';
+    if (actionName === NEXT_ACTIONS.SEND_EMAIL) return 'Email';
+    if (actionName === NEXT_ACTIONS.SEND_DIRECT_MAIL) return 'Direct Mail';
+    return 'Internal Workflow';
   }
 
   function qualificationEngine_(lead) {
@@ -242,7 +437,7 @@ REOS.AI = (function () {
 
     const grade = score >= 85 ? 'A' : score >= 70 ? 'B' : score >= 55 ? 'C' : score >= 40 ? 'D' : 'F';
     const urgency = score >= 75 ? 'High' : score >= 55 ? 'Medium' : 'Low';
-    const nextBestAction = getNextBestAction_(score, confidence, lead, missingData, riskFlags);
+    const fallbackAction = score >= 70 ? 'Call seller and prepare offer range' : score >= 45 ? 'Skip trace and schedule follow-up' : 'Collect missing data and monitor';
     const recommendedStrategy = getStrategy_(score, confidence, riskFlags);
     const suggestedFollowUpDays = score >= 75 ? 1 : score >= 55 ? 3 : score >= 40 ? 7 : 14;
 
@@ -257,10 +452,10 @@ REOS.AI = (function () {
       riskFlags: unique_(riskFlags),
       missingData: unique_(missingData),
       scoreFactors: factors,
-      nextBestAction: nextBestAction,
+      nextBestAction: fallbackAction,
       recommendedStrategy: recommendedStrategy,
       suggestedFollowUpDays: suggestedFollowUpDays,
-      summary: buildQualificationSummary_(lead, score, grade, urgency, nextBestAction)
+      summary: buildQualificationSummary_(lead, score, grade, urgency, fallbackAction)
     };
   }
 
@@ -293,7 +488,7 @@ REOS.AI = (function () {
     let points = 0;
     if (hasValue_(lead['Owner Phone'])) { points += 8; factors.push({ factor: 'Owner phone available', points: 8, reason: 'Direct outreach possible' }); }
     if (hasValue_(lead['Owner Email'])) { points += 4; factors.push({ factor: 'Owner email available', points: 4, reason: 'Secondary contact channel available' }); }
-    if (!hasValue_(lead['Owner Phone']) && !hasValue_(lead['Owner Email'])) { missingData.push('Owner contact information'); }
+    if (!hasValue_(lead['Owner Phone']) && !hasValue_(lead['Owner Email'])) missingData.push('Owner contact information');
     return points;
   }
 
@@ -307,7 +502,7 @@ REOS.AI = (function () {
       const discount = (estimatedValue - askingPrice) / estimatedValue;
       if (discount >= 0.35) { points += 25; investmentSignals.push('Strong discount to estimated value'); factors.push({ factor: 'Strong spread', points: 25, reason: 'Asking price is at least 35% below estimated value' }); }
       else if (discount >= 0.2) { points += 15; investmentSignals.push('Moderate discount to estimated value'); factors.push({ factor: 'Moderate spread', points: 15, reason: 'Asking price is at least 20% below estimated value' }); }
-      else if (discount < 0.05) { riskFlags.push('Limited apparent equity spread'); }
+      else if (discount < 0.05) riskFlags.push('Limited apparent equity spread');
     } else {
       if (!estimatedValue) missingData.push('Estimated value');
       if (!askingPrice) missingData.push('Asking price');
@@ -318,7 +513,6 @@ REOS.AI = (function () {
       if (equity > estimatedValue * 0.25) { points += 10; investmentSignals.push('Likely equity available'); }
       if (equity <= 0) riskFlags.push('Potential negative equity');
     }
-
     return points;
   }
 
@@ -343,15 +537,6 @@ REOS.AI = (function () {
     if (bedrooms >= 2 && bathrooms >= 1) { points += 5; investmentSignals.push('Standard residential layout'); }
     if (String(lead['Property Type'] || '').toLowerCase().indexOf('land') !== -1) riskFlags.push('Land requires separate underwriting model');
     return points;
-  }
-
-  function getNextBestAction_(score, confidence, lead, missingData, riskFlags) {
-    if (missingData.indexOf('Owner contact information') !== -1) return 'Skip trace owner contact information';
-    if (score >= 80 && confidence >= 65) return 'Call seller now and prepare offer range';
-    if (score >= 65) return 'Call seller and schedule property review';
-    if (score >= 50) return 'Send outreach and verify motivation';
-    if (riskFlags.length >= 2) return 'Research risk flags before outreach';
-    return 'Collect missing data and monitor lead';
   }
 
   function getStrategy_(score, confidence, riskFlags) {
@@ -382,6 +567,12 @@ REOS.AI = (function () {
       const result = qualificationEngine_(lead);
       return { text: REOS.toJson_(result), usage: estimateUsage_(request.prompt, REOS.toJson_(result)) };
     }
+    if (request.requestType === 'nextBestAction') {
+      const lead = extractLeadFromPrompt_(request.prompt);
+      const qualification = qualificationEngine_(lead);
+      const result = nextBestActionEngine_(lead, qualification, {});
+      return { text: REOS.toJson_(result), usage: estimateUsage_(request.prompt, REOS.toJson_(result)) };
+    }
     const text = REOS.toJson_({ summary: 'AI provider is configured for stub mode.', nextBestAction: 'Configure provider before production AI calls.' });
     return { text: text, usage: estimateUsage_(request.prompt, text) };
   }
@@ -406,7 +597,6 @@ REOS.AI = (function () {
       method: 'post', contentType: 'application/json', headers: { Authorization: 'Bearer ' + apiKey },
       payload: JSON.stringify(payload), muteHttpExceptions: true
     });
-
     const code = response.getResponseCode();
     const body = response.getContentText();
     if (code < 200 || code >= 300) throw new Error('OpenAI request failed: ' + code + ' ' + body);
@@ -435,22 +625,12 @@ REOS.AI = (function () {
   function logRequest_(entry) {
     ensureSheets();
     const record = {
-      'Request Type': entry.requestType,
-      Provider: entry.provider,
-      Model: entry.model,
-      Status: entry.status,
-      'Prompt Tokens': entry.usage.prompt_tokens || 0,
-      'Completion Tokens': entry.usage.completion_tokens || 0,
-      'Total Tokens': entry.usage.total_tokens || 0,
-      'Estimated Cost': entry.estimatedCost || 0,
-      'Record Type': entry.recordType,
-      'Record ID': entry.recordId,
-      'Prompt Preview': entry.promptPreview,
-      'Response Preview': entry.responsePreview,
-      Error: entry.error,
-      User: REOS.Security.getCurrentUserEmail(),
-      'Started At': entry.startedAt,
-      'Finished At': entry.finishedAt
+      'Request Type': entry.requestType, Provider: entry.provider, Model: entry.model, Status: entry.status,
+      'Prompt Tokens': entry.usage.prompt_tokens || 0, 'Completion Tokens': entry.usage.completion_tokens || 0,
+      'Total Tokens': entry.usage.total_tokens || 0, 'Estimated Cost': entry.estimatedCost || 0,
+      'Record Type': entry.recordType, 'Record ID': entry.recordId, 'Prompt Preview': entry.promptPreview,
+      'Response Preview': entry.responsePreview, Error: entry.error, User: REOS.Security.getCurrentUserEmail(),
+      'Started At': entry.startedAt, 'Finished At': entry.finishedAt
     };
     const created = REOS.Database.insert(LOG_SHEET, record, { idField: LOG_ID_FIELD, idPrefix: 'AI' });
     REOS.Logger.info('AI request logged', { requestId: created[LOG_ID_FIELD], type: entry.requestType, status: entry.status });
@@ -468,29 +648,29 @@ REOS.AI = (function () {
     }).slice(0, options.limit || 100);
   }
 
+  function resolveLead_(leadOrId) {
+    const lead = typeof leadOrId === 'string' ? REOS.Acquisitions.getLead(leadOrId) : leadOrId;
+    if (!lead) throw new Error('Lead not found.');
+    return lead;
+  }
   function number_(value) { const n = Number(value || 0); return isNaN(n) ? 0 : n; }
   function hasValue_(value) { return value !== null && value !== undefined && String(value).trim() !== ''; }
   function clamp_(value, min, max) { return Math.max(min, Math.min(max, value)); }
   function unique_(items) { return items.filter(function (item, index) { return item && items.indexOf(item) === index; }); }
   function preview_(value) { return String(value || '').replace(/\s+/g, ' ').slice(0, 500); }
+  function addDays_(date, days) { const result = new Date(date); result.setDate(result.getDate() + Number(days || 0)); return result; }
+  function formatDate_(date) { return Utilities.formatDate(date, Session.getScriptTimeZone(), 'yyyy-MM-dd'); }
 
   return {
-    LOG_SHEET: LOG_SHEET,
-    PROVIDERS: PROVIDERS,
-    PROMPTS: PROMPTS,
-    initialize: initialize,
-    ensureSheets: ensureSheets,
-    seedDefaultConfig: seedDefaultConfig,
-    getConfig: getConfig,
-    updateConfig: updateConfig,
-    getPromptTemplate: getPromptTemplate,
-    buildPrompt: buildPrompt,
-    complete: complete,
-    qualifyLead: qualifyLead,
-    qualifyLeadRulesOnly: qualifyLeadRulesOnly,
-    qualifyLeadBatch: qualifyLeadBatch,
-    parseResponse: parseResponse,
-    getRequestLogs: getRequestLogs
+    LOG_SHEET: LOG_SHEET, PROVIDERS: PROVIDERS, PROMPTS: PROMPTS, NEXT_ACTIONS: NEXT_ACTIONS,
+    initialize: initialize, ensureSheets: ensureSheets, seedDefaultConfig: seedDefaultConfig,
+    getConfig: getConfig, updateConfig: updateConfig, getPromptTemplate: getPromptTemplate,
+    buildPrompt: buildPrompt, complete: complete, qualifyLead: qualifyLead,
+    qualifyLeadRulesOnly: qualifyLeadRulesOnly, qualifyLeadBatch: qualifyLeadBatch,
+    recommendNextBestAction: recommendNextBestAction,
+    recommendNextBestActionsBatch: recommendNextBestActionsBatch,
+    createNextBestActionTask: createNextBestActionTask,
+    parseResponse: parseResponse, getRequestLogs: getRequestLogs
   };
 })();
 
@@ -501,4 +681,7 @@ function reosAIBuildPrompt(templateKey, data) { return REOS.AI.buildPrompt(templ
 function reosAIQualifyLead(leadOrId) { return REOS.AI.qualifyLead(leadOrId); }
 function reosAIQualifyLeadRulesOnly(leadOrId) { return REOS.AI.qualifyLeadRulesOnly(leadOrId); }
 function reosAIQualifyLeadBatch(options) { return REOS.AI.qualifyLeadBatch(options || {}); }
+function reosAIRecommendNextBestAction(leadOrId, options) { return REOS.AI.recommendNextBestAction(leadOrId, options || {}); }
+function reosAIRecommendNextBestActionsBatch(options) { return REOS.AI.recommendNextBestActionsBatch(options || {}); }
+function reosAICreateNextBestActionTask(leadOrId) { return REOS.AI.createNextBestActionTask(leadOrId); }
 function reosAIGetRequestLogs(options) { return REOS.AI.getRequestLogs(options || {}); }
