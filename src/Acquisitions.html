@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <style>
+      body { margin: 0; font-family: Arial, sans-serif; background: #f6f8fb; color: #1f2937; }
+      .shell { padding: 20px; }
+      .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+      h1 { margin: 0; font-size: 24px; }
+      h2 { margin: 0 0 12px; font-size: 18px; }
+      .muted { color: #6b7280; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+      .card, .kpi { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; }
+      .kpi strong { display: block; font-size: 24px; }
+      input, select, textarea { width: 100%; box-sizing: border-box; padding: 10px; margin: 6px 0 12px; border: 1px solid #d1d5db; border-radius: 8px; }
+      button { padding: 10px 14px; border: 0; border-radius: 8px; cursor: pointer; font-weight: 700; }
+      .primary { background: #111827; color: #fff; }
+      .secondary { background: #e5e7eb; color: #111827; }
+      .results { margin-top: 12px; font-size: 13px; white-space: pre-wrap; background: #f9fafb; border-radius: 8px; padding: 12px; max-height: 260px; overflow: auto; }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <div class="header">
+        <div>
+          <h1>REOS Acquisitions</h1>
+          <div class="muted">Distressed and off-market property lead pipeline.</div>
+        </div>
+        <button class="secondary" onclick="loadDashboard()">Refresh Dashboard</button>
+      </div>
+
+      <section class="kpis">
+        <div class="kpi"><span>Total Leads</span><strong id="total">0</strong></div>
+        <div class="kpi"><span>Hot Leads</span><strong id="hot">0</strong></div>
+        <div class="kpi"><span>Follow-ups Due</span><strong id="due">0</strong></div>
+        <div class="kpi"><span>Pipeline Stages</span><strong id="stages">0</strong></div>
+      </section>
+
+      <section class="grid">
+        <div class="card">
+          <h2>Create Acquisition Lead</h2>
+          <input id="address" placeholder="Property Address">
+          <input id="city" placeholder="City">
+          <input id="state" placeholder="State">
+          <input id="zip" placeholder="Zip">
+          <input id="owner" placeholder="Owner Name">
+          <input id="phone" placeholder="Owner Phone">
+          <input id="email" placeholder="Owner Email">
+          <select id="distress">
+            <option>Absentee Owner</option>
+            <option>Tax Delinquent</option>
+            <option>Probate</option>
+            <option>Code Violation</option>
+            <option>Vacant</option>
+            <option>Pre-Foreclosure</option>
+            <option>REO</option>
+            <option>Eviction</option>
+            <option>Inherited</option>
+            <option>Tired Landlord</option>
+          </select>
+          <input id="value" placeholder="Estimated Value">
+          <input id="asking" placeholder="Asking Price">
+          <input id="followup" type="date" placeholder="Next Follow Up">
+          <textarea id="notes" placeholder="Notes"></textarea>
+          <button class="primary" onclick="createLead()">Create Lead</button>
+        </div>
+
+        <div class="card">
+          <h2>Search Leads</h2>
+          <input id="search" placeholder="Search by address, owner, phone, status, distress">
+          <button class="primary" onclick="searchLeads()">Search</button>
+          <div id="results" class="results">Ready.</div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      function render(value) {
+        document.getElementById('results').textContent = JSON.stringify(value, null, 2);
+      }
+
+      function loadDashboard() {
+        google.script.run.withSuccessHandler(function(data) {
+          document.getElementById('total').textContent = data.total || 0;
+          document.getElementById('hot').textContent = data.hot || 0;
+          document.getElementById('due').textContent = data.followUpsDue || 0;
+          document.getElementById('stages').textContent = data.pipeline ? data.pipeline.length : 0;
+          render(data);
+        }).withFailureHandler(function(error) {
+          render({ error: error.message });
+        }).acquisitionsDashboard();
+      }
+
+      function createLead() {
+        const lead = {
+          'Property Address': document.getElementById('address').value,
+          City: document.getElementById('city').value,
+          State: document.getElementById('state').value,
+          Zip: document.getElementById('zip').value,
+          'Owner Name': document.getElementById('owner').value,
+          'Owner Phone': document.getElementById('phone').value,
+          'Owner Email': document.getElementById('email').value,
+          'Distress Indicator': document.getElementById('distress').value,
+          'Estimated Value': document.getElementById('value').value,
+          'Asking Price': document.getElementById('asking').value,
+          'Next Follow Up': document.getElementById('followup').value,
+          Source: 'Manual',
+          Status: 'New',
+          Notes: document.getElementById('notes').value
+        };
+        google.script.run.withSuccessHandler(render).withFailureHandler(function(error) {
+          render({ error: error.message });
+        }).acquisitionsCreateLead(lead);
+      }
+
+      function searchLeads() {
+        google.script.run.withSuccessHandler(render).withFailureHandler(function(error) {
+          render({ error: error.message });
+        }).acquisitionsSearchLeads(document.getElementById('search').value);
+      }
+
+      loadDashboard();
+    </script>
+  </body>
+</html>
