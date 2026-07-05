@@ -81,6 +81,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open Dashboard', 'reosOpenDashboard')
     .addItem('Open CRM', 'showCRM')
     .addItem('Open Acquisitions', 'showAcquisitions')
+    .addItem('Open Admin', 'showAdmin')
     .addSeparator()
     .addItem('Initialize Workbook', 'reosInitializeWorkbook')
     .addItem('Health Check', 'runHealthCheck')
@@ -202,4 +203,13 @@ function reosOpenDashboard() {
     .setWidth(1200)
     .setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Enterprise');
+}
+
+function showAdmin() {
+  REOS.Security.requireAdmin();
+  const html = HtmlService.createHtmlOutputFromFile('Admin')
+    .setTitle('REOS Admin')
+    .setWidth(1100)
+    .setHeight(760);
+  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Admin');
 }
