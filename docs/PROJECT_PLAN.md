@@ -38,6 +38,7 @@ Status: In progress
 - Vendor and work-order permissions added to `src/Security.gs`.
 - Vendor service categories and work-order statuses added to setup seed data.
 - Deployment guide added in `docs/DEPLOYMENT.md` with Apps Script setup, required files, first-run checklist, testing checklist, automation setup, production release checklist, and rollback plan.
+- Dashboard drill-down record actions added in `src/Dashboard.gs` and `src/Index.html` for client, lead, vendor, work-order, and task details with contextual actions.
 
 ### Active Objectives
 
@@ -85,11 +86,12 @@ Status: In progress
 - Automation engine can install/remove scheduled jobs, run follow-up scans, escalate overdue tasks, review acquisition leads, and write automation run logs.
 - Vendor module can create/search/update vendors, create/search/assign/update work orders, and return vendor/work-order KPIs.
 - Deployment guide documents setup, authorization, validation, automation, production release, and rollback.
+- Dashboard drill-down supports viewing full records, activity history, and contextual actions.
 
 ## Next Build Items
 
-1. Add dashboard drill-down record actions.
-2. Add security audit report view.
-3. Add automation management UI.
-4. Build property management module foundation.
-5. Add GitHub/Apps Script sync documentation.
+1. Add security audit report view.
+2. Add automation management UI.
+3. Build property management module foundation.
+4. Add GitHub/Apps Script sync documentation.
+5. Add dashboard charts and pipeline visualizations.
