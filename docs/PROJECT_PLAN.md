@@ -28,6 +28,8 @@ Status: In progress
 - Acquisitions module foundation added in `src/Acquisitions.gs` for distressed/off-market lead intake, scoring, pipeline, follow-ups, and dashboard metrics.
 - Acquisitions UI foundation added in `src/Acquisitions.html`.
 - Acquisition pipeline and distress indicator lookups added to setup seed data.
+- Dashboard records review service added in `src/Dashboard.gs`.
+- Main dashboard updated in `src/Index.html` with KPI cards, recent CRM clients, recent acquisition leads, open task count, and record search.
 
 ### Active Objectives
 
@@ -50,7 +52,7 @@ Status: In progress
 | 7. Vendors | Planned | Vendor registry, work orders, field services. |
 | 8. Automation Engine | Planned | Triggers, scheduled jobs, workflow rules. |
 | 9. AI Agents | Planned | Lead qualification, reporting, document processing. |
-| 10. Dashboards | Planned | Executive KPIs and operational dashboards. |
+| 10. Dashboards | In Progress | Executive KPIs and operational dashboards. |
 | 11. Testing | In Progress | QA scripts, validation, regression checks. |
 | 12. Deployment | Planned | Production release process and documentation. |
 
@@ -70,11 +72,12 @@ Status: In progress
 - Validation framework supports reusable record validation, lookup validation, duplicate checks, and clean error handling.
 - Test runner can verify setup, schema, services, router, security, validation, and health status.
 - Acquisitions module can create/search/update acquisition leads, calculate priority, move pipeline stages, create follow-up tasks, and return dashboard KPIs.
+- Dashboard records review can display KPIs, recent clients, recent acquisition leads, open task count, and record search results.
 
 ## Next Build Items
 
-1. Add dashboard views for CRM and acquisition records.
-2. Add role-management UI actions.
-3. Add workflow automation foundation.
-4. Build vendor management module foundation.
-5. Add deployment documentation.
+1. Add role-management UI actions.
+2. Add workflow automation foundation.
+3. Build vendor management module foundation.
+4. Add deployment documentation.
+5. Add dashboard drill-down record actions.
