@@ -23,10 +23,11 @@ Status: In progress
 - CRM UI foundation added in `src/CRM.html`.
 - CRM Dashboard Sprint 8.2 added in `src/CRMDashboard.html` with KPI cards, lead funnel, status charts, task priority, activity charts, follow-up queue, date filters, CSV export, and menu access.
 - Acquisitions Dashboard Sprint 8.3 added in `src/AcquisitionsDashboard.html` with KPI cards, acquisition funnel, distress analytics, city distribution, follow-up queues, AI opportunity queue, date filters, CSV export, and menu access.
+- Property Operations Dashboard Sprint 8.4 added in `src/PropertyDashboard.html` with occupancy KPIs, property status charts, property type analytics, maintenance backlog, recent properties, date filters, CSV export, and menu access.
 - Dashboard shell wired to router navigation and route dispatching in `src/Index.html`.
 - Validation framework expanded in `src/Validation.gs` with required fields, allowed values, lookup validation, duplicates, number/boolean/date/email/phone validation, sanitizing, and clean validation responses.
 - Test runner added in `src/TestRunner.gs` for setup verification, health checks, required sheets, required headers, services, security, router, and validation.
-- REOS menu updated in `src/Main.gs` with Dashboard, CRM, CRM Dashboard, Acquisitions, Acquisitions Dashboard, Vendors, Properties, Automation, AI Workspace, Admin, Initialize Workbook, Health Check, and Run Tests actions.
+- REOS menu updated in `src/Main.gs` with Dashboard, CRM, CRM Dashboard, Acquisitions, Acquisitions Dashboard, Vendors, Properties, Property Dashboard, Automation, AI Workspace, Admin, Initialize Workbook, Health Check, and Run Tests actions.
 - Acquisitions module foundation added in `src/Acquisitions.gs` for distressed/off-market lead intake, scoring, pipeline, follow-ups, and dashboard metrics.
 - Acquisitions UI foundation added in `src/Acquisitions.html`.
 - Acquisition pipeline and distress indicator lookups added to setup seed data.
@@ -82,11 +83,11 @@ Status: In progress
 | 3. Security | In Progress | Roles, permissions, audit logs, audit reports. |
 | 4. CRM | In Progress | Contacts, leads, pipeline, activities, CRM dashboard. |
 | 5. Acquisitions | In Progress | Distressed property and off-market lead workflows, acquisitions dashboard. |
-| 6. Property Management | In Progress | Assets, inspections, maintenance, occupancy, drill-down actions. |
+| 6. Property Management | In Progress | Assets, inspections, maintenance, occupancy, drill-down actions, operations dashboard. |
 | 7. Vendors | In Progress | Vendor registry, work orders, field services. |
 | 8. Automation Engine | In Progress | Scheduled jobs, reminders, workflow scans, trigger management, automation UI, rule editor. |
 | 9. AI Agents | In Progress | AI core, provider abstraction, lead qualification, next-best-action, summary generation, AI workspace, report generation, document processing. |
-| 10. Dashboards | In Progress | Dashboard framework, CRM dashboard, acquisitions dashboard, executive KPIs, record review, drill-downs, charts, and pipeline visualizations. |
+| 10. Dashboards | In Progress | Dashboard framework, CRM dashboard, acquisitions dashboard, property dashboard, executive KPIs, record review, drill-downs, charts, and pipeline visualizations. |
 | 11. Testing | In Progress | QA scripts, validation, regression checks. |
 | 12. Deployment | In Progress | Production release process, checklists, documentation, sync workflow. |
 
@@ -104,6 +105,7 @@ Status: In progress
 - CRM foundation can create/search/update/archive clients, create/update/list leads, create tasks, and log activities.
 - CRM Dashboard can display KPIs, lead/status charts, task/activity charts, follow-up queue, recent clients, date filters, and CSV export data.
 - Acquisitions Dashboard can display KPIs, acquisition pipeline, distress analytics, geographic distribution, hot leads, follow-up queue, AI opportunity queue, date filters, and CSV export data.
+- Property Operations Dashboard can display occupancy KPIs, property status charts, property type analytics, maintenance status, maintenance backlog, recent properties, date filters, and CSV export data.
 - Main dashboard can load modules, dispatch routes, initialize workbook, and run health checks.
 - Validation framework supports reusable record validation, lookup validation, duplicate checks, and clean error handling.
 - Test runner can verify setup, schema, services, router, security, validation, and health status.
@@ -128,8 +130,8 @@ Status: In progress
 
 ## Next Build Items
 
-1. Build Sprint 8.4 Property Operations Dashboard UI.
-2. Add vendor operations dashboard.
-3. Add automation dashboard refinement.
+1. Build Sprint 8.5 Vendor Operations Dashboard UI.
+2. Add automation dashboard refinement.
+3. Add AI command center dashboard.
 4. Add external data integration stubs.
 5. Add automation rule templates library.
