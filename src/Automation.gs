@@ -1,13 +1,14 @@
 /**
- * REOS Enterprise v3.0 - Workflow Automation Engine
+ * REOS Enterprise v3.0 - Workflow Automation Foundation
  *
- * Provides rule registration, event dispatching, execution logging,
- * and scheduled workflow processing.
+ * Provides scheduled jobs, trigger management, follow-up scanning,
+ * overdue task scanning, acquisition lead review, and automation logging.
  */
 
 var REOS = REOS || {};
 
 REOS.Automation = (function () {
+  const AUTOMATION_SOURCE = 'REOS_AUTOMATION';
   const RULES_SHEET = 'AUTOMATION_RULES';
   const RUNS_SHEET = 'AUTOMATION_RUNS';
   const RULE_ID_FIELD = 'Rule ID';
@@ -23,6 +24,12 @@ REOS.Automation = (function () {
     'Message', 'Payload JSON', 'Started At', 'Finished At', 'Created At', 'Updated At'
   ];
 
+  const JOBS = [
+    { key: 'daily.followups', name: 'Daily Follow-up Scanner', handler: 'reosAutomationDailyFollowUps', cadence: 'daily', hour: 8 },
+    { key: 'daily.overdueTasks', name: 'Daily Overdue Task Scanner', handler: 'reosAutomationOverdueTasks', cadence: 'daily', hour: 8 },
+    { key: 'hourly.acquisitionReview', name: 'Hourly Acquisition Review', handler: 'reosAutomationAcquisitionReview', cadence: 'hourly' }
+  ];
+
   function ensureSheets() {
     ensureTable_(RULES_SHEET, RULE_HEADERS);
     ensureTable_(RUNS_SHEET, RUN_HEADERS);
@@ -36,189 +43,267 @@ REOS.Automation = (function () {
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       sheet.setFrozenRows(1);
       sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold');
+      sheet.autoResizeColumns(1, headers.length);
     }
     return sheet;
   }
 
+  function getJobs() {
+    return JOBS.slice();
+  }
+
+  function installTriggers() {
+    REOS.Security.requireAdmin();
+    removeTriggers(false);
+    ensureSheets();
+
+    JOBS.forEach(function (job) {
+      let builder = ScriptApp.newTrigger(job.handler).timeBased();
+      if (job.cadence === 'hourly') {
+        builder = builder.everyHours(1);
+      } else {
+        builder = builder.everyDays(1).atHour(job.hour || 8);
+      }
+      builder.create();
+      log_('TRIGGER_INSTALLED', job.key, { handler: job.handler, cadence: job.cadence });
+    });
+
+    REOS.setProperty_('REOS_AUTOMATION_INSTALLED_AT', REOS.nowIso_());
+    return { ok: true, installed: JOBS.length, jobs: JOBS };
+  }
+
+  function removeTriggers(requireAdmin) {
+    if (requireAdmin !== false) REOS.Security.requireAdmin();
+    const handlers = JOBS.map(function (job) { return job.handler; });
+    let removed = 0;
+
+    ScriptApp.getProjectTriggers().forEach(function (trigger) {
+      if (handlers.indexOf(trigger.getHandlerFunction()) !== -1) {
+        ScriptApp.deleteTrigger(trigger);
+        removed++;
+      }
+    });
+
+    log_('TRIGGERS_REMOVED', 'automation', { removed: removed });
+    return { ok: true, removed: removed };
+  }
+
+  function runAll() {
+    ensureSheets();
+    const results = [];
+    results.push(runJob_('daily.followups', scanFollowUps));
+    results.push(runJob_('daily.overdueTasks', scanOverdueTasks));
+    results.push(runJob_('hourly.acquisitionReview', reviewAcquisitionLeads));
+    return { ok: results.every(function (item) { return item.ok; }), results: results };
+  }
+
+  function scanFollowUps() {
+    const today = startOfDay_(new Date());
+    const leads = REOS.Acquisitions && REOS.Acquisitions.listLeads ? REOS.Acquisitions.listLeads({ limit: 1000 }) : [];
+    let created = 0;
+
+    leads.forEach(function (lead) {
+      if (!lead['Next Follow Up']) return;
+      const followUpDate = startOfDay_(new Date(lead['Next Follow Up']));
+      if (isNaN(followUpDate.getTime()) || followUpDate > today) return;
+      if (['closed', 'lost'].indexOf(String(lead.Status || '').toLowerCase()) !== -1) return;
+
+      const existing = findOpenTask_('Lead', lead['Lead ID'], 'Follow up acquisition lead');
+      if (existing) return;
+
+      if (REOS.CRM && REOS.CRM.createTask) {
+        REOS.CRM.createTask({
+          Title: 'Follow up acquisition lead: ' + lead['Property Address'],
+          'Related Type': 'Lead',
+          'Related ID': lead['Lead ID'],
+          'Assigned To': lead['Assigned To'] || REOS.Security.getCurrentUserEmail(),
+          Priority: lead.Priority || 'Medium',
+          Status: 'Open',
+          'Due Date': lead['Next Follow Up'],
+          Notes: 'Created by REOS follow-up automation.'
+        });
+        created++;
+      }
+    });
+
+    logRun_('daily.followups', 'Success', 'Follow-up scan completed.', { tasksCreated: created });
+    return { ok: true, tasksCreated: created };
+  }
+
+  function scanOverdueTasks() {
+    const today = startOfDay_(new Date());
+    const tasks = REOS.Database.getAll(REOS.CONFIG.SHEETS.TASKS);
+    let overdue = 0;
+    let escalated = 0;
+
+    tasks.forEach(function (task) {
+      if (task.Active === false) return;
+      if (String(task.Status || '').toLowerCase() === 'completed') return;
+      if (!task['Due Date']) return;
+
+      const due = startOfDay_(new Date(task['Due Date']));
+      if (isNaN(due.getTime()) || due >= today) return;
+      overdue++;
+
+      if (String(task.Priority || '') !== 'Critical') {
+        REOS.Database.update(REOS.CONFIG.SHEETS.TASKS, 'Task ID', task['Task ID'], {
+          Priority: 'Critical',
+          Notes: appendNote_(task.Notes, 'Escalated by overdue task automation.'),
+          'Updated At': new Date()
+        });
+        escalated++;
+      }
+    });
+
+    logRun_('daily.overdueTasks', 'Success', 'Overdue task scan completed.', { overdue: overdue, escalated: escalated });
+    return { ok: true, overdue: overdue, escalated: escalated };
+  }
+
+  function reviewAcquisitionLeads() {
+    const leads = REOS.Acquisitions && REOS.Acquisitions.listLeads ? REOS.Acquisitions.listLeads({ limit: 1000 }) : [];
+    let reviewed = 0;
+    let promoted = 0;
+
+    leads.forEach(function (lead) {
+      reviewed++;
+      const priority = String(lead.Priority || '');
+      const status = String(lead.Status || '');
+      if ((priority === 'Critical' || priority === 'High') && status === 'New') {
+        REOS.Acquisitions.moveStage(lead['Lead ID'], 'Skip Trace', 'Auto-promoted by acquisition review automation.');
+        promoted++;
+      }
+    });
+
+    logRun_('hourly.acquisitionReview', 'Success', 'Acquisition review completed.', { reviewed: reviewed, promoted: promoted });
+    return { ok: true, reviewed: reviewed, promoted: promoted };
+  }
+
   function seedDefaultRules() {
-    REOS.Security.requirePermission('finance:write');
+    REOS.Security.requireAdmin();
     ensureSheets();
     const existing = REOS.Database.getAll(RULES_SHEET);
-    if (existing.length) return existing.length;
+    if (existing.length) return { ok: true, seeded: 0, existing: existing.length };
 
     const defaults = [
-      {
-        Name: 'New Lead Follow-up Task',
-        Event: 'lead.created',
-        Module: 'CRM',
-        Action: 'createTask',
-        'Condition JSON': JSON.stringify({ activeOnly: true }),
-        'Action JSON': JSON.stringify({ task: 'Follow up with new lead', category: 'Follow-up', priority: 'High', dueInDays: 1 })
-      },
-      {
-        Name: 'Transaction Closing Reminder',
-        Event: 'transaction.created',
-        Module: 'Transactions',
-        Action: 'createTask',
-        'Condition JSON': JSON.stringify({ activeOnly: true }),
-        'Action JSON': JSON.stringify({ task: 'Review transaction closing timeline', category: 'Transaction', priority: 'High', dueInDays: 1 })
-      },
-      {
-        Name: 'Lease Renewal Reminder',
-        Event: 'lease.created',
-        Module: 'Rentals',
-        Action: 'createTask',
-        'Condition JSON': JSON.stringify({ activeOnly: true }),
-        'Action JSON': JSON.stringify({ task: 'Review lease renewal', category: 'Rental', priority: 'High', dueInDays: 30 })
-      }
+      { Name: 'Daily Follow-up Scanner', Event: 'daily.run', Module: 'Acquisitions', Action: 'scanFollowUps', Active: true, 'Run Count': 0 },
+      { Name: 'Daily Overdue Task Scanner', Event: 'daily.run', Module: 'Tasks', Action: 'scanOverdueTasks', Active: true, 'Run Count': 0 },
+      { Name: 'Hourly Acquisition Review', Event: 'hourly.run', Module: 'Acquisitions', Action: 'reviewAcquisitionLeads', Active: true, 'Run Count': 0 }
     ];
 
     defaults.forEach(function (rule) {
-      rule.Active = true;
-      rule['Run Count'] = 0;
       REOS.Database.insert(RULES_SHEET, rule, { idField: RULE_ID_FIELD, idPrefix: 'AR' });
     });
 
     REOS.Logger.audit('Default automation rules seeded', { count: defaults.length });
-    return defaults.length;
+    return { ok: true, seeded: defaults.length };
   }
 
   function createRule(rule) {
-    REOS.Security.requirePermission('finance:write');
+    REOS.Security.requireAdmin();
     ensureSheets();
-
     rule = rule || {};
     rule.Active = rule.Active === false ? false : true;
     rule['Run Count'] = Number(rule['Run Count'] || 0);
 
-    const validation = REOS.Validation.validateRecord(rule, {
-      required: ['Name', 'Event', 'Module', 'Action']
-    });
+    const validation = REOS.Validation.validateRecord(rule, { required: ['Name', 'Event', 'Module', 'Action'] });
     if (!validation.ok) throw new Error(validation.errors.join(' '));
 
-    const created = REOS.Database.insert(RULES_SHEET, rule, {
-      idField: RULE_ID_FIELD,
-      idPrefix: 'AR'
-    });
-    REOS.Logger.audit('Automation rule created', { ruleId: created[RULE_ID_FIELD], event: created.Event });
-    return created;
+    return REOS.Database.insert(RULES_SHEET, rule, { idField: RULE_ID_FIELD, idPrefix: 'AR' });
   }
 
   function dispatch(eventName, moduleName, payload) {
     ensureSheets();
     payload = payload || {};
-
     const rules = REOS.Database.query(RULES_SHEET, function (rule) {
-      return rule.Active !== false &&
-        String(rule.Event || '') === String(eventName || '') &&
-        (!rule.Module || String(rule.Module || '') === String(moduleName || ''));
+      return rule.Active !== false && String(rule.Event || '') === String(eventName || '') && (!rule.Module || String(rule.Module || '') === String(moduleName || ''));
     });
-
-    return rules.map(function (rule) {
-      return executeRule_(rule, eventName, moduleName, payload);
-    });
+    return rules.map(function (rule) { return executeRule_(rule, eventName, moduleName, payload); });
   }
 
   function executeRule_(rule, eventName, moduleName, payload) {
-    const startedAt = new Date();
-    let status = 'Success';
-    let message = 'Rule executed.';
-
     try {
-      const conditions = parseJson_(rule['Condition JSON']);
-      if (!passesConditions_(conditions, payload)) {
-        status = 'Skipped';
-        message = 'Conditions not met.';
-      } else {
-        runAction_(rule.Action, parseJson_(rule['Action JSON']), payload);
+      switch (String(rule.Action || '')) {
+        case 'scanFollowUps': return scanFollowUps();
+        case 'scanOverdueTasks': return scanOverdueTasks();
+        case 'reviewAcquisitionLeads': return reviewAcquisitionLeads();
+        default: throw new Error('Unknown automation action: ' + rule.Action);
       }
-    } catch (error) {
-      status = 'Error';
-      message = error.message;
-      REOS.Logger.error('Automation rule failed', error, { ruleId: rule[RULE_ID_FIELD], event: eventName });
-    }
-
-    const run = REOS.Database.insert(RUNS_SHEET, {
-      'Rule ID': rule[RULE_ID_FIELD],
-      Event: eventName,
-      Module: moduleName,
-      'Record ID': payload.recordId || payload['Record ID'] || '',
-      Status: status,
-      Message: message,
-      'Payload JSON': JSON.stringify(payload),
-      'Started At': startedAt,
-      'Finished At': new Date()
-    }, {
-      idField: RUN_ID_FIELD,
-      idPrefix: 'RUN'
-    });
-
-    try {
-      REOS.Database.update(RULES_SHEET, RULE_ID_FIELD, rule[RULE_ID_FIELD], {
-        'Last Run At': new Date(),
-        'Run Count': Number(rule['Run Count'] || 0) + 1
-      });
-    } catch (ignore) {}
-
-    return run;
-  }
-
-  function runAction_(action, config, payload) {
-    switch (String(action || '')) {
-      case 'createTask':
-        return createTaskAction_(config, payload);
-      case 'sendEmail':
-        return REOS.Notifications.sendEmail(config, payload);
-      case 'createCalendarEvent':
-        return REOS.Calendar.createEventFromAutomation(config, payload);
-      default:
-        throw new Error('Unknown automation action: ' + action);
-    }
-  }
-
-  function createTaskAction_(config, payload) {
-    config = config || {};
-    const due = new Date();
-    due.setDate(due.getDate() + Number(config.dueInDays || 0));
-    return REOS.Tasks.create({
-      'Client ID': payload.clientId || payload['Client ID'] || '',
-      'Lead ID': payload.leadId || payload['Lead ID'] || '',
-      Task: config.task || 'Automation task',
-      Category: config.category || 'Automation',
-      Priority: config.priority || 'Medium',
-      'Due Date': due,
-      Notes: 'Created by automation for event: ' + (payload.eventName || '')
-    });
-  }
-
-  function passesConditions_(conditions, payload) {
-    conditions = conditions || {};
-    if (conditions.activeOnly && payload.Active === false) return false;
-    if (conditions.statusEquals && String(payload.Status || '') !== String(conditions.statusEquals)) return false;
-    if (conditions.minAmount && Number(payload.Amount || 0) < Number(conditions.minAmount)) return false;
-    return true;
-  }
-
-  function parseJson_(value) {
-    if (!value) return {};
-    if (typeof value === 'object') return value;
-    try {
-      return JSON.parse(value);
-    } catch (error) {
-      throw new Error('Invalid automation JSON: ' + error.message);
+    } finally {
+      try {
+        REOS.Database.update(RULES_SHEET, RULE_ID_FIELD, rule[RULE_ID_FIELD], {
+          'Last Run At': new Date(),
+          'Run Count': Number(rule['Run Count'] || 0) + 1
+        });
+      } catch (ignore) {}
     }
   }
 
   function dailyRun() {
     ensureSheets();
-    const results = [];
-    results.push.apply(results, dispatch('daily.run', 'System', { recordId: 'SYSTEM', eventName: 'daily.run' }));
-    try { REOS.Tasks.refreshDaysRemaining(); } catch (error) { REOS.Logger.warn('Daily task refresh failed', { error: error.message }); }
-    return results;
+    return runAll();
+  }
+
+  function runJob_(key, fn) {
+    const startedAt = new Date();
+    try {
+      const result = fn();
+      return { key: key, ok: true, durationMs: new Date().getTime() - startedAt.getTime(), result: result };
+    } catch (error) {
+      REOS.handleError_('Automation job ' + key, error);
+      logRun_(key, 'Error', error.message, { stack: error.stack || '' });
+      return { key: key, ok: false, error: error.message };
+    }
+  }
+
+  function findOpenTask_(relatedType, relatedId, titlePrefix) {
+    const tasks = REOS.Database.getAll(REOS.CONFIG.SHEETS.TASKS);
+    return tasks.find(function (task) {
+      return task.Active !== false &&
+        String(task.Status || '').toLowerCase() !== 'completed' &&
+        String(task['Related Type'] || '') === String(relatedType || '') &&
+        String(task['Related ID'] || '') === String(relatedId || '') &&
+        String(task.Title || '').indexOf(titlePrefix) === 0;
+    }) || null;
+  }
+
+  function logRun_(jobKey, status, message, payload) {
+    ensureSheets();
+    REOS.Logger.info('AUTOMATION: ' + jobKey, Object.assign({ jobKey: jobKey, status: status }, payload || {}));
+    return REOS.Database.insert(RUNS_SHEET, {
+      'Rule ID': jobKey,
+      Event: jobKey,
+      Module: 'Automation',
+      'Record ID': 'SYSTEM',
+      Status: status,
+      Message: message,
+      'Payload JSON': REOS.toJson_(payload || {}),
+      'Started At': new Date(),
+      'Finished At': new Date()
+    }, { idField: RUN_ID_FIELD, idPrefix: 'RUN' });
+  }
+
+  function log_(action, jobKey, details) {
+    REOS.Logger.info('AUTOMATION: ' + action, Object.assign({ jobKey: jobKey, source: AUTOMATION_SOURCE }, details || {}));
+  }
+
+  function startOfDay_(date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
+
+  function appendNote_(existing, note) {
+    const current = String(existing || '').trim();
+    return current ? current + '\n' + REOS.nowIso_() + ' - ' + note : REOS.nowIso_() + ' - ' + note;
   }
 
   return {
     ensureSheets: ensureSheets,
+    getJobs: getJobs,
+    installTriggers: installTriggers,
+    removeTriggers: removeTriggers,
+    runAll: runAll,
+    scanFollowUps: scanFollowUps,
+    scanOverdueTasks: scanOverdueTasks,
+    reviewAcquisitionLeads: reviewAcquisitionLeads,
     seedDefaultRules: seedDefaultRules,
     createRule: createRule,
     dispatch: dispatch,
@@ -226,14 +311,13 @@ REOS.Automation = (function () {
   };
 })();
 
-function automationSeedDefaults() {
-  return REOS.Automation.seedDefaultRules();
-}
-
-function automationDispatch(eventName, moduleName, payload) {
-  return REOS.Automation.dispatch(eventName, moduleName, payload || {});
-}
-
-function automationDailyRun() {
-  return REOS.Automation.dailyRun();
-}
+function reosAutomationInstallTriggers() { return REOS.Automation.installTriggers(); }
+function reosAutomationRemoveTriggers() { return REOS.Automation.removeTriggers(); }
+function reosAutomationRunAll() { return REOS.Automation.runAll(); }
+function reosAutomationDailyFollowUps() { return REOS.Automation.scanFollowUps(); }
+function reosAutomationOverdueTasks() { return REOS.Automation.scanOverdueTasks(); }
+function reosAutomationAcquisitionReview() { return REOS.Automation.reviewAcquisitionLeads(); }
+function reosAutomationGetJobs() { return REOS.Automation.getJobs(); }
+function automationSeedDefaults() { return REOS.Automation.seedDefaultRules(); }
+function automationDispatch(eventName, moduleName, payload) { return REOS.Automation.dispatch(eventName, moduleName, payload || {}); }
+function automationDailyRun() { return REOS.Automation.dailyRun(); }
