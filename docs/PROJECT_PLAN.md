@@ -23,6 +23,8 @@ Status: In progress
 - CRM UI foundation added in `src/CRM.html`.
 - Dashboard shell wired to router navigation and route dispatching in `src/Index.html`.
 - Validation framework expanded in `src/Validation.gs` with required fields, allowed values, lookup validation, duplicates, number/boolean/date/email/phone validation, sanitizing, and clean validation responses.
+- Test runner added in `src/TestRunner.gs` for setup verification, health checks, required sheets, required headers, services, security, router, and validation.
+- REOS menu updated in `src/Main.gs` with Dashboard, CRM, Initialize Workbook, Health Check, and Run Tests actions.
 
 ### Active Objectives
 
@@ -36,7 +38,7 @@ Status: In progress
 | Phase | Status | Description |
 | --- | --- | --- |
 | 0. Repository & Architecture | Complete | Repository connected and accessible. |
-| 1. Core Framework | In Progress | Bootstrap, config, utilities, setup, router, dashboard shell, health check. |
+| 1. Core Framework | In Progress | Bootstrap, config, utilities, setup, router, dashboard shell, health check, test runner. |
 | 2. Database Layer | In Progress | Sheet-backed data access framework. |
 | 3. Security | In Progress | Roles, permissions, audit logs. |
 | 4. CRM | In Progress | Contacts, leads, pipeline, activities. |
@@ -46,7 +48,7 @@ Status: In progress
 | 8. Automation Engine | Planned | Triggers, scheduled jobs, workflow rules. |
 | 9. AI Agents | Planned | Lead qualification, reporting, document processing. |
 | 10. Dashboards | Planned | Executive KPIs and operational dashboards. |
-| 11. Testing | Planned | QA scripts, validation, regression checks. |
+| 11. Testing | In Progress | QA scripts, validation, regression checks. |
 | 12. Deployment | Planned | Production release process and documentation. |
 
 ## Core Framework Acceptance Criteria
@@ -63,11 +65,12 @@ Status: In progress
 - CRM foundation can create/search/update/archive clients, create/update/list leads, create tasks, and log activities.
 - Main dashboard can load modules, dispatch routes, initialize workbook, and run health checks.
 - Validation framework supports reusable record validation, lookup validation, duplicate checks, and clean error handling.
+- Test runner can verify setup, schema, services, router, security, validation, and health status.
 
 ## Next Build Items
 
-1. Add test runner for health checks and setup verification.
-2. Add role-management UI actions.
-3. Build acquisitions module foundation.
-4. Add dashboard views for CRM records.
-5. Add workflow automation foundation.
+1. Add role-management UI actions.
+2. Build acquisitions module foundation.
+3. Add dashboard views for CRM records.
+4. Add workflow automation foundation.
+5. Add deployment documentation.
