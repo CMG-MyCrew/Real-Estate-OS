@@ -24,7 +24,7 @@ Status: In progress
 - Dashboard shell wired to router navigation and route dispatching in `src/Index.html`.
 - Validation framework expanded in `src/Validation.gs` with required fields, allowed values, lookup validation, duplicates, number/boolean/date/email/phone validation, sanitizing, and clean validation responses.
 - Test runner added in `src/TestRunner.gs` for setup verification, health checks, required sheets, required headers, services, security, router, and validation.
-- REOS menu updated in `src/Main.gs` with Dashboard, CRM, Acquisitions, Vendors, Properties, Automation, Admin, Initialize Workbook, Health Check, and Run Tests actions.
+- REOS menu updated in `src/Main.gs` with Dashboard, CRM, Acquisitions, Vendors, Properties, Automation, AI Workspace, Admin, Initialize Workbook, Health Check, and Run Tests actions.
 - Acquisitions module foundation added in `src/Acquisitions.gs` for distressed/off-market lead intake, scoring, pipeline, follow-ups, and dashboard metrics.
 - Acquisitions UI foundation added in `src/Acquisitions.html`.
 - Acquisition pipeline and distress indicator lookups added to setup seed data.
@@ -55,6 +55,8 @@ Status: In progress
 - AI use permission added to Agent and Coordinator roles in `src/Security.gs`.
 - AI next-best-action engine Sprint 3 added in `src/AI.gs` with ranked action plans, outreach channel recommendations, priority/due-date logic, action reasoning, batch recommendations, and optional task creation.
 - AI summary generator Sprint 4 added in `src/AISummaries.gs` with executive summaries, property overview, seller profile, motivation summary, risk summary, equity summary, offer guidance, and follow-up strategy.
+- AI Workspace Sprint 6 added in `src/AI.html` with lead search, AI config, qualification, next-best-action, executive summary, action task creation, opportunity queue, and AI request log review.
+- AI Workspace wired into `src/Main.gs` menu through `showAI`.
 
 ### Active Objectives
 
@@ -76,7 +78,7 @@ Status: In progress
 | 6. Property Management | In Progress | Assets, inspections, maintenance, occupancy. |
 | 7. Vendors | In Progress | Vendor registry, work orders, field services. |
 | 8. Automation Engine | In Progress | Scheduled jobs, reminders, workflow scans, trigger management, automation UI. |
-| 9. AI Agents | In Progress | AI core, provider abstraction, lead qualification, next-best-action, summary generation, reporting, document processing. |
+| 9. AI Agents | In Progress | AI core, provider abstraction, lead qualification, next-best-action, summary generation, AI workspace, reporting, document processing. |
 | 10. Dashboards | In Progress | Executive KPIs, record review, drill-downs, charts, and pipeline visualizations. |
 | 11. Testing | In Progress | QA scripts, validation, regression checks. |
 | 12. Deployment | In Progress | Production release process and documentation, sync workflow. |
@@ -106,6 +108,7 @@ Status: In progress
 - AI lead qualification can calculate seller motivation, distress signals, opportunity score, confidence, risk flags, recommended strategy, and next-best-action.
 - AI next-best-action can rank recommended actions, explain reasoning, assign priority, set due dates, recommend outreach channels, and create CRM tasks.
 - AI summaries can generate executive lead summaries, seller profiles, risk summaries, preliminary offer guidance, and follow-up strategies.
+- AI Workspace can run qualification, next-best-action, summary generation, task creation, queue review, config management, and request-log review from a UI.
 - Deployment guide documents setup, authorization, validation, automation, production release, and rollback.
 - Apps Script sync guide documents GitHub-to-runtime file mapping, manual sync, clasp workflow, release process, and troubleshooting.
 - Dashboard drill-down supports viewing full records, activity history, and contextual actions.
@@ -113,8 +116,8 @@ Status: In progress
 
 ## Next Build Items
 
-1. Build AI lead qualification engine UI/actions.
-2. Add automation rule editor forms.
-3. Add property dashboard drill-down actions.
-4. Add production release checklist template.
-5. Add charts to module-specific dashboards.
+1. Add automation rule editor forms.
+2. Add property dashboard drill-down actions.
+3. Add production release checklist template.
+4. Add charts to module-specific dashboards.
+5. Add AI report/document generation.
