@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <style>
+      body { margin: 0; font-family: Arial, sans-serif; background: #f6f8fb; color: #1f2937; }
+      .shell { padding: 20px; }
+      .header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 16px; }
+      h1 { margin: 0; font-size: 24px; }
+      h2 { margin: 0 0 12px; font-size: 18px; }
+      h3 { margin: 0 0 8px; font-size: 15px; }
+      .muted { color: #6b7280; }
+      .grid { display: grid; grid-template-columns: 340px 1fr; gap: 16px; }
+      .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+      .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 16px; }
+      .kpi { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; }
+      .kpi strong { display: block; font-size: 24px; margin-top: 4px; }
+      input, select, textarea { width: 100%; box-sizing: border-box; padding: 10px; margin: 6px 0 12px; border: 1px solid #d1d5db; border-radius: 8px; }
+      button { padding: 9px 12px; border: 0; border-radius: 8px; cursor: pointer; font-weight: 700; margin-right: 6px; margin-bottom: 6px; }
+      .primary { background: #111827; color: #fff; }
+      .secondary { background: #e5e7eb; color: #111827; }
+      .success { background: #dcfce7; color: #166534; }
+      .danger { background: #fee2e2; color: #991b1b; }
+      table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      th, td { text-align: left; border-bottom: 1px solid #e5e7eb; padding: 8px; vertical-align: top; }
+      th { background: #f9fafb; }
+      tr.clickable { cursor: pointer; }
+      tr.clickable:hover { background: #f9fafb; }
+      pre { white-space: pre-wrap; background: #0f172a; color: #e5e7eb; border-radius: 12px; padding: 12px; overflow: auto; max-height: 260px; }
+      .pill { display: inline-block; border-radius: 999px; padding: 3px 8px; font-size: 12px; font-weight: 700; background: #e5e7eb; margin-right: 4px; }
+      .hot { background: #fee2e2; color: #991b1b; }
+      .warm { background: #fef3c7; color: #92400e; }
+      .ok { background: #dcfce7; color: #166534; }
+      .section-output { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; min-height: 80px; }
+      .summary-text { white-space: pre-wrap; line-height: 1.45; }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <div class="header">
+        <div>
+          <h1>REOS AI Workspace</h1>
+          <div class="muted">Lead qualification, next-best-action, summaries, tasks, and AI request logs.</div>
+        </div>
+        <div>
+          <button class="secondary" onclick="loadConfig()">Refresh Config</button>
+          <button class="secondary" onclick="loadBatchRecommendations()">Load AI Queue</button>
+          <button class="secondary" onclick="loadLogs()">Load Logs</button>
+        </div>
+      </div>
+
+      <section class="grid">
+        <aside>
+          <div class="card">
+            <h2>AI Configuration</h2>
+            <label class="muted">Provider</label>
+            <select id="provider">
+              <option value="stub">Stub / Rules Engine</option>
+              <option value="openai">OpenAI</option>
+              <option value="gemini">Google Gemini</option>
+              <option value="anthropic">Anthropic Claude</option>
+            </select>
+            <input id="model" placeholder="Model, e.g. reos-local-rules or gpt-4.1-mini">
+            <input id="temperature" placeholder="Temperature" value="0.2">
+            <input id="maxTokens" placeholder="Max tokens" value="1200">
+            <select id="enabled">
+              <option value="false">External Calls Disabled</option>
+              <option value="true">External Calls Enabled</option>
+            </select>
+            <input id="openaiApiKey" type="password" placeholder="OpenAI API key optional">
+            <button class="primary" onclick="saveConfig()">Save Config</button>
+            <div id="configStatus" class="muted"></div>
+          </div>
+
+          <div class="card">
+            <h2>Lead Selector</h2>
+            <input id="leadSearch" placeholder="Search leads by address, owner, status">
+            <button class="secondary" onclick="searchLeads()">Search Leads</button>
+            <input id="leadId" placeholder="Selected Lead ID">
+            <div id="leadResults" class="section-output">Search for a lead to begin.</div>
+          </div>
+
+          <div class="card">
+            <h2>Run AI</h2>
+            <button class="primary" onclick="qualifyLead()">Qualify Lead</button>
+            <button class="primary" onclick="nextBestAction()">Next Best Action</button>
+            <button class="primary" onclick="summarizeLead()">Executive Summary</button>
+            <button class="success" onclick="createTask()">Create Action Task</button>
+            <button class="secondary" onclick="buildPrompt()">Preview Prompt</button>
+          </div>
+        </aside>
+
+        <section>
+          <div class="kpis">
+            <div class="kpi"><span>Score</span><strong id="score">—</strong></div>
+            <div class="kpi"><span>Grade</span><strong id="grade">—</strong></div>
+            <div class="kpi"><span>Confidence</span><strong id="confidence">—</strong></div>
+            <div class="kpi"><span>Priority</span><strong id="priority">—</strong></div>
+            <div class="kpi"><span>Due Date</span><strong id="dueDate">—</strong></div>
+          </div>
+
+          <div class="cols">
+            <div class="card">
+              <h2>Lead Qualification</h2>
+              <div id="qualificationOutput" class="section-output">No qualification run yet.</div>
+            </div>
+            <div class="card">
+              <h2>Next Best Action</h2>
+              <div id="actionOutput" class="section-output">No action recommendation yet.</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Executive Summary</h2>
+            <div id="summaryOutput" class="section-output summary-text">No summary generated yet.</div>
+          </div>
+
+          <div class="card">
+            <h2>AI Opportunity Queue</h2>
+            <table id="queueTable"></table>
+          </div>
+
+          <div class="card">
+            <h2>AI Request Logs</h2>
+            <table id="logsTable"></table>
+          </div>
+
+          <div class="card">
+            <h2>System Output</h2>
+            <pre id="output">Ready.</pre>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script>
+      function output(value) {
+        document.getElementById('output').textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+      }
+
+      function loadConfig() {
+        google.script.run.withSuccessHandler(function(config) {
+          document.getElementById('provider').value = config.provider || 'stub';
+          document.getElementById('model').value = config.model || '';
+          document.getElementById('temperature').value = config.temperature || 0.2;
+          document.getElementById('maxTokens').value = config.maxTokens || 1200;
+          document.getElementById('enabled').value = String(config.enabled === true);
+          document.getElementById('configStatus').textContent = 'Provider: ' + config.provider + ' · OpenAI key: ' + (config.hasOpenAIKey ? 'stored' : 'not stored');
+          output(config);
+        }).withFailureHandler(showError).reosAIGetConfig();
+      }
+
+      function saveConfig() {
+        const config = {
+          provider: document.getElementById('provider').value,
+          model: document.getElementById('model').value,
+          temperature: document.getElementById('temperature').value,
+          maxTokens: document.getElementById('maxTokens').value,
+          enabled: document.getElementById('enabled').value === 'true'
+        };
+        const key = document.getElementById('openaiApiKey').value;
+        if (key) config.openaiApiKey = key;
+        google.script.run.withSuccessHandler(function(data) {
+          document.getElementById('openaiApiKey').value = '';
+          loadConfig();
+          output(data);
+        }).withFailureHandler(showError).reosAIUpdateConfig(config);
+      }
+
+      function searchLeads() {
+        const q = document.getElementById('leadSearch').value;
+        google.script.run.withSuccessHandler(function(data) {
+          renderLeadResults(data.acquisitionLeads || []);
+          output(data);
+        }).withFailureHandler(showError).reosDashboardSearch(q);
+      }
+
+      function renderLeadResults(leads) {
+        const el = document.getElementById('leadResults');
+        if (!leads.length) {
+          el.innerHTML = 'No acquisition leads found.';
+          return;
+        }
+        el.innerHTML = leads.slice(0, 10).map(function(lead) {
+          const id = lead['Lead ID'] || '';
+          return '<div style="margin-bottom:8px;"><button class="secondary" onclick="selectLead(\'' + escapeJs(id) + '\')">Select</button>' +
+            '<strong>' + escapeHtml(id) + '</strong><br>' + escapeHtml(lead['Property Address'] || '') + '<br><span class="muted">' + escapeHtml(lead['Owner Name'] || '') + ' · ' + escapeHtml(lead.Status || '') + '</span></div>';
+        }).join('');
+      }
+
+      function selectLead(id) {
+        document.getElementById('leadId').value = id;
+        output({ selectedLeadId: id });
+      }
+
+      function qualifyLead() {
+        const id = requireLeadId();
+        if (!id) return;
+        google.script.run.withSuccessHandler(function(data) {
+          renderQualification(data.parsed || {});
+          output(data);
+        }).withFailureHandler(showError).reosAIQualifyLead(id);
+      }
+
+      function nextBestAction() {
+        const id = requireLeadId();
+        if (!id) return;
+        google.script.run.withSuccessHandler(function(data) {
+          renderQualification(data.qualification || {});
+          renderAction(data.action || {});
+          output(data);
+        }).withFailureHandler(showError).reosAIRecommendNextBestAction(id, {});
+      }
+
+      function summarizeLead() {
+        const id = requireLeadId();
+        if (!id) return;
+        google.script.run.withSuccessHandler(function(text) {
+          document.getElementById('summaryOutput').textContent = text;
+          output(text);
+        }).withFailureHandler(showError).reosAISummarizeLeadText(id, {});
+      }
+
+      function createTask() {
+        const id = requireLeadId();
+        if (!id) return;
+        google.script.run.withSuccessHandler(function(data) {
+          renderQualification((data.recommendation && data.recommendation.qualification) || {});
+          renderAction((data.recommendation && data.recommendation.action) || {});
+          output(data);
+        }).withFailureHandler(showError).reosAICreateNextBestActionTask(id);
+      }
+
+      function buildPrompt() {
+        const id = requireLeadId();
+        if (!id) return;
+        const payload = { leadJson: '{"Lead ID":"' + id + '"}' };
+        google.script.run.withSuccessHandler(output).withFailureHandler(showError).reosAIBuildPrompt('leadQualification', payload);
+      }
+
+      function loadBatchRecommendations() {
+        google.script.run.withSuccessHandler(function(rows) {
+          renderQueue(rows || []);
+          output(rows);
+        }).withFailureHandler(showError).reosAIRecommendNextBestActionsBatch({ limit: 50 });
+      }
+
+      function loadLogs() {
+        google.script.run.withSuccessHandler(function(rows) {
+          renderLogs(rows || []);
+          output(rows);
+        }).withFailureHandler(showError).reosAIGetRequestLogs({ limit: 50 });
+      }
+
+      function renderQualification(q) {
+        setText('score', q.score !== undefined ? q.score : '—');
+        setText('grade', q.grade || '—');
+        setText('confidence', q.confidence !== undefined ? q.confidence + '%' : '—');
+        document.getElementById('qualificationOutput').innerHTML =
+          '<h3>' + escapeHtml(q.summary || 'Qualification complete.') + '</h3>' +
+          '<div>' + renderPills(q.motivationTags || [], 'warm') + '</div>' +
+          '<div>' + renderPills(q.distressSignals || [], 'hot') + '</div>' +
+          '<p><strong>Strategy:</strong> ' + escapeHtml(q.recommendedStrategy || '') + '</p>' +
+          '<p><strong>Risks:</strong> ' + escapeHtml((q.riskFlags || []).join(', ') || 'None detected') + '</p>' +
+          '<p><strong>Missing Data:</strong> ' + escapeHtml((q.missingData || []).join(', ') || 'None') + '</p>';
+      }
+
+      function renderAction(action) {
+        setText('priority', action.priority || '—');
+        setText('dueDate', action.dueDate || '—');
+        document.getElementById('actionOutput').innerHTML =
+          '<h3>' + escapeHtml(action.primaryAction || 'No action') + '</h3>' +
+          '<p><strong>Reason:</strong> ' + escapeHtml(action.reasoning || '') + '</p>' +
+          '<p><strong>Channel:</strong> ' + escapeHtml(action.recommendedChannel || '') + '</p>' +
+          '<p><strong>Task:</strong> ' + escapeHtml(action.taskTitle || '') + '</p>' +
+          '<h3>Ranked Plan</h3>' + renderActionPlan(action.actionPlan || []);
+      }
+
+      function renderActionPlan(plan) {
+        if (!plan.length) return '<span class="muted">No ranked plan.</span>';
+        return '<ol>' + plan.map(function(item) {
+          return '<li><strong>' + escapeHtml(item.name) + '</strong> · ' + escapeHtml(item.priority) + ' · due in ' + escapeHtml(item.dueInDays) + ' day(s)<br><span class="muted">' + escapeHtml(item.reason) + '</span></li>';
+        }).join('') + '</ol>';
+      }
+
+      function renderQueue(rows) {
+        let html = '<tr><th>Lead</th><th>Property</th><th>Score</th><th>Grade</th><th>Action</th><th>Priority</th><th>Due</th></tr>';
+        if (!rows.length) html += '<tr><td colspan="7">No recommendations found.</td></tr>';
+        rows.forEach(function(row) {
+          html += '<tr class="clickable" onclick="selectLead(\'' + escapeJs(row['Lead ID'] || '') + '\')">' +
+            '<td>' + escapeHtml(row['Lead ID'] || '') + '</td>' +
+            '<td>' + escapeHtml(row['Property Address'] || '') + '</td>' +
+            '<td>' + escapeHtml(row.score || '') + '</td>' +
+            '<td>' + escapeHtml(row.grade || '') + '</td>' +
+            '<td>' + escapeHtml(row.primaryAction || '') + '</td>' +
+            '<td>' + escapeHtml(row.priority || '') + '</td>' +
+            '<td>' + escapeHtml(row.dueDate || '') + '</td>' +
+            '</tr>';
+        });
+        document.getElementById('queueTable').innerHTML = html;
+      }
+
+      function renderLogs(rows) {
+        let html = '<tr><th>Started</th><th>Type</th><th>Provider</th><th>Status</th><th>Record</th><th>Tokens</th><th>Preview</th></tr>';
+        if (!rows.length) html += '<tr><td colspan="7">No AI request logs found.</td></tr>';
+        rows.forEach(function(row) {
+          html += '<tr>' +
+            '<td>' + escapeHtml(row['Started At'] || '') + '</td>' +
+            '<td>' + escapeHtml(row['Request Type'] || '') + '</td>' +
+            '<td>' + escapeHtml(row.Provider || '') + '</td>' +
+            '<td>' + escapeHtml(row.Status || '') + '</td>' +
+            '<td>' + escapeHtml((row['Record Type'] || '') + ' ' + (row['Record ID'] || '')) + '</td>' +
+            '<td>' + escapeHtml(row['Total Tokens'] || 0) + '</td>' +
+            '<td>' + escapeHtml(row['Response Preview'] || row.Error || '') + '</td>' +
+            '</tr>';
+        });
+        document.getElementById('logsTable').innerHTML = html;
+      }
+
+      function renderPills(items, cls) {
+        if (!items.length) return '';
+        return items.map(function(item) { return '<span class="pill ' + cls + '">' + escapeHtml(item) + '</span>'; }).join('');
+      }
+
+      function requireLeadId() {
+        const id = document.getElementById('leadId').value.trim();
+        if (!id) output({ error: 'Select or enter a Lead ID first.' });
+        return id;
+      }
+
+      function showError(error) { output({ error: error.message }); }
+      function setText(id, value) { document.getElementById(id).textContent = value; }
+      function escapeHtml(value) { return String(value || '').replace(/[&<>'"]/g, function(char) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]; }); }
+      function escapeJs(value) { return String(value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+
+      loadConfig();
+      loadBatchRecommendations();
+      loadLogs();
+    </script>
+  </body>
+</html>
