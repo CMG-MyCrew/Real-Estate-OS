@@ -84,5 +84,8 @@ REOS.Logger = {
   },
   error: function (action, details) {
     REOS.log_('ERROR', action, details);
+  },
+  audit: function (action, details) {
+    REOS.log_('AUDIT', action, details);
   }
 };
