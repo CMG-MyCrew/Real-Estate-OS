@@ -77,6 +77,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open Acquisitions', 'showAcquisitions')
     .addItem('Open Vendors', 'showVendors')
     .addItem('Open Properties', 'showProperties')
+    .addItem('Open AI Workspace', 'showAI')
     .addItem('Open Automation', 'showAutomation')
     .addItem('Open Admin', 'showAdmin')
     .addSeparator()
@@ -239,6 +240,12 @@ REOS.healthCheck_ = function () {
 function reosOpenDashboard() {
   const html = HtmlService.createHtmlOutputFromFile('Index').setTitle('REOS Enterprise').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Enterprise');
+}
+
+function showAI() {
+  REOS.Security.requirePermission('ai:use');
+  const html = HtmlService.createHtmlOutputFromFile('AI').setTitle('REOS AI Workspace').setWidth(1200).setHeight(800);
+  SpreadsheetApp.getUi().showModalDialog(html, 'REOS AI Workspace');
 }
 
 function showAdmin() {
