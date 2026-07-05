@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <style>
+      body { margin: 0; font-family: Arial, sans-serif; background: #f6f8fb; color: #1f2937; }
+      .shell { padding: 20px; }
+      .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+      h1 { margin: 0; font-size: 24px; }
+      .muted { color: #6b7280; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; }
+      input, select, textarea { width: 100%; box-sizing: border-box; padding: 10px; margin: 6px 0 12px; border: 1px solid #d1d5db; border-radius: 8px; }
+      button { padding: 10px 14px; border: 0; border-radius: 8px; cursor: pointer; font-weight: 700; }
+      .primary { background: #111827; color: #fff; }
+      .secondary { background: #e5e7eb; color: #111827; }
+      .results { margin-top: 12px; font-size: 13px; white-space: pre-wrap; background: #f9fafb; border-radius: 8px; padding: 12px; max-height: 240px; overflow: auto; }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <div class="header">
+        <div>
+          <h1>REOS CRM</h1>
+          <div class="muted">Clients, contacts, leads, tasks, and activity history.</div>
+        </div>
+        <button class="secondary" onclick="loadClients()">Refresh</button>
+      </div>
+
+      <section class="grid">
+        <div class="card">
+          <h2>Create Client</h2>
+          <input id="firstName" placeholder="First Name">
+          <input id="lastName" placeholder="Last Name">
+          <input id="email" placeholder="Email">
+          <input id="phone" placeholder="Phone">
+          <select id="clientType">
+            <option>Buyer</option>
+            <option>Seller</option>
+            <option>Investor</option>
+            <option>Tenant</option>
+            <option>Vendor</option>
+          </select>
+          <textarea id="notes" placeholder="Notes"></textarea>
+          <button class="primary" onclick="createClient()">Create Client</button>
+        </div>
+
+        <div class="card">
+          <h2>Search Clients</h2>
+          <input id="search" placeholder="Search by name, email, phone, company, notes">
+          <button class="primary" onclick="searchClients()">Search</button>
+          <div id="results" class="results">Ready.</div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      function render(value) {
+        document.getElementById('results').textContent = JSON.stringify(value, null, 2);
+      }
+
+      function createClient() {
+        const client = {
+          'First Name': document.getElementById('firstName').value,
+          'Last Name': document.getElementById('lastName').value,
+          Email: document.getElementById('email').value,
+          Phone: document.getElementById('phone').value,
+          'Client Type': document.getElementById('clientType').value,
+          Notes: document.getElementById('notes').value
+        };
+        google.script.run.withSuccessHandler(render).withFailureHandler(function(error) {
+          render({ error: error.message });
+        }).crmCreateContact(client);
+      }
+
+      function searchClients() {
+        google.script.run.withSuccessHandler(render).withFailureHandler(function(error) {
+          render({ error: error.message });
+        }).crmSearchContacts(document.getElementById('search').value);
+      }
+
+      function loadClients() {
+        google.script.run.withSuccessHandler(render).withFailureHandler(function(error) {
+          render({ error: error.message });
+        }).crmSearchContacts('');
+      }
+    </script>
+  </body>
+</html>
