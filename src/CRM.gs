@@ -1,253 +1,307 @@
 /**
- * REOS Enterprise v3.0 - CRM Framework
+ * REOS Enterprise v3.0 - CRM Module Foundation
  *
- * Provides contact/lead CRUD, search, and CRM sheet initialization.
+ * Provides client/contact CRUD, lead CRUD, search, activity logging,
+ * and task creation using the shared REOS database/security framework.
  */
 
 var REOS = REOS || {};
 
 REOS.CRM = (function () {
-  const CONTACT_SHEET = REOS.CONFIG.SHEETS.CRM;
+  const CLIENT_SHEET = REOS.CONFIG.SHEETS.CRM;
   const LEAD_SHEET = REOS.CONFIG.SHEETS.LEADS;
+  const TASK_SHEET = REOS.CONFIG.SHEETS.TASKS;
+  const ACTIVITY_SHEET = REOS.CONFIG.SHEETS.ACTIVITIES;
 
-  const CONTACT_ID_FIELD = 'Client ID';
-  const LEAD_ID_FIELD = 'Lead ID';
+  const CLIENT_ID = 'Client ID';
+  const LEAD_ID = 'Lead ID';
+  const TASK_ID = 'Task ID';
+  const ACTIVITY_ID = 'Activity ID';
 
-  const CONTACT_HEADERS = [
-    'Client ID', 'First Name', 'Last Name', 'Full Name', 'Client Type', 'Status',
-    'Company', 'Email', 'Mobile', 'Office', 'Address', 'City', 'State', 'ZIP',
-    'Birthday', 'Home Anniversary', 'Lead Source', 'Referral By', 'Tags', 'Notes',
-    'Last Contact', 'Next Follow-up', 'Lead Score', 'Lifetime Value', 'Active',
-    'Created At', 'Updated At'
-  ];
-
-  const LEAD_HEADERS = [
-    'Lead ID', 'Client ID', 'Created Date', 'Lead Type', 'Lead Source', 'Status',
-    'Stage', 'Assigned To', 'Lead Score', 'Priority', 'Budget', 'Pre-Approved',
-    'Desired Area', 'Timeline', 'Probability', 'Expected Commission',
-    'Expected Close', 'Last Contact', 'Next Follow-up', 'Notes', 'Active',
-    'Created At', 'Updated At'
-  ];
-
-  function ensureSheets() {
-    ensureTable_(CONTACT_SHEET, CONTACT_HEADERS);
-    ensureTable_(LEAD_SHEET, LEAD_HEADERS);
-  }
-
-  function ensureTable_(sheetName, headers) {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    let sheet = ss.getSheetByName(sheetName);
-    if (!sheet) sheet = ss.insertSheet(sheetName);
-
-    if (sheet.getLastRow() === 0) {
-      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-      sheet.setFrozenRows(1);
-      sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold');
+  function initialize() {
+    if (REOS.Setup && REOS.Setup.initializeWorkbook) {
+      REOS.Setup.initializeWorkbook();
     }
+    registerRoutes_();
+    REOS.Logger.info('CRM module initialized', {});
+    return { ok: true, module: 'crm' };
   }
 
-  function createContact(contact) {
-    REOS.Security.requirePermission('crm:write');
-    ensureSheets();
+  function registerRoutes_() {
+    if (!REOS.Router) return;
 
-    contact = contact || {};
-    contact.Email = REOS.normalizeEmail_(contact.Email);
-    contact.Mobile = REOS.normalizePhone_(contact.Mobile);
-    contact['Full Name'] = buildFullName_(contact);
-    contact.Active = contact.Active === false ? false : true;
-    contact.Status = contact.Status || 'Lead';
-
-    const validation = REOS.Validation.validateRecord(contact, {
-      required: ['First Name', 'Last Name'],
-      emailField: 'Email',
-      phoneField: 'Mobile',
-      dateFields: ['Birthday', 'Home Anniversary', 'Last Contact', 'Next Follow-up']
+    REOS.Router.registerRoute({
+      key: 'crm.clients.list',
+      module: 'crm',
+      name: 'List Clients',
+      permission: 'crm:read',
+      handler: function (payload) { return listClients(payload || {}); }
     });
 
+    REOS.Router.registerRoute({
+      key: 'crm.clients.create',
+      module: 'crm',
+      name: 'Create Client',
+      permission: 'crm:write',
+      handler: function (payload) { return createClient(payload || {}); }
+    });
+
+    REOS.Router.registerRoute({
+      key: 'crm.leads.list',
+      module: 'crm',
+      name: 'List Leads',
+      permission: 'leads:read',
+      handler: function (payload) { return listLeads(payload || {}); }
+    });
+
+    REOS.Router.registerRoute({
+      key: 'crm.leads.create',
+      module: 'crm',
+      name: 'Create Lead',
+      permission: 'leads:write',
+      handler: function (payload) { return createLead(payload || {}); }
+    });
+  }
+
+  function normalizeClient_(client) {
+    client = client || {};
+    client.Email = REOS.normalizeEmail_(client.Email);
+    client.Phone = REOS.normalizePhone_(client.Phone);
+    client['Client Type'] = client['Client Type'] || 'Buyer';
+    client.Status = client.Status || 'Active';
+    client.Owner = client.Owner || REOS.Security.getCurrentUserEmail();
+    client.Active = client.Active === false ? false : true;
+    return client;
+  }
+
+  function createClient(client) {
+    REOS.Security.requirePermission('crm:write');
+    client = normalizeClient_(client);
+
+    const validation = REOS.Validation.validateRecord(client, {
+      required: ['First Name', 'Last Name'],
+      emailField: 'Email',
+      phoneField: 'Phone'
+    });
     if (!validation.ok) throw new Error(validation.errors.join(' '));
 
-    if (contact.Email) {
-      const duplicateEmail = REOS.Validation.findDuplicate(CONTACT_SHEET, 'Email', contact.Email);
-      if (duplicateEmail) throw new Error('Duplicate email found: ' + contact.Email);
+    if (client.Email) {
+      const duplicate = REOS.Validation.findDuplicate(CLIENT_SHEET, 'Email', client.Email);
+      if (duplicate) throw new Error('Duplicate client email: ' + client.Email);
     }
 
-    const created = REOS.Database.insert(CONTACT_SHEET, contact, {
-      idField: CONTACT_ID_FIELD,
+    const created = REOS.Database.insert(CLIENT_SHEET, client, {
+      idField: CLIENT_ID,
       idPrefix: REOS.CONFIG.IDS.CLIENT
     });
 
-    REOS.Logger.audit('CRM contact created', { clientId: created[CONTACT_ID_FIELD] });
+    logActivity('Client', created[CLIENT_ID], 'Created', 'Client created', created.Notes || '');
+    REOS.Logger.audit('CRM client created', { clientId: created[CLIENT_ID] });
     return created;
   }
 
-  function updateContact(clientId, changes) {
+  function updateClient(clientId, changes) {
     REOS.Security.requirePermission('crm:write');
-    ensureSheets();
+    changes = normalizeClient_(changes || {});
 
-    changes = changes || {};
-    if (changes.Email) changes.Email = REOS.normalizeEmail_(changes.Email);
-    if (changes.Mobile) changes.Mobile = REOS.normalizePhone_(changes.Mobile);
+    const existing = getClient(clientId);
+    if (!existing) throw new Error('Client not found: ' + clientId);
 
-    const existing = getContact(clientId);
-    if (!existing) throw new Error('Contact not found: ' + clientId);
+    if (changes.Email) {
+      const duplicate = REOS.Validation.findDuplicate(CLIENT_SHEET, 'Email', changes.Email, CLIENT_ID, clientId);
+      if (duplicate) throw new Error('Duplicate client email: ' + changes.Email);
+    }
 
-    const merged = Object.assign({}, existing, changes);
-    merged['Full Name'] = buildFullName_(merged);
-
-    const validation = REOS.Validation.validateRecord(merged, {
-      required: ['First Name', 'Last Name'],
-      emailField: 'Email',
-      phoneField: 'Mobile',
-      dateFields: ['Birthday', 'Home Anniversary', 'Last Contact', 'Next Follow-up']
-    });
-
-    if (!validation.ok) throw new Error(validation.errors.join(' '));
-
-    const updated = REOS.Database.update(CONTACT_SHEET, CONTACT_ID_FIELD, clientId, changes);
-    REOS.Logger.audit('CRM contact updated', { clientId: clientId });
+    const updated = REOS.Database.update(CLIENT_SHEET, CLIENT_ID, clientId, changes);
+    logActivity('Client', clientId, 'Updated', 'Client updated', REOS.toJson_(changes));
+    REOS.Logger.audit('CRM client updated', { clientId: clientId });
     return updated;
   }
 
-  function getContact(clientId) {
+  function getClient(clientId) {
     REOS.Security.requirePermission('crm:read');
-    ensureSheets();
-    return REOS.Database.findById(CONTACT_SHEET, CONTACT_ID_FIELD, clientId);
+    return REOS.Database.findById(CLIENT_SHEET, CLIENT_ID, clientId);
   }
 
-  function listContacts() {
+  function listClients(options) {
     REOS.Security.requirePermission('crm:read');
-    ensureSheets();
-    return REOS.Database.getAll(CONTACT_SHEET);
+    options = options || {};
+    let clients = REOS.Database.getAll(CLIENT_SHEET);
+
+    if (options.activeOnly !== false) {
+      clients = clients.filter(function (client) { return client.Active !== false; });
+    }
+
+    if (options.status) {
+      clients = clients.filter(function (client) { return String(client.Status || '') === String(options.status); });
+    }
+
+    return clients.slice(0, options.limit || 100);
   }
 
-  function searchContacts(query) {
+  function searchClients(query) {
     REOS.Security.requirePermission('crm:read');
-    ensureSheets();
-
     const q = String(query || '').trim().toLowerCase();
-    if (!q) return listContacts().slice(0, 50);
+    if (!q) return listClients({ limit: 50 });
 
-    return REOS.Database.query(CONTACT_SHEET, function (contact) {
-      const haystack = [
-        contact['Full Name'], contact.Email, contact.Mobile, contact.Company,
-        contact.Address, contact.Tags, contact.Notes
-      ].join(' ').toLowerCase();
-      return haystack.indexOf(q) !== -1;
+    return REOS.Database.query(CLIENT_SHEET, function (client) {
+      return [
+        client[CLIENT_ID], client['First Name'], client['Last Name'], client.Company,
+        client.Email, client.Phone, client.Status, client.Source, client.Notes
+      ].join(' ').toLowerCase().indexOf(q) !== -1;
     }).slice(0, 50);
   }
 
-  function archiveContact(clientId) {
+  function archiveClient(clientId) {
     REOS.Security.requirePermission('crm:write');
-    ensureSheets();
-    const archived = REOS.Database.softDelete(CONTACT_SHEET, CONTACT_ID_FIELD, clientId);
-    REOS.Logger.audit('CRM contact archived', { clientId: clientId });
+    const archived = REOS.Database.softDelete(CLIENT_SHEET, CLIENT_ID, clientId);
+    logActivity('Client', clientId, 'Archived', 'Client archived', '');
+    REOS.Logger.audit('CRM client archived', { clientId: clientId });
     return archived;
+  }
+
+  function normalizeLead_(lead) {
+    lead = lead || {};
+    lead.Status = lead.Status || 'New';
+    lead.Priority = lead.Priority || 'Medium';
+    lead.Source = lead.Source || 'Manual';
+    lead['Assigned To'] = lead['Assigned To'] || REOS.Security.getCurrentUserEmail();
+    lead.Active = lead.Active === false ? false : true;
+    return lead;
   }
 
   function createLead(lead) {
     REOS.Security.requirePermission('leads:write');
-    ensureSheets();
-
-    lead = lead || {};
-    lead['Created Date'] = lead['Created Date'] || new Date();
-    lead.Status = lead.Status || 'New';
-    lead.Stage = lead.Stage || 'New';
-    lead.Active = lead.Active === false ? false : true;
-    lead['Lead Score'] = calculateLeadScore_(lead);
-    lead.Priority = calculatePriority_(lead['Lead Score']);
+    lead = normalizeLead_(lead);
 
     const validation = REOS.Validation.validateRecord(lead, {
-      required: ['Lead Type', 'Lead Source', 'Status']
+      required: ['Lead Type', 'Status', 'Source']
     });
     if (!validation.ok) throw new Error(validation.errors.join(' '));
 
     const created = REOS.Database.insert(LEAD_SHEET, lead, {
-      idField: LEAD_ID_FIELD,
+      idField: LEAD_ID,
       idPrefix: REOS.CONFIG.IDS.LEAD
     });
 
-    REOS.Logger.audit('Lead created', { leadId: created[LEAD_ID_FIELD], clientId: created['Client ID'] });
+    logActivity('Lead', created[LEAD_ID], 'Created', 'Lead created', created.Notes || '');
+    REOS.Logger.audit('CRM lead created', { leadId: created[LEAD_ID] });
     return created;
-  }
-
-  function listLeads() {
-    REOS.Security.requirePermission('leads:read');
-    ensureSheets();
-    return REOS.Database.getAll(LEAD_SHEET);
   }
 
   function updateLead(leadId, changes) {
     REOS.Security.requirePermission('leads:write');
-    ensureSheets();
-
-    const existing = REOS.Database.findById(LEAD_SHEET, LEAD_ID_FIELD, leadId);
+    const existing = getLead(leadId);
     if (!existing) throw new Error('Lead not found: ' + leadId);
 
-    const merged = Object.assign({}, existing, changes || {});
-    merged['Lead Score'] = calculateLeadScore_(merged);
-    merged.Priority = calculatePriority_(merged['Lead Score']);
-
-    const updated = REOS.Database.update(LEAD_SHEET, LEAD_ID_FIELD, leadId, merged);
-    REOS.Logger.audit('Lead updated', { leadId: leadId });
+    const updated = REOS.Database.update(LEAD_SHEET, LEAD_ID, leadId, normalizeLead_(changes || {}));
+    logActivity('Lead', leadId, 'Updated', 'Lead updated', REOS.toJson_(changes));
+    REOS.Logger.audit('CRM lead updated', { leadId: leadId });
     return updated;
   }
 
-  function calculateLeadScore_(lead) {
-    let score = 0;
-    const source = String(lead['Lead Source'] || '').toLowerCase();
-    const type = String(lead['Lead Type'] || '').toLowerCase();
-    const status = String(lead.Status || lead.Stage || '').toLowerCase();
-    const timeline = String(lead.Timeline || '').toLowerCase();
-    const budget = Number(lead.Budget || 0);
-
-    if (source.indexOf('referral') !== -1) score += 30;
-    if (source.indexOf('repeat') !== -1) score += 25;
-    if (status.indexOf('appointment') !== -1) score += 20;
-    if (lead['Pre-Approved'] === true || String(lead['Pre-Approved']).toLowerCase() === 'yes') score += 20;
-    if (type.indexOf('investor') !== -1) score += 15;
-    if (budget >= 500000) score += 10;
-    if (timeline.indexOf('immediate') !== -1 || timeline.indexOf('30') !== -1) score += 15;
-
-    return Math.min(score, 100);
+  function getLead(leadId) {
+    REOS.Security.requirePermission('leads:read');
+    return REOS.Database.findById(LEAD_SHEET, LEAD_ID, leadId);
   }
 
-  function calculatePriority_(score) {
-    score = Number(score || 0);
-    if (score >= 90) return 'Hot';
-    if (score >= 70) return 'Warm';
-    if (score >= 40) return 'Cool';
-    return 'Cold';
+  function listLeads(options) {
+    REOS.Security.requirePermission('leads:read');
+    options = options || {};
+    let leads = REOS.Database.getAll(LEAD_SHEET);
+
+    if (options.activeOnly !== false) {
+      leads = leads.filter(function (lead) { return lead.Active !== false; });
+    }
+
+    if (options.status) {
+      leads = leads.filter(function (lead) { return String(lead.Status || '') === String(options.status); });
+    }
+
+    return leads.slice(0, options.limit || 100);
   }
 
-  function buildFullName_(record) {
-    return [record['First Name'], record['Last Name']].filter(Boolean).join(' ').trim();
+  function createTask(task) {
+    REOS.Security.requirePermission('tasks:write');
+    task = task || {};
+    task.Status = task.Status || 'Open';
+    task.Priority = task.Priority || 'Medium';
+    task['Assigned To'] = task['Assigned To'] || REOS.Security.getCurrentUserEmail();
+    task.Active = task.Active === false ? false : true;
+
+    const validation = REOS.Validation.validateRecord(task, { required: ['Title'] });
+    if (!validation.ok) throw new Error(validation.errors.join(' '));
+
+    const created = REOS.Database.insert(TASK_SHEET, task, {
+      idField: TASK_ID,
+      idPrefix: REOS.CONFIG.IDS.TASK
+    });
+
+    REOS.Logger.audit('CRM task created', { taskId: created[TASK_ID], relatedId: created['Related ID'] });
+    return created;
+  }
+
+  function logActivity(relatedType, relatedId, activityType, subject, notes) {
+    const activity = {
+      'Related Type': relatedType,
+      'Related ID': relatedId,
+      'Activity Type': activityType,
+      'Subject': subject,
+      'Notes': notes || '',
+      'User': REOS.Security.getCurrentUserEmail(),
+      'Activity Date': new Date()
+    };
+
+    return REOS.Database.insert(ACTIVITY_SHEET, activity, {
+      idField: ACTIVITY_ID,
+      idPrefix: REOS.CONFIG.IDS.ACTIVITY
+    });
   }
 
   return {
-    ensureSheets: ensureSheets,
-    createContact: createContact,
-    updateContact: updateContact,
-    getContact: getContact,
-    listContacts: listContacts,
-    searchContacts: searchContacts,
-    archiveContact: archiveContact,
+    initialize: initialize,
+    createClient: createClient,
+    updateClient: updateClient,
+    getClient: getClient,
+    listClients: listClients,
+    searchClients: searchClients,
+    archiveClient: archiveClient,
     createLead: createLead,
+    updateLead: updateLead,
+    getLead: getLead,
     listLeads: listLeads,
-    updateLead: updateLead
+    createTask: createTask,
+    logActivity: logActivity,
+
+    // Backward-compatible aliases.
+    createContact: createClient,
+    updateContact: updateClient,
+    getContact: getClient,
+    listContacts: listClients,
+    searchContacts: searchClients,
+    archiveContact: archiveClient
   };
 })();
 
+function reosInitializeCRM() {
+  return REOS.CRM.initialize();
+}
+
 function showCRM() {
   const html = HtmlService.createHtmlOutputFromFile('CRM')
-    .setWidth(900)
-    .setHeight(650);
+    .setWidth(1100)
+    .setHeight(720);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS CRM');
 }
 
 function crmSearchContacts(query) {
-  return REOS.CRM.searchContacts(query);
+  return REOS.CRM.searchClients(query);
 }
 
 function crmCreateContact(contact) {
-  return REOS.CRM.createContact(contact);
+  return REOS.CRM.createClient(contact);
+}
+
+function crmCreateLead(lead) {
+  return REOS.CRM.createLead(lead);
 }
