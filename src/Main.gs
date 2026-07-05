@@ -69,6 +69,9 @@ REOS.init_ = function () {
   if (REOS.Router && typeof REOS.Router.initializeDefaultModules === 'function') {
     REOS.Router.initializeDefaultModules();
   }
+  if (REOS.Acquisitions && typeof REOS.Acquisitions.initialize === 'function') {
+    REOS.Acquisitions.initialize();
+  }
   REOS.setProperty_('REOS_LAST_OPENED_AT', new Date().toISOString());
 };
 
@@ -77,6 +80,7 @@ REOS.buildMenu_ = function () {
   ui.createMenu('REOS')
     .addItem('Open Dashboard', 'reosOpenDashboard')
     .addItem('Open CRM', 'showCRM')
+    .addItem('Open Acquisitions', 'showAcquisitions')
     .addSeparator()
     .addItem('Initialize Workbook', 'reosInitializeWorkbook')
     .addItem('Health Check', 'runHealthCheck')
@@ -136,6 +140,24 @@ REOS.seedLookups_ = function () {
     ['Lead Status', 'Under Contract', 5, true],
     ['Lead Status', 'Closed', 6, true],
     ['Lead Status', 'Lost', 7, true],
+    ['Acquisition Status', 'New', 1, true],
+    ['Acquisition Status', 'Skip Trace', 2, true],
+    ['Acquisition Status', 'Contacted', 3, true],
+    ['Acquisition Status', 'Appointment', 4, true],
+    ['Acquisition Status', 'Offer Sent', 5, true],
+    ['Acquisition Status', 'Under Contract', 6, true],
+    ['Acquisition Status', 'Closed', 7, true],
+    ['Acquisition Status', 'Lost', 8, true],
+    ['Distress Indicator', 'Absentee Owner', 1, true],
+    ['Distress Indicator', 'Tax Delinquent', 2, true],
+    ['Distress Indicator', 'Probate', 3, true],
+    ['Distress Indicator', 'Code Violation', 4, true],
+    ['Distress Indicator', 'Vacant', 5, true],
+    ['Distress Indicator', 'Pre-Foreclosure', 6, true],
+    ['Distress Indicator', 'REO', 7, true],
+    ['Distress Indicator', 'Eviction', 8, true],
+    ['Distress Indicator', 'Inherited', 9, true],
+    ['Distress Indicator', 'Tired Landlord', 10, true],
     ['Priority', 'Critical', 1, true],
     ['Priority', 'High', 2, true],
     ['Priority', 'Medium', 3, true],
