@@ -22,10 +22,19 @@
       .secondary { background: #e5e7eb; color: #111827; }
       .danger { background: #fee2e2; color: #991b1b; }
       .panel { margin-top: 20px; }
-      .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 16px; }
+      .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 12px; margin-top: 16px; }
       .kpi { border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; background: #f9fafb; }
       .kpi strong { display: block; font-size: 26px; margin-top: 4px; }
-      .records { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+      .records, .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+      .chart-card { border: 1px solid #e5e7eb; border-radius: 12px; background: #f9fafb; padding: 14px; }
+      .chart-card h3 { margin: 0 0 10px; font-size: 15px; }
+      .chart { display: flex; flex-direction: column; gap: 8px; }
+      .bar-row { display: grid; grid-template-columns: 130px 1fr 42px; gap: 8px; align-items: center; font-size: 12px; }
+      .bar-track { height: 12px; background: #e5e7eb; border-radius: 999px; overflow: hidden; }
+      .bar-fill { height: 100%; background: #111827; border-radius: 999px; min-width: 2px; }
+      .pipeline { display: grid; grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); gap: 8px; }
+      .stage { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 10px; text-align: center; }
+      .stage strong { display: block; font-size: 20px; }
       table { width: 100%; border-collapse: collapse; font-size: 13px; }
       th, td { text-align: left; border-bottom: 1px solid #e5e7eb; padding: 8px; vertical-align: top; }
       th { color: #374151; background: #f9fafb; }
@@ -56,16 +65,10 @@
         </div>
 
         <h2>Modules</h2>
-        <div id="modules" class="grid">
-          <div class="module"><strong>Loading modules...</strong><br><span class="status">Please wait</span></div>
-        </div>
+        <div id="modules" class="grid"><div class="module"><strong>Loading modules...</strong><br><span class="status">Please wait</span></div></div>
 
         <div class="panel">
-          <h2>Records Review</h2>
-          <div class="toolbar">
-            <input id="recordSearch" placeholder="Search clients, leads, vendors, work orders">
-            <button class="primary" onclick="searchRecords()">Search Records</button>
-          </div>
+          <h2>Executive KPIs</h2>
           <div class="kpis">
             <div class="kpi"><span>Clients</span><strong id="kpiClients">0</strong></div>
             <div class="kpi"><span>Acquisition Leads</span><strong id="kpiLeads">0</strong></div>
@@ -74,24 +77,37 @@
             <div class="kpi"><span>Open Tasks</span><strong id="kpiTasks">0</strong></div>
             <div class="kpi"><span>Vendors</span><strong id="kpiVendors">0</strong></div>
             <div class="kpi"><span>Open Work Orders</span><strong id="kpiWorkOrders">0</strong></div>
+            <div class="kpi"><span>Properties</span><strong id="kpiProperties">0</strong></div>
+            <div class="kpi"><span>Vacant</span><strong id="kpiVacant">0</strong></div>
+            <div class="kpi"><span>Open Maintenance</span><strong id="kpiMaintenance">0</strong></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Charts & Pipeline Visualizations</h2>
+          <div class="charts">
+            <div class="chart-card"><h3>Acquisition Pipeline</h3><div id="chartPipeline" class="pipeline"></div></div>
+            <div class="chart-card"><h3>Lead Priority</h3><div id="chartPriority" class="chart"></div></div>
+            <div class="chart-card"><h3>Work Orders by Status</h3><div id="chartWorkOrders" class="chart"></div></div>
+            <div class="chart-card"><h3>Property Occupancy</h3><div id="chartOccupancy" class="chart"></div></div>
+            <div class="chart-card"><h3>Maintenance by Status</h3><div id="chartMaintenance" class="chart"></div></div>
+            <div class="chart-card"><h3>Operating Snapshot</h3><div id="chartSnapshot" class="chart"></div></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Records Review</h2>
+          <div class="toolbar">
+            <input id="recordSearch" placeholder="Search clients, leads, vendors, work orders, properties">
+            <button class="primary" onclick="searchRecords()">Search Records</button>
           </div>
           <div class="records">
-            <div>
-              <h2>Recent Clients</h2>
-              <table id="clientsTable"></table>
-            </div>
-            <div>
-              <h2>Recent Acquisition Leads</h2>
-              <table id="leadsTable"></table>
-            </div>
-            <div>
-              <h2>Recent Vendors</h2>
-              <table id="vendorsTable"></table>
-            </div>
-            <div>
-              <h2>Recent Work Orders</h2>
-              <table id="workOrdersTable"></table>
-            </div>
+            <div><h2>Recent Clients</h2><table id="clientsTable"></table></div>
+            <div><h2>Recent Acquisition Leads</h2><table id="leadsTable"></table></div>
+            <div><h2>Recent Vendors</h2><table id="vendorsTable"></table></div>
+            <div><h2>Recent Work Orders</h2><table id="workOrdersTable"></table></div>
+            <div><h2>Recent Properties</h2><table id="propertiesTable"></table></div>
+            <div><h2>Recent Maintenance</h2><table id="maintenanceTable"></table></div>
           </div>
         </div>
 
@@ -100,19 +116,14 @@
           <div id="recordDetail" class="muted">Select a record row to view details and actions.</div>
         </div>
 
-        <div class="panel">
-          <h2>System Output</h2>
-          <pre id="output">Ready.</pre>
-        </div>
+        <div class="panel"><h2>System Output</h2><pre id="output">Ready.</pre></div>
       </section>
     </main>
 
     <script>
       let activeRecord = null;
 
-      function output(value) {
-        document.getElementById('output').textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
-      }
+      function output(value) { document.getElementById('output').textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2); }
 
       function renderModules(modules) {
         const container = document.getElementById('modules');
@@ -125,43 +136,62 @@
           const el = document.createElement('div');
           el.className = 'module';
           el.onclick = function() { openModule(module.key); };
-          el.innerHTML = '<strong>' + escapeHtml(module.name) + '</strong><br>' +
-            '<span class="muted">' + escapeHtml(module.description || '') + '</span><br>' +
-            '<span class="status">Available</span>';
+          el.innerHTML = '<strong>' + escapeHtml(module.name) + '</strong><br><span class="muted">' + escapeHtml(module.description || '') + '</span><br><span class="status">Available</span>';
           container.appendChild(el);
         });
       }
 
       function renderDashboard(data) {
-        document.getElementById('kpiClients').textContent = data.kpis.clients || 0;
-        document.getElementById('kpiLeads').textContent = data.kpis.acquisitionLeads || 0;
-        document.getElementById('kpiHot').textContent = data.kpis.hotAcquisitionLeads || 0;
-        document.getElementById('kpiDue').textContent = data.kpis.followUpsDue || 0;
-        document.getElementById('kpiTasks').textContent = data.kpis.openTasks || 0;
-        document.getElementById('kpiVendors').textContent = data.kpis.vendors || 0;
-        document.getElementById('kpiWorkOrders').textContent = data.kpis.openWorkOrders || 0;
+        const k = data.kpis || {};
+        setText('kpiClients', k.clients); setText('kpiLeads', k.acquisitionLeads); setText('kpiHot', k.hotAcquisitionLeads);
+        setText('kpiDue', k.followUpsDue); setText('kpiTasks', k.openTasks); setText('kpiVendors', k.vendors);
+        setText('kpiWorkOrders', k.openWorkOrders); setText('kpiProperties', k.properties); setText('kpiVacant', k.vacantProperties);
+        setText('kpiMaintenance', k.openMaintenance);
+
+        renderCharts(data.charts || {});
         renderClients(data.crm.recentClients || []);
         renderLeads(data.acquisitions.recentLeads || []);
         renderVendors((data.vendors && data.vendors.recentVendors) || []);
         renderWorkOrders((data.vendors && data.vendors.recentWorkOrders) || []);
+        renderProperties((data.properties && data.properties.recentProperties) || []);
+        renderMaintenance((data.properties && data.properties.recentMaintenance) || []);
         output({ dashboard: data });
       }
 
-      function renderClients(records) {
-        renderTable('clientsTable', 'client', 'Client ID', ['Client ID', 'First Name', 'Last Name', 'Email', 'Status'], records);
+      function renderCharts(charts) {
+        renderPipeline('chartPipeline', charts.acquisitionPipeline || []);
+        renderBarChart('chartPriority', charts.acquisitionPriority || [], 'priority', 'count');
+        renderBarChart('chartWorkOrders', charts.workOrdersByStatus || [], 'status', 'count');
+        renderBarChart('chartOccupancy', charts.propertyOccupancy || [], 'status', 'count');
+        renderBarChart('chartMaintenance', charts.maintenanceByStatus || [], 'status', 'count');
+        renderBarChart('chartSnapshot', charts.operatingSnapshot || [], 'metric', 'count');
       }
 
-      function renderLeads(records) {
-        renderTable('leadsTable', 'lead', 'Lead ID', ['Lead ID', 'Property Address', 'Owner Name', 'Status', 'Priority'], records);
+      function renderPipeline(id, rows) {
+        const el = document.getElementById(id);
+        if (!rows.length) { el.innerHTML = '<span class="muted">No pipeline data yet.</span>'; return; }
+        el.innerHTML = rows.map(function(row) {
+          return '<div class="stage"><strong>' + escapeHtml(row.count || 0) + '</strong><span>' + escapeHtml(row.stage || '') + '</span></div>';
+        }).join('');
       }
 
-      function renderVendors(records) {
-        renderTable('vendorsTable', 'vendor', 'Vendor ID', ['Vendor ID', 'Company', 'Service Category', 'Status'], records);
+      function renderBarChart(id, rows, labelKey, valueKey) {
+        const el = document.getElementById(id);
+        if (!rows.length) { el.innerHTML = '<span class="muted">No chart data yet.</span>'; return; }
+        const max = rows.reduce(function(value, row) { return Math.max(value, Number(row[valueKey] || 0)); }, 1);
+        el.innerHTML = rows.map(function(row) {
+          const value = Number(row[valueKey] || 0);
+          const width = Math.max(2, Math.round((value / max) * 100));
+          return '<div class="bar-row"><span>' + escapeHtml(row[labelKey]) + '</span><div class="bar-track"><div class="bar-fill" style="width:' + width + '%"></div></div><strong>' + value + '</strong></div>';
+        }).join('');
       }
 
-      function renderWorkOrders(records) {
-        renderTable('workOrdersTable', 'workorder', 'Work Order ID', ['Work Order ID', 'Vendor Name', 'Property Address', 'Status', 'Priority'], records);
-      }
+      function renderClients(records) { renderTable('clientsTable', 'client', 'Client ID', ['Client ID', 'First Name', 'Last Name', 'Email', 'Status'], records); }
+      function renderLeads(records) { renderTable('leadsTable', 'lead', 'Lead ID', ['Lead ID', 'Property Address', 'Owner Name', 'Status', 'Priority'], records); }
+      function renderVendors(records) { renderTable('vendorsTable', 'vendor', 'Vendor ID', ['Vendor ID', 'Company', 'Service Category', 'Status'], records); }
+      function renderWorkOrders(records) { renderTable('workOrdersTable', 'workorder', 'Work Order ID', ['Work Order ID', 'Vendor Name', 'Property Address', 'Status', 'Priority'], records); }
+      function renderProperties(records) { renderTable('propertiesTable', 'property', 'Property ID', ['Property ID', 'Property Name', 'Address', 'Status', 'Occupancy Status'], records); }
+      function renderMaintenance(records) { renderTable('maintenanceTable', 'maintenance', 'Maintenance ID', ['Maintenance ID', 'Property ID', 'Title', 'Status', 'Priority'], records); }
 
       function renderTable(id, type, idColumn, columns, records) {
         const table = document.getElementById(id);
@@ -171,18 +201,16 @@
         } else {
           records.forEach(function(record) {
             const recordId = record[idColumn] || '';
-            html += '<tr class="clickable" onclick="openRecord(\'' + escapeJs(type) + '\', \'' + escapeJs(recordId) + '\')">' +
-              columns.map(function(col) { return '<td>' + escapeHtml(record[col] || '') + '</td>'; }).join('') + '</tr>';
+            html += '<tr class="clickable" onclick="openRecord(\'' + escapeJs(type) + '\', \'' + escapeJs(recordId) + '\')">' + columns.map(function(col) {
+              return '<td>' + escapeHtml(record[col] || '') + '</td>';
+            }).join('') + '</tr>';
           });
         }
         table.innerHTML = html;
       }
 
       function openRecord(type, id) {
-        google.script.run
-          .withSuccessHandler(renderRecordDetail)
-          .withFailureHandler(function(error) { output({ error: error.message }); })
-          .reosDashboardGetRecord(type, id);
+        google.script.run.withSuccessHandler(renderRecordDetail).withFailureHandler(function(error) { output({ error: error.message }); }).reosDashboardGetRecord(type, id);
       }
 
       function renderRecordDetail(data) {
@@ -190,19 +218,11 @@
         const record = data.record || {};
         const keys = Object.keys(record).filter(function(key) { return key !== '_rowNumber'; });
         let html = '<div class="toolbar" style="margin-bottom:12px;">' + renderActions(data) + '</div>';
-        html += '<div class="detail-grid">' + keys.map(function(key) {
-          return '<div class="field"><span>' + escapeHtml(key) + '</span>' + escapeHtml(formatValue(record[key])) + '</div>';
-        }).join('') + '</div>';
-        html += '<h2 style="margin-top:16px;">Activity</h2>';
-        html += '<table><tr><th>Date</th><th>Type</th><th>Subject</th><th>User</th></tr>';
+        html += '<div class="detail-grid">' + keys.map(function(key) { return '<div class="field"><span>' + escapeHtml(key) + '</span>' + escapeHtml(formatValue(record[key])) + '</div>'; }).join('') + '</div>';
+        html += '<h2 style="margin-top:16px;">Activity</h2><table><tr><th>Date</th><th>Type</th><th>Subject</th><th>User</th></tr>';
         const activity = data.activity || [];
-        if (!activity.length) {
-          html += '<tr><td colspan="4">No activity found.</td></tr>';
-        } else {
-          activity.forEach(function(item) {
-            html += '<tr><td>' + escapeHtml(formatValue(item['Activity Date'] || item['Created At'])) + '</td><td>' + escapeHtml(item['Activity Type'] || '') + '</td><td>' + escapeHtml(item.Subject || '') + '</td><td>' + escapeHtml(item.User || '') + '</td></tr>';
-          });
-        }
+        if (!activity.length) html += '<tr><td colspan="4">No activity found.</td></tr>';
+        activity.forEach(function(item) { html += '<tr><td>' + escapeHtml(formatValue(item['Activity Date'] || item['Created At'])) + '</td><td>' + escapeHtml(item['Activity Type'] || '') + '</td><td>' + escapeHtml(item.Subject || '') + '</td><td>' + escapeHtml(item.User || '') + '</td></tr>'; });
         html += '</table>';
         document.getElementById('recordDetail').innerHTML = html;
         output(data);
@@ -229,79 +249,28 @@
         const vendorEl = document.getElementById('actionVendorId');
         if (statusEl) payload.status = statusEl.value;
         if (vendorEl) payload.vendorId = vendorEl.value;
-        google.script.run
-          .withSuccessHandler(function(data) {
-            renderRecordDetail(data.detail);
-            loadDashboardRecords();
-          })
-          .withFailureHandler(function(error) { output({ error: error.message }); })
-          .reosDashboardRunRecordAction(activeRecord.recordType, activeRecord.recordId, action, payload);
+        google.script.run.withSuccessHandler(function(data) { renderRecordDetail(data.detail); loadDashboardRecords(); }).withFailureHandler(function(error) { output({ error: error.message }); }).reosDashboardRunRecordAction(activeRecord.recordType, activeRecord.recordId, action, payload);
       }
 
-      function loadNavigation() {
-        google.script.run
-          .withSuccessHandler(function(nav) { renderModules(nav); output({ navigation: nav }); })
-          .withFailureHandler(function(error) { output({ error: error.message }); })
-          .reosGetNavigation();
-      }
-
-      function loadDashboardRecords() {
-        google.script.run
-          .withSuccessHandler(renderDashboard)
-          .withFailureHandler(function(error) { output({ error: error.message }); })
-          .reosDashboardOverview();
-      }
-
+      function loadNavigation() { google.script.run.withSuccessHandler(function(nav) { renderModules(nav); output({ navigation: nav }); }).withFailureHandler(function(error) { output({ error: error.message }); }).reosGetNavigation(); }
+      function loadDashboardRecords() { google.script.run.withSuccessHandler(renderDashboard).withFailureHandler(function(error) { output({ error: error.message }); }).reosDashboardOverview(); }
       function searchRecords() {
-        google.script.run
-          .withSuccessHandler(function(data) {
-            renderClients(data.clients || []);
-            renderLeads(data.acquisitionLeads || []);
-            renderVendors(data.vendors || []);
-            renderWorkOrders(data.workOrders || []);
-            output(data);
-          })
-          .withFailureHandler(function(error) { output({ error: error.message }); })
-          .reosDashboardSearch(document.getElementById('recordSearch').value);
+        google.script.run.withSuccessHandler(function(data) {
+          renderClients(data.clients || []); renderLeads(data.acquisitionLeads || []); renderVendors(data.vendors || []); renderWorkOrders(data.workOrders || []); renderProperties(data.properties || []); renderMaintenance(data.maintenance || []); output(data);
+        }).withFailureHandler(function(error) { output({ error: error.message }); }).reosDashboardSearch(document.getElementById('recordSearch').value);
       }
 
       function openModule(key) {
-        const route = key === 'crm' ? 'crm.open' : key === 'leads' ? 'acquisitions.open' : key === 'vendors' ? 'vendors.open' : key === 'tasks' ? 'tasks.open' : key === 'admin' ? 'admin.health' : 'home.open';
-        google.script.run
-          .withSuccessHandler(output)
-          .withFailureHandler(function(error) { output({ error: error.message }); })
-          .reosDispatch(route, {});
+        const route = key === 'crm' ? 'crm.open' : key === 'leads' ? 'acquisitions.open' : key === 'vendors' ? 'vendors.open' : key === 'properties' ? 'properties.open' : key === 'tasks' ? 'tasks.open' : key === 'admin' ? 'admin.health' : 'home.open';
+        google.script.run.withSuccessHandler(output).withFailureHandler(function(error) { output({ error: error.message }); }).reosDispatch(route, {});
       }
 
-      function runHealthCheck() {
-        google.script.run
-          .withSuccessHandler(output)
-          .withFailureHandler(function(error) { output({ error: error.message }); })
-          .reosDispatch('admin.health', {});
-      }
-
-      function initializeWorkbook() {
-        google.script.run
-          .withSuccessHandler(output)
-          .withFailureHandler(function(error) { output({ error: error.message }); })
-          .reosDispatch('admin.setup', {});
-      }
-
-      function formatValue(value) {
-        if (value === null || value === undefined) return '';
-        if (value instanceof Date) return value.toISOString();
-        return String(value);
-      }
-
-      function escapeHtml(value) {
-        return String(value || '').replace(/[&<>'"]/g, function(char) {
-          return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char];
-        });
-      }
-
-      function escapeJs(value) {
-        return String(value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-      }
+      function runHealthCheck() { google.script.run.withSuccessHandler(output).withFailureHandler(function(error) { output({ error: error.message }); }).reosDispatch('admin.health', {}); }
+      function initializeWorkbook() { google.script.run.withSuccessHandler(output).withFailureHandler(function(error) { output({ error: error.message }); }).reosDispatch('admin.setup', {}); }
+      function setText(id, value) { document.getElementById(id).textContent = value || 0; }
+      function formatValue(value) { if (value === null || value === undefined) return ''; return String(value); }
+      function escapeHtml(value) { return String(value || '').replace(/[&<>'"]/g, function(char) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]; }); }
+      function escapeJs(value) { return String(value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
 
       loadNavigation();
       loadDashboardRecords();
