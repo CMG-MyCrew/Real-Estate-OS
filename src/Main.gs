@@ -63,6 +63,7 @@ REOS.init_ = function () {
   if (REOS.Router && typeof REOS.Router.initializeDefaultModules === 'function') REOS.Router.initializeDefaultModules();
   if (REOS.Acquisitions && typeof REOS.Acquisitions.initialize === 'function') REOS.Acquisitions.initialize();
   if (REOS.Vendors && typeof REOS.Vendors.initialize === 'function') REOS.Vendors.initialize();
+  if (REOS.Properties && typeof REOS.Properties.initialize === 'function') REOS.Properties.initialize();
   if (REOS.Automation && typeof REOS.Automation.ensureSheets === 'function') REOS.Automation.ensureSheets();
   REOS.setProperty_('REOS_LAST_OPENED_AT', new Date().toISOString());
 };
@@ -74,6 +75,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open CRM', 'showCRM')
     .addItem('Open Acquisitions', 'showAcquisitions')
     .addItem('Open Vendors', 'showVendors')
+    .addItem('Open Properties', 'showProperties')
     .addItem('Open Automation', 'showAutomation')
     .addItem('Open Admin', 'showAdmin')
     .addSeparator()
@@ -166,6 +168,35 @@ REOS.seedLookups_ = function () {
     ['Work Order Status', 'Completed', 5, true],
     ['Work Order Status', 'Cancelled', 6, true],
     ['Work Order Status', 'On Hold', 7, true],
+    ['Property Type', 'Single Family', 1, true],
+    ['Property Type', 'Duplex', 2, true],
+    ['Property Type', 'Triplex', 3, true],
+    ['Property Type', 'Fourplex', 4, true],
+    ['Property Type', 'Condo', 5, true],
+    ['Property Type', 'Townhome', 6, true],
+    ['Property Type', 'Multifamily', 7, true],
+    ['Property Type', 'Commercial', 8, true],
+    ['Property Type', 'Land', 9, true],
+    ['Property Type', 'Other', 10, true],
+    ['Property Status', 'Prospect', 1, true],
+    ['Property Status', 'Owned', 2, true],
+    ['Property Status', 'Under Rehab', 3, true],
+    ['Property Status', 'Available', 4, true],
+    ['Property Status', 'Occupied', 5, true],
+    ['Property Status', 'Listed', 6, true],
+    ['Property Status', 'Sold', 7, true],
+    ['Property Status', 'Archived', 8, true],
+    ['Occupancy Status', 'Vacant', 1, true],
+    ['Occupancy Status', 'Occupied', 2, true],
+    ['Occupancy Status', 'Partially Occupied', 3, true],
+    ['Occupancy Status', 'Unknown', 4, true],
+    ['Maintenance Status', 'New', 1, true],
+    ['Maintenance Status', 'Assigned', 2, true],
+    ['Maintenance Status', 'Scheduled', 3, true],
+    ['Maintenance Status', 'In Progress', 4, true],
+    ['Maintenance Status', 'Completed', 5, true],
+    ['Maintenance Status', 'Cancelled', 6, true],
+    ['Maintenance Status', 'On Hold', 7, true],
     ['Priority', 'Critical', 1, true],
     ['Priority', 'High', 2, true],
     ['Priority', 'Medium', 3, true],
@@ -195,7 +226,7 @@ REOS.healthCheck_ = function () {
     if (!exists) report.ok = false;
     report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
   });
-  ['VENDORS', 'WORK_ORDERS', 'AUTOMATION_RULES', 'AUTOMATION_RUNS'].forEach(function (name) {
+  ['VENDORS', 'WORK_ORDERS', 'AUTOMATION_RULES', 'AUTOMATION_RUNS', 'PROPERTIES', 'UNITS', 'INSPECTIONS', 'MAINTENANCE_REQUESTS'].forEach(function (name) {
     const exists = !!ss.getSheetByName(name);
     if (!exists) report.ok = false;
     report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
