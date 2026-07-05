@@ -63,6 +63,7 @@ REOS.init_ = function () {
   if (REOS.Router && typeof REOS.Router.initializeDefaultModules === 'function') REOS.Router.initializeDefaultModules();
   if (REOS.Acquisitions && typeof REOS.Acquisitions.initialize === 'function') REOS.Acquisitions.initialize();
   if (REOS.Vendors && typeof REOS.Vendors.initialize === 'function') REOS.Vendors.initialize();
+  if (REOS.Automation && typeof REOS.Automation.ensureSheets === 'function') REOS.Automation.ensureSheets();
   REOS.setProperty_('REOS_LAST_OPENED_AT', new Date().toISOString());
 };
 
@@ -73,6 +74,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open CRM', 'showCRM')
     .addItem('Open Acquisitions', 'showAcquisitions')
     .addItem('Open Vendors', 'showVendors')
+    .addItem('Open Automation', 'showAutomation')
     .addItem('Open Admin', 'showAdmin')
     .addSeparator()
     .addItem('Initialize Workbook', 'reosInitializeWorkbook')
@@ -193,7 +195,7 @@ REOS.healthCheck_ = function () {
     if (!exists) report.ok = false;
     report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
   });
-  ['VENDORS', 'WORK_ORDERS'].forEach(function (name) {
+  ['VENDORS', 'WORK_ORDERS', 'AUTOMATION_RULES', 'AUTOMATION_RUNS'].forEach(function (name) {
     const exists = !!ss.getSheetByName(name);
     if (!exists) report.ok = false;
     report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
