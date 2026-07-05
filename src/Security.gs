@@ -1,7 +1,7 @@
 /**
  * REOS Enterprise v3.0 - Security Framework
  *
- * Handles users, roles, permission checks, and audit-friendly access control.
+ * Handles users, roles, permission checks, audit reporting, and access control.
  * Google Sheets sharing permissions remain the final access boundary.
  */
 
@@ -22,8 +22,7 @@ REOS.Security = (function () {
     'workorders:read', 'workorders:write'
   ];
   ROLE_PERMISSIONS[REOS.CONFIG.ROLES.COORDINATOR] = [
-    'crm:read',
-    'leads:read',
+    'crm:read', 'leads:read',
     'tasks:read', 'tasks:write',
     'activities:read', 'activities:write',
     'documents:read', 'documents:write',
@@ -31,18 +30,12 @@ REOS.Security = (function () {
     'workorders:read', 'workorders:write'
   ];
   ROLE_PERMISSIONS[REOS.CONFIG.ROLES.ASSISTANT] = [
-    'crm:read',
-    'leads:read',
-    'tasks:read',
+    'crm:read', 'leads:read', 'tasks:read',
     'activities:read', 'activities:write',
-    'vendors:read',
-    'workorders:read'
+    'vendors:read', 'workorders:read'
   ];
   ROLE_PERMISSIONS[REOS.CONFIG.ROLES.ACCOUNTANT] = [
-    'reports:read',
-    'settings:read',
-    'vendors:read',
-    'workorders:read'
+    'reports:read', 'settings:read', 'vendors:read', 'workorders:read'
   ];
 
   function getCurrentUserEmail() {
@@ -63,16 +56,9 @@ REOS.Security = (function () {
   function getCurrentUser() {
     const email = getCurrentUserEmail();
     const user = findByEmail(email);
-
     if (!user) {
-      return {
-        Email: email,
-        Role: REOS.CONFIG.ROLES.AGENT,
-        Status: 'Unregistered',
-        Permissions: ''
-      };
+      return { Email: email, Role: REOS.CONFIG.ROLES.AGENT, Status: 'Unregistered', Permissions: '' };
     }
-
     return user;
   }
 
@@ -99,10 +85,7 @@ REOS.Security = (function () {
 
   function getAvailableRoles() {
     return Object.keys(ROLE_PERMISSIONS).map(function (role) {
-      return {
-        role: role,
-        permissions: ROLE_PERMISSIONS[role]
-      };
+      return { role: role, permissions: ROLE_PERMISSIONS[role] };
     });
   }
 
@@ -156,10 +139,7 @@ REOS.Security = (function () {
 
   function parsePermissions_(value) {
     if (Array.isArray(value)) return value;
-    return String(value || '')
-      .split(',')
-      .map(function (item) { return item.trim(); })
-      .filter(Boolean);
+    return String(value || '').split(',').map(function (item) { return item.trim(); }).filter(Boolean);
   }
 
   function getRolePermissions(role) {
@@ -168,15 +148,12 @@ REOS.Security = (function () {
 
   function getUserPermissions(user) {
     user = user || getCurrentUser();
-    const rolePermissions = getRolePermissions(user.Role);
-    const explicitPermissions = parsePermissions_(user.Permissions || '');
-    return rolePermissions.concat(explicitPermissions);
+    return getRolePermissions(user.Role).concat(parsePermissions_(user.Permissions || ''));
   }
 
   function hasPermission(permission, user) {
     user = user || getCurrentUser();
     if (!isActiveUser(user)) return false;
-
     const permissions = getUserPermissions(user);
     return permissions.indexOf('*') !== -1 || permissions.indexOf(permission) !== -1;
   }
@@ -207,6 +184,83 @@ REOS.Security = (function () {
     REOS.Logger.info('SECURITY: ' + action, details || {});
   }
 
+  function getAuditReport(options) {
+    requireAdmin();
+    options = options || {};
+    const limit = Number(options.limit || 100);
+    const logs = getSystemLogs_();
+    const securityLogs = logs.filter(function (log) {
+      const action = String(log.Action || '');
+      const level = String(log.Level || '');
+      return action.indexOf('SECURITY:') === 0 || action.indexOf('Permission denied') !== -1 || action.indexOf('Admin permission denied') !== -1 || level === 'AUDIT';
+    });
+    const permissionDenied = logs.filter(function (log) {
+      return String(log.Action || '').indexOf('Permission denied') !== -1 || String(log.Action || '').indexOf('Admin permission denied') !== -1 || String(log.Details || '').indexOf('Permission denied') !== -1;
+    });
+    const byUser = groupCount_(securityLogs, 'User');
+    const byAction = groupCount_(securityLogs, 'Action');
+    const users = getAllUsers();
+
+    return {
+      ok: true,
+      generatedAt: REOS.nowIso_(),
+      summary: {
+        users: users.length,
+        activeUsers: users.filter(function (user) { return user.Status === STATUS_ACTIVE; }).length,
+        inactiveUsers: users.filter(function (user) { return user.Status === STATUS_INACTIVE; }).length,
+        securityEvents: securityLogs.length,
+        permissionDenied: permissionDenied.length
+      },
+      byUser: byUser,
+      byAction: byAction,
+      recentSecurityEvents: latest_(securityLogs, 'Timestamp', limit),
+      permissionDeniedEvents: latest_(permissionDenied, 'Timestamp', limit),
+      users: users.map(function (user) {
+        return {
+          'User ID': user['User ID'],
+          Name: user.Name,
+          Email: user.Email,
+          Role: user.Role,
+          Status: user.Status,
+          Permissions: getUserPermissions(user).join(', '),
+          'Created At': user['Created At'],
+          'Updated At': user['Updated At']
+        };
+      })
+    };
+  }
+
+  function getUserAudit(email, limit) {
+    requireAdmin();
+    const normalized = REOS.normalizeEmail_(email);
+    const logs = getSystemLogs_().filter(function (log) {
+      return REOS.normalizeEmail_(log.User) === normalized || String(log.Details || '').toLowerCase().indexOf(normalized) !== -1;
+    });
+    return { ok: true, email: normalized, events: latest_(logs, 'Timestamp', Number(limit || 100)) };
+  }
+
+  function getSystemLogs_() {
+    try {
+      return REOS.Database.getAll(REOS.CONFIG.SHEETS.SYSTEM_LOG);
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function groupCount_(records, field) {
+    return (records || []).reduce(function (map, record) {
+      const key = String(record[field] || 'Unknown');
+      map[key] = (map[key] || 0) + 1;
+      return map;
+    }, {});
+  }
+
+  function latest_(records, dateField, limit) {
+    return (records || []).slice().sort(function (a, b) {
+      return (new Date(b[dateField] || 0).getTime() || 0) - (new Date(a[dateField] || 0).getTime() || 0);
+    }).slice(0, limit || 100);
+  }
+
   return {
     STATUS_ACTIVE: STATUS_ACTIVE,
     STATUS_INACTIVE: STATUS_INACTIVE,
@@ -228,41 +282,25 @@ REOS.Security = (function () {
     hasPermission: hasPermission,
     requirePermission: requirePermission,
     requireAdmin: requireAdmin,
-    audit: audit
+    audit: audit,
+    getAuditReport: getAuditReport,
+    getUserAudit: getUserAudit
   };
 })();
 
 REOS.Users = REOS.Security;
 
-function reosWhoAmI() {
-  return REOS.Security.getCurrentUser();
-}
-
-function reosRequireAdmin() {
-  return REOS.Security.requireAdmin();
-}
+function reosWhoAmI() { return REOS.Security.getCurrentUser(); }
+function reosRequireAdmin() { return REOS.Security.requireAdmin(); }
 
 function reosAdminGetUsers() {
   REOS.Security.requireAdmin();
-  return {
-    users: REOS.Security.getAllUsers(),
-    roles: REOS.Security.getAvailableRoles(),
-    currentUser: REOS.Security.getCurrentUser()
-  };
+  return { users: REOS.Security.getAllUsers(), roles: REOS.Security.getAvailableRoles(), currentUser: REOS.Security.getCurrentUser() };
 }
 
-function reosAdminCreateUser(user) {
-  return REOS.Security.createUser(user || {});
-}
-
-function reosAdminSetUserRole(email, role) {
-  return REOS.Security.setUserRole(email, role);
-}
-
-function reosAdminDeactivateUser(email) {
-  return REOS.Security.deactivateUser(email);
-}
-
-function reosAdminActivateUser(email) {
-  return REOS.Security.activateUser(email);
-}
+function reosAdminCreateUser(user) { return REOS.Security.createUser(user || {}); }
+function reosAdminSetUserRole(email, role) { return REOS.Security.setUserRole(email, role); }
+function reosAdminDeactivateUser(email) { return REOS.Security.deactivateUser(email); }
+function reosAdminActivateUser(email) { return REOS.Security.activateUser(email); }
+function reosAdminGetAuditReport(options) { return REOS.Security.getAuditReport(options || {}); }
+function reosAdminGetUserAudit(email, limit) { return REOS.Security.getUserAudit(email, limit || 100); }
