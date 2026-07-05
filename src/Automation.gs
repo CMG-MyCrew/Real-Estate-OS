@@ -2,7 +2,8 @@
  * REOS Enterprise v3.0 - Workflow Automation Foundation
  *
  * Provides scheduled jobs, trigger management, follow-up scanning,
- * overdue task scanning, acquisition lead review, and automation logging.
+ * overdue task scanning, acquisition lead review, automation run history,
+ * and admin UI support.
  */
 
 var REOS = REOS || {};
@@ -42,7 +43,7 @@ REOS.Automation = (function () {
     if (sheet.getLastRow() === 0) {
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       sheet.setFrozenRows(1);
-      sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold');
+      sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold').setWrap(true);
       sheet.autoResizeColumns(1, headers.length);
     }
     return sheet;
@@ -50,6 +51,68 @@ REOS.Automation = (function () {
 
   function getJobs() {
     return JOBS.slice();
+  }
+
+  function getInstalledTriggers() {
+    const handlers = JOBS.map(function (job) { return job.handler; });
+    return ScriptApp.getProjectTriggers()
+      .filter(function (trigger) { return handlers.indexOf(trigger.getHandlerFunction()) !== -1; })
+      .map(function (trigger) {
+        return {
+          handler: trigger.getHandlerFunction(),
+          eventType: String(trigger.getEventType()),
+          source: String(trigger.getTriggerSource()),
+          uniqueId: trigger.getUniqueId ? trigger.getUniqueId() : ''
+        };
+      });
+  }
+
+  function getRules(options) {
+    REOS.Security.requireAdmin();
+    ensureSheets();
+    options = options || {};
+    let rules = REOS.Database.getAll(RULES_SHEET);
+    if (options.activeOnly === true) rules = rules.filter(function (rule) { return rule.Active !== false; });
+    return latest_(rules, 'Created At', Number(options.limit || 100));
+  }
+
+  function getRuns(options) {
+    REOS.Security.requireAdmin();
+    ensureSheets();
+    options = options || {};
+    let runs = REOS.Database.getAll(RUNS_SHEET);
+    if (options.status) runs = runs.filter(function (run) { return String(run.Status || '') === String(options.status); });
+    return latest_(runs, 'Started At', Number(options.limit || 100));
+  }
+
+  function getAdminDashboard() {
+    REOS.Security.requireAdmin();
+    ensureSheets();
+    const jobs = getJobs();
+    const triggers = getInstalledTriggers();
+    const rules = getRules({ limit: 500 });
+    const runs = getRuns({ limit: 100 });
+    const failedRuns = runs.filter(function (run) { return String(run.Status || '').toLowerCase() === 'error'; });
+
+    return {
+      ok: true,
+      generatedAt: REOS.nowIso_(),
+      kpis: {
+        jobs: jobs.length,
+        installedTriggers: triggers.length,
+        rules: rules.length,
+        activeRules: rules.filter(function (rule) { return rule.Active !== false; }).length,
+        recentRuns: runs.length,
+        failedRuns: failedRuns.length
+      },
+      jobs: jobs.map(function (job) {
+        const installed = triggers.some(function (trigger) { return trigger.handler === job.handler; });
+        return Object.assign({}, job, { installed: installed });
+      }),
+      triggers: triggers,
+      rules: rules,
+      recentRuns: runs
+    };
   }
 
   function installTriggers() {
@@ -95,6 +158,15 @@ REOS.Automation = (function () {
     results.push(runJob_('daily.overdueTasks', scanOverdueTasks));
     results.push(runJob_('hourly.acquisitionReview', reviewAcquisitionLeads));
     return { ok: results.every(function (item) { return item.ok; }), results: results };
+  }
+
+  function runJobByKey(key) {
+    REOS.Security.requireAdmin();
+    const jobKey = String(key || '').trim();
+    if (jobKey === 'daily.followups') return runJob_('daily.followups', scanFollowUps);
+    if (jobKey === 'daily.overdueTasks') return runJob_('daily.overdueTasks', scanOverdueTasks);
+    if (jobKey === 'hourly.acquisitionReview') return runJob_('hourly.acquisitionReview', reviewAcquisitionLeads);
+    throw new Error('Unknown automation job: ' + key);
   }
 
   function scanFollowUps() {
@@ -211,6 +283,18 @@ REOS.Automation = (function () {
     return REOS.Database.insert(RULES_SHEET, rule, { idField: RULE_ID_FIELD, idPrefix: 'AR' });
   }
 
+  function updateRule(ruleId, changes) {
+    REOS.Security.requireAdmin();
+    ensureSheets();
+    changes = changes || {};
+    changes['Updated At'] = new Date();
+    return REOS.Database.update(RULES_SHEET, RULE_ID_FIELD, ruleId, changes);
+  }
+
+  function setRuleActive(ruleId, active) {
+    return updateRule(ruleId, { Active: active === true });
+  }
+
   function dispatch(eventName, moduleName, payload) {
     ensureSheets();
     payload = payload || {};
@@ -295,17 +379,32 @@ REOS.Automation = (function () {
     return current ? current + '\n' + REOS.nowIso_() + ' - ' + note : REOS.nowIso_() + ' - ' + note;
   }
 
+  function latest_(records, dateField, limit) {
+    return (records || []).slice().sort(function (a, b) {
+      const ad = new Date(a[dateField] || 0).getTime() || 0;
+      const bd = new Date(b[dateField] || 0).getTime() || 0;
+      return bd - ad;
+    }).slice(0, limit || 100);
+  }
+
   return {
     ensureSheets: ensureSheets,
     getJobs: getJobs,
+    getInstalledTriggers: getInstalledTriggers,
+    getRules: getRules,
+    getRuns: getRuns,
+    getAdminDashboard: getAdminDashboard,
     installTriggers: installTriggers,
     removeTriggers: removeTriggers,
     runAll: runAll,
+    runJobByKey: runJobByKey,
     scanFollowUps: scanFollowUps,
     scanOverdueTasks: scanOverdueTasks,
     reviewAcquisitionLeads: reviewAcquisitionLeads,
     seedDefaultRules: seedDefaultRules,
     createRule: createRule,
+    updateRule: updateRule,
+    setRuleActive: setRuleActive,
     dispatch: dispatch,
     dailyRun: dailyRun
   };
@@ -318,6 +417,18 @@ function reosAutomationDailyFollowUps() { return REOS.Automation.scanFollowUps()
 function reosAutomationOverdueTasks() { return REOS.Automation.scanOverdueTasks(); }
 function reosAutomationAcquisitionReview() { return REOS.Automation.reviewAcquisitionLeads(); }
 function reosAutomationGetJobs() { return REOS.Automation.getJobs(); }
+function reosAutomationGetAdminDashboard() { return REOS.Automation.getAdminDashboard(); }
+function reosAutomationRunJob(jobKey) { return REOS.Automation.runJobByKey(jobKey); }
+function reosAutomationSeedDefaults() { return REOS.Automation.seedDefaultRules(); }
+function reosAutomationSetRuleActive(ruleId, active) { return REOS.Automation.setRuleActive(ruleId, active === true); }
 function automationSeedDefaults() { return REOS.Automation.seedDefaultRules(); }
 function automationDispatch(eventName, moduleName, payload) { return REOS.Automation.dispatch(eventName, moduleName, payload || {}); }
 function automationDailyRun() { return REOS.Automation.dailyRun(); }
+function showAutomation() {
+  REOS.Security.requireAdmin();
+  const html = HtmlService.createHtmlOutputFromFile('Automation')
+    .setTitle('REOS Automation')
+    .setWidth(1200)
+    .setHeight(760);
+  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Automation');
+}
