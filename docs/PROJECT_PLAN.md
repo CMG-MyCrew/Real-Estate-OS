@@ -49,6 +49,8 @@ Status: In progress
 - GitHub/Apps Script sync guide added in `docs/APPS_SCRIPT_SYNC.md` with manual sync, clasp option, file mapping, release workflow, and troubleshooting.
 - Dashboard chart data service added in `src/Dashboard.gs` for acquisition pipeline, lead priority, work-order status, property occupancy, maintenance status, and operating snapshot.
 - Dashboard charts and pipeline visualizations added in `src/Index.html`.
+- AI core framework Sprint 1 rebuilt in `src/AI.gs` with provider abstraction, prompt builder, response parser, OpenAI-ready connector, stub rules engine, token/cost tracking placeholders, config helpers, and AI request audit logging.
+- AI lifecycle wired into `src/Main.gs` initialization and health checks through `AI_REQUESTS`.
 
 ### Active Objectives
 
@@ -70,7 +72,7 @@ Status: In progress
 | 6. Property Management | In Progress | Assets, inspections, maintenance, occupancy. |
 | 7. Vendors | In Progress | Vendor registry, work orders, field services. |
 | 8. Automation Engine | In Progress | Scheduled jobs, reminders, workflow scans, trigger management, automation UI. |
-| 9. AI Agents | Planned | Lead qualification, reporting, document processing. |
+| 9. AI Agents | In Progress | AI core, provider abstraction, lead qualification, reporting, document processing. |
 | 10. Dashboards | In Progress | Executive KPIs, record review, drill-downs, charts, and pipeline visualizations. |
 | 11. Testing | In Progress | QA scripts, validation, regression checks. |
 | 12. Deployment | In Progress | Production release process and documentation, sync workflow. |
@@ -96,6 +98,7 @@ Status: In progress
 - Automation engine can install/remove scheduled jobs, run follow-up scans, escalate overdue tasks, review acquisition leads, write automation run logs, and manage automation from UI.
 - Vendor module can create/search/update vendors, create/search/assign/update work orders, and return vendor/work-order KPIs.
 - Property module can create/search/update properties, create units, create inspections, create/search maintenance requests, optionally create vendor work orders, and return property KPIs.
+- AI core can initialize config, build prompts, run stub lead qualification, support OpenAI-ready calls, parse responses, track usage, and log AI requests.
 - Deployment guide documents setup, authorization, validation, automation, production release, and rollback.
 - Apps Script sync guide documents GitHub-to-runtime file mapping, manual sync, clasp workflow, release process, and troubleshooting.
 - Dashboard drill-down supports viewing full records, activity history, and contextual actions.
@@ -103,7 +106,7 @@ Status: In progress
 
 ## Next Build Items
 
-1. Add AI lead qualification foundation.
+1. Build AI lead qualification engine UI/actions.
 2. Add automation rule editor forms.
 3. Add property dashboard drill-down actions.
 4. Add production release checklist template.
