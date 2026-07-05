@@ -21,10 +21,11 @@ Status: In progress
 - Router framework added in `src/Router.gs` for module registration, navigation, and route dispatching.
 - CRM module foundation rebuilt in `src/CRM.gs` for clients, leads, tasks, activities, route registration, and compatibility aliases.
 - CRM UI foundation added in `src/CRM.html`.
+- CRM Dashboard Sprint 8.2 added in `src/CRMDashboard.html` with KPI cards, lead funnel, status charts, task priority, activity charts, follow-up queue, date filters, CSV export, and menu access.
 - Dashboard shell wired to router navigation and route dispatching in `src/Index.html`.
 - Validation framework expanded in `src/Validation.gs` with required fields, allowed values, lookup validation, duplicates, number/boolean/date/email/phone validation, sanitizing, and clean validation responses.
 - Test runner added in `src/TestRunner.gs` for setup verification, health checks, required sheets, required headers, services, security, router, and validation.
-- REOS menu updated in `src/Main.gs` with Dashboard, CRM, Acquisitions, Vendors, Properties, Automation, AI Workspace, Admin, Initialize Workbook, Health Check, and Run Tests actions.
+- REOS menu updated in `src/Main.gs` with Dashboard, CRM, CRM Dashboard, Acquisitions, Vendors, Properties, Automation, AI Workspace, Admin, Initialize Workbook, Health Check, and Run Tests actions.
 - Acquisitions module foundation added in `src/Acquisitions.gs` for distressed/off-market lead intake, scoring, pipeline, follow-ups, and dashboard metrics.
 - Acquisitions UI foundation added in `src/Acquisitions.html`.
 - Acquisition pipeline and distress indicator lookups added to setup seed data.
@@ -78,13 +79,13 @@ Status: In progress
 | 1. Core Framework | In Progress | Bootstrap, config, utilities, setup, router, dashboard shell, health check, test runner. |
 | 2. Database Layer | In Progress | Sheet-backed data access framework. |
 | 3. Security | In Progress | Roles, permissions, audit logs, audit reports. |
-| 4. CRM | In Progress | Contacts, leads, pipeline, activities. |
+| 4. CRM | In Progress | Contacts, leads, pipeline, activities, CRM dashboard. |
 | 5. Acquisitions | In Progress | Distressed property and off-market lead workflows. |
 | 6. Property Management | In Progress | Assets, inspections, maintenance, occupancy, drill-down actions. |
 | 7. Vendors | In Progress | Vendor registry, work orders, field services. |
 | 8. Automation Engine | In Progress | Scheduled jobs, reminders, workflow scans, trigger management, automation UI, rule editor. |
 | 9. AI Agents | In Progress | AI core, provider abstraction, lead qualification, next-best-action, summary generation, AI workspace, report generation, document processing. |
-| 10. Dashboards | In Progress | Dashboard framework, executive KPIs, record review, drill-downs, charts, and pipeline visualizations. |
+| 10. Dashboards | In Progress | Dashboard framework, CRM dashboard, executive KPIs, record review, drill-downs, charts, and pipeline visualizations. |
 | 11. Testing | In Progress | QA scripts, validation, regression checks. |
 | 12. Deployment | In Progress | Production release process, checklists, documentation, sync workflow. |
 
@@ -100,6 +101,7 @@ Status: In progress
 - Security layer can seed the initial admin, create users, update roles, deactivate users, reactivate users, enforce permissions, and generate audit reports.
 - Router can register modules, build permission-aware navigation, and dispatch server routes.
 - CRM foundation can create/search/update/archive clients, create/update/list leads, create tasks, and log activities.
+- CRM Dashboard can display KPIs, lead/status charts, task/activity charts, follow-up queue, recent clients, date filters, and CSV export data.
 - Main dashboard can load modules, dispatch routes, initialize workbook, and run health checks.
 - Validation framework supports reusable record validation, lookup validation, duplicate checks, and clean error handling.
 - Test runner can verify setup, schema, services, router, security, validation, and health status.
@@ -124,8 +126,8 @@ Status: In progress
 
 ## Next Build Items
 
-1. Build Sprint 8.2 CRM Dashboard UI.
-2. Add acquisitions module dashboard.
-3. Add property operations dashboard.
+1. Build Sprint 8.3 Acquisitions Dashboard UI.
+2. Add property operations dashboard.
+3. Add vendor operations dashboard.
 4. Add external data integration stubs.
 5. Add automation rule templates library.
