@@ -46,6 +46,7 @@ Status: In progress
 - Property management UI added in `src/Properties.html`.
 - Property, maintenance, and inspection permissions added to `src/Security.gs`.
 - Property module wired into `src/Main.gs` menu, initialization, health check, and lookup seed data.
+- GitHub/Apps Script sync guide added in `docs/APPS_SCRIPT_SYNC.md` with manual sync, clasp option, file mapping, release workflow, and troubleshooting.
 
 ### Active Objectives
 
@@ -70,7 +71,7 @@ Status: In progress
 | 9. AI Agents | Planned | Lead qualification, reporting, document processing. |
 | 10. Dashboards | In Progress | Executive KPIs and operational dashboards. |
 | 11. Testing | In Progress | QA scripts, validation, regression checks. |
-| 12. Deployment | In Progress | Production release process and documentation. |
+| 12. Deployment | In Progress | Production release process and documentation, sync workflow. |
 
 ## Core Framework Acceptance Criteria
 
@@ -94,12 +95,13 @@ Status: In progress
 - Vendor module can create/search/update vendors, create/search/assign/update work orders, and return vendor/work-order KPIs.
 - Property module can create/search/update properties, create units, create inspections, create/search maintenance requests, optionally create vendor work orders, and return property KPIs.
 - Deployment guide documents setup, authorization, validation, automation, production release, and rollback.
+- Apps Script sync guide documents GitHub-to-runtime file mapping, manual sync, clasp workflow, release process, and troubleshooting.
 - Dashboard drill-down supports viewing full records, activity history, and contextual actions.
 
 ## Next Build Items
 
-1. Add GitHub/Apps Script sync documentation.
-2. Add dashboard charts and pipeline visualizations.
-3. Add AI lead qualification foundation.
-4. Add automation rule editor forms.
-5. Add property dashboard drill-down actions.
+1. Add dashboard charts and pipeline visualizations.
+2. Add AI lead qualification foundation.
+3. Add automation rule editor forms.
+4. Add property dashboard drill-down actions.
+5. Add production release checklist template.
