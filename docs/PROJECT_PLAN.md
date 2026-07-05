@@ -37,6 +37,7 @@ Status: In progress
 - Vendor management UI added in `src/Vendors.html`.
 - Vendor and work-order permissions added to `src/Security.gs`.
 - Vendor service categories and work-order statuses added to setup seed data.
+- Deployment guide added in `docs/DEPLOYMENT.md` with Apps Script setup, required files, first-run checklist, testing checklist, automation setup, production release checklist, and rollback plan.
 
 ### Active Objectives
 
@@ -61,7 +62,7 @@ Status: In progress
 | 9. AI Agents | Planned | Lead qualification, reporting, document processing. |
 | 10. Dashboards | In Progress | Executive KPIs and operational dashboards. |
 | 11. Testing | In Progress | QA scripts, validation, regression checks. |
-| 12. Deployment | Planned | Production release process and documentation. |
+| 12. Deployment | In Progress | Production release process and documentation. |
 
 ## Core Framework Acceptance Criteria
 
@@ -83,11 +84,12 @@ Status: In progress
 - Admin UI can create users, list users, update roles, activate users, and deactivate users.
 - Automation engine can install/remove scheduled jobs, run follow-up scans, escalate overdue tasks, review acquisition leads, and write automation run logs.
 - Vendor module can create/search/update vendors, create/search/assign/update work orders, and return vendor/work-order KPIs.
+- Deployment guide documents setup, authorization, validation, automation, production release, and rollback.
 
 ## Next Build Items
 
-1. Add deployment documentation.
-2. Add dashboard drill-down record actions.
-3. Add security audit report view.
-4. Add automation management UI.
-5. Build property management module foundation.
+1. Add dashboard drill-down record actions.
+2. Add security audit report view.
+3. Add automation management UI.
+4. Build property management module foundation.
+5. Add GitHub/Apps Script sync documentation.
