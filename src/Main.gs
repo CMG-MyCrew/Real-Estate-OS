@@ -78,6 +78,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open Acquisitions', 'showAcquisitions')
     .addItem('Open Acquisitions Dashboard', 'showAcquisitionsDashboard')
     .addItem('Open Vendors', 'showVendors')
+    .addItem('Open Vendor Dashboard', 'showVendorDashboard')
     .addItem('Open Properties', 'showProperties')
     .addItem('Open Property Dashboard', 'showPropertyDashboard')
     .addItem('Open AI Workspace', 'showAI')
@@ -255,6 +256,12 @@ function showAcquisitionsDashboard() {
   REOS.Security.requirePermission('leads:read');
   const html = HtmlService.createHtmlOutputFromFile('AcquisitionsDashboard').setTitle('REOS Acquisitions Dashboard').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Acquisitions Dashboard');
+}
+
+function showVendorDashboard() {
+  REOS.Security.requirePermission('vendors:read');
+  const html = HtmlService.createHtmlOutputFromFile('VendorDashboard').setTitle('REOS Vendor Dashboard').setWidth(1200).setHeight(800);
+  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Vendor Dashboard');
 }
 
 function showPropertyDashboard() {
