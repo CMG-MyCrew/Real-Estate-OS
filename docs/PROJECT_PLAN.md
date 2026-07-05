@@ -47,6 +47,8 @@ Status: In progress
 - Property, maintenance, and inspection permissions added to `src/Security.gs`.
 - Property module wired into `src/Main.gs` menu, initialization, health check, and lookup seed data.
 - GitHub/Apps Script sync guide added in `docs/APPS_SCRIPT_SYNC.md` with manual sync, clasp option, file mapping, release workflow, and troubleshooting.
+- Dashboard chart data service added in `src/Dashboard.gs` for acquisition pipeline, lead priority, work-order status, property occupancy, maintenance status, and operating snapshot.
+- Dashboard charts and pipeline visualizations added in `src/Index.html`.
 
 ### Active Objectives
 
@@ -69,7 +71,7 @@ Status: In progress
 | 7. Vendors | In Progress | Vendor registry, work orders, field services. |
 | 8. Automation Engine | In Progress | Scheduled jobs, reminders, workflow scans, trigger management, automation UI. |
 | 9. AI Agents | Planned | Lead qualification, reporting, document processing. |
-| 10. Dashboards | In Progress | Executive KPIs and operational dashboards. |
+| 10. Dashboards | In Progress | Executive KPIs, record review, drill-downs, charts, and pipeline visualizations. |
 | 11. Testing | In Progress | QA scripts, validation, regression checks. |
 | 12. Deployment | In Progress | Production release process and documentation, sync workflow. |
 
@@ -97,11 +99,12 @@ Status: In progress
 - Deployment guide documents setup, authorization, validation, automation, production release, and rollback.
 - Apps Script sync guide documents GitHub-to-runtime file mapping, manual sync, clasp workflow, release process, and troubleshooting.
 - Dashboard drill-down supports viewing full records, activity history, and contextual actions.
+- Dashboard visualizations display acquisition pipeline, lead priority, work-order status, property occupancy, maintenance status, and operating snapshot charts.
 
 ## Next Build Items
 
-1. Add dashboard charts and pipeline visualizations.
-2. Add AI lead qualification foundation.
-3. Add automation rule editor forms.
-4. Add property dashboard drill-down actions.
-5. Add production release checklist template.
+1. Add AI lead qualification foundation.
+2. Add automation rule editor forms.
+3. Add property dashboard drill-down actions.
+4. Add production release checklist template.
+5. Add charts to module-specific dashboards.
