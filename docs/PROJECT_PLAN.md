@@ -53,6 +53,7 @@ Status: In progress
 - AI lifecycle wired into `src/Main.gs` initialization and health checks through `AI_REQUESTS`.
 - AI lead qualification engine Sprint 2 added in `src/AI.gs` with seller motivation analysis, distress signal detection, investment scoring, confidence scoring, risk flags, missing-data checks, recommended strategy, next-best-action, and batch qualification.
 - AI use permission added to Agent and Coordinator roles in `src/Security.gs`.
+- AI next-best-action engine Sprint 3 added in `src/AI.gs` with ranked action plans, outreach channel recommendations, priority/due-date logic, action reasoning, batch recommendations, and optional task creation.
 
 ### Active Objectives
 
@@ -74,7 +75,7 @@ Status: In progress
 | 6. Property Management | In Progress | Assets, inspections, maintenance, occupancy. |
 | 7. Vendors | In Progress | Vendor registry, work orders, field services. |
 | 8. Automation Engine | In Progress | Scheduled jobs, reminders, workflow scans, trigger management, automation UI. |
-| 9. AI Agents | In Progress | AI core, provider abstraction, lead qualification, reporting, document processing. |
+| 9. AI Agents | In Progress | AI core, provider abstraction, lead qualification, next-best-action, reporting, document processing. |
 | 10. Dashboards | In Progress | Executive KPIs, record review, drill-downs, charts, and pipeline visualizations. |
 | 11. Testing | In Progress | QA scripts, validation, regression checks. |
 | 12. Deployment | In Progress | Production release process and documentation, sync workflow. |
@@ -102,6 +103,7 @@ Status: In progress
 - Property module can create/search/update properties, create units, create inspections, create/search maintenance requests, optionally create vendor work orders, and return property KPIs.
 - AI core can initialize config, build prompts, run stub lead qualification, support OpenAI-ready calls, parse responses, track usage, and log AI requests.
 - AI lead qualification can calculate seller motivation, distress signals, opportunity score, confidence, risk flags, recommended strategy, and next-best-action.
+- AI next-best-action can rank recommended actions, explain reasoning, assign priority, set due dates, recommend outreach channels, and create CRM tasks.
 - Deployment guide documents setup, authorization, validation, automation, production release, and rollback.
 - Apps Script sync guide documents GitHub-to-runtime file mapping, manual sync, clasp workflow, release process, and troubleshooting.
 - Dashboard drill-down supports viewing full records, activity history, and contextual actions.
