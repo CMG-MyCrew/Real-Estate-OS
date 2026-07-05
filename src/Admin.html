@@ -11,7 +11,10 @@
       h2 { margin: 0 0 12px; font-size: 18px; }
       .muted { color: #6b7280; }
       .grid { display: grid; grid-template-columns: 360px 1fr; gap: 16px; }
-      .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; }
+      .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+      .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 16px; }
+      .kpi { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; }
+      .kpi strong { display: block; font-size: 24px; margin-top: 4px; }
       input, select { width: 100%; box-sizing: border-box; padding: 10px; margin: 6px 0 12px; border: 1px solid #d1d5db; border-radius: 8px; }
       button { padding: 9px 12px; border: 0; border-radius: 8px; cursor: pointer; font-weight: 700; margin-right: 6px; }
       .primary { background: #111827; color: #fff; }
@@ -29,26 +32,56 @@
       <div class="header">
         <div>
           <h1>REOS Admin</h1>
-          <div class="muted">User and role management.</div>
+          <div class="muted">User, role, and security audit management.</div>
         </div>
-        <button class="secondary" onclick="loadUsers()">Refresh Users</button>
+        <div>
+          <button class="secondary" onclick="loadUsers()">Refresh Users</button>
+          <button class="secondary" onclick="loadAudit()">Refresh Audit</button>
+        </div>
       </div>
 
       <section class="grid">
-        <div class="card">
-          <h2>Create User</h2>
-          <input id="name" placeholder="Name">
-          <input id="email" placeholder="Email">
-          <select id="role"></select>
-          <button class="primary" onclick="createUser()">Create User</button>
+        <div>
+          <div class="card">
+            <h2>Create User</h2>
+            <input id="name" placeholder="Name">
+            <input id="email" placeholder="Email">
+            <select id="role"></select>
+            <button class="primary" onclick="createUser()">Create User</button>
+          </div>
 
-          <h2 style="margin-top:24px;">System Output</h2>
-          <pre id="output">Ready.</pre>
+          <div class="card">
+            <h2>User Audit Lookup</h2>
+            <input id="auditEmail" placeholder="User email">
+            <button class="secondary" onclick="loadUserAudit()">View User Activity</button>
+          </div>
+
+          <div class="card">
+            <h2>System Output</h2>
+            <pre id="output">Ready.</pre>
+          </div>
         </div>
 
-        <div class="card">
-          <h2>Users</h2>
-          <table id="usersTable"></table>
+        <div>
+          <div class="card">
+            <h2>Users</h2>
+            <table id="usersTable"></table>
+          </div>
+
+          <div class="card">
+            <h2>Security Audit Summary</h2>
+            <div class="kpis">
+              <div class="kpi"><span>Users</span><strong id="auditUsers">0</strong></div>
+              <div class="kpi"><span>Active</span><strong id="auditActive">0</strong></div>
+              <div class="kpi"><span>Inactive</span><strong id="auditInactive">0</strong></div>
+              <div class="kpi"><span>Events</span><strong id="auditEvents">0</strong></div>
+              <div class="kpi"><span>Denied</span><strong id="auditDenied">0</strong></div>
+            </div>
+            <h2>Recent Security Events</h2>
+            <table id="securityEventsTable"></table>
+            <h2 style="margin-top:16px;">Permission Denied Events</h2>
+            <table id="deniedEventsTable"></table>
+          </div>
         </div>
       </section>
     </main>
@@ -70,6 +103,57 @@
           })
           .withFailureHandler(function(error) { output({ error: error.message }); })
           .reosAdminGetUsers();
+      }
+
+      function loadAudit() {
+        google.script.run
+          .withSuccessHandler(function(data) {
+            renderAudit(data);
+            output(data);
+          })
+          .withFailureHandler(function(error) { output({ error: error.message }); })
+          .reosAdminGetAuditReport({ limit: 50 });
+      }
+
+      function loadUserAudit() {
+        const email = document.getElementById('auditEmail').value;
+        google.script.run
+          .withSuccessHandler(function(data) {
+            renderEvents('securityEventsTable', data.events || []);
+            output(data);
+          })
+          .withFailureHandler(function(error) { output({ error: error.message }); })
+          .reosAdminGetUserAudit(email, 50);
+      }
+
+      function renderAudit(data) {
+        const summary = data.summary || {};
+        document.getElementById('auditUsers').textContent = summary.users || 0;
+        document.getElementById('auditActive').textContent = summary.activeUsers || 0;
+        document.getElementById('auditInactive').textContent = summary.inactiveUsers || 0;
+        document.getElementById('auditEvents').textContent = summary.securityEvents || 0;
+        document.getElementById('auditDenied').textContent = summary.permissionDenied || 0;
+        renderEvents('securityEventsTable', data.recentSecurityEvents || []);
+        renderEvents('deniedEventsTable', data.permissionDeniedEvents || []);
+      }
+
+      function renderEvents(tableId, events) {
+        const table = document.getElementById(tableId);
+        let html = '<tr><th>Timestamp</th><th>Level</th><th>User</th><th>Action</th><th>Details</th></tr>';
+        if (!events.length) {
+          html += '<tr><td colspan="5">No events found.</td></tr>';
+        } else {
+          events.forEach(function(event) {
+            html += '<tr>' +
+              '<td>' + escapeHtml(formatValue(event.Timestamp)) + '</td>' +
+              '<td>' + escapeHtml(event.Level || '') + '</td>' +
+              '<td>' + escapeHtml(event.User || '') + '</td>' +
+              '<td>' + escapeHtml(event.Action || '') + '</td>' +
+              '<td>' + escapeHtml(event.Details || '') + '</td>' +
+              '</tr>';
+          });
+        }
+        table.innerHTML = html;
       }
 
       function renderRoleSelect() {
@@ -107,10 +191,16 @@
       }
 
       function actionButtons(user) {
+        const auditButton = '<button class="secondary" onclick="setAuditEmail(\'' + escapeJs(user.Email) + '\')">Audit</button>';
         if (String(user.Status || '') === 'Active') {
-          return '<button class="danger" onclick="deactivateUser(\'' + escapeJs(user.Email) + '\')">Deactivate</button>';
+          return auditButton + '<button class="danger" onclick="deactivateUser(\'' + escapeJs(user.Email) + '\')">Deactivate</button>';
         }
-        return '<button class="success" onclick="activateUser(\'' + escapeJs(user.Email) + '\')">Activate</button>';
+        return auditButton + '<button class="success" onclick="activateUser(\'' + escapeJs(user.Email) + '\')">Activate</button>';
+      }
+
+      function setAuditEmail(email) {
+        document.getElementById('auditEmail').value = email;
+        loadUserAudit();
       }
 
       function createUser() {
@@ -121,7 +211,7 @@
           Status: 'Active'
         };
         google.script.run
-          .withSuccessHandler(function(data) { output(data); loadUsers(); })
+          .withSuccessHandler(function(data) { output(data); loadUsers(); loadAudit(); })
           .withFailureHandler(function(error) { output({ error: error.message }); })
           .reosAdminCreateUser(user);
       }
@@ -129,23 +219,28 @@
       function setRole(email, selectId) {
         const role = document.getElementById(selectId).value;
         google.script.run
-          .withSuccessHandler(function(data) { output(data); loadUsers(); })
+          .withSuccessHandler(function(data) { output(data); loadUsers(); loadAudit(); })
           .withFailureHandler(function(error) { output({ error: error.message }); })
           .reosAdminSetUserRole(email, role);
       }
 
       function deactivateUser(email) {
         google.script.run
-          .withSuccessHandler(function(data) { output(data); loadUsers(); })
+          .withSuccessHandler(function(data) { output(data); loadUsers(); loadAudit(); })
           .withFailureHandler(function(error) { output({ error: error.message }); })
           .reosAdminDeactivateUser(email);
       }
 
       function activateUser(email) {
         google.script.run
-          .withSuccessHandler(function(data) { output(data); loadUsers(); })
+          .withSuccessHandler(function(data) { output(data); loadUsers(); loadAudit(); })
           .withFailureHandler(function(error) { output({ error: error.message }); })
           .reosAdminActivateUser(email);
+      }
+
+      function formatValue(value) {
+        if (value === null || value === undefined) return '';
+        return String(value);
       }
 
       function escapeHtml(value) {
@@ -159,6 +254,7 @@
       }
 
       loadUsers();
+      loadAudit();
     </script>
   </body>
 </html>
