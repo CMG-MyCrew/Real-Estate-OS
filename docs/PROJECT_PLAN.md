@@ -24,12 +24,14 @@ Status: In progress
 - Dashboard shell wired to router navigation and route dispatching in `src/Index.html`.
 - Validation framework expanded in `src/Validation.gs` with required fields, allowed values, lookup validation, duplicates, number/boolean/date/email/phone validation, sanitizing, and clean validation responses.
 - Test runner added in `src/TestRunner.gs` for setup verification, health checks, required sheets, required headers, services, security, router, and validation.
-- REOS menu updated in `src/Main.gs` with Dashboard, CRM, Acquisitions, Initialize Workbook, Health Check, and Run Tests actions.
+- REOS menu updated in `src/Main.gs` with Dashboard, CRM, Acquisitions, Admin, Initialize Workbook, Health Check, and Run Tests actions.
 - Acquisitions module foundation added in `src/Acquisitions.gs` for distressed/off-market lead intake, scoring, pipeline, follow-ups, and dashboard metrics.
 - Acquisitions UI foundation added in `src/Acquisitions.html`.
 - Acquisition pipeline and distress indicator lookups added to setup seed data.
 - Dashboard records review service added in `src/Dashboard.gs`.
 - Main dashboard updated in `src/Index.html` with KPI cards, recent CRM clients, recent acquisition leads, open task count, and record search.
+- Role-management server actions added in `src/Security.gs` for admin user creation, role updates, activation, and deactivation.
+- Role-management UI added in `src/Admin.html`.
 
 ### Active Objectives
 
@@ -65,7 +67,7 @@ Status: In progress
 - Logger writes structured records to `SYSTEM_LOG`.
 - Database layer can insert, update, query, and soft-delete sheet records.
 - Workbook setup creates sheets, headers, filters, frozen rows, and HOME status records.
-- Security layer can seed the initial admin, create users, update roles, deactivate users, and enforce permissions.
+- Security layer can seed the initial admin, create users, update roles, deactivate users, reactivate users, and enforce permissions.
 - Router can register modules, build permission-aware navigation, and dispatch server routes.
 - CRM foundation can create/search/update/archive clients, create/update/list leads, create tasks, and log activities.
 - Main dashboard can load modules, dispatch routes, initialize workbook, and run health checks.
@@ -73,11 +75,12 @@ Status: In progress
 - Test runner can verify setup, schema, services, router, security, validation, and health status.
 - Acquisitions module can create/search/update acquisition leads, calculate priority, move pipeline stages, create follow-up tasks, and return dashboard KPIs.
 - Dashboard records review can display KPIs, recent clients, recent acquisition leads, open task count, and record search results.
+- Admin UI can create users, list users, update roles, activate users, and deactivate users.
 
 ## Next Build Items
 
-1. Add role-management UI actions.
-2. Add workflow automation foundation.
-3. Build vendor management module foundation.
-4. Add deployment documentation.
-5. Add dashboard drill-down record actions.
+1. Add workflow automation foundation.
+2. Build vendor management module foundation.
+3. Add deployment documentation.
+4. Add dashboard drill-down record actions.
+5. Add security audit report view.
