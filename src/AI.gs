@@ -1,8 +1,10 @@
 /**
- * REOS Enterprise v3.0 - AI Core Framework
+ * REOS Enterprise v3.0 - AI Core + Lead Qualification Engine
  *
- * Sprint 1 foundation for provider-agnostic AI services, prompt building,
- * response parsing, usage tracking, configuration, and audit logging.
+ * Sprint 1: provider abstraction, prompt building, response parsing, usage tracking,
+ * configuration, and audit logging.
+ * Sprint 2: rules-first lead qualification engine for seller motivation, distress
+ * signals, opportunity score, confidence, risk flags, and recommended strategy.
  */
 
 var REOS = REOS || {};
@@ -19,13 +21,7 @@ REOS.AI = (function () {
     'Created At', 'Updated At'
   ];
 
-  const DEFAULT_CONFIG = {
-    provider: 'stub',
-    model: 'reos-local-rules',
-    temperature: 0.2,
-    maxTokens: 1200,
-    enabled: false
-  };
+  const DEFAULT_CONFIG = { provider: 'stub', model: 'reos-local-rules', temperature: 0.2, maxTokens: 1200, enabled: false };
 
   const PROVIDERS = {
     stub: { name: 'Stub / Rules Engine', invoke: invokeStub_ },
@@ -36,7 +32,7 @@ REOS.AI = (function () {
 
   const PROMPTS = {
     leadQualification: {
-      version: '1.0.0',
+      version: '2.0.0',
       system: [
         'You are REOS Enterprise, a disciplined real estate acquisition analyst.',
         'Analyze distressed and off-market real estate leads for investment potential.',
@@ -45,7 +41,8 @@ REOS.AI = (function () {
       ].join('\n'),
       userTemplate: [
         'Analyze this acquisition lead and return JSON with:',
-        'score, confidence, motivationTags, distressSignals, riskFlags, nextBestAction, summary, recommendedStrategy.',
+        'score, confidence, grade, motivationTags, distressSignals, investmentSignals,',
+        'riskFlags, nextBestAction, recommendedStrategy, suggestedFollowUpDays, summary.',
         '',
         'Lead JSON:',
         '{{leadJson}}'
@@ -141,28 +138,25 @@ REOS.AI = (function () {
     const config = Object.assign({}, getConfig(), request.config || {});
     const provider = PROVIDERS[config.provider] || PROVIDERS.stub;
     const startedAt = new Date();
-    let logId = null;
 
     try {
       const response = provider.invoke(request, config);
       const parsed = parseResponse(response.text || response.content || '');
       const usage = response.usage || estimateUsage_(request.prompt, response.text || '');
-      const finishedAt = new Date();
-      logId = logRequest_({
+      const logId = logRequest_({
         requestType: request.requestType || 'completion', provider: config.provider, model: config.model,
         status: 'Success', usage: usage, estimatedCost: estimateCost_(config.provider, config.model, usage),
         recordType: request.recordType || '', recordId: request.recordId || '',
         promptPreview: preview_(request.prompt ? request.prompt.user || request.prompt : ''),
-        responsePreview: preview_(response.text || ''), error: '', startedAt: startedAt, finishedAt: finishedAt
+        responsePreview: preview_(response.text || ''), error: '', startedAt: startedAt, finishedAt: new Date()
       });
       return { ok: true, logId: logId, provider: config.provider, model: config.model, text: response.text || '', parsed: parsed, usage: usage };
     } catch (error) {
-      const finishedAt = new Date();
-      logId = logRequest_({
+      logRequest_({
         requestType: request.requestType || 'completion', provider: config.provider, model: config.model,
         status: 'Error', usage: {}, estimatedCost: 0, recordType: request.recordType || '', recordId: request.recordId || '',
         promptPreview: preview_(request.prompt ? request.prompt.user || request.prompt : ''), responsePreview: '',
-        error: error.message, startedAt: startedAt, finishedAt: finishedAt
+        error: error.message, startedAt: startedAt, finishedAt: new Date()
       });
       REOS.handleError_('AI complete', error);
       throw error;
@@ -170,11 +164,207 @@ REOS.AI = (function () {
   }
 
   function qualifyLead(leadOrId) {
+    REOS.Security.requirePermission('ai:use');
     REOS.Security.requirePermission('leads:read');
     const lead = typeof leadOrId === 'string' ? REOS.Acquisitions.getLead(leadOrId) : leadOrId;
     if (!lead) throw new Error('Lead not found for AI qualification.');
+    const config = getConfig();
+
+    if (config.provider === 'stub' || !config.enabled) {
+      const result = qualificationEngine_(lead);
+      const text = REOS.toJson_(result);
+      const prompt = buildPrompt('leadQualification', { leadJson: REOS.toJson_(lead) });
+      const logId = logRequest_({
+        requestType: 'leadQualification', provider: 'stub', model: 'reos-local-rules-v2', status: 'Success',
+        usage: estimateUsage_(prompt, text), estimatedCost: 0, recordType: 'Lead', recordId: lead['Lead ID'] || '',
+        promptPreview: preview_(prompt.user), responsePreview: preview_(text), error: '', startedAt: new Date(), finishedAt: new Date()
+      });
+      return { ok: true, logId: logId, provider: 'stub', model: 'reos-local-rules-v2', parsed: result, text: text };
+    }
+
     const prompt = buildPrompt('leadQualification', { leadJson: REOS.toJson_(lead) });
     return complete({ requestType: 'leadQualification', recordType: 'Lead', recordId: lead['Lead ID'] || '', prompt: prompt });
+  }
+
+  function qualifyLeadRulesOnly(leadOrId) {
+    REOS.Security.requirePermission('leads:read');
+    const lead = typeof leadOrId === 'string' ? REOS.Acquisitions.getLead(leadOrId) : leadOrId;
+    if (!lead) throw new Error('Lead not found for rules qualification.');
+    return { ok: true, parsed: qualificationEngine_(lead) };
+  }
+
+  function qualifyLeadBatch(options) {
+    REOS.Security.requirePermission('ai:use');
+    options = options || {};
+    const leads = REOS.Acquisitions.listLeads({ limit: options.limit || 50 });
+    return leads.map(function (lead) {
+      const analysis = qualificationEngine_(lead);
+      return {
+        'Lead ID': lead['Lead ID'],
+        'Property Address': lead['Property Address'],
+        'Owner Name': lead['Owner Name'],
+        score: analysis.score,
+        grade: analysis.grade,
+        confidence: analysis.confidence,
+        nextBestAction: analysis.nextBestAction,
+        riskFlags: analysis.riskFlags,
+        motivationTags: analysis.motivationTags
+      };
+    });
+  }
+
+  function qualificationEngine_(lead) {
+    lead = lead || {};
+    const factors = [];
+    const motivationTags = [];
+    const distressSignals = [];
+    const investmentSignals = [];
+    const riskFlags = [];
+    const missingData = [];
+    let score = 0;
+    let confidence = 45;
+
+    score += addDistressScore_(lead, factors, motivationTags, distressSignals);
+    score += addContactScore_(lead, factors, missingData);
+    score += addPricingScore_(lead, factors, investmentSignals, riskFlags, missingData);
+    score += addTimingScore_(lead, factors, motivationTags);
+    score += addPropertyScore_(lead, factors, investmentSignals, riskFlags);
+
+    if (hasValue_(lead['Owner Phone'])) confidence += 10; else missingData.push('Owner phone');
+    if (hasValue_(lead['Owner Email'])) confidence += 5;
+    if (hasValue_(lead['Estimated Value'])) confidence += 10;
+    if (hasValue_(lead['Asking Price']) || hasValue_(lead['Mortgage Balance'])) confidence += 10;
+    if (hasValue_(lead['Distress Indicator'])) confidence += 10;
+    if (hasValue_(lead['Property Address'])) confidence += 5; else missingData.push('Property address');
+
+    score = clamp_(score, 0, 100);
+    confidence = clamp_(confidence - Math.max(0, missingData.length - 2) * 5, 20, 95);
+
+    const grade = score >= 85 ? 'A' : score >= 70 ? 'B' : score >= 55 ? 'C' : score >= 40 ? 'D' : 'F';
+    const urgency = score >= 75 ? 'High' : score >= 55 ? 'Medium' : 'Low';
+    const nextBestAction = getNextBestAction_(score, confidence, lead, missingData, riskFlags);
+    const recommendedStrategy = getStrategy_(score, confidence, riskFlags);
+    const suggestedFollowUpDays = score >= 75 ? 1 : score >= 55 ? 3 : score >= 40 ? 7 : 14;
+
+    return {
+      score: score,
+      grade: grade,
+      confidence: confidence,
+      urgency: urgency,
+      motivationTags: unique_(motivationTags),
+      distressSignals: unique_(distressSignals),
+      investmentSignals: unique_(investmentSignals),
+      riskFlags: unique_(riskFlags),
+      missingData: unique_(missingData),
+      scoreFactors: factors,
+      nextBestAction: nextBestAction,
+      recommendedStrategy: recommendedStrategy,
+      suggestedFollowUpDays: suggestedFollowUpDays,
+      summary: buildQualificationSummary_(lead, score, grade, urgency, nextBestAction)
+    };
+  }
+
+  function addDistressScore_(lead, factors, motivationTags, distressSignals) {
+    const text = [lead['Distress Indicator'], lead.Notes, lead.Status].join(' ').toLowerCase();
+    let points = 0;
+    const rules = [
+      ['pre-foreclosure', 25, 'Foreclosure urgency', 'Pre-foreclosure'],
+      ['tax', 20, 'Tax pressure', 'Tax delinquent'],
+      ['probate', 20, 'Probate motivation', 'Probate'],
+      ['code', 15, 'Compliance pressure', 'Code violation'],
+      ['vacant', 15, 'Vacancy pressure', 'Vacant'],
+      ['eviction', 12, 'Tenant/occupancy stress', 'Eviction'],
+      ['absentee', 10, 'Absentee owner', 'Absentee owner'],
+      ['tired landlord', 12, 'Tired landlord', 'Landlord fatigue'],
+      ['inherited', 10, 'Inherited property', 'Inherited']
+    ];
+    rules.forEach(function (rule) {
+      if (text.indexOf(rule[0]) !== -1) {
+        points += rule[1];
+        motivationTags.push(rule[2]);
+        distressSignals.push(rule[3]);
+        factors.push({ factor: rule[3], points: rule[1], reason: rule[2] });
+      }
+    });
+    return Math.min(points, 40);
+  }
+
+  function addContactScore_(lead, factors, missingData) {
+    let points = 0;
+    if (hasValue_(lead['Owner Phone'])) { points += 8; factors.push({ factor: 'Owner phone available', points: 8, reason: 'Direct outreach possible' }); }
+    if (hasValue_(lead['Owner Email'])) { points += 4; factors.push({ factor: 'Owner email available', points: 4, reason: 'Secondary contact channel available' }); }
+    if (!hasValue_(lead['Owner Phone']) && !hasValue_(lead['Owner Email'])) { missingData.push('Owner contact information'); }
+    return points;
+  }
+
+  function addPricingScore_(lead, factors, investmentSignals, riskFlags, missingData) {
+    const estimatedValue = number_(lead['Estimated Value']);
+    const askingPrice = number_(lead['Asking Price']);
+    const mortgageBalance = number_(lead['Mortgage Balance']);
+    let points = 0;
+
+    if (estimatedValue && askingPrice) {
+      const discount = (estimatedValue - askingPrice) / estimatedValue;
+      if (discount >= 0.35) { points += 25; investmentSignals.push('Strong discount to estimated value'); factors.push({ factor: 'Strong spread', points: 25, reason: 'Asking price is at least 35% below estimated value' }); }
+      else if (discount >= 0.2) { points += 15; investmentSignals.push('Moderate discount to estimated value'); factors.push({ factor: 'Moderate spread', points: 15, reason: 'Asking price is at least 20% below estimated value' }); }
+      else if (discount < 0.05) { riskFlags.push('Limited apparent equity spread'); }
+    } else {
+      if (!estimatedValue) missingData.push('Estimated value');
+      if (!askingPrice) missingData.push('Asking price');
+    }
+
+    if (estimatedValue && mortgageBalance) {
+      const equity = estimatedValue - mortgageBalance;
+      if (equity > estimatedValue * 0.25) { points += 10; investmentSignals.push('Likely equity available'); }
+      if (equity <= 0) riskFlags.push('Potential negative equity');
+    }
+
+    return points;
+  }
+
+  function addTimingScore_(lead, factors, motivationTags) {
+    let points = 0;
+    const followUp = lead['Next Follow Up'] ? new Date(lead['Next Follow Up']) : null;
+    if (followUp && !isNaN(followUp.getTime())) {
+      const today = new Date();
+      const diffDays = Math.floor((followUp.getTime() - today.getTime()) / 86400000);
+      if (diffDays <= 0) { points += 8; motivationTags.push('Follow-up due now'); factors.push({ factor: 'Follow-up due', points: 8, reason: 'Immediate action required' }); }
+      else if (diffDays <= 3) { points += 4; factors.push({ factor: 'Follow-up approaching', points: 4, reason: 'Lead needs near-term attention' }); }
+    }
+    return points;
+  }
+
+  function addPropertyScore_(lead, factors, investmentSignals, riskFlags) {
+    let points = 0;
+    const bedrooms = number_(lead.Bedrooms);
+    const bathrooms = number_(lead.Bathrooms);
+    const address = String(lead['Property Address'] || '');
+    if (address) { points += 3; factors.push({ factor: 'Address available', points: 3, reason: 'Property can be researched' }); }
+    if (bedrooms >= 2 && bathrooms >= 1) { points += 5; investmentSignals.push('Standard residential layout'); }
+    if (String(lead['Property Type'] || '').toLowerCase().indexOf('land') !== -1) riskFlags.push('Land requires separate underwriting model');
+    return points;
+  }
+
+  function getNextBestAction_(score, confidence, lead, missingData, riskFlags) {
+    if (missingData.indexOf('Owner contact information') !== -1) return 'Skip trace owner contact information';
+    if (score >= 80 && confidence >= 65) return 'Call seller now and prepare offer range';
+    if (score >= 65) return 'Call seller and schedule property review';
+    if (score >= 50) return 'Send outreach and verify motivation';
+    if (riskFlags.length >= 2) return 'Research risk flags before outreach';
+    return 'Collect missing data and monitor lead';
+  }
+
+  function getStrategy_(score, confidence, riskFlags) {
+    if (score >= 80 && confidence >= 70) return 'Aggressive acquisition pursuit';
+    if (score >= 65) return 'High-touch follow-up with valuation check';
+    if (score >= 50) return 'Nurture sequence and distress verification';
+    if (riskFlags.length) return 'Research-first approach';
+    return 'Low-priority nurture';
+  }
+
+  function buildQualificationSummary_(lead, score, grade, urgency, action) {
+    const address = lead['Property Address'] || 'Unknown property';
+    return address + ' scored ' + score + ' (' + grade + ') with ' + urgency + ' urgency. Recommended action: ' + action + '.';
   }
 
   function parseResponse(text) {
@@ -182,16 +372,14 @@ REOS.AI = (function () {
     if (!text) return null;
     try { return JSON.parse(text); } catch (ignore) {}
     const match = text.match(/\{[\s\S]*\}/);
-    if (match) {
-      try { return JSON.parse(match[0]); } catch (ignore2) {}
-    }
+    if (match) { try { return JSON.parse(match[0]); } catch (ignore2) {} }
     return { raw: text };
   }
 
   function invokeStub_(request, config) {
     if (request.requestType === 'leadQualification') {
       const lead = extractLeadFromPrompt_(request.prompt);
-      const result = rulesBasedLeadQualification_(lead);
+      const result = qualificationEngine_(lead);
       return { text: REOS.toJson_(result), usage: estimateUsage_(request.prompt, REOS.toJson_(result)) };
     }
     const text = REOS.toJson_({ summary: 'AI provider is configured for stub mode.', nextBestAction: 'Configure provider before production AI calls.' });
@@ -226,49 +414,13 @@ REOS.AI = (function () {
     return { text: json.choices && json.choices[0] && json.choices[0].message ? json.choices[0].message.content : '', usage: json.usage || {} };
   }
 
-  function invokeNotImplemented_(request, config) {
-    throw new Error('AI provider not implemented yet: ' + config.provider);
-  }
+  function invokeNotImplemented_(request, config) { throw new Error('AI provider not implemented yet: ' + config.provider); }
 
   function extractLeadFromPrompt_(prompt) {
     const text = prompt && prompt.user ? prompt.user : String(prompt || '');
     const match = text.match(/\{[\s\S]*\}/);
     if (!match) return {};
     try { return JSON.parse(match[0]); } catch (error) { return {}; }
-  }
-
-  function rulesBasedLeadQualification_(lead) {
-    let score = 0;
-    const tags = [];
-    const risks = [];
-    const signals = [];
-    const distress = String(lead['Distress Indicator'] || '').toLowerCase();
-    const estimatedValue = Number(lead['Estimated Value'] || 0);
-    const askingPrice = Number(lead['Asking Price'] || 0);
-
-    if (distress.indexOf('probate') !== -1) { score += 20; tags.push('Probate motivation'); signals.push('Probate'); }
-    if (distress.indexOf('tax') !== -1) { score += 20; tags.push('Tax pressure'); signals.push('Tax delinquent'); }
-    if (distress.indexOf('vacant') !== -1) { score += 15; tags.push('Vacancy pressure'); signals.push('Vacant'); }
-    if (distress.indexOf('code') !== -1) { score += 15; tags.push('Code violation pressure'); signals.push('Code violation'); }
-    if (distress.indexOf('pre-foreclosure') !== -1) { score += 25; tags.push('Foreclosure urgency'); signals.push('Pre-foreclosure'); }
-    if (distress.indexOf('absentee') !== -1) { score += 10; tags.push('Absentee owner'); signals.push('Absentee owner'); }
-    if (lead['Owner Phone']) score += 5;
-    if (lead['Owner Email']) score += 3;
-    if (estimatedValue > 0 && askingPrice > 0 && askingPrice <= estimatedValue * 0.7) { score += 25; tags.push('Potential equity spread'); }
-    if (!lead['Owner Phone']) risks.push('Missing owner phone');
-    if (!estimatedValue) risks.push('Missing estimated value');
-    if (!askingPrice) risks.push('Missing asking price');
-
-    score = Math.min(100, score);
-    const confidence = Math.max(35, Math.min(95, 50 + (lead['Owner Phone'] ? 10 : 0) + (estimatedValue ? 10 : 0) + (askingPrice ? 10 : 0) + (distress ? 10 : 0)));
-    const nextBestAction = score >= 70 ? 'Call seller and prepare offer range' : score >= 45 ? 'Skip trace and schedule follow-up' : 'Collect missing data and monitor';
-
-    return {
-      score: score, confidence: confidence, motivationTags: tags, distressSignals: signals,
-      riskFlags: risks, nextBestAction: nextBestAction,
-      recommendedStrategy: score >= 70 ? 'High-touch acquisition follow-up' : score >= 45 ? 'Nurture and verify distress' : 'Research before outreach',
-      summary: 'Rules-based AI foundation assessment generated from available lead fields.'
-    };
   }
 
   function estimateUsage_(prompt, responseText) {
@@ -278,10 +430,7 @@ REOS.AI = (function () {
     return { prompt_tokens: promptTokens, completion_tokens: completionTokens, total_tokens: promptTokens + completionTokens };
   }
 
-  function estimateCost_(provider, model, usage) {
-    if (provider === 'stub') return 0;
-    return 0;
-  }
+  function estimateCost_(provider, model, usage) { return provider === 'stub' ? 0 : 0; }
 
   function logRequest_(entry) {
     ensureSheets();
@@ -308,8 +457,6 @@ REOS.AI = (function () {
     return created[LOG_ID_FIELD];
   }
 
-  function preview_(value) { return String(value || '').replace(/\s+/g, ' ').slice(0, 500); }
-
   function getRequestLogs(options) {
     REOS.Security.requireAdmin();
     ensureSheets();
@@ -321,12 +468,29 @@ REOS.AI = (function () {
     }).slice(0, options.limit || 100);
   }
 
+  function number_(value) { const n = Number(value || 0); return isNaN(n) ? 0 : n; }
+  function hasValue_(value) { return value !== null && value !== undefined && String(value).trim() !== ''; }
+  function clamp_(value, min, max) { return Math.max(min, Math.min(max, value)); }
+  function unique_(items) { return items.filter(function (item, index) { return item && items.indexOf(item) === index; }); }
+  function preview_(value) { return String(value || '').replace(/\s+/g, ' ').slice(0, 500); }
+
   return {
-    LOG_SHEET: LOG_SHEET, PROVIDERS: PROVIDERS, PROMPTS: PROMPTS,
-    initialize: initialize, ensureSheets: ensureSheets, seedDefaultConfig: seedDefaultConfig,
-    getConfig: getConfig, updateConfig: updateConfig, getPromptTemplate: getPromptTemplate,
-    buildPrompt: buildPrompt, complete: complete, qualifyLead: qualifyLead,
-    parseResponse: parseResponse, getRequestLogs: getRequestLogs
+    LOG_SHEET: LOG_SHEET,
+    PROVIDERS: PROVIDERS,
+    PROMPTS: PROMPTS,
+    initialize: initialize,
+    ensureSheets: ensureSheets,
+    seedDefaultConfig: seedDefaultConfig,
+    getConfig: getConfig,
+    updateConfig: updateConfig,
+    getPromptTemplate: getPromptTemplate,
+    buildPrompt: buildPrompt,
+    complete: complete,
+    qualifyLead: qualifyLead,
+    qualifyLeadRulesOnly: qualifyLeadRulesOnly,
+    qualifyLeadBatch: qualifyLeadBatch,
+    parseResponse: parseResponse,
+    getRequestLogs: getRequestLogs
   };
 })();
 
@@ -335,4 +499,6 @@ function reosAIGetConfig() { return REOS.AI.getConfig(); }
 function reosAIUpdateConfig(config) { return REOS.AI.updateConfig(config || {}); }
 function reosAIBuildPrompt(templateKey, data) { return REOS.AI.buildPrompt(templateKey, data || {}); }
 function reosAIQualifyLead(leadOrId) { return REOS.AI.qualifyLead(leadOrId); }
+function reosAIQualifyLeadRulesOnly(leadOrId) { return REOS.AI.qualifyLeadRulesOnly(leadOrId); }
+function reosAIQualifyLeadBatch(options) { return REOS.AI.qualifyLeadBatch(options || {}); }
 function reosAIGetRequestLogs(options) { return REOS.AI.getRequestLogs(options || {}); }
