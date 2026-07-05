@@ -76,6 +76,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open CRM', 'showCRM')
     .addItem('Open CRM Dashboard', 'showCRMDashboard')
     .addItem('Open Acquisitions', 'showAcquisitions')
+    .addItem('Open Acquisitions Dashboard', 'showAcquisitionsDashboard')
     .addItem('Open Vendors', 'showVendors')
     .addItem('Open Properties', 'showProperties')
     .addItem('Open AI Workspace', 'showAI')
@@ -247,6 +248,12 @@ function showCRMDashboard() {
   REOS.Security.requirePermission('crm:read');
   const html = HtmlService.createHtmlOutputFromFile('CRMDashboard').setTitle('REOS CRM Dashboard').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS CRM Dashboard');
+}
+
+function showAcquisitionsDashboard() {
+  REOS.Security.requirePermission('leads:read');
+  const html = HtmlService.createHtmlOutputFromFile('AcquisitionsDashboard').setTitle('REOS Acquisitions Dashboard').setWidth(1200).setHeight(800);
+  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Acquisitions Dashboard');
 }
 
 function showAI() {
