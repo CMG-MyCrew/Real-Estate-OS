@@ -21,7 +21,15 @@
       .primary { background: #111827; color: #fff; }
       .secondary { background: #e5e7eb; color: #111827; }
       .panel { margin-top: 20px; }
-      pre { white-space: pre-wrap; background: #0f172a; color: #e5e7eb; border-radius: 12px; padding: 16px; overflow: auto; max-height: 260px; }
+      .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-top: 16px; }
+      .kpi { border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; background: #f9fafb; }
+      .kpi strong { display: block; font-size: 26px; margin-top: 4px; }
+      .records { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+      table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      th, td { text-align: left; border-bottom: 1px solid #e5e7eb; padding: 8px; vertical-align: top; }
+      th { color: #374151; background: #f9fafb; }
+      input { padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; min-width: 260px; }
+      pre { white-space: pre-wrap; background: #0f172a; color: #e5e7eb; border-radius: 12px; padding: 16px; overflow: auto; max-height: 220px; }
     </style>
   </head>
   <body>
@@ -34,6 +42,7 @@
           </div>
           <div class="toolbar">
             <button class="secondary" onclick="loadNavigation()">Refresh Navigation</button>
+            <button class="secondary" onclick="loadDashboardRecords()">Refresh Records</button>
             <button class="secondary" onclick="runHealthCheck()">Health Check</button>
             <button class="primary" onclick="initializeWorkbook()">Initialize Workbook</button>
           </div>
@@ -42,6 +51,31 @@
         <h2>Modules</h2>
         <div id="modules" class="grid">
           <div class="module"><strong>Loading modules...</strong><br><span class="status">Please wait</span></div>
+        </div>
+
+        <div class="panel">
+          <h2>Records Review</h2>
+          <div class="toolbar">
+            <input id="recordSearch" placeholder="Search clients and acquisition leads">
+            <button class="primary" onclick="searchRecords()">Search Records</button>
+          </div>
+          <div class="kpis">
+            <div class="kpi"><span>Clients</span><strong id="kpiClients">0</strong></div>
+            <div class="kpi"><span>Acquisition Leads</span><strong id="kpiLeads">0</strong></div>
+            <div class="kpi"><span>Hot Leads</span><strong id="kpiHot">0</strong></div>
+            <div class="kpi"><span>Follow-ups Due</span><strong id="kpiDue">0</strong></div>
+            <div class="kpi"><span>Open Tasks</span><strong id="kpiTasks">0</strong></div>
+          </div>
+          <div class="records">
+            <div>
+              <h2>Recent Clients</h2>
+              <table id="clientsTable"></table>
+            </div>
+            <div>
+              <h2>Recent Acquisition Leads</h2>
+              <table id="leadsTable"></table>
+            </div>
+          </div>
         </div>
 
         <div class="panel">
@@ -75,6 +109,38 @@
         });
       }
 
+      function renderDashboard(data) {
+        document.getElementById('kpiClients').textContent = data.kpis.clients || 0;
+        document.getElementById('kpiLeads').textContent = data.kpis.acquisitionLeads || 0;
+        document.getElementById('kpiHot').textContent = data.kpis.hotAcquisitionLeads || 0;
+        document.getElementById('kpiDue').textContent = data.kpis.followUpsDue || 0;
+        document.getElementById('kpiTasks').textContent = data.kpis.openTasks || 0;
+        renderClients(data.crm.recentClients || []);
+        renderLeads(data.acquisitions.recentLeads || []);
+        output({ dashboard: data });
+      }
+
+      function renderClients(records) {
+        renderTable('clientsTable', ['Client ID', 'First Name', 'Last Name', 'Email', 'Phone', 'Status'], records);
+      }
+
+      function renderLeads(records) {
+        renderTable('leadsTable', ['Lead ID', 'Property Address', 'Owner Name', 'Status', 'Priority', 'Distress Indicator'], records);
+      }
+
+      function renderTable(id, columns, records) {
+        const table = document.getElementById(id);
+        let html = '<tr>' + columns.map(function(col) { return '<th>' + escapeHtml(col) + '</th>'; }).join('') + '</tr>';
+        if (!records.length) {
+          html += '<tr><td colspan="' + columns.length + '">No records found.</td></tr>';
+        } else {
+          records.forEach(function(record) {
+            html += '<tr>' + columns.map(function(col) { return '<td>' + escapeHtml(record[col] || '') + '</td>'; }).join('') + '</tr>';
+          });
+        }
+        table.innerHTML = html;
+      }
+
       function loadNavigation() {
         google.script.run
           .withSuccessHandler(function(nav) { renderModules(nav); output({ navigation: nav }); })
@@ -82,8 +148,26 @@
           .reosGetNavigation();
       }
 
+      function loadDashboardRecords() {
+        google.script.run
+          .withSuccessHandler(renderDashboard)
+          .withFailureHandler(function(error) { output({ error: error.message }); })
+          .reosDashboardOverview();
+      }
+
+      function searchRecords() {
+        google.script.run
+          .withSuccessHandler(function(data) {
+            renderClients(data.clients || []);
+            renderLeads(data.acquisitionLeads || []);
+            output(data);
+          })
+          .withFailureHandler(function(error) { output({ error: error.message }); })
+          .reosDashboardSearch(document.getElementById('recordSearch').value);
+      }
+
       function openModule(key) {
-        const route = key === 'crm' ? 'crm.open' : key === 'leads' ? 'leads.open' : key === 'tasks' ? 'tasks.open' : key === 'admin' ? 'admin.health' : 'home.open';
+        const route = key === 'crm' ? 'crm.open' : key === 'leads' ? 'acquisitions.open' : key === 'tasks' ? 'tasks.open' : key === 'admin' ? 'admin.health' : 'home.open';
         google.script.run
           .withSuccessHandler(output)
           .withFailureHandler(function(error) { output({ error: error.message }); })
@@ -111,6 +195,7 @@
       }
 
       loadNavigation();
+      loadDashboardRecords();
     </script>
   </body>
 </html>
