@@ -1,0 +1,51 @@
+<!--
+  REOS Enterprise v3.0 - Dashboard Filters
+  Reusable dashboard filter toolbar fragment.
+-->
+<style>
+  .reos-filter-toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; margin-bottom: 16px; }
+  .reos-filter-field { display: flex; flex-direction: column; gap: 4px; }
+  .reos-filter-field label { font-size: 12px; font-weight: 700; color: #374151; }
+  .reos-filter-field input, .reos-filter-field select { padding: 9px; border: 1px solid #d1d5db; border-radius: 8px; min-width: 150px; }
+  .reos-filter-toolbar button { padding: 9px 12px; border: 0; border-radius: 8px; background: #111827; color: #fff; font-weight: 700; cursor: pointer; }
+  .reos-filter-toolbar .secondary { background: #e5e7eb; color: #111827; }
+</style>
+
+<script>
+  window.REOSDashboardFilters = (function () {
+    function render(containerId, modules, onApply) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      el.innerHTML = '<div class="reos-filter-toolbar">' +
+        '<div class="reos-filter-field"><label>Dashboard</label><select id="reosFilterModule">' + (modules || []).map(function (m) { return '<option value="' + escapeHtml(m.key) + '">' + escapeHtml(m.label) + '</option>'; }).join('') + '</select></div>' +
+        '<div class="reos-filter-field"><label>Start Date</label><input id="reosFilterStart" type="date"></div>' +
+        '<div class="reos-filter-field"><label>End Date</label><input id="reosFilterEnd" type="date"></div>' +
+        '<div class="reos-filter-field"><label>Date Field</label><select id="reosFilterDateField"><option>Created At</option><option>Updated At</option><option>Started At</option><option>Due Date</option></select></div>' +
+        '<button id="reosFilterApply">Apply</button><button class="secondary" id="reosFilterClear">Clear</button>' +
+        '</div>';
+      document.getElementById('reosFilterApply').onclick = function () { onApply(getValues()); };
+      document.getElementById('reosFilterClear').onclick = function () { clear(); onApply(getValues()); };
+    }
+
+    function getValues() {
+      return {
+        moduleKey: valueOf('reosFilterModule') || 'executive',
+        startDate: valueOf('reosFilterStart'),
+        endDate: valueOf('reosFilterEnd'),
+        dateField: valueOf('reosFilterDateField') || 'Created At',
+        useCache: false
+      };
+    }
+
+    function clear() {
+      setValue('reosFilterStart', '');
+      setValue('reosFilterEnd', '');
+      setValue('reosFilterDateField', 'Created At');
+    }
+
+    function valueOf(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+    function setValue(id, value) { const el = document.getElementById(id); if (el) el.value = value; }
+    function escapeHtml(value) { return String(value || '').replace(/[&<>'"]/g, function (char) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]; }); }
+    return { render: render, getValues: getValues, clear: clear };
+  })();
+</script>
