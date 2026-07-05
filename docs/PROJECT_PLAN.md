@@ -46,6 +46,7 @@ Status: In progress
 - Property management UI added in `src/Properties.html`.
 - Property, maintenance, and inspection permissions added to `src/Security.gs`.
 - Property module wired into `src/Main.gs` menu, initialization, health check, and lookup seed data.
+- Property dashboard drill-down actions added in `src/Dashboard.gs` and `src/Index.html` for status updates, occupancy updates, unit creation, inspection creation, maintenance creation, maintenance status updates, and related-record history views.
 - GitHub/Apps Script sync guide added in `docs/APPS_SCRIPT_SYNC.md` with manual sync, clasp option, file mapping, release workflow, and troubleshooting.
 - Dashboard chart data service added in `src/Dashboard.gs` for acquisition pipeline, lead priority, work-order status, property occupancy, maintenance status, and operating snapshot.
 - Dashboard charts and pipeline visualizations added in `src/Index.html`.
@@ -77,7 +78,7 @@ Status: In progress
 | 3. Security | In Progress | Roles, permissions, audit logs, audit reports. |
 | 4. CRM | In Progress | Contacts, leads, pipeline, activities. |
 | 5. Acquisitions | In Progress | Distressed property and off-market lead workflows. |
-| 6. Property Management | In Progress | Assets, inspections, maintenance, occupancy. |
+| 6. Property Management | In Progress | Assets, inspections, maintenance, occupancy, drill-down actions. |
 | 7. Vendors | In Progress | Vendor registry, work orders, field services. |
 | 8. Automation Engine | In Progress | Scheduled jobs, reminders, workflow scans, trigger management, automation UI, rule editor. |
 | 9. AI Agents | In Progress | AI core, provider abstraction, lead qualification, next-best-action, summary generation, AI workspace, report generation, document processing. |
@@ -105,7 +106,7 @@ Status: In progress
 - Admin UI can create users, list users, update roles, activate users, deactivate users, review security events, review denied permissions, and inspect user activity history.
 - Automation engine can install/remove scheduled jobs, run follow-up scans, escalate overdue tasks, review acquisition leads, write automation run logs, manage automation from UI, and create/edit/validate/run automation rules.
 - Vendor module can create/search/update vendors, create/search/assign/update work orders, and return vendor/work-order KPIs.
-- Property module can create/search/update properties, create units, create inspections, create/search maintenance requests, optionally create vendor work orders, and return property KPIs.
+- Property module can create/search/update properties, create units, create inspections, create/search maintenance requests, optionally create vendor work orders, return property KPIs, and support property dashboard drill-down actions.
 - AI core can initialize config, build prompts, run stub lead qualification, support OpenAI-ready calls, parse responses, track usage, and log AI requests.
 - AI lead qualification can calculate seller motivation, distress signals, opportunity score, confidence, risk flags, recommended strategy, and next-best-action.
 - AI next-best-action can rank recommended actions, explain reasoning, assign priority, set due dates, recommend outreach channels, and create CRM tasks.
@@ -114,13 +115,13 @@ Status: In progress
 - AI reports can create Google Docs and PDF-ready acquisition reports with seller, risk, offer, investment, negotiation, and action-plan sections.
 - Deployment guide documents setup, authorization, validation, automation, production release, and rollback.
 - Apps Script sync guide documents GitHub-to-runtime file mapping, manual sync, clasp workflow, release process, and troubleshooting.
-- Dashboard drill-down supports viewing full records, activity history, and contextual actions.
+- Dashboard drill-down supports viewing full records, activity history, related property records, and contextual actions.
 - Dashboard visualizations display acquisition pipeline, lead priority, work-order status, property occupancy, maintenance status, and operating snapshot charts.
 
 ## Next Build Items
 
-1. Add property dashboard drill-down actions.
-2. Add production release checklist template.
-3. Add charts to module-specific dashboards.
-4. Add external data integration stubs.
-5. Add automation rule templates library.
+1. Add production release checklist template.
+2. Add charts to module-specific dashboards.
+3. Add external data integration stubs.
+4. Add automation rule templates library.
+5. Add property document/photo links.
