@@ -21,6 +21,7 @@ Status: In progress
 - Router framework added in `src/Router.gs` for module registration, navigation, and route dispatching.
 - CRM module foundation rebuilt in `src/CRM.gs` for clients, leads, tasks, activities, route registration, and compatibility aliases.
 - CRM UI foundation added in `src/CRM.html`.
+- Dashboard shell wired to router navigation and route dispatching in `src/Index.html`.
 
 ### Active Objectives
 
@@ -59,11 +60,12 @@ Status: In progress
 - Security layer can seed the initial admin, create users, update roles, deactivate users, and enforce permissions.
 - Router can register modules, build permission-aware navigation, and dispatch server routes.
 - CRM foundation can create/search/update/archive clients, create/update/list leads, create tasks, and log activities.
+- Main dashboard can load modules, dispatch routes, initialize workbook, and run health checks.
 
 ## Next Build Items
 
-1. Wire router navigation into the HTML dashboard shell.
-2. Add validation helpers for required fields and allowed lookup values.
-3. Add test runner for health checks and setup verification.
-4. Add role-management UI actions.
-5. Build acquisitions module foundation.
+1. Add validation helpers for required fields and allowed lookup values.
+2. Add test runner for health checks and setup verification.
+3. Add role-management UI actions.
+4. Build acquisitions module foundation.
+5. Add dashboard views for CRM records.
