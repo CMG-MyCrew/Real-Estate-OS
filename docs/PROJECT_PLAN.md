@@ -24,7 +24,10 @@ Status: In progress
 - Dashboard shell wired to router navigation and route dispatching in `src/Index.html`.
 - Validation framework expanded in `src/Validation.gs` with required fields, allowed values, lookup validation, duplicates, number/boolean/date/email/phone validation, sanitizing, and clean validation responses.
 - Test runner added in `src/TestRunner.gs` for setup verification, health checks, required sheets, required headers, services, security, router, and validation.
-- REOS menu updated in `src/Main.gs` with Dashboard, CRM, Initialize Workbook, Health Check, and Run Tests actions.
+- REOS menu updated in `src/Main.gs` with Dashboard, CRM, Acquisitions, Initialize Workbook, Health Check, and Run Tests actions.
+- Acquisitions module foundation added in `src/Acquisitions.gs` for distressed/off-market lead intake, scoring, pipeline, follow-ups, and dashboard metrics.
+- Acquisitions UI foundation added in `src/Acquisitions.html`.
+- Acquisition pipeline and distress indicator lookups added to setup seed data.
 
 ### Active Objectives
 
@@ -42,7 +45,7 @@ Status: In progress
 | 2. Database Layer | In Progress | Sheet-backed data access framework. |
 | 3. Security | In Progress | Roles, permissions, audit logs. |
 | 4. CRM | In Progress | Contacts, leads, pipeline, activities. |
-| 5. Acquisitions | Planned | Distressed property and off-market lead workflows. |
+| 5. Acquisitions | In Progress | Distressed property and off-market lead workflows. |
 | 6. Property Management | Planned | Assets, inspections, maintenance, occupancy. |
 | 7. Vendors | Planned | Vendor registry, work orders, field services. |
 | 8. Automation Engine | Planned | Triggers, scheduled jobs, workflow rules. |
@@ -66,11 +69,12 @@ Status: In progress
 - Main dashboard can load modules, dispatch routes, initialize workbook, and run health checks.
 - Validation framework supports reusable record validation, lookup validation, duplicate checks, and clean error handling.
 - Test runner can verify setup, schema, services, router, security, validation, and health status.
+- Acquisitions module can create/search/update acquisition leads, calculate priority, move pipeline stages, create follow-up tasks, and return dashboard KPIs.
 
 ## Next Build Items
 
-1. Add role-management UI actions.
-2. Build acquisitions module foundation.
-3. Add dashboard views for CRM records.
-4. Add workflow automation foundation.
+1. Add dashboard views for CRM and acquisition records.
+2. Add role-management UI actions.
+3. Add workflow automation foundation.
+4. Build vendor management module foundation.
 5. Add deployment documentation.
