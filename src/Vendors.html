@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <style>
+      body { margin: 0; font-family: Arial, sans-serif; background: #f6f8fb; color: #1f2937; }
+      .shell { padding: 20px; }
+      .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+      h1 { margin: 0; font-size: 24px; }
+      h2 { margin: 0 0 12px; font-size: 18px; }
+      .muted { color: #6b7280; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 16px; }
+      .card, .kpi { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; }
+      .kpi strong { display: block; font-size: 24px; }
+      input, select, textarea { width: 100%; box-sizing: border-box; padding: 10px; margin: 6px 0 12px; border: 1px solid #d1d5db; border-radius: 8px; }
+      button { padding: 10px 14px; border: 0; border-radius: 8px; cursor: pointer; font-weight: 700; }
+      .primary { background: #111827; color: #fff; }
+      .secondary { background: #e5e7eb; color: #111827; }
+      .results { margin-top: 12px; font-size: 13px; white-space: pre-wrap; background: #f9fafb; border-radius: 8px; padding: 12px; max-height: 260px; overflow: auto; }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <div class="header">
+        <div>
+          <h1>REOS Vendors</h1>
+          <div class="muted">Vendor registry, field services, and work orders.</div>
+        </div>
+        <button class="secondary" onclick="loadDashboard()">Refresh Dashboard</button>
+      </div>
+
+      <section class="kpis">
+        <div class="kpi"><span>Vendors</span><strong id="vendors">0</strong></div>
+        <div class="kpi"><span>Active</span><strong id="activeVendors">0</strong></div>
+        <div class="kpi"><span>Work Orders</span><strong id="workOrders">0</strong></div>
+        <div class="kpi"><span>Open</span><strong id="openOrders">0</strong></div>
+        <div class="kpi"><span>Overdue</span><strong id="overdueOrders">0</strong></div>
+      </section>
+
+      <section class="grid">
+        <div class="card">
+          <h2>Create Vendor</h2>
+          <input id="company" placeholder="Company">
+          <input id="contact" placeholder="Contact Name">
+          <input id="email" placeholder="Email">
+          <input id="phone" placeholder="Phone">
+          <select id="category">
+            <option>Property Preservation</option>
+            <option>Commercial Cleaning</option>
+            <option>Trash Out</option>
+            <option>Lawn Care</option>
+            <option>Lock Change</option>
+            <option>Board Up</option>
+            <option>Winterization</option>
+            <option>Inspection</option>
+            <option>Repairs</option>
+            <option>Photography</option>
+            <option>Janitorial</option>
+            <option>Debris Removal</option>
+          </select>
+          <input id="coverage" placeholder="Coverage Area">
+          <textarea id="vendorNotes" placeholder="Notes"></textarea>
+          <button class="primary" onclick="createVendor()">Create Vendor</button>
+        </div>
+
+        <div class="card">
+          <h2>Create Work Order</h2>
+          <input id="woVendorId" placeholder="Vendor ID">
+          <input id="woAddress" placeholder="Property Address">
+          <input id="woCity" placeholder="City">
+          <input id="woState" placeholder="State">
+          <select id="woCategory">
+            <option>Property Preservation</option>
+            <option>Commercial Cleaning</option>
+            <option>Trash Out</option>
+            <option>Lawn Care</option>
+            <option>Lock Change</option>
+            <option>Board Up</option>
+            <option>Winterization</option>
+            <option>Inspection</option>
+            <option>Repairs</option>
+            <option>Photography</option>
+            <option>Janitorial</option>
+            <option>Debris Removal</option>
+          </select>
+          <input id="woTitle" placeholder="Title">
+          <input id="woDue" type="date">
+          <textarea id="woDescription" placeholder="Description"></textarea>
+          <button class="primary" onclick="createWorkOrder()">Create Work Order</button>
+        </div>
+      </section>
+
+      <section class="grid" style="margin-top:16px;">
+        <div class="card">
+          <h2>Search Vendors</h2>
+          <input id="vendorSearch" placeholder="Search vendors">
+          <button class="primary" onclick="searchVendors()">Search Vendors</button>
+        </div>
+        <div class="card">
+          <h2>Search Work Orders</h2>
+          <input id="workOrderSearch" placeholder="Search work orders">
+          <button class="primary" onclick="searchWorkOrders()">Search Work Orders</button>
+        </div>
+      </section>
+
+      <div id="results" class="results">Ready.</div>
+    </main>
+
+    <script>
+      function render(value) {
+        document.getElementById('results').textContent = JSON.stringify(value, null, 2);
+      }
+
+      function loadDashboard() {
+        google.script.run.withSuccessHandler(function(data) {
+          document.getElementById('vendors').textContent = data.vendors || 0;
+          document.getElementById('activeVendors').textContent = data.activeVendors || 0;
+          document.getElementById('workOrders').textContent = data.workOrders || 0;
+          document.getElementById('openOrders').textContent = data.openWorkOrders || 0;
+          document.getElementById('overdueOrders').textContent = data.overdueWorkOrders || 0;
+          render(data);
+        }).withFailureHandler(function(error) {
+          render({ error: error.message });
+        }).vendorsDashboard();
+      }
+
+      function createVendor() {
+        const vendor = {
+          Company: document.getElementById('company').value,
+          'Contact Name': document.getElementById('contact').value,
+          Email: document.getElementById('email').value,
+          Phone: document.getElementById('phone').value,
+          'Service Category': document.getElementById('category').value,
+          'Coverage Area': document.getElementById('coverage').value,
+          Notes: document.getElementById('vendorNotes').value
+        };
+        google.script.run.withSuccessHandler(render).withFailureHandler(function(error) {
+          render({ error: error.message });
+        }).vendorsCreateVendor(vendor);
+      }
+
+      function createWorkOrder() {
+        const workOrder = {
+          'Vendor ID': document.getElementById('woVendorId').value,
+          'Property Address': document.getElementById('woAddress').value,
+          City: document.getElementById('woCity').value,
+          State: document.getElementById('woState').value,
+          'Service Category': document.getElementById('woCategory').value,
+          Title: document.getElementById('woTitle').value,
+          'Due Date': document.getElementById('woDue').value,
+          Description: document.getElementById('woDescription').value,
+          Status: 'New',
+          Priority: 'Medium'
+        };
+        google.script.run.withSuccessHandler(render).withFailureHandler(function(error) {
+          render({ error: error.message });
+        }).vendorsCreateWorkOrder(workOrder);
+      }
+
+      function searchVendors() {
+        google.script.run.withSuccessHandler(render).withFailureHandler(function(error) {
+          render({ error: error.message });
+        }).vendorsSearchVendors(document.getElementById('vendorSearch').value);
+      }
+
+      function searchWorkOrders() {
+        google.script.run.withSuccessHandler(render).withFailureHandler(function(error) {
+          render({ error: error.message });
+        }).vendorsSearchWorkOrders(document.getElementById('workOrderSearch').value);
+      }
+
+      loadDashboard();
+    </script>
+  </body>
+</html>
