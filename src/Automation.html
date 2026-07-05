@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <style>
+      body { margin: 0; font-family: Arial, sans-serif; background: #f6f8fb; color: #1f2937; }
+      .shell { padding: 20px; }
+      .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+      h1 { margin: 0; font-size: 24px; }
+      h2 { margin: 0 0 12px; font-size: 18px; }
+      .muted { color: #6b7280; }
+      .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+      .kpis { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 16px; }
+      .kpi { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; }
+      .kpi strong { display: block; font-size: 24px; margin-top: 4px; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      button { padding: 9px 12px; border: 0; border-radius: 8px; cursor: pointer; font-weight: 700; margin-right: 6px; margin-bottom: 6px; }
+      .primary { background: #111827; color: #fff; }
+      .secondary { background: #e5e7eb; color: #111827; }
+      .danger { background: #fee2e2; color: #991b1b; }
+      .success { background: #dcfce7; color: #166534; }
+      table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      th, td { text-align: left; border-bottom: 1px solid #e5e7eb; padding: 8px; vertical-align: top; }
+      th { background: #f9fafb; }
+      pre { white-space: pre-wrap; background: #0f172a; color: #e5e7eb; border-radius: 12px; padding: 12px; overflow: auto; max-height: 220px; }
+      .pill { display: inline-block; border-radius: 999px; padding: 3px 8px; font-size: 12px; font-weight: 700; background: #e5e7eb; }
+      .ok { background: #dcfce7; color: #166534; }
+      .bad { background: #fee2e2; color: #991b1b; }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <div class="header">
+        <div>
+          <h1>REOS Automation</h1>
+          <div class="muted">Scheduled jobs, triggers, automation rules, and run history.</div>
+        </div>
+        <div>
+          <button class="secondary" onclick="loadDashboard()">Refresh</button>
+          <button class="primary" onclick="runAll()">Run All Now</button>
+          <button class="success" onclick="installTriggers()">Install Triggers</button>
+          <button class="danger" onclick="removeTriggers()">Remove Triggers</button>
+          <button class="secondary" onclick="seedRules()">Seed Rules</button>
+        </div>
+      </div>
+
+      <section class="kpis">
+        <div class="kpi"><span>Jobs</span><strong id="kpiJobs">0</strong></div>
+        <div class="kpi"><span>Triggers</span><strong id="kpiTriggers">0</strong></div>
+        <div class="kpi"><span>Rules</span><strong id="kpiRules">0</strong></div>
+        <div class="kpi"><span>Active Rules</span><strong id="kpiActiveRules">0</strong></div>
+        <div class="kpi"><span>Recent Runs</span><strong id="kpiRuns">0</strong></div>
+        <div class="kpi"><span>Failed Runs</span><strong id="kpiFailed">0</strong></div>
+      </section>
+
+      <section class="grid">
+        <div class="card">
+          <h2>Scheduled Jobs</h2>
+          <table id="jobsTable"></table>
+        </div>
+        <div class="card">
+          <h2>Installed Triggers</h2>
+          <table id="triggersTable"></table>
+        </div>
+      </section>
+
+      <section class="grid">
+        <div class="card">
+          <h2>Automation Rules</h2>
+          <table id="rulesTable"></table>
+        </div>
+        <div class="card">
+          <h2>Recent Runs</h2>
+          <table id="runsTable"></table>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>System Output</h2>
+        <pre id="output">Ready.</pre>
+      </section>
+    </main>
+
+    <script>
+      function output(value) {
+        document.getElementById('output').textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+      }
+
+      function loadDashboard() {
+        google.script.run
+          .withSuccessHandler(renderDashboard)
+          .withFailureHandler(function(error) { output({ error: error.message }); })
+          .reosAutomationGetAdminDashboard();
+      }
+
+      function renderDashboard(data) {
+        const kpis = data.kpis || {};
+        document.getElementById('kpiJobs').textContent = kpis.jobs || 0;
+        document.getElementById('kpiTriggers').textContent = kpis.installedTriggers || 0;
+        document.getElementById('kpiRules').textContent = kpis.rules || 0;
+        document.getElementById('kpiActiveRules').textContent = kpis.activeRules || 0;
+        document.getElementById('kpiRuns').textContent = kpis.recentRuns || 0;
+        document.getElementById('kpiFailed').textContent = kpis.failedRuns || 0;
+        renderJobs(data.jobs || []);
+        renderTriggers(data.triggers || []);
+        renderRules(data.rules || []);
+        renderRuns(data.recentRuns || []);
+        output(data);
+      }
+
+      function renderJobs(jobs) {
+        let html = '<tr><th>Name</th><th>Cadence</th><th>Handler</th><th>Installed</th><th>Actions</th></tr>';
+        if (!jobs.length) html += '<tr><td colspan="5">No jobs found.</td></tr>';
+        jobs.forEach(function(job) {
+          html += '<tr>' +
+            '<td>' + escapeHtml(job.name) + '</td>' +
+            '<td>' + escapeHtml(job.cadence + (job.hour !== undefined ? ' @ ' + job.hour + ':00' : '')) + '</td>' +
+            '<td>' + escapeHtml(job.handler) + '</td>' +
+            '<td>' + (job.installed ? '<span class="pill ok">Installed</span>' : '<span class="pill bad">Missing</span>') + '</td>' +
+            '<td><button class="secondary" onclick="runJob(\'' + escapeJs(job.key) + '\')">Run</button></td>' +
+            '</tr>';
+        });
+        document.getElementById('jobsTable').innerHTML = html;
+      }
+
+      function renderTriggers(triggers) {
+        let html = '<tr><th>Handler</th><th>Event Type</th><th>Source</th></tr>';
+        if (!triggers.length) html += '<tr><td colspan="3">No installed automation triggers.</td></tr>';
+        triggers.forEach(function(trigger) {
+          html += '<tr><td>' + escapeHtml(trigger.handler) + '</td><td>' + escapeHtml(trigger.eventType) + '</td><td>' + escapeHtml(trigger.source) + '</td></tr>';
+        });
+        document.getElementById('triggersTable').innerHTML = html;
+      }
+
+      function renderRules(rules) {
+        let html = '<tr><th>Rule</th><th>Event</th><th>Module</th><th>Action</th><th>Active</th><th>Run Count</th><th>Actions</th></tr>';
+        if (!rules.length) html += '<tr><td colspan="7">No rules found.</td></tr>';
+        rules.forEach(function(rule) {
+          const active = rule.Active !== false;
+          html += '<tr>' +
+            '<td>' + escapeHtml(rule.Name || '') + '</td>' +
+            '<td>' + escapeHtml(rule.Event || '') + '</td>' +
+            '<td>' + escapeHtml(rule.Module || '') + '</td>' +
+            '<td>' + escapeHtml(rule.Action || '') + '</td>' +
+            '<td>' + (active ? '<span class="pill ok">Active</span>' : '<span class="pill bad">Inactive</span>') + '</td>' +
+            '<td>' + escapeHtml(rule['Run Count'] || 0) + '</td>' +
+            '<td><button class="secondary" onclick="setRuleActive(\'' + escapeJs(rule['Rule ID']) + '\', ' + (!active) + ')">' + (active ? 'Disable' : 'Enable') + '</button></td>' +
+            '</tr>';
+        });
+        document.getElementById('rulesTable').innerHTML = html;
+      }
+
+      function renderRuns(runs) {
+        let html = '<tr><th>Started</th><th>Rule/Job</th><th>Status</th><th>Message</th><th>Payload</th></tr>';
+        if (!runs.length) html += '<tr><td colspan="5">No runs found.</td></tr>';
+        runs.forEach(function(run) {
+          const status = String(run.Status || '');
+          html += '<tr>' +
+            '<td>' + escapeHtml(formatValue(run['Started At'])) + '</td>' +
+            '<td>' + escapeHtml(run['Rule ID'] || '') + '</td>' +
+            '<td>' + (status.toLowerCase() === 'success' ? '<span class="pill ok">Success</span>' : '<span class="pill bad">' + escapeHtml(status || 'Unknown') + '</span>') + '</td>' +
+            '<td>' + escapeHtml(run.Message || '') + '</td>' +
+            '<td>' + escapeHtml(run['Payload JSON'] || '') + '</td>' +
+            '</tr>';
+        });
+        document.getElementById('runsTable').innerHTML = html;
+      }
+
+      function runAll() {
+        google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); })
+          .withFailureHandler(function(error) { output({ error: error.message }); })
+          .reosAutomationRunAll();
+      }
+
+      function runJob(key) {
+        google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); })
+          .withFailureHandler(function(error) { output({ error: error.message }); })
+          .reosAutomationRunJob(key);
+      }
+
+      function installTriggers() {
+        google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); })
+          .withFailureHandler(function(error) { output({ error: error.message }); })
+          .reosAutomationInstallTriggers();
+      }
+
+      function removeTriggers() {
+        google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); })
+          .withFailureHandler(function(error) { output({ error: error.message }); })
+          .reosAutomationRemoveTriggers();
+      }
+
+      function seedRules() {
+        google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); })
+          .withFailureHandler(function(error) { output({ error: error.message }); })
+          .reosAutomationSeedDefaults();
+      }
+
+      function setRuleActive(ruleId, active) {
+        google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); })
+          .withFailureHandler(function(error) { output({ error: error.message }); })
+          .reosAutomationSetRuleActive(ruleId, active);
+      }
+
+      function formatValue(value) {
+        if (value === null || value === undefined) return '';
+        return String(value);
+      }
+
+      function escapeHtml(value) {
+        return String(value || '').replace(/[&<>'"]/g, function(char) {
+          return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char];
+        });
+      }
+
+      function escapeJs(value) {
+        return String(value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+      }
+
+      loadDashboard();
+    </script>
+  </body>
+</html>
