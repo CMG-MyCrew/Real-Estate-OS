@@ -57,6 +57,8 @@ Status: In progress
 - AI summary generator Sprint 4 added in `src/AISummaries.gs` with executive summaries, property overview, seller profile, motivation summary, risk summary, equity summary, offer guidance, and follow-up strategy.
 - AI Workspace Sprint 6 added in `src/AI.html` with lead search, AI config, qualification, next-best-action, executive summary, action task creation, opportunity queue, and AI request log review.
 - AI Workspace wired into `src/Main.gs` menu through `showAI`.
+- AI report generation Sprint 7 added in `src/AIReports.gs` with Google Docs/PDF acquisition reports, seller summaries, negotiation guides, investment snapshots, Drive folder management, risk matrix, action plan, and report links.
+- AI Workspace updated with report generation actions and reports folder access.
 
 ### Active Objectives
 
@@ -78,7 +80,7 @@ Status: In progress
 | 6. Property Management | In Progress | Assets, inspections, maintenance, occupancy. |
 | 7. Vendors | In Progress | Vendor registry, work orders, field services. |
 | 8. Automation Engine | In Progress | Scheduled jobs, reminders, workflow scans, trigger management, automation UI. |
-| 9. AI Agents | In Progress | AI core, provider abstraction, lead qualification, next-best-action, summary generation, AI workspace, reporting, document processing. |
+| 9. AI Agents | In Progress | AI core, provider abstraction, lead qualification, next-best-action, summary generation, AI workspace, report generation, document processing. |
 | 10. Dashboards | In Progress | Executive KPIs, record review, drill-downs, charts, and pipeline visualizations. |
 | 11. Testing | In Progress | QA scripts, validation, regression checks. |
 | 12. Deployment | In Progress | Production release process and documentation, sync workflow. |
@@ -108,7 +110,8 @@ Status: In progress
 - AI lead qualification can calculate seller motivation, distress signals, opportunity score, confidence, risk flags, recommended strategy, and next-best-action.
 - AI next-best-action can rank recommended actions, explain reasoning, assign priority, set due dates, recommend outreach channels, and create CRM tasks.
 - AI summaries can generate executive lead summaries, seller profiles, risk summaries, preliminary offer guidance, and follow-up strategies.
-- AI Workspace can run qualification, next-best-action, summary generation, task creation, queue review, config management, and request-log review from a UI.
+- AI Workspace can run qualification, next-best-action, summary generation, task creation, queue review, config management, request-log review, and report generation from a UI.
+- AI reports can create Google Docs and PDF-ready acquisition reports with seller, risk, offer, investment, negotiation, and action-plan sections.
 - Deployment guide documents setup, authorization, validation, automation, production release, and rollback.
 - Apps Script sync guide documents GitHub-to-runtime file mapping, manual sync, clasp workflow, release process, and troubleshooting.
 - Dashboard drill-down supports viewing full records, activity history, and contextual actions.
@@ -120,4 +123,4 @@ Status: In progress
 2. Add property dashboard drill-down actions.
 3. Add production release checklist template.
 4. Add charts to module-specific dashboards.
-5. Add AI report/document generation.
+5. Add external data integration stubs.
