@@ -11,13 +11,14 @@
       .card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 24px; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08); }
       h1 { margin: 0 0 8px; font-size: 28px; }
       h2 { margin: 0 0 12px; font-size: 18px; }
+      h3 { margin: 12px 0 8px; font-size: 15px; }
       .muted { color: #6b7280; }
       .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-top: 20px; }
       .module { border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; background: #f9fafb; cursor: pointer; transition: transform 120ms ease, box-shadow 120ms ease; }
       .module:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08); }
       .status { display: inline-block; margin-top: 8px; font-size: 12px; font-weight: 700; color: #065f46; background: #d1fae5; border-radius: 999px; padding: 4px 10px; }
-      .toolbar { display: flex; gap: 8px; flex-wrap: wrap; }
-      button { border: 0; border-radius: 8px; padding: 10px 14px; font-weight: 700; cursor: pointer; }
+      .toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+      button { border: 0; border-radius: 8px; padding: 10px 14px; font-weight: 700; cursor: pointer; margin: 2px; }
       .primary { background: #111827; color: #fff; }
       .secondary { background: #e5e7eb; color: #111827; }
       .danger { background: #fee2e2; color: #991b1b; }
@@ -40,240 +41,78 @@
       th { color: #374151; background: #f9fafb; }
       tr.clickable { cursor: pointer; }
       tr.clickable:hover { background: #f9fafb; }
-      input, select { padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; min-width: 220px; }
+      input, select, textarea { padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; min-width: 180px; box-sizing: border-box; }
+      textarea { min-height: 42px; }
       pre { white-space: pre-wrap; background: #0f172a; color: #e5e7eb; border-radius: 12px; padding: 16px; overflow: auto; max-height: 220px; }
       .drawer { border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; background: #f9fafb; }
       .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; }
       .field { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; }
       .field span { display: block; font-size: 11px; color: #6b7280; font-weight: 700; }
+      .action-box { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 10px; margin: 8px 0; }
+      .related { margin-top: 14px; }
     </style>
   </head>
   <body>
     <main class="shell">
       <section class="card">
         <div class="header">
-          <div>
-            <h1>REOS Enterprise</h1>
-            <div class="muted">Command Center · Core Framework v3.0.0</div>
-          </div>
-          <div class="toolbar">
-            <button class="secondary" onclick="loadNavigation()">Refresh Navigation</button>
-            <button class="secondary" onclick="loadDashboardRecords()">Refresh Records</button>
-            <button class="secondary" onclick="runHealthCheck()">Health Check</button>
-            <button class="primary" onclick="initializeWorkbook()">Initialize Workbook</button>
-          </div>
+          <div><h1>REOS Enterprise</h1><div class="muted">Command Center · Core Framework v3.0.0</div></div>
+          <div class="toolbar"><button class="secondary" onclick="loadNavigation()">Refresh Navigation</button><button class="secondary" onclick="loadDashboardRecords()">Refresh Records</button><button class="secondary" onclick="runHealthCheck()">Health Check</button><button class="primary" onclick="initializeWorkbook()">Initialize Workbook</button></div>
         </div>
 
         <h2>Modules</h2>
         <div id="modules" class="grid"><div class="module"><strong>Loading modules...</strong><br><span class="status">Please wait</span></div></div>
 
-        <div class="panel">
-          <h2>Executive KPIs</h2>
-          <div class="kpis">
-            <div class="kpi"><span>Clients</span><strong id="kpiClients">0</strong></div>
-            <div class="kpi"><span>Acquisition Leads</span><strong id="kpiLeads">0</strong></div>
-            <div class="kpi"><span>Hot Leads</span><strong id="kpiHot">0</strong></div>
-            <div class="kpi"><span>Follow-ups Due</span><strong id="kpiDue">0</strong></div>
-            <div class="kpi"><span>Open Tasks</span><strong id="kpiTasks">0</strong></div>
-            <div class="kpi"><span>Vendors</span><strong id="kpiVendors">0</strong></div>
-            <div class="kpi"><span>Open Work Orders</span><strong id="kpiWorkOrders">0</strong></div>
-            <div class="kpi"><span>Properties</span><strong id="kpiProperties">0</strong></div>
-            <div class="kpi"><span>Vacant</span><strong id="kpiVacant">0</strong></div>
-            <div class="kpi"><span>Open Maintenance</span><strong id="kpiMaintenance">0</strong></div>
-          </div>
-        </div>
+        <div class="panel"><h2>Executive KPIs</h2><div class="kpis">
+          <div class="kpi"><span>Clients</span><strong id="kpiClients">0</strong></div><div class="kpi"><span>Acquisition Leads</span><strong id="kpiLeads">0</strong></div><div class="kpi"><span>Hot Leads</span><strong id="kpiHot">0</strong></div><div class="kpi"><span>Follow-ups Due</span><strong id="kpiDue">0</strong></div><div class="kpi"><span>Open Tasks</span><strong id="kpiTasks">0</strong></div><div class="kpi"><span>Vendors</span><strong id="kpiVendors">0</strong></div><div class="kpi"><span>Open Work Orders</span><strong id="kpiWorkOrders">0</strong></div><div class="kpi"><span>Properties</span><strong id="kpiProperties">0</strong></div><div class="kpi"><span>Vacant</span><strong id="kpiVacant">0</strong></div><div class="kpi"><span>Open Maintenance</span><strong id="kpiMaintenance">0</strong></div>
+        </div></div>
 
-        <div class="panel">
-          <h2>Charts & Pipeline Visualizations</h2>
-          <div class="charts">
-            <div class="chart-card"><h3>Acquisition Pipeline</h3><div id="chartPipeline" class="pipeline"></div></div>
-            <div class="chart-card"><h3>Lead Priority</h3><div id="chartPriority" class="chart"></div></div>
-            <div class="chart-card"><h3>Work Orders by Status</h3><div id="chartWorkOrders" class="chart"></div></div>
-            <div class="chart-card"><h3>Property Occupancy</h3><div id="chartOccupancy" class="chart"></div></div>
-            <div class="chart-card"><h3>Maintenance by Status</h3><div id="chartMaintenance" class="chart"></div></div>
-            <div class="chart-card"><h3>Operating Snapshot</h3><div id="chartSnapshot" class="chart"></div></div>
-          </div>
-        </div>
+        <div class="panel"><h2>Charts & Pipeline Visualizations</h2><div class="charts">
+          <div class="chart-card"><h3>Acquisition Pipeline</h3><div id="chartPipeline" class="pipeline"></div></div><div class="chart-card"><h3>Lead Priority</h3><div id="chartPriority" class="chart"></div></div><div class="chart-card"><h3>Work Orders by Status</h3><div id="chartWorkOrders" class="chart"></div></div><div class="chart-card"><h3>Property Occupancy</h3><div id="chartOccupancy" class="chart"></div></div><div class="chart-card"><h3>Maintenance by Status</h3><div id="chartMaintenance" class="chart"></div></div><div class="chart-card"><h3>Operating Snapshot</h3><div id="chartSnapshot" class="chart"></div></div>
+        </div></div>
 
-        <div class="panel">
-          <h2>Records Review</h2>
-          <div class="toolbar">
-            <input id="recordSearch" placeholder="Search clients, leads, vendors, work orders, properties">
-            <button class="primary" onclick="searchRecords()">Search Records</button>
-          </div>
-          <div class="records">
-            <div><h2>Recent Clients</h2><table id="clientsTable"></table></div>
-            <div><h2>Recent Acquisition Leads</h2><table id="leadsTable"></table></div>
-            <div><h2>Recent Vendors</h2><table id="vendorsTable"></table></div>
-            <div><h2>Recent Work Orders</h2><table id="workOrdersTable"></table></div>
-            <div><h2>Recent Properties</h2><table id="propertiesTable"></table></div>
-            <div><h2>Recent Maintenance</h2><table id="maintenanceTable"></table></div>
-          </div>
-        </div>
+        <div class="panel"><h2>Records Review</h2><div class="toolbar"><input id="recordSearch" placeholder="Search clients, leads, vendors, work orders, properties"><button class="primary" onclick="searchRecords()">Search Records</button></div><div class="records">
+          <div><h2>Recent Clients</h2><table id="clientsTable"></table></div><div><h2>Recent Acquisition Leads</h2><table id="leadsTable"></table></div><div><h2>Recent Vendors</h2><table id="vendorsTable"></table></div><div><h2>Recent Work Orders</h2><table id="workOrdersTable"></table></div><div><h2>Recent Properties</h2><table id="propertiesTable"></table></div><div><h2>Recent Maintenance</h2><table id="maintenanceTable"></table></div>
+        </div></div>
 
-        <div class="panel drawer">
-          <h2>Record Detail</h2>
-          <div id="recordDetail" class="muted">Select a record row to view details and actions.</div>
-        </div>
-
+        <div class="panel drawer"><h2>Record Detail</h2><div id="recordDetail" class="muted">Select a record row to view details and actions.</div></div>
         <div class="panel"><h2>System Output</h2><pre id="output">Ready.</pre></div>
       </section>
     </main>
 
     <script>
       let activeRecord = null;
-
       function output(value) { document.getElementById('output').textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2); }
-
-      function renderModules(modules) {
-        const container = document.getElementById('modules');
-        container.innerHTML = '';
-        if (!modules || !modules.length) {
-          container.innerHTML = '<div class="module"><strong>No modules available</strong><br><span class="status">Check permissions</span></div>';
-          return;
-        }
-        modules.forEach(function(module) {
-          const el = document.createElement('div');
-          el.className = 'module';
-          el.onclick = function() { openModule(module.key); };
-          el.innerHTML = '<strong>' + escapeHtml(module.name) + '</strong><br><span class="muted">' + escapeHtml(module.description || '') + '</span><br><span class="status">Available</span>';
-          container.appendChild(el);
-        });
-      }
-
-      function renderDashboard(data) {
-        const k = data.kpis || {};
-        setText('kpiClients', k.clients); setText('kpiLeads', k.acquisitionLeads); setText('kpiHot', k.hotAcquisitionLeads);
-        setText('kpiDue', k.followUpsDue); setText('kpiTasks', k.openTasks); setText('kpiVendors', k.vendors);
-        setText('kpiWorkOrders', k.openWorkOrders); setText('kpiProperties', k.properties); setText('kpiVacant', k.vacantProperties);
-        setText('kpiMaintenance', k.openMaintenance);
-
-        renderCharts(data.charts || {});
-        renderClients(data.crm.recentClients || []);
-        renderLeads(data.acquisitions.recentLeads || []);
-        renderVendors((data.vendors && data.vendors.recentVendors) || []);
-        renderWorkOrders((data.vendors && data.vendors.recentWorkOrders) || []);
-        renderProperties((data.properties && data.properties.recentProperties) || []);
-        renderMaintenance((data.properties && data.properties.recentMaintenance) || []);
-        output({ dashboard: data });
-      }
-
-      function renderCharts(charts) {
-        renderPipeline('chartPipeline', charts.acquisitionPipeline || []);
-        renderBarChart('chartPriority', charts.acquisitionPriority || [], 'priority', 'count');
-        renderBarChart('chartWorkOrders', charts.workOrdersByStatus || [], 'status', 'count');
-        renderBarChart('chartOccupancy', charts.propertyOccupancy || [], 'status', 'count');
-        renderBarChart('chartMaintenance', charts.maintenanceByStatus || [], 'status', 'count');
-        renderBarChart('chartSnapshot', charts.operatingSnapshot || [], 'metric', 'count');
-      }
-
-      function renderPipeline(id, rows) {
-        const el = document.getElementById(id);
-        if (!rows.length) { el.innerHTML = '<span class="muted">No pipeline data yet.</span>'; return; }
-        el.innerHTML = rows.map(function(row) {
-          return '<div class="stage"><strong>' + escapeHtml(row.count || 0) + '</strong><span>' + escapeHtml(row.stage || '') + '</span></div>';
-        }).join('');
-      }
-
-      function renderBarChart(id, rows, labelKey, valueKey) {
-        const el = document.getElementById(id);
-        if (!rows.length) { el.innerHTML = '<span class="muted">No chart data yet.</span>'; return; }
-        const max = rows.reduce(function(value, row) { return Math.max(value, Number(row[valueKey] || 0)); }, 1);
-        el.innerHTML = rows.map(function(row) {
-          const value = Number(row[valueKey] || 0);
-          const width = Math.max(2, Math.round((value / max) * 100));
-          return '<div class="bar-row"><span>' + escapeHtml(row[labelKey]) + '</span><div class="bar-track"><div class="bar-fill" style="width:' + width + '%"></div></div><strong>' + value + '</strong></div>';
-        }).join('');
-      }
-
+      function renderModules(modules) { const container = document.getElementById('modules'); container.innerHTML = ''; if (!modules || !modules.length) { container.innerHTML = '<div class="module"><strong>No modules available</strong><br><span class="status">Check permissions</span></div>'; return; } modules.forEach(function(module) { const el = document.createElement('div'); el.className = 'module'; el.onclick = function() { openModule(module.key); }; el.innerHTML = '<strong>' + escapeHtml(module.name) + '</strong><br><span class="muted">' + escapeHtml(module.description || '') + '</span><br><span class="status">Available</span>'; container.appendChild(el); }); }
+      function renderDashboard(data) { const k = data.kpis || {}; setText('kpiClients', k.clients); setText('kpiLeads', k.acquisitionLeads); setText('kpiHot', k.hotAcquisitionLeads); setText('kpiDue', k.followUpsDue); setText('kpiTasks', k.openTasks); setText('kpiVendors', k.vendors); setText('kpiWorkOrders', k.openWorkOrders); setText('kpiProperties', k.properties); setText('kpiVacant', k.vacantProperties); setText('kpiMaintenance', k.openMaintenance); renderCharts(data.charts || {}); renderClients(data.crm.recentClients || []); renderLeads(data.acquisitions.recentLeads || []); renderVendors((data.vendors && data.vendors.recentVendors) || []); renderWorkOrders((data.vendors && data.vendors.recentWorkOrders) || []); renderProperties((data.properties && data.properties.recentProperties) || []); renderMaintenance((data.properties && data.properties.recentMaintenance) || []); output({ dashboard: data }); }
+      function renderCharts(charts) { renderPipeline('chartPipeline', charts.acquisitionPipeline || []); renderBarChart('chartPriority', charts.acquisitionPriority || [], 'priority', 'count'); renderBarChart('chartWorkOrders', charts.workOrdersByStatus || [], 'status', 'count'); renderBarChart('chartOccupancy', charts.propertyOccupancy || [], 'status', 'count'); renderBarChart('chartMaintenance', charts.maintenanceByStatus || [], 'status', 'count'); renderBarChart('chartSnapshot', charts.operatingSnapshot || [], 'metric', 'count'); }
+      function renderPipeline(id, rows) { const el = document.getElementById(id); if (!rows.length) { el.innerHTML = '<span class="muted">No pipeline data yet.</span>'; return; } el.innerHTML = rows.map(function(row) { return '<div class="stage"><strong>' + escapeHtml(row.count || 0) + '</strong><span>' + escapeHtml(row.stage || '') + '</span></div>'; }).join(''); }
+      function renderBarChart(id, rows, labelKey, valueKey) { const el = document.getElementById(id); if (!rows.length) { el.innerHTML = '<span class="muted">No chart data yet.</span>'; return; } const max = rows.reduce(function(value, row) { return Math.max(value, Number(row[valueKey] || 0)); }, 1); el.innerHTML = rows.map(function(row) { const value = Number(row[valueKey] || 0); const width = Math.max(2, Math.round((value / max) * 100)); return '<div class="bar-row"><span>' + escapeHtml(row[labelKey]) + '</span><div class="bar-track"><div class="bar-fill" style="width:' + width + '%"></div></div><strong>' + value + '</strong></div>'; }).join(''); }
       function renderClients(records) { renderTable('clientsTable', 'client', 'Client ID', ['Client ID', 'First Name', 'Last Name', 'Email', 'Status'], records); }
       function renderLeads(records) { renderTable('leadsTable', 'lead', 'Lead ID', ['Lead ID', 'Property Address', 'Owner Name', 'Status', 'Priority'], records); }
       function renderVendors(records) { renderTable('vendorsTable', 'vendor', 'Vendor ID', ['Vendor ID', 'Company', 'Service Category', 'Status'], records); }
       function renderWorkOrders(records) { renderTable('workOrdersTable', 'workorder', 'Work Order ID', ['Work Order ID', 'Vendor Name', 'Property Address', 'Status', 'Priority'], records); }
       function renderProperties(records) { renderTable('propertiesTable', 'property', 'Property ID', ['Property ID', 'Property Name', 'Address', 'Status', 'Occupancy Status'], records); }
       function renderMaintenance(records) { renderTable('maintenanceTable', 'maintenance', 'Maintenance ID', ['Maintenance ID', 'Property ID', 'Title', 'Status', 'Priority'], records); }
-
-      function renderTable(id, type, idColumn, columns, records) {
-        const table = document.getElementById(id);
-        let html = '<tr>' + columns.map(function(col) { return '<th>' + escapeHtml(col) + '</th>'; }).join('') + '</tr>';
-        if (!records.length) {
-          html += '<tr><td colspan="' + columns.length + '">No records found.</td></tr>';
-        } else {
-          records.forEach(function(record) {
-            const recordId = record[idColumn] || '';
-            html += '<tr class="clickable" onclick="openRecord(\'' + escapeJs(type) + '\', \'' + escapeJs(recordId) + '\')">' + columns.map(function(col) {
-              return '<td>' + escapeHtml(record[col] || '') + '</td>';
-            }).join('') + '</tr>';
-          });
-        }
-        table.innerHTML = html;
-      }
-
-      function openRecord(type, id) {
-        google.script.run.withSuccessHandler(renderRecordDetail).withFailureHandler(function(error) { output({ error: error.message }); }).reosDashboardGetRecord(type, id);
-      }
-
-      function renderRecordDetail(data) {
-        activeRecord = data;
-        const record = data.record || {};
-        const keys = Object.keys(record).filter(function(key) { return key !== '_rowNumber'; });
-        let html = '<div class="toolbar" style="margin-bottom:12px;">' + renderActions(data) + '</div>';
-        html += '<div class="detail-grid">' + keys.map(function(key) { return '<div class="field"><span>' + escapeHtml(key) + '</span>' + escapeHtml(formatValue(record[key])) + '</div>'; }).join('') + '</div>';
-        html += '<h2 style="margin-top:16px;">Activity</h2><table><tr><th>Date</th><th>Type</th><th>Subject</th><th>User</th></tr>';
-        const activity = data.activity || [];
-        if (!activity.length) html += '<tr><td colspan="4">No activity found.</td></tr>';
-        activity.forEach(function(item) { html += '<tr><td>' + escapeHtml(formatValue(item['Activity Date'] || item['Created At'])) + '</td><td>' + escapeHtml(item['Activity Type'] || '') + '</td><td>' + escapeHtml(item.Subject || '') + '</td><td>' + escapeHtml(item.User || '') + '</td></tr>'; });
-        html += '</table>';
-        document.getElementById('recordDetail').innerHTML = html;
-        output(data);
-      }
-
-      function renderActions(data) {
-        const actions = data.actions || [];
-        if (!actions.length) return '<span class="muted">No actions available.</span>';
-        return actions.map(function(action) {
-          if (action === 'moveStage') return '<select id="actionStatus"><option>New</option><option>Skip Trace</option><option>Contacted</option><option>Appointment</option><option>Offer Sent</option><option>Under Contract</option><option>Closed</option><option>Lost</option></select><button class="primary" onclick="runRecordAction(\'moveStage\')">Move Stage</button>';
-          if (action === 'updateStatus') return '<select id="actionStatus"><option>New</option><option>Assigned</option><option>Scheduled</option><option>In Progress</option><option>Completed</option><option>Cancelled</option><option>On Hold</option></select><button class="primary" onclick="runRecordAction(\'updateStatus\')">Update Status</button>';
-          if (action === 'assignVendor') return '<input id="actionVendorId" placeholder="Vendor ID"><button class="secondary" onclick="runRecordAction(\'assignVendor\')">Assign Vendor</button>';
-          if (action === 'archive') return '<button class="danger" onclick="runRecordAction(\'archive\')">Archive Client</button>';
-          if (action === 'deactivate') return '<button class="danger" onclick="runRecordAction(\'deactivate\')">Deactivate Vendor</button>';
-          if (action === 'complete') return '<button class="primary" onclick="runRecordAction(\'complete\')">Complete Task</button>';
-          return '';
-        }).join('');
-      }
-
-      function runRecordAction(action) {
-        if (!activeRecord) return;
-        const payload = { notes: 'Dashboard action' };
-        const statusEl = document.getElementById('actionStatus');
-        const vendorEl = document.getElementById('actionVendorId');
-        if (statusEl) payload.status = statusEl.value;
-        if (vendorEl) payload.vendorId = vendorEl.value;
-        google.script.run.withSuccessHandler(function(data) { renderRecordDetail(data.detail); loadDashboardRecords(); }).withFailureHandler(function(error) { output({ error: error.message }); }).reosDashboardRunRecordAction(activeRecord.recordType, activeRecord.recordId, action, payload);
-      }
-
+      function renderTable(id, type, idColumn, columns, records) { const table = document.getElementById(id); let html = '<tr>' + columns.map(function(col) { return '<th>' + escapeHtml(col) + '</th>'; }).join('') + '</tr>'; if (!records.length) { html += '<tr><td colspan="' + columns.length + '">No records found.</td></tr>'; } else { records.forEach(function(record) { const recordId = record[idColumn] || ''; html += '<tr class="clickable" onclick="openRecord(\'' + escapeJs(type) + '\', \'' + escapeJs(recordId) + '\')">' + columns.map(function(col) { return '<td>' + escapeHtml(record[col] || '') + '</td>'; }).join('') + '</tr>'; }); } table.innerHTML = html; }
+      function openRecord(type, id) { google.script.run.withSuccessHandler(renderRecordDetail).withFailureHandler(function(error) { output({ error: error.message }); }).reosDashboardGetRecord(type, id); }
+      function renderRecordDetail(data) { activeRecord = data; const record = data.record || {}; const keys = Object.keys(record).filter(function(key) { return key !== '_rowNumber'; }); let html = '<div style="margin-bottom:12px;">' + renderActions(data) + '</div>'; html += '<div class="detail-grid">' + keys.map(function(key) { return '<div class="field"><span>' + escapeHtml(key) + '</span>' + escapeHtml(formatValue(record[key])) + '</div>'; }).join('') + '</div>'; html += renderRelated(data); html += '<h2 style="margin-top:16px;">Activity</h2><table><tr><th>Date</th><th>Type</th><th>Subject</th><th>User</th></tr>'; const activity = data.activity || []; if (!activity.length) html += '<tr><td colspan="4">No activity found.</td></tr>'; activity.forEach(function(item) { html += '<tr><td>' + escapeHtml(formatValue(item['Activity Date'] || item['Created At'])) + '</td><td>' + escapeHtml(item['Activity Type'] || '') + '</td><td>' + escapeHtml(item.Subject || '') + '</td><td>' + escapeHtml(item.User || '') + '</td></tr>'; }); html += '</table>'; document.getElementById('recordDetail').innerHTML = html; output(data); }
+      function renderRelated(data) { const related = data.related || {}; let html = ''; if (data.recordType === 'property') { html += '<div class="related"><h2>Property Related Records</h2>'; html += renderSmallTable('Units', related.units || [], ['Unit ID', 'Unit Name', 'Status', 'Tenant Name', 'Monthly Rent']); html += renderSmallTable('Inspections', related.inspections || [], ['Inspection ID', 'Inspection Type', 'Status', 'Scheduled Date', 'Score']); html += renderSmallTable('Maintenance', related.maintenance || [], ['Maintenance ID', 'Title', 'Status', 'Priority', 'Due Date']); html += '</div>'; } if (data.recordType === 'maintenance' && related.property) { html += '<div class="related"><h2>Related Property</h2>' + renderSmallTable('Property', [related.property], ['Property ID', 'Property Name', 'Address', 'Status', 'Occupancy Status']) + '</div>'; } return html; }
+      function renderSmallTable(title, rows, cols) { let html = '<h3>' + escapeHtml(title) + '</h3><table><tr>' + cols.map(function(c) { return '<th>' + escapeHtml(c) + '</th>'; }).join('') + '</tr>'; if (!rows.length) html += '<tr><td colspan="' + cols.length + '">None found.</td></tr>'; rows.forEach(function(row) { html += '<tr>' + cols.map(function(c) { return '<td>' + escapeHtml(row[c] || '') + '</td>'; }).join('') + '</tr>'; }); return html + '</table>'; }
+      function renderActions(data) { const actions = data.actions || []; if (!actions.length) return '<span class="muted">No actions available.</span>'; return actions.map(function(action) { if (action === 'moveStage') return '<div class="action-box"><select id="actionStatus"><option>New</option><option>Skip Trace</option><option>Contacted</option><option>Appointment</option><option>Offer Sent</option><option>Under Contract</option><option>Closed</option><option>Lost</option></select><button class="primary" onclick="runRecordAction(\'moveStage\')">Move Stage</button></div>'; if (action === 'updateStatus') return '<div class="action-box"><select id="actionStatus"><option>New</option><option>Assigned</option><option>Scheduled</option><option>In Progress</option><option>Completed</option><option>Cancelled</option><option>On Hold</option></select><button class="primary" onclick="runRecordAction(\'updateStatus\')">Update Status</button></div>'; if (action === 'assignVendor') return '<div class="action-box"><input id="actionVendorId" placeholder="Vendor ID"><button class="secondary" onclick="runRecordAction(\'assignVendor\')">Assign Vendor</button></div>'; if (action === 'updatePropertyStatus') return '<div class="action-box"><strong>Property Status</strong><br><select id="propertyStatus"><option>Prospect</option><option>Owned</option><option>Under Rehab</option><option>Available</option><option>Occupied</option><option>Listed</option><option>Sold</option><option>Archived</option></select><button class="primary" onclick="runRecordAction(\'updatePropertyStatus\')">Update Status</button></div>'; if (action === 'updateOccupancy') return '<div class="action-box"><strong>Occupancy</strong><br><select id="propertyOccupancy"><option>Vacant</option><option>Occupied</option><option>Partially Occupied</option><option>Unknown</option></select><button class="primary" onclick="runRecordAction(\'updateOccupancy\')">Update Occupancy</button></div>'; if (action === 'createUnit') return '<div class="action-box"><strong>Add Unit</strong><br><input id="unitName" placeholder="Unit Name"><select id="unitType"><option>Residential</option><option>Commercial</option><option>Storage</option><option>Other</option></select><input id="unitRent" placeholder="Monthly Rent"><button class="secondary" onclick="runRecordAction(\'createUnit\')">Create Unit</button></div>'; if (action === 'createInspection') return '<div class="action-box"><strong>Schedule Inspection</strong><br><input id="inspectionType" placeholder="Inspection Type" value="Property Inspection"><input id="inspectionDate" type="date"><input id="inspectionInspector" placeholder="Inspector"><button class="secondary" onclick="runRecordAction(\'createInspection\')">Create Inspection</button></div>'; if (action === 'createMaintenance') return '<div class="action-box"><strong>Create Maintenance</strong><br><input id="maintenanceTitle" placeholder="Title"><select id="maintenanceCategory"><option>Repairs</option><option>Property Preservation</option><option>Commercial Cleaning</option><option>Lawn Care</option><option>Inspection</option><option>Janitorial</option></select><select id="maintenancePriority"><option>Medium</option><option>Low</option><option>High</option><option>Critical</option></select><input id="maintenanceDue" type="date"><textarea id="maintenanceDescription" placeholder="Description"></textarea><button class="secondary" onclick="runRecordAction(\'createMaintenance\')">Create Maintenance</button></div>'; if (action === 'updateMaintenanceStatus') return '<div class="action-box"><strong>Maintenance Status</strong><br><select id="maintenanceStatus"><option>New</option><option>Assigned</option><option>Scheduled</option><option>In Progress</option><option>Completed</option><option>Cancelled</option><option>On Hold</option></select><button class="primary" onclick="runRecordAction(\'updateMaintenanceStatus\')">Update Maintenance</button></div>'; if (action === 'archive') return '<button class="danger" onclick="runRecordAction(\'archive\')">Archive Client</button>'; if (action === 'deactivate') return '<button class="danger" onclick="runRecordAction(\'deactivate\')">Deactivate Vendor</button>'; if (action === 'complete') return '<button class="primary" onclick="runRecordAction(\'complete\')">Complete Task</button>'; return ''; }).join(''); }
+      function runRecordAction(action) { if (!activeRecord) return; const payload = { notes: 'Dashboard action' }; const statusEl = document.getElementById('actionStatus'); const vendorEl = document.getElementById('actionVendorId'); if (statusEl) payload.status = statusEl.value; if (vendorEl) payload.vendorId = vendorEl.value; if (action === 'updatePropertyStatus') payload.status = valueOf('propertyStatus'); if (action === 'updateOccupancy') payload.occupancyStatus = valueOf('propertyOccupancy'); if (action === 'createUnit') payload.unit = { 'Unit Name': valueOf('unitName'), 'Unit Type': valueOf('unitType'), Status: 'Vacant', 'Monthly Rent': valueOf('unitRent') }; if (action === 'createInspection') payload.inspection = { 'Inspection Type': valueOf('inspectionType'), Status: 'Scheduled', 'Scheduled Date': valueOf('inspectionDate'), Inspector: valueOf('inspectionInspector') }; if (action === 'createMaintenance') payload.maintenance = { Title: valueOf('maintenanceTitle'), Category: valueOf('maintenanceCategory'), Priority: valueOf('maintenancePriority'), Status: 'New', 'Due Date': valueOf('maintenanceDue'), Description: valueOf('maintenanceDescription') }; if (action === 'updateMaintenanceStatus') payload.status = valueOf('maintenanceStatus'); google.script.run.withSuccessHandler(function(data) { renderRecordDetail(data.detail); loadDashboardRecords(); }).withFailureHandler(function(error) { output({ error: error.message }); }).reosDashboardRunRecordAction(activeRecord.recordType, activeRecord.recordId, action, payload); }
+      function valueOf(id) { const el = document.getElementById(id); return el ? el.value : ''; }
       function loadNavigation() { google.script.run.withSuccessHandler(function(nav) { renderModules(nav); output({ navigation: nav }); }).withFailureHandler(function(error) { output({ error: error.message }); }).reosGetNavigation(); }
       function loadDashboardRecords() { google.script.run.withSuccessHandler(renderDashboard).withFailureHandler(function(error) { output({ error: error.message }); }).reosDashboardOverview(); }
-      function searchRecords() {
-        google.script.run.withSuccessHandler(function(data) {
-          renderClients(data.clients || []); renderLeads(data.acquisitionLeads || []); renderVendors(data.vendors || []); renderWorkOrders(data.workOrders || []); renderProperties(data.properties || []); renderMaintenance(data.maintenance || []); output(data);
-        }).withFailureHandler(function(error) { output({ error: error.message }); }).reosDashboardSearch(document.getElementById('recordSearch').value);
-      }
-
-      function openModule(key) {
-        const route = key === 'crm' ? 'crm.open' : key === 'leads' ? 'acquisitions.open' : key === 'vendors' ? 'vendors.open' : key === 'properties' ? 'properties.open' : key === 'tasks' ? 'tasks.open' : key === 'admin' ? 'admin.health' : 'home.open';
-        google.script.run.withSuccessHandler(output).withFailureHandler(function(error) { output({ error: error.message }); }).reosDispatch(route, {});
-      }
-
+      function searchRecords() { google.script.run.withSuccessHandler(function(data) { renderClients(data.clients || []); renderLeads(data.acquisitionLeads || []); renderVendors(data.vendors || []); renderWorkOrders(data.workOrders || []); renderProperties(data.properties || []); renderMaintenance(data.maintenance || []); output(data); }).withFailureHandler(function(error) { output({ error: error.message }); }).reosDashboardSearch(document.getElementById('recordSearch').value); }
+      function openModule(key) { const route = key === 'crm' ? 'crm.open' : key === 'leads' ? 'acquisitions.open' : key === 'vendors' ? 'vendors.open' : key === 'properties' ? 'properties.open' : key === 'tasks' ? 'tasks.open' : key === 'admin' ? 'admin.health' : 'home.open'; google.script.run.withSuccessHandler(output).withFailureHandler(function(error) { output({ error: error.message }); }).reosDispatch(route, {}); }
       function runHealthCheck() { google.script.run.withSuccessHandler(output).withFailureHandler(function(error) { output({ error: error.message }); }).reosDispatch('admin.health', {}); }
       function initializeWorkbook() { google.script.run.withSuccessHandler(output).withFailureHandler(function(error) { output({ error: error.message }); }).reosDispatch('admin.setup', {}); }
       function setText(id, value) { document.getElementById(id).textContent = value || 0; }
-      function formatValue(value) { if (value === null || value === undefined) return ''; return String(value); }
+      function formatValue(value) { return value === null || value === undefined ? '' : String(value); }
       function escapeHtml(value) { return String(value || '').replace(/[&<>'"]/g, function(char) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]; }); }
       function escapeJs(value) { return String(value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
-
-      loadNavigation();
-      loadDashboardRecords();
+      loadNavigation(); loadDashboardRecords();
     </script>
   </body>
 </html>
