@@ -1,0 +1,105 @@
+<!--
+  REOS Enterprise v3.0 - Dashboard Components
+  Reusable HTML/CSS/JS fragment for module dashboards.
+-->
+<style>
+  .reos-dashboard { font-family: Arial, sans-serif; color: #1f2937; }
+  .reos-dashboard-toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px; }
+  .reos-dashboard-toolbar input, .reos-dashboard-toolbar select { padding: 9px; border: 1px solid #d1d5db; border-radius: 8px; }
+  .reos-dashboard-toolbar button { padding: 9px 12px; border: 0; border-radius: 8px; background: #111827; color: #fff; font-weight: 700; cursor: pointer; }
+  .reos-kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .reos-kpi-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; }
+  .reos-kpi-card span { color: #6b7280; font-size: 12px; font-weight: 700; }
+  .reos-kpi-card strong { display: block; font-size: 26px; margin-top: 4px; }
+  .reos-chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-bottom: 16px; }
+  .reos-chart-card, .reos-table-card, .reos-alert-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; }
+  .reos-chart-title, .reos-table-title { margin: 0 0 10px; font-size: 15px; font-weight: 700; }
+  .reos-bar-row { display: grid; grid-template-columns: 140px 1fr 44px; gap: 8px; align-items: center; font-size: 12px; margin-bottom: 8px; }
+  .reos-bar-track { height: 12px; background: #e5e7eb; border-radius: 999px; overflow: hidden; }
+  .reos-bar-fill { height: 100%; background: #111827; border-radius: 999px; min-width: 2px; }
+  .reos-funnel { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 8px; }
+  .reos-funnel-stage { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 10px; text-align: center; }
+  .reos-funnel-stage strong { display: block; font-size: 20px; }
+  .reos-dashboard table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .reos-dashboard th, .reos-dashboard td { text-align: left; border-bottom: 1px solid #e5e7eb; padding: 8px; vertical-align: top; }
+  .reos-dashboard th { background: #f9fafb; }
+  .reos-alert { border-left: 4px solid #111827; background: #f9fafb; padding: 10px; margin-bottom: 8px; border-radius: 8px; }
+  .reos-alert.warning { border-left-color: #f59e0b; }
+  .reos-alert.info { border-left-color: #2563eb; }
+</style>
+
+<script>
+  window.REOSDashboardComponents = (function () {
+    function render(containerId, dashboard) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      el.className = 'reos-dashboard';
+      el.innerHTML = renderHeader(dashboard) + renderAlerts(dashboard.alerts || []) + renderKpis(dashboard.kpis || []) + renderCharts(dashboard.charts || []) + renderTables(dashboard.tables || []);
+    }
+
+    function renderHeader(dashboard) {
+      return '<div class="reos-dashboard-toolbar"><strong>' + escapeHtml(dashboard.title || 'Dashboard') + '</strong><span>Generated ' + escapeHtml(dashboard.generatedAt || '') + '</span></div>';
+    }
+
+    function renderAlerts(alerts) {
+      if (!alerts.length) return '';
+      return '<div class="reos-alert-card">' + alerts.map(function (alert) {
+        return '<div class="reos-alert ' + escapeHtml(alert.level || '') + '">' + escapeHtml(alert.message || '') + '</div>';
+      }).join('') + '</div>';
+    }
+
+    function renderKpis(kpis) {
+      return '<div class="reos-kpi-grid">' + kpis.map(function (kpi) {
+        return '<div class="reos-kpi-card"><span>' + escapeHtml(kpi.label || '') + '</span><strong>' + escapeHtml(kpi.value || 0) + '</strong></div>';
+      }).join('') + '</div>';
+    }
+
+    function renderCharts(charts) {
+      if (!charts.length) return '';
+      return '<div class="reos-chart-grid">' + charts.map(renderChart).join('') + '</div>';
+    }
+
+    function renderChart(chart) {
+      const rows = chart.rows || [];
+      let body = '<span style="color:#6b7280;">No chart data.</span>';
+      if (rows.length && chart.type === 'funnel') body = renderFunnel(rows);
+      else if (rows.length) body = renderBars(rows);
+      return '<div class="reos-chart-card"><div class="reos-chart-title">' + escapeHtml(chart.title || '') + '</div>' + body + '</div>';
+    }
+
+    function renderBars(rows) {
+      const max = rows.reduce(function (m, r) { return Math.max(m, Number(r.value || r.count || 0)); }, 1);
+      return rows.map(function (row) {
+        const label = row.label || row.stage || row.metric || '';
+        const value = Number(row.value || row.count || 0);
+        const width = Math.max(2, Math.round((value / max) * 100));
+        return '<div class="reos-bar-row"><span>' + escapeHtml(label) + '</span><div class="reos-bar-track"><div class="reos-bar-fill" style="width:' + width + '%"></div></div><strong>' + value + '</strong></div>';
+      }).join('');
+    }
+
+    function renderFunnel(rows) {
+      return '<div class="reos-funnel">' + rows.map(function (row) {
+        return '<div class="reos-funnel-stage"><strong>' + escapeHtml(row.value || row.count || 0) + '</strong><span>' + escapeHtml(row.label || row.stage || '') + '</span></div>';
+      }).join('') + '</div>';
+    }
+
+    function renderTables(tables) {
+      return tables.map(function (table) {
+        const cols = table.columns || [];
+        const rows = table.rows || [];
+        let html = '<div class="reos-table-card"><div class="reos-table-title">' + escapeHtml(table.title || '') + '</div><table><tr>' + cols.map(function (c) { return '<th>' + escapeHtml(c) + '</th>'; }).join('') + '</tr>';
+        if (!rows.length) html += '<tr><td colspan="' + cols.length + '">No records found.</td></tr>';
+        rows.forEach(function (row) { html += '<tr>' + cols.map(function (c) { return '<td>' + escapeHtml(row[c] || '') + '</td>'; }).join('') + '</tr>'; });
+        return html + '</table></div>';
+      }).join('');
+    }
+
+    function escapeHtml(value) {
+      return String(value === null || value === undefined ? '' : value).replace(/[&<>'"]/g, function (char) {
+        return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char];
+      });
+    }
+
+    return { render: render, renderKpis: renderKpis, renderCharts: renderCharts, renderTables: renderTables };
+  })();
+</script>
