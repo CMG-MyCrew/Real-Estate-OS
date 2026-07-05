@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <style>
+      body { margin: 0; font-family: Arial, sans-serif; background: #f6f8fb; color: #1f2937; }
+      .shell { padding: 20px; }
+      .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+      h1 { margin: 0; font-size: 24px; }
+      h2 { margin: 0 0 12px; font-size: 18px; }
+      .muted { color: #6b7280; }
+      .grid { display: grid; grid-template-columns: 360px 1fr; gap: 16px; }
+      .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; }
+      input, select { width: 100%; box-sizing: border-box; padding: 10px; margin: 6px 0 12px; border: 1px solid #d1d5db; border-radius: 8px; }
+      button { padding: 9px 12px; border: 0; border-radius: 8px; cursor: pointer; font-weight: 700; margin-right: 6px; }
+      .primary { background: #111827; color: #fff; }
+      .secondary { background: #e5e7eb; color: #111827; }
+      .danger { background: #fee2e2; color: #991b1b; }
+      .success { background: #dcfce7; color: #166534; }
+      table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      th, td { text-align: left; border-bottom: 1px solid #e5e7eb; padding: 8px; vertical-align: top; }
+      th { background: #f9fafb; }
+      pre { white-space: pre-wrap; background: #0f172a; color: #e5e7eb; border-radius: 12px; padding: 12px; overflow: auto; max-height: 180px; }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <div class="header">
+        <div>
+          <h1>REOS Admin</h1>
+          <div class="muted">User and role management.</div>
+        </div>
+        <button class="secondary" onclick="loadUsers()">Refresh Users</button>
+      </div>
+
+      <section class="grid">
+        <div class="card">
+          <h2>Create User</h2>
+          <input id="name" placeholder="Name">
+          <input id="email" placeholder="Email">
+          <select id="role"></select>
+          <button class="primary" onclick="createUser()">Create User</button>
+
+          <h2 style="margin-top:24px;">System Output</h2>
+          <pre id="output">Ready.</pre>
+        </div>
+
+        <div class="card">
+          <h2>Users</h2>
+          <table id="usersTable"></table>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      let roles = [];
+
+      function output(value) {
+        document.getElementById('output').textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+      }
+
+      function loadUsers() {
+        google.script.run
+          .withSuccessHandler(function(data) {
+            roles = (data.roles || []).map(function(item) { return item.role; });
+            renderRoleSelect();
+            renderUsers(data.users || []);
+            output(data);
+          })
+          .withFailureHandler(function(error) { output({ error: error.message }); })
+          .reosAdminGetUsers();
+      }
+
+      function renderRoleSelect() {
+        const select = document.getElementById('role');
+        select.innerHTML = roles.map(function(role) {
+          return '<option>' + escapeHtml(role) + '</option>';
+        }).join('');
+      }
+
+      function renderUsers(users) {
+        const table = document.getElementById('usersTable');
+        let html = '<tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr>';
+        if (!users.length) {
+          html += '<tr><td colspan="5">No users found.</td></tr>';
+        } else {
+          users.forEach(function(user) {
+            html += '<tr>' +
+              '<td>' + escapeHtml(user.Name || '') + '</td>' +
+              '<td>' + escapeHtml(user.Email || '') + '</td>' +
+              '<td>' + roleDropdown(user.Email, user.Role) + '</td>' +
+              '<td>' + escapeHtml(user.Status || '') + '</td>' +
+              '<td>' + actionButtons(user) + '</td>' +
+              '</tr>';
+          });
+        }
+        table.innerHTML = html;
+      }
+
+      function roleDropdown(email, currentRole) {
+        const id = 'role_' + btoa(email).replace(/=/g, '');
+        return '<select id="' + id + '">' + roles.map(function(role) {
+          return '<option ' + (role === currentRole ? 'selected' : '') + '>' + escapeHtml(role) + '</option>';
+        }).join('') + '</select>' +
+        '<button class="secondary" onclick="setRole(\'' + escapeJs(email) + '\', \'' + id + '\')">Save Role</button>';
+      }
+
+      function actionButtons(user) {
+        if (String(user.Status || '') === 'Active') {
+          return '<button class="danger" onclick="deactivateUser(\'' + escapeJs(user.Email) + '\')">Deactivate</button>';
+        }
+        return '<button class="success" onclick="activateUser(\'' + escapeJs(user.Email) + '\')">Activate</button>';
+      }
+
+      function createUser() {
+        const user = {
+          Name: document.getElementById('name').value,
+          Email: document.getElementById('email').value,
+          Role: document.getElementById('role').value,
+          Status: 'Active'
+        };
+        google.script.run
+          .withSuccessHandler(function(data) { output(data); loadUsers(); })
+          .withFailureHandler(function(error) { output({ error: error.message }); })
+          .reosAdminCreateUser(user);
+      }
+
+      function setRole(email, selectId) {
+        const role = document.getElementById(selectId).value;
+        google.script.run
+          .withSuccessHandler(function(data) { output(data); loadUsers(); })
+          .withFailureHandler(function(error) { output({ error: error.message }); })
+          .reosAdminSetUserRole(email, role);
+      }
+
+      function deactivateUser(email) {
+        google.script.run
+          .withSuccessHandler(function(data) { output(data); loadUsers(); })
+          .withFailureHandler(function(error) { output({ error: error.message }); })
+          .reosAdminDeactivateUser(email);
+      }
+
+      function activateUser(email) {
+        google.script.run
+          .withSuccessHandler(function(data) { output(data); loadUsers(); })
+          .withFailureHandler(function(error) { output({ error: error.message }); })
+          .reosAdminActivateUser(email);
+      }
+
+      function escapeHtml(value) {
+        return String(value || '').replace(/[&<>'"]/g, function(char) {
+          return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char];
+        });
+      }
+
+      function escapeJs(value) {
+        return String(value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+      }
+
+      loadUsers();
+    </script>
+  </body>
+</html>
