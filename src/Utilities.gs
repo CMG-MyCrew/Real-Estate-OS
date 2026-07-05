@@ -37,6 +37,22 @@ REOS.nowIso_ = function () {
   return new Date().toISOString();
 };
 
+REOS.getCurrentUser_ = function () {
+  try {
+    return Session.getActiveUser().getEmail() || 'unknown';
+  } catch (error) {
+    return 'unknown';
+  }
+};
+
+REOS.toJson_ = function (value) {
+  try {
+    return JSON.stringify(value || {});
+  } catch (error) {
+    return JSON.stringify({ serializationError: error.message });
+  }
+};
+
 REOS.handleError_ = function (source, error) {
   console.error(source + ': ' + error.message, error);
   REOS.log_('ERROR', source, { message: error.message, stack: error.stack || '' });
@@ -48,10 +64,25 @@ REOS.log_ = function (level, action, details) {
     if (!sheet) return;
     if (sheet.getLastRow() === 0) {
       sheet.appendRow(['Timestamp', 'Level', 'User', 'Action', 'Details']);
+      REOS.applyDefaultSheetStyle_(sheet);
     }
-    const user = Session.getActiveUser().getEmail() || 'unknown';
-    sheet.appendRow([REOS.nowIso_(), level, user, action, JSON.stringify(details || {})]);
+    sheet.appendRow([REOS.nowIso_(), level, REOS.getCurrentUser_(), action, REOS.toJson_(details)]);
   } catch (e) {
     console.error('Logging failed: ' + e.message);
+  }
+};
+
+REOS.Logger = {
+  debug: function (action, details) {
+    REOS.log_('DEBUG', action, details);
+  },
+  info: function (action, details) {
+    REOS.log_('INFO', action, details);
+  },
+  warn: function (action, details) {
+    REOS.log_('WARN', action, details);
+  },
+  error: function (action, details) {
+    REOS.log_('ERROR', action, details);
   }
 };
