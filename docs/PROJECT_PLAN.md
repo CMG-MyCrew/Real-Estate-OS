@@ -32,7 +32,7 @@ Status: In progress
 - Main dashboard updated in `src/Index.html` with KPI cards, recent CRM clients, recent acquisition leads, open task count, and record search.
 - Role-management server actions added in `src/Security.gs` for admin user creation, role updates, activation, and deactivation.
 - Role-management UI added in `src/Admin.html`.
-- Workflow automation foundation rebuilt in `src/Automation.gs` with scheduled job registry, follow-up scanner, overdue task scanner, acquisition review, trigger install/remove functions, rule seeding, dispatching, and run logs.
+- Workflow automation foundation rebuilt in `src/Automation.gs` with scheduled job registry, follow-up scanner, overdue task scanner, acquisition review, trigger install/remove functions, rule seeding, dispatching, run logs, and rule editor service actions.
 - Vendor management foundation added in `src/Vendors.gs` for vendor registry, work orders, assignments, statuses, search, and KPIs.
 - Vendor management UI added in `src/Vendors.html`.
 - Vendor and work-order permissions added to `src/Security.gs`.
@@ -40,8 +40,8 @@ Status: In progress
 - Deployment guide added in `docs/DEPLOYMENT.md` with Apps Script setup, required files, first-run checklist, testing checklist, automation setup, production release checklist, and rollback plan.
 - Dashboard drill-down record actions added in `src/Dashboard.gs` and `src/Index.html` for client, lead, vendor, work-order, and task details with contextual actions.
 - Security audit report view added in `src/Admin.html` with event summary, permission-denied review, and user activity lookup.
-- Automation management UI added in `src/Automation.html` with job controls, trigger management, rule management, run history, and KPI summary.
-- Automation service expanded in `src/Automation.gs` with admin dashboard data, trigger inspection, job-level manual execution, rule activation toggles, and run history access.
+- Automation management UI added in `src/Automation.html` with job controls, trigger management, rule management, rule editor forms, run history, and KPI summary.
+- Automation service expanded in `src/Automation.gs` with admin dashboard data, trigger inspection, job-level manual execution, rule create/update/validate/run actions, rule activation toggles, and run history access.
 - Property management module foundation added in `src/Properties.gs` for assets, units, inspections, maintenance requests, occupancy tracking, search, and KPIs.
 - Property management UI added in `src/Properties.html`.
 - Property, maintenance, and inspection permissions added to `src/Security.gs`.
@@ -79,7 +79,7 @@ Status: In progress
 | 5. Acquisitions | In Progress | Distressed property and off-market lead workflows. |
 | 6. Property Management | In Progress | Assets, inspections, maintenance, occupancy. |
 | 7. Vendors | In Progress | Vendor registry, work orders, field services. |
-| 8. Automation Engine | In Progress | Scheduled jobs, reminders, workflow scans, trigger management, automation UI. |
+| 8. Automation Engine | In Progress | Scheduled jobs, reminders, workflow scans, trigger management, automation UI, rule editor. |
 | 9. AI Agents | In Progress | AI core, provider abstraction, lead qualification, next-best-action, summary generation, AI workspace, report generation, document processing. |
 | 10. Dashboards | In Progress | Executive KPIs, record review, drill-downs, charts, and pipeline visualizations. |
 | 11. Testing | In Progress | QA scripts, validation, regression checks. |
@@ -103,7 +103,7 @@ Status: In progress
 - Acquisitions module can create/search/update acquisition leads, calculate priority, move pipeline stages, create follow-up tasks, and return dashboard KPIs.
 - Dashboard records review can display KPIs, recent clients, recent acquisition leads, open task count, and record search results.
 - Admin UI can create users, list users, update roles, activate users, deactivate users, review security events, review denied permissions, and inspect user activity history.
-- Automation engine can install/remove scheduled jobs, run follow-up scans, escalate overdue tasks, review acquisition leads, write automation run logs, and manage automation from UI.
+- Automation engine can install/remove scheduled jobs, run follow-up scans, escalate overdue tasks, review acquisition leads, write automation run logs, manage automation from UI, and create/edit/validate/run automation rules.
 - Vendor module can create/search/update vendors, create/search/assign/update work orders, and return vendor/work-order KPIs.
 - Property module can create/search/update properties, create units, create inspections, create/search maintenance requests, optionally create vendor work orders, and return property KPIs.
 - AI core can initialize config, build prompts, run stub lead qualification, support OpenAI-ready calls, parse responses, track usage, and log AI requests.
@@ -119,8 +119,8 @@ Status: In progress
 
 ## Next Build Items
 
-1. Add automation rule editor forms.
-2. Add property dashboard drill-down actions.
-3. Add production release checklist template.
-4. Add charts to module-specific dashboards.
-5. Add external data integration stubs.
+1. Add property dashboard drill-down actions.
+2. Add production release checklist template.
+3. Add charts to module-specific dashboards.
+4. Add external data integration stubs.
+5. Add automation rule templates library.
