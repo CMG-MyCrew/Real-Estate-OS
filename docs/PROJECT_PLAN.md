@@ -22,6 +22,7 @@ Status: In progress
 - CRM module foundation rebuilt in `src/CRM.gs` for clients, leads, tasks, activities, route registration, and compatibility aliases.
 - CRM UI foundation added in `src/CRM.html`.
 - Dashboard shell wired to router navigation and route dispatching in `src/Index.html`.
+- Validation framework expanded in `src/Validation.gs` with required fields, allowed values, lookup validation, duplicates, number/boolean/date/email/phone validation, sanitizing, and clean validation responses.
 
 ### Active Objectives
 
@@ -61,11 +62,12 @@ Status: In progress
 - Router can register modules, build permission-aware navigation, and dispatch server routes.
 - CRM foundation can create/search/update/archive clients, create/update/list leads, create tasks, and log activities.
 - Main dashboard can load modules, dispatch routes, initialize workbook, and run health checks.
+- Validation framework supports reusable record validation, lookup validation, duplicate checks, and clean error handling.
 
 ## Next Build Items
 
-1. Add validation helpers for required fields and allowed lookup values.
-2. Add test runner for health checks and setup verification.
-3. Add role-management UI actions.
-4. Build acquisitions module foundation.
-5. Add dashboard views for CRM records.
+1. Add test runner for health checks and setup verification.
+2. Add role-management UI actions.
+3. Build acquisitions module foundation.
+4. Add dashboard views for CRM records.
+5. Add workflow automation foundation.
