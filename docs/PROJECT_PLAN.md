@@ -24,7 +24,7 @@ Status: In progress
 - Dashboard shell wired to router navigation and route dispatching in `src/Index.html`.
 - Validation framework expanded in `src/Validation.gs` with required fields, allowed values, lookup validation, duplicates, number/boolean/date/email/phone validation, sanitizing, and clean validation responses.
 - Test runner added in `src/TestRunner.gs` for setup verification, health checks, required sheets, required headers, services, security, router, and validation.
-- REOS menu updated in `src/Main.gs` with Dashboard, CRM, Acquisitions, Vendors, Admin, Initialize Workbook, Health Check, and Run Tests actions.
+- REOS menu updated in `src/Main.gs` with Dashboard, CRM, Acquisitions, Vendors, Automation, Admin, Initialize Workbook, Health Check, and Run Tests actions.
 - Acquisitions module foundation added in `src/Acquisitions.gs` for distressed/off-market lead intake, scoring, pipeline, follow-ups, and dashboard metrics.
 - Acquisitions UI foundation added in `src/Acquisitions.html`.
 - Acquisition pipeline and distress indicator lookups added to setup seed data.
@@ -40,6 +40,8 @@ Status: In progress
 - Deployment guide added in `docs/DEPLOYMENT.md` with Apps Script setup, required files, first-run checklist, testing checklist, automation setup, production release checklist, and rollback plan.
 - Dashboard drill-down record actions added in `src/Dashboard.gs` and `src/Index.html` for client, lead, vendor, work-order, and task details with contextual actions.
 - Security audit report view added in `src/Admin.html` with event summary, permission-denied review, and user activity lookup.
+- Automation management UI added in `src/Automation.html` with job controls, trigger management, rule management, run history, and KPI summary.
+- Automation service expanded in `src/Automation.gs` with admin dashboard data, trigger inspection, job-level manual execution, rule activation toggles, and run history access.
 
 ### Active Objectives
 
@@ -60,7 +62,7 @@ Status: In progress
 | 5. Acquisitions | In Progress | Distressed property and off-market lead workflows. |
 | 6. Property Management | Planned | Assets, inspections, maintenance, occupancy. |
 | 7. Vendors | In Progress | Vendor registry, work orders, field services. |
-| 8. Automation Engine | In Progress | Scheduled jobs, reminders, workflow scans, trigger management. |
+| 8. Automation Engine | In Progress | Scheduled jobs, reminders, workflow scans, trigger management, automation UI. |
 | 9. AI Agents | Planned | Lead qualification, reporting, document processing. |
 | 10. Dashboards | In Progress | Executive KPIs and operational dashboards. |
 | 11. Testing | In Progress | QA scripts, validation, regression checks. |
@@ -84,15 +86,15 @@ Status: In progress
 - Acquisitions module can create/search/update acquisition leads, calculate priority, move pipeline stages, create follow-up tasks, and return dashboard KPIs.
 - Dashboard records review can display KPIs, recent clients, recent acquisition leads, open task count, and record search results.
 - Admin UI can create users, list users, update roles, activate users, deactivate users, review security events, review denied permissions, and inspect user activity history.
-- Automation engine can install/remove scheduled jobs, run follow-up scans, escalate overdue tasks, review acquisition leads, and write automation run logs.
+- Automation engine can install/remove scheduled jobs, run follow-up scans, escalate overdue tasks, review acquisition leads, write automation run logs, and manage automation from UI.
 - Vendor module can create/search/update vendors, create/search/assign/update work orders, and return vendor/work-order KPIs.
 - Deployment guide documents setup, authorization, validation, automation, production release, and rollback.
 - Dashboard drill-down supports viewing full records, activity history, and contextual actions.
 
 ## Next Build Items
 
-1. Add automation management UI.
-2. Build property management module foundation.
-3. Add GitHub/Apps Script sync documentation.
-4. Add dashboard charts and pipeline visualizations.
-5. Add AI lead qualification foundation.
+1. Build property management module foundation.
+2. Add GitHub/Apps Script sync documentation.
+3. Add dashboard charts and pipeline visualizations.
+4. Add AI lead qualification foundation.
+5. Add automation rule editor forms.
