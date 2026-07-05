@@ -19,6 +19,8 @@ Status: In progress
 - Core sheet schema definitions added for HOME, SETTINGS, USERS, LOOKUPS, CRM, LEADS, TASKS, ACTIVITIES, and SYSTEM_LOG.
 - Security framework expanded in `src/Security.gs` for users, roles, permissions, admin checks, and audit logging.
 - Router framework added in `src/Router.gs` for module registration, navigation, and route dispatching.
+- CRM module foundation rebuilt in `src/CRM.gs` for clients, leads, tasks, activities, route registration, and compatibility aliases.
+- CRM UI foundation added in `src/CRM.html`.
 
 ### Active Objectives
 
@@ -35,7 +37,7 @@ Status: In progress
 | 1. Core Framework | In Progress | Bootstrap, config, utilities, setup, router, dashboard shell, health check. |
 | 2. Database Layer | In Progress | Sheet-backed data access framework. |
 | 3. Security | In Progress | Roles, permissions, audit logs. |
-| 4. CRM | Planned | Contacts, leads, pipeline, activities. |
+| 4. CRM | In Progress | Contacts, leads, pipeline, activities. |
 | 5. Acquisitions | Planned | Distressed property and off-market lead workflows. |
 | 6. Property Management | Planned | Assets, inspections, maintenance, occupancy. |
 | 7. Vendors | Planned | Vendor registry, work orders, field services. |
@@ -56,11 +58,12 @@ Status: In progress
 - Workbook setup creates sheets, headers, filters, frozen rows, and HOME status records.
 - Security layer can seed the initial admin, create users, update roles, deactivate users, and enforce permissions.
 - Router can register modules, build permission-aware navigation, and dispatch server routes.
+- CRM foundation can create/search/update/archive clients, create/update/list leads, create tasks, and log activities.
 
 ## Next Build Items
 
-1. Add CRM module foundation.
+1. Wire router navigation into the HTML dashboard shell.
 2. Add validation helpers for required fields and allowed lookup values.
 3. Add test runner for health checks and setup verification.
 4. Add role-management UI actions.
-5. Wire router navigation into the HTML dashboard shell.
+5. Build acquisitions module foundation.
