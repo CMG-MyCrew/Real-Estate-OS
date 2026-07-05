@@ -17,6 +17,7 @@ Status: In progress
 - Dashboard shell added in `src/Index.html`.
 - Workbook setup framework added in `src/Setup.gs`.
 - Core sheet schema definitions added for HOME, SETTINGS, USERS, LOOKUPS, CRM, LEADS, TASKS, ACTIVITIES, and SYSTEM_LOG.
+- Security framework expanded in `src/Security.gs` for users, roles, permissions, admin checks, and audit logging.
 
 ### Active Objectives
 
@@ -32,7 +33,7 @@ Status: In progress
 | 0. Repository & Architecture | Complete | Repository connected and accessible. |
 | 1. Core Framework | In Progress | Bootstrap, config, utilities, setup, dashboard shell, health check. |
 | 2. Database Layer | In Progress | Sheet-backed data access framework. |
-| 3. Security | Planned | Roles, permissions, audit logs. |
+| 3. Security | In Progress | Roles, permissions, audit logs. |
 | 4. CRM | Planned | Contacts, leads, pipeline, activities. |
 | 5. Acquisitions | Planned | Distressed property and off-market lead workflows. |
 | 6. Property Management | Planned | Assets, inspections, maintenance, occupancy. |
@@ -52,11 +53,12 @@ Status: In progress
 - Logger writes structured records to `SYSTEM_LOG`.
 - Database layer can insert, update, query, and soft-delete sheet records.
 - Workbook setup creates sheets, headers, filters, frozen rows, and HOME status records.
+- Security layer can seed the initial admin, create users, update roles, deactivate users, and enforce permissions.
 
 ## Next Build Items
 
-1. Add `Security.gs` for users, roles, and permission checks.
-2. Add `Router.gs` for UI navigation and module registration.
-3. Add CRM module foundation.
-4. Add validation helpers for required fields and allowed lookup values.
-5. Add test runner for health checks and setup verification.
+1. Add `Router.gs` for UI navigation and module registration.
+2. Add CRM module foundation.
+3. Add validation helpers for required fields and allowed lookup values.
+4. Add test runner for health checks and setup verification.
+5. Add role-management UI actions.
