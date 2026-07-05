@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <style>
+      body { margin: 0; font-family: Arial, sans-serif; background: #f6f8fb; color: #1f2937; }
+      .shell { padding: 20px; }
+      .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+      h1 { margin: 0; font-size: 24px; }
+      h2 { margin: 0 0 12px; font-size: 18px; }
+      .muted { color: #6b7280; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .kpis { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 16px; }
+      .card, .kpi { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; }
+      .kpi strong { display: block; font-size: 24px; }
+      input, select, textarea { width: 100%; box-sizing: border-box; padding: 10px; margin: 6px 0 12px; border: 1px solid #d1d5db; border-radius: 8px; }
+      button { padding: 10px 14px; border: 0; border-radius: 8px; cursor: pointer; font-weight: 700; }
+      .primary { background: #111827; color: #fff; }
+      .secondary { background: #e5e7eb; color: #111827; }
+      .results { margin-top: 12px; font-size: 13px; white-space: pre-wrap; background: #f9fafb; border-radius: 8px; padding: 12px; max-height: 260px; overflow: auto; }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <div class="header">
+        <div>
+          <h1>REOS Properties</h1>
+          <div class="muted">Assets, units, inspections, maintenance, and occupancy.</div>
+        </div>
+        <button class="secondary" onclick="loadDashboard()">Refresh Dashboard</button>
+      </div>
+
+      <section class="kpis">
+        <div class="kpi"><span>Properties</span><strong id="properties">0</strong></div>
+        <div class="kpi"><span>Occupied</span><strong id="occupied">0</strong></div>
+        <div class="kpi"><span>Vacant</span><strong id="vacant">0</strong></div>
+        <div class="kpi"><span>Units</span><strong id="units">0</strong></div>
+        <div class="kpi"><span>Open Maint.</span><strong id="openMaint">0</strong></div>
+        <div class="kpi"><span>Overdue Maint.</span><strong id="overdueMaint">0</strong></div>
+      </section>
+
+      <section class="grid">
+        <div class="card">
+          <h2>Create Property</h2>
+          <input id="propertyName" placeholder="Property Name">
+          <select id="propertyType">
+            <option>Single Family</option><option>Duplex</option><option>Triplex</option><option>Fourplex</option>
+            <option>Condo</option><option>Townhome</option><option>Multifamily</option><option>Commercial</option><option>Land</option><option>Other</option>
+          </select>
+          <input id="address" placeholder="Address">
+          <input id="city" placeholder="City">
+          <input id="state" placeholder="State">
+          <input id="zip" placeholder="Zip">
+          <select id="status">
+            <option>Prospect</option><option>Owned</option><option>Under Rehab</option><option>Available</option><option>Occupied</option><option>Listed</option><option>Sold</option><option>Archived</option>
+          </select>
+          <select id="occupancy">
+            <option>Unknown</option><option>Vacant</option><option>Occupied</option><option>Partially Occupied</option>
+          </select>
+          <input id="estimatedValue" placeholder="Estimated Value">
+          <input id="monthlyRent" placeholder="Monthly Rent">
+          <textarea id="propertyNotes" placeholder="Notes"></textarea>
+          <button class="primary" onclick="createProperty()">Create Property</button>
+        </div>
+
+        <div class="card">
+          <h2>Create Maintenance Request</h2>
+          <input id="maintPropertyId" placeholder="Property ID">
+          <input id="maintTitle" placeholder="Title">
+          <select id="maintCategory">
+            <option>Repairs</option><option>Inspection</option><option>Property Preservation</option><option>Commercial Cleaning</option><option>Lawn Care</option><option>Trash Out</option><option>Other</option>
+          </select>
+          <select id="maintPriority">
+            <option>Medium</option><option>Critical</option><option>High</option><option>Low</option>
+          </select>
+          <input id="maintVendorId" placeholder="Vendor ID optional">
+          <input id="maintDue" type="date">
+          <textarea id="maintDescription" placeholder="Description"></textarea>
+          <button class="primary" onclick="createMaintenance()">Create Maintenance</button>
+        </div>
+      </section>
+
+      <section class="grid" style="margin-top:16px;">
+        <div class="card">
+          <h2>Search Properties</h2>
+          <input id="propertySearch" placeholder="Search properties">
+          <button class="primary" onclick="searchProperties()">Search Properties</button>
+        </div>
+        <div class="card">
+          <h2>Search Maintenance</h2>
+          <input id="maintenanceSearch" placeholder="Search maintenance requests">
+          <button class="primary" onclick="searchMaintenance()">Search Maintenance</button>
+        </div>
+      </section>
+
+      <div id="results" class="results">Ready.</div>
+    </main>
+
+    <script>
+      function render(value) {
+        document.getElementById('results').textContent = JSON.stringify(value, null, 2);
+      }
+
+      function loadDashboard() {
+        google.script.run.withSuccessHandler(function(data) {
+          document.getElementById('properties').textContent = data.properties || 0;
+          document.getElementById('occupied').textContent = data.occupied || 0;
+          document.getElementById('vacant').textContent = data.vacant || 0;
+          document.getElementById('units').textContent = data.units || 0;
+          document.getElementById('openMaint').textContent = data.openMaintenance || 0;
+          document.getElementById('overdueMaint').textContent = data.overdueMaintenance || 0;
+          render(data);
+        }).withFailureHandler(function(error) { render({ error: error.message }); }).propertiesDashboard();
+      }
+
+      function createProperty() {
+        const property = {
+          'Property Name': document.getElementById('propertyName').value,
+          'Property Type': document.getElementById('propertyType').value,
+          Address: document.getElementById('address').value,
+          City: document.getElementById('city').value,
+          State: document.getElementById('state').value,
+          Zip: document.getElementById('zip').value,
+          Status: document.getElementById('status').value,
+          'Occupancy Status': document.getElementById('occupancy').value,
+          'Estimated Value': document.getElementById('estimatedValue').value,
+          'Monthly Rent': document.getElementById('monthlyRent').value,
+          Notes: document.getElementById('propertyNotes').value
+        };
+        google.script.run.withSuccessHandler(render).withFailureHandler(function(error) { render({ error: error.message }); }).propertiesCreateProperty(property);
+      }
+
+      function createMaintenance() {
+        const request = {
+          'Property ID': document.getElementById('maintPropertyId').value,
+          Title: document.getElementById('maintTitle').value,
+          Category: document.getElementById('maintCategory').value,
+          Priority: document.getElementById('maintPriority').value,
+          Status: 'New',
+          'Vendor ID': document.getElementById('maintVendorId').value,
+          'Due Date': document.getElementById('maintDue').value,
+          Description: document.getElementById('maintDescription').value
+        };
+        google.script.run.withSuccessHandler(render).withFailureHandler(function(error) { render({ error: error.message }); }).propertiesCreateMaintenance(request);
+      }
+
+      function searchProperties() {
+        google.script.run.withSuccessHandler(render).withFailureHandler(function(error) { render({ error: error.message }); }).propertiesSearchProperties(document.getElementById('propertySearch').value);
+      }
+
+      function searchMaintenance() {
+        google.script.run.withSuccessHandler(render).withFailureHandler(function(error) { render({ error: error.message }); }).propertiesSearchMaintenance(document.getElementById('maintenanceSearch').value);
+      }
+
+      loadDashboard();
+    </script>
+  </body>
+</html>
