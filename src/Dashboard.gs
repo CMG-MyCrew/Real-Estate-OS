@@ -1,82 +1,106 @@
 /**
- * REOS Enterprise v3.0 - Executive Dashboard Framework
+ * REOS Enterprise v3.0 - Dashboard Records Review
  *
- * Aggregates operational KPIs across CRM, tasks, transactions,
- * investments, rentals, and finance.
+ * Aggregates CRM and acquisition records for the main command center.
  */
 
 var REOS = REOS || {};
 
 REOS.Dashboard = (function () {
-  function getExecutiveDashboard() {
-    REOS.Security.requirePermission('reports:read');
+  function getOverview() {
+    const clients = safeList_(function () { return REOS.CRM.listClients({ limit: 500 }); });
+    const acquisitionDashboard = safeCall_(function () { return REOS.Acquisitions.dashboard(); }, {});
+    const acquisitionLeads = safeList_(function () { return REOS.Acquisitions.listLeads({ limit: 500 }); });
+    const tasks = safeList_(function () { return REOS.Database.getAll(REOS.CONFIG.SHEETS.TASKS); });
 
-    return {
-      generatedAt: new Date(),
-      crm: safe_('crm', function () { return crmSummary_(); }),
-      tasks: safe_('tasks', function () { return tasksSummary_(); }),
-      transactions: safe_('transactions', function () { return REOS.Transactions.dashboard(); }),
-      investments: safe_('investments', function () { return REOS.Investments.dashboard(); }),
-      rentals: safe_('rentals', function () { return REOS.Rentals.dashboard(); }),
-      finance: safe_('finance', function () { return REOS.Finance.dashboard(); }),
-      commissions: safe_('commissions', function () { return REOS.Commissions.dashboard(); })
-    };
-  }
-
-  function crmSummary_() {
-    const contacts = REOS.CRM.listContacts ? REOS.CRM.listContacts() : [];
-    const leads = REOS.CRM.listLeads ? REOS.CRM.listLeads() : [];
-    const activeLeads = leads.filter(function (lead) {
-      return lead.Active !== false && ['closed', 'lost', 'archived'].indexOf(String(lead.Status || '').toLowerCase()) === -1;
+    const openTasks = tasks.filter(function (task) {
+      return task.Active !== false && String(task.Status || '').toLowerCase() !== 'completed';
     });
-    const hotLeads = activeLeads.filter(function (lead) {
-      return String(lead.Priority || '').toLowerCase() === 'hot' || Number(lead['Lead Score'] || 0) >= 90;
-    });
+
     return {
-      contactsCount: contacts.length,
-      leadsCount: leads.length,
-      activeLeadsCount: activeLeads.length,
-      hotLeadsCount: hotLeads.length,
-      projectedCommission: sum_(activeLeads, 'Expected Commission')
+      ok: true,
+      generatedAt: REOS.nowIso_(),
+      kpis: {
+        clients: clients.length,
+        acquisitionLeads: acquisitionLeads.length,
+        hotAcquisitionLeads: acquisitionDashboard.hot || 0,
+        followUpsDue: acquisitionDashboard.followUpsDue || 0,
+        openTasks: openTasks.length
+      },
+      crm: {
+        recentClients: latest_(clients, 'Created At', 10),
+        activeClients: clients.filter(function (client) { return client.Active !== false; }).length
+      },
+      acquisitions: {
+        recentLeads: latest_(acquisitionLeads, 'Created At', 10),
+        byStatus: acquisitionDashboard.byStatus || {},
+        byPriority: acquisitionDashboard.byPriority || {}
+      },
+      tasks: {
+        open: latest_(openTasks, 'Due Date', 10)
+      }
     };
   }
 
-  function tasksSummary_() {
+  function searchRecords(query) {
+    const q = String(query || '').trim();
     return {
-      activeCount: REOS.Tasks.listActive().length,
-      dueTodayCount: REOS.Tasks.dueToday().length,
-      overdueCount: REOS.Tasks.overdue().length,
-      upcomingCount: REOS.Tasks.upcoming(7).length
+      ok: true,
+      query: q,
+      clients: q && REOS.CRM ? REOS.CRM.searchClients(q) : [],
+      acquisitionLeads: q && REOS.Acquisitions ? REOS.Acquisitions.searchLeads(q) : []
     };
   }
 
-  function safe_(moduleName, fn) {
+  function latest_(records, dateField, limit) {
+    return (records || []).slice().sort(function (a, b) {
+      const ad = new Date(a[dateField] || 0).getTime() || 0;
+      const bd = new Date(b[dateField] || 0).getTime() || 0;
+      return bd - ad;
+    }).slice(0, limit || 10);
+  }
+
+  function safeList_(fn) {
     try {
-      return fn();
+      const value = fn();
+      return Array.isArray(value) ? value : [];
     } catch (error) {
-      REOS.Logger.warn('Dashboard module failed', { module: moduleName, error: error.message });
-      return { error: error.message };
+      REOS.Logger.warn('Dashboard list failed', { error: error.message });
+      return [];
     }
   }
 
-  function sum_(records, field) {
-    return (records || []).reduce(function (total, record) {
-      return total + (Number(record[field] || 0) || 0);
-    }, 0);
+  function safeCall_(fn, fallback) {
+    try {
+      return fn();
+    } catch (error) {
+      REOS.Logger.warn('Dashboard call failed', { error: error.message });
+      return fallback;
+    }
   }
 
   return {
-    getExecutiveDashboard: getExecutiveDashboard
+    getOverview: getOverview,
+    searchRecords: searchRecords,
+    getExecutiveDashboard: getOverview
   };
 })();
 
 function showDashboard() {
-  const html = HtmlService.createHtmlOutputFromFile('Dashboard')
-    .setWidth(1100)
-    .setHeight(760);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Executive Dashboard');
+  const html = HtmlService.createHtmlOutputFromFile('Index')
+    .setWidth(1200)
+    .setHeight(800);
+  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Enterprise Dashboard');
 }
 
 function dashboardGetExecutive() {
-  return REOS.Dashboard.getExecutiveDashboard();
+  return REOS.Dashboard.getOverview();
+}
+
+function reosDashboardOverview() {
+  return REOS.Dashboard.getOverview();
+}
+
+function reosDashboardSearch(query) {
+  return REOS.Dashboard.searchRecords(query || '');
 }
