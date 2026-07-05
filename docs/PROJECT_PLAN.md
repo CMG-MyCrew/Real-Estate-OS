@@ -24,7 +24,7 @@ Status: In progress
 - Dashboard shell wired to router navigation and route dispatching in `src/Index.html`.
 - Validation framework expanded in `src/Validation.gs` with required fields, allowed values, lookup validation, duplicates, number/boolean/date/email/phone validation, sanitizing, and clean validation responses.
 - Test runner added in `src/TestRunner.gs` for setup verification, health checks, required sheets, required headers, services, security, router, and validation.
-- REOS menu updated in `src/Main.gs` with Dashboard, CRM, Acquisitions, Admin, Initialize Workbook, Health Check, and Run Tests actions.
+- REOS menu updated in `src/Main.gs` with Dashboard, CRM, Acquisitions, Vendors, Admin, Initialize Workbook, Health Check, and Run Tests actions.
 - Acquisitions module foundation added in `src/Acquisitions.gs` for distressed/off-market lead intake, scoring, pipeline, follow-ups, and dashboard metrics.
 - Acquisitions UI foundation added in `src/Acquisitions.html`.
 - Acquisition pipeline and distress indicator lookups added to setup seed data.
@@ -33,6 +33,10 @@ Status: In progress
 - Role-management server actions added in `src/Security.gs` for admin user creation, role updates, activation, and deactivation.
 - Role-management UI added in `src/Admin.html`.
 - Workflow automation foundation rebuilt in `src/Automation.gs` with scheduled job registry, follow-up scanner, overdue task scanner, acquisition review, trigger install/remove functions, rule seeding, dispatching, and run logs.
+- Vendor management foundation added in `src/Vendors.gs` for vendor registry, work orders, assignments, statuses, search, and KPIs.
+- Vendor management UI added in `src/Vendors.html`.
+- Vendor and work-order permissions added to `src/Security.gs`.
+- Vendor service categories and work-order statuses added to setup seed data.
 
 ### Active Objectives
 
@@ -52,7 +56,7 @@ Status: In progress
 | 4. CRM | In Progress | Contacts, leads, pipeline, activities. |
 | 5. Acquisitions | In Progress | Distressed property and off-market lead workflows. |
 | 6. Property Management | Planned | Assets, inspections, maintenance, occupancy. |
-| 7. Vendors | Planned | Vendor registry, work orders, field services. |
+| 7. Vendors | In Progress | Vendor registry, work orders, field services. |
 | 8. Automation Engine | In Progress | Scheduled jobs, reminders, workflow scans, trigger management. |
 | 9. AI Agents | Planned | Lead qualification, reporting, document processing. |
 | 10. Dashboards | In Progress | Executive KPIs and operational dashboards. |
@@ -78,11 +82,12 @@ Status: In progress
 - Dashboard records review can display KPIs, recent clients, recent acquisition leads, open task count, and record search results.
 - Admin UI can create users, list users, update roles, activate users, and deactivate users.
 - Automation engine can install/remove scheduled jobs, run follow-up scans, escalate overdue tasks, review acquisition leads, and write automation run logs.
+- Vendor module can create/search/update vendors, create/search/assign/update work orders, and return vendor/work-order KPIs.
 
 ## Next Build Items
 
-1. Build vendor management module foundation.
-2. Add deployment documentation.
-3. Add dashboard drill-down record actions.
-4. Add security audit report view.
-5. Add automation management UI.
+1. Add deployment documentation.
+2. Add dashboard drill-down record actions.
+3. Add security audit report view.
+4. Add automation management UI.
+5. Build property management module foundation.
