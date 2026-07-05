@@ -17,24 +17,32 @@ REOS.Security = (function () {
     'crm:read', 'crm:write',
     'leads:read', 'leads:write',
     'tasks:read', 'tasks:write',
-    'activities:read', 'activities:write'
+    'activities:read', 'activities:write',
+    'vendors:read', 'vendors:write',
+    'workorders:read', 'workorders:write'
   ];
   ROLE_PERMISSIONS[REOS.CONFIG.ROLES.COORDINATOR] = [
     'crm:read',
     'leads:read',
     'tasks:read', 'tasks:write',
     'activities:read', 'activities:write',
-    'documents:read', 'documents:write'
+    'documents:read', 'documents:write',
+    'vendors:read', 'vendors:write',
+    'workorders:read', 'workorders:write'
   ];
   ROLE_PERMISSIONS[REOS.CONFIG.ROLES.ASSISTANT] = [
     'crm:read',
     'leads:read',
     'tasks:read',
-    'activities:read', 'activities:write'
+    'activities:read', 'activities:write',
+    'vendors:read',
+    'workorders:read'
   ];
   ROLE_PERMISSIONS[REOS.CONFIG.ROLES.ACCOUNTANT] = [
     'reports:read',
-    'settings:read'
+    'settings:read',
+    'vendors:read',
+    'workorders:read'
   ];
 
   function getCurrentUserEmail() {
