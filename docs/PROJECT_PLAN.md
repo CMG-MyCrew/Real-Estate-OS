@@ -38,6 +38,7 @@ Status: In progress
 - Vendor and work-order permissions added to `src/Security.gs`.
 - Vendor service categories and work-order statuses added to setup seed data.
 - Deployment guide added in `docs/DEPLOYMENT.md` with Apps Script setup, required files, first-run checklist, testing checklist, automation setup, production release checklist, and rollback plan.
+- Production release checklist template added in `docs/PRODUCTION_RELEASE_CHECKLIST.md` with pre-release validation, Apps Script sync, security review, smoke tests, trigger review, backup, monitoring, and rollback.
 - Dashboard drill-down record actions added in `src/Dashboard.gs` and `src/Index.html` for client, lead, vendor, work-order, and task details with contextual actions.
 - Security audit report view added in `src/Admin.html` with event summary, permission-denied review, and user activity lookup.
 - Automation management UI added in `src/Automation.html` with job controls, trigger management, rule management, rule editor forms, run history, and KPI summary.
@@ -84,7 +85,7 @@ Status: In progress
 | 9. AI Agents | In Progress | AI core, provider abstraction, lead qualification, next-best-action, summary generation, AI workspace, report generation, document processing. |
 | 10. Dashboards | In Progress | Executive KPIs, record review, drill-downs, charts, and pipeline visualizations. |
 | 11. Testing | In Progress | QA scripts, validation, regression checks. |
-| 12. Deployment | In Progress | Production release process and documentation, sync workflow. |
+| 12. Deployment | In Progress | Production release process, checklists, documentation, sync workflow. |
 
 ## Core Framework Acceptance Criteria
 
@@ -113,6 +114,7 @@ Status: In progress
 - AI summaries can generate executive lead summaries, seller profiles, risk summaries, preliminary offer guidance, and follow-up strategies.
 - AI Workspace can run qualification, next-best-action, summary generation, task creation, queue review, config management, request-log review, and report generation from a UI.
 - AI reports can create Google Docs and PDF-ready acquisition reports with seller, risk, offer, investment, negotiation, and action-plan sections.
+- Production release checklist supports validation, sync, smoke testing, security review, automation review, backup, monitoring, and rollback.
 - Deployment guide documents setup, authorization, validation, automation, production release, and rollback.
 - Apps Script sync guide documents GitHub-to-runtime file mapping, manual sync, clasp workflow, release process, and troubleshooting.
 - Dashboard drill-down supports viewing full records, activity history, related property records, and contextual actions.
@@ -120,8 +122,8 @@ Status: In progress
 
 ## Next Build Items
 
-1. Add production release checklist template.
-2. Add charts to module-specific dashboards.
-3. Add external data integration stubs.
-4. Add automation rule templates library.
-5. Add property document/photo links.
+1. Add charts to module-specific dashboards.
+2. Add external data integration stubs.
+3. Add automation rule templates library.
+4. Add property document/photo links.
+5. Add release notes template.
