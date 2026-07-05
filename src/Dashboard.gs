@@ -1,7 +1,8 @@
 /**
- * REOS Enterprise v3.0 - Dashboard Records Review
+ * REOS Enterprise v3.0 - Dashboard Records Review + Visualizations
  *
- * Aggregates CRM, acquisition, vendor, work-order, and task records for the main command center.
+ * Aggregates CRM, acquisition, vendor, property, work-order, maintenance,
+ * and task records for the main command center.
  */
 
 var REOS = REOS || {};
@@ -15,9 +16,21 @@ REOS.Dashboard = (function () {
     const vendorDashboard = safeCall_(function () { return REOS.Vendors ? REOS.Vendors.dashboard() : {}; }, {});
     const vendors = safeList_(function () { return REOS.Vendors ? REOS.Vendors.listVendors({ limit: 500 }) : []; });
     const workOrders = safeList_(function () { return REOS.Vendors ? REOS.Vendors.listWorkOrders({ limit: 500 }) : []; });
+    const propertyDashboard = safeCall_(function () { return REOS.Properties ? REOS.Properties.dashboard() : {}; }, {});
+    const properties = safeList_(function () { return REOS.Properties ? REOS.Properties.listProperties({ limit: 500 }) : []; });
+    const maintenance = safeList_(function () { return REOS.Properties ? REOS.Properties.listMaintenance({ limit: 500 }) : []; });
 
     const openTasks = tasks.filter(function (task) {
       return task.Active !== false && String(task.Status || '').toLowerCase() !== 'completed';
+    });
+
+    const charts = buildCharts_({
+      acquisitionDashboard: acquisitionDashboard,
+      vendorDashboard: vendorDashboard,
+      propertyDashboard: propertyDashboard,
+      workOrders: workOrders,
+      maintenance: maintenance,
+      tasks: openTasks
     });
 
     return {
@@ -31,7 +44,11 @@ REOS.Dashboard = (function () {
         openTasks: openTasks.length,
         vendors: vendorDashboard.activeVendors || vendors.length,
         openWorkOrders: vendorDashboard.openWorkOrders || 0,
-        overdueWorkOrders: vendorDashboard.overdueWorkOrders || 0
+        overdueWorkOrders: vendorDashboard.overdueWorkOrders || 0,
+        properties: propertyDashboard.properties || properties.length,
+        vacantProperties: propertyDashboard.vacant || 0,
+        openMaintenance: propertyDashboard.openMaintenance || 0,
+        overdueMaintenance: propertyDashboard.overdueMaintenance || 0
       },
       crm: {
         recentClients: latest_(clients, 'Created At', 10),
@@ -47,10 +64,50 @@ REOS.Dashboard = (function () {
         recentWorkOrders: latest_(workOrders, 'Created At', 10),
         workOrdersByStatus: vendorDashboard.workOrdersByStatus || {}
       },
+      properties: {
+        recentProperties: latest_(properties, 'Created At', 10),
+        recentMaintenance: latest_(maintenance, 'Created At', 10),
+        byStatus: propertyDashboard.byStatus || {},
+        byOccupancy: propertyDashboard.byOccupancy || {},
+        maintenanceByStatus: propertyDashboard.maintenanceByStatus || {}
+      },
       tasks: {
         open: latest_(openTasks, 'Due Date', 10)
-      }
+      },
+      charts: charts
     };
+  }
+
+  function buildCharts_(data) {
+    const acquisitionByStatus = objectToChartRows_(data.acquisitionDashboard.byStatus || {}, 'stage', 'count');
+    const acquisitionByPriority = objectToChartRows_(data.acquisitionDashboard.byPriority || {}, 'priority', 'count');
+    const workOrdersByStatus = objectToChartRows_(data.vendorDashboard.workOrdersByStatus || {}, 'status', 'count');
+    const occupancy = objectToChartRows_(data.propertyDashboard.byOccupancy || {}, 'status', 'count');
+    const maintenanceByStatus = objectToChartRows_(data.propertyDashboard.maintenanceByStatus || {}, 'status', 'count');
+
+    return {
+      acquisitionPipeline: acquisitionByStatus,
+      acquisitionPriority: acquisitionByPriority,
+      workOrdersByStatus: workOrdersByStatus,
+      propertyOccupancy: occupancy,
+      maintenanceByStatus: maintenanceByStatus,
+      operatingSnapshot: [
+        { metric: 'Open Tasks', count: data.tasks.length || 0 },
+        { metric: 'Open Work Orders', count: data.vendorDashboard.openWorkOrders || 0 },
+        { metric: 'Overdue Work Orders', count: data.vendorDashboard.overdueWorkOrders || 0 },
+        { metric: 'Open Maintenance', count: data.propertyDashboard.openMaintenance || 0 },
+        { metric: 'Overdue Maintenance', count: data.propertyDashboard.overdueMaintenance || 0 }
+      ]
+    };
+  }
+
+  function objectToChartRows_(map, labelKey, valueKey) {
+    return Object.keys(map || {}).map(function (key) {
+      const row = {};
+      row[labelKey] = key;
+      row[valueKey] = Number(map[key] || 0);
+      return row;
+    }).filter(function (row) { return row[valueKey] > 0; });
   }
 
   function searchRecords(query) {
@@ -61,7 +118,9 @@ REOS.Dashboard = (function () {
       clients: q && REOS.CRM ? REOS.CRM.searchClients(q) : [],
       acquisitionLeads: q && REOS.Acquisitions ? REOS.Acquisitions.searchLeads(q) : [],
       vendors: q && REOS.Vendors ? REOS.Vendors.searchVendors(q) : [],
-      workOrders: q && REOS.Vendors ? REOS.Vendors.searchWorkOrders(q) : []
+      workOrders: q && REOS.Vendors ? REOS.Vendors.searchWorkOrders(q) : [],
+      properties: q && REOS.Properties ? REOS.Properties.searchProperties(q) : [],
+      maintenance: q && REOS.Properties ? REOS.Properties.searchMaintenance(q) : []
     };
   }
 
@@ -85,6 +144,9 @@ REOS.Dashboard = (function () {
     } else if (type === 'workorder' || type === 'work_order') {
       record = REOS.Vendors.getWorkOrder(id);
       activity = getActivities_('Work Order', id);
+    } else if (type === 'property') {
+      record = REOS.Properties.getProperty(id);
+      activity = getActivities_('Property', id);
     } else if (type === 'task') {
       record = REOS.Database.findById(REOS.CONFIG.SHEETS.TASKS, 'Task ID', id);
       activity = getActivities_('Task', id);
@@ -109,7 +171,6 @@ REOS.Dashboard = (function () {
     const id = String(recordId || '').trim();
     const actionName = String(action || '').trim();
     payload = payload || {};
-
     if (!id || !actionName) throw new Error('Record ID and action are required.');
 
     let result;
@@ -135,12 +196,7 @@ REOS.Dashboard = (function () {
     }
 
     REOS.Logger.audit('Dashboard record action', { recordType: type, recordId: id, action: actionName });
-    return {
-      ok: true,
-      action: actionName,
-      result: result,
-      detail: getRecord(type, id)
-    };
+    return { ok: true, action: actionName, result: result, detail: getRecord(type, id) };
   }
 
   function getActivities_(relatedType, relatedId) {
@@ -198,9 +254,7 @@ REOS.Dashboard = (function () {
 })();
 
 function showDashboard() {
-  const html = HtmlService.createHtmlOutputFromFile('Index')
-    .setWidth(1200)
-    .setHeight(800);
+  const html = HtmlService.createHtmlOutputFromFile('Index').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Enterprise Dashboard');
 }
 
