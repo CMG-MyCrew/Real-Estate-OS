@@ -17,7 +17,7 @@ Status: In progress
 - Dashboard shell added in `src/Index.html`.
 - Workbook setup framework added in `src/Setup.gs`.
 - Core sheet schema definitions added for HOME, SETTINGS, USERS, LOOKUPS, CRM, LEADS, TASKS, ACTIVITIES, and SYSTEM_LOG.
-- Security framework expanded in `src/Security.gs` for users, roles, permissions, admin checks, and audit logging.
+- Security framework expanded in `src/Security.gs` for users, roles, permissions, admin checks, audit logging, audit summaries, and user activity review.
 - Router framework added in `src/Router.gs` for module registration, navigation, and route dispatching.
 - CRM module foundation rebuilt in `src/CRM.gs` for clients, leads, tasks, activities, route registration, and compatibility aliases.
 - CRM UI foundation added in `src/CRM.html`.
@@ -39,6 +39,7 @@ Status: In progress
 - Vendor service categories and work-order statuses added to setup seed data.
 - Deployment guide added in `docs/DEPLOYMENT.md` with Apps Script setup, required files, first-run checklist, testing checklist, automation setup, production release checklist, and rollback plan.
 - Dashboard drill-down record actions added in `src/Dashboard.gs` and `src/Index.html` for client, lead, vendor, work-order, and task details with contextual actions.
+- Security audit report view added in `src/Admin.html` with event summary, permission-denied review, and user activity lookup.
 
 ### Active Objectives
 
@@ -54,7 +55,7 @@ Status: In progress
 | 0. Repository & Architecture | Complete | Repository connected and accessible. |
 | 1. Core Framework | In Progress | Bootstrap, config, utilities, setup, router, dashboard shell, health check, test runner. |
 | 2. Database Layer | In Progress | Sheet-backed data access framework. |
-| 3. Security | In Progress | Roles, permissions, audit logs. |
+| 3. Security | In Progress | Roles, permissions, audit logs, audit reports. |
 | 4. CRM | In Progress | Contacts, leads, pipeline, activities. |
 | 5. Acquisitions | In Progress | Distressed property and off-market lead workflows. |
 | 6. Property Management | Planned | Assets, inspections, maintenance, occupancy. |
@@ -74,7 +75,7 @@ Status: In progress
 - Logger writes structured records to `SYSTEM_LOG`.
 - Database layer can insert, update, query, and soft-delete sheet records.
 - Workbook setup creates sheets, headers, filters, frozen rows, and HOME status records.
-- Security layer can seed the initial admin, create users, update roles, deactivate users, reactivate users, and enforce permissions.
+- Security layer can seed the initial admin, create users, update roles, deactivate users, reactivate users, enforce permissions, and generate audit reports.
 - Router can register modules, build permission-aware navigation, and dispatch server routes.
 - CRM foundation can create/search/update/archive clients, create/update/list leads, create tasks, and log activities.
 - Main dashboard can load modules, dispatch routes, initialize workbook, and run health checks.
@@ -82,7 +83,7 @@ Status: In progress
 - Test runner can verify setup, schema, services, router, security, validation, and health status.
 - Acquisitions module can create/search/update acquisition leads, calculate priority, move pipeline stages, create follow-up tasks, and return dashboard KPIs.
 - Dashboard records review can display KPIs, recent clients, recent acquisition leads, open task count, and record search results.
-- Admin UI can create users, list users, update roles, activate users, and deactivate users.
+- Admin UI can create users, list users, update roles, activate users, deactivate users, review security events, review denied permissions, and inspect user activity history.
 - Automation engine can install/remove scheduled jobs, run follow-up scans, escalate overdue tasks, review acquisition leads, and write automation run logs.
 - Vendor module can create/search/update vendors, create/search/assign/update work orders, and return vendor/work-order KPIs.
 - Deployment guide documents setup, authorization, validation, automation, production release, and rollback.
@@ -90,8 +91,8 @@ Status: In progress
 
 ## Next Build Items
 
-1. Add security audit report view.
-2. Add automation management UI.
-3. Build property management module foundation.
-4. Add GitHub/Apps Script sync documentation.
-5. Add dashboard charts and pipeline visualizations.
+1. Add automation management UI.
+2. Build property management module foundation.
+3. Add GitHub/Apps Script sync documentation.
+4. Add dashboard charts and pipeline visualizations.
+5. Add AI lead qualification foundation.
