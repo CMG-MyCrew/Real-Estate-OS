@@ -32,6 +32,7 @@ Status: In progress
 - Main dashboard updated in `src/Index.html` with KPI cards, recent CRM clients, recent acquisition leads, open task count, and record search.
 - Role-management server actions added in `src/Security.gs` for admin user creation, role updates, activation, and deactivation.
 - Role-management UI added in `src/Admin.html`.
+- Workflow automation foundation rebuilt in `src/Automation.gs` with scheduled job registry, follow-up scanner, overdue task scanner, acquisition review, trigger install/remove functions, rule seeding, dispatching, and run logs.
 
 ### Active Objectives
 
@@ -52,7 +53,7 @@ Status: In progress
 | 5. Acquisitions | In Progress | Distressed property and off-market lead workflows. |
 | 6. Property Management | Planned | Assets, inspections, maintenance, occupancy. |
 | 7. Vendors | Planned | Vendor registry, work orders, field services. |
-| 8. Automation Engine | Planned | Triggers, scheduled jobs, workflow rules. |
+| 8. Automation Engine | In Progress | Scheduled jobs, reminders, workflow scans, trigger management. |
 | 9. AI Agents | Planned | Lead qualification, reporting, document processing. |
 | 10. Dashboards | In Progress | Executive KPIs and operational dashboards. |
 | 11. Testing | In Progress | QA scripts, validation, regression checks. |
@@ -76,11 +77,12 @@ Status: In progress
 - Acquisitions module can create/search/update acquisition leads, calculate priority, move pipeline stages, create follow-up tasks, and return dashboard KPIs.
 - Dashboard records review can display KPIs, recent clients, recent acquisition leads, open task count, and record search results.
 - Admin UI can create users, list users, update roles, activate users, and deactivate users.
+- Automation engine can install/remove scheduled jobs, run follow-up scans, escalate overdue tasks, review acquisition leads, and write automation run logs.
 
 ## Next Build Items
 
-1. Add workflow automation foundation.
-2. Build vendor management module foundation.
-3. Add deployment documentation.
-4. Add dashboard drill-down record actions.
-5. Add security audit report view.
+1. Build vendor management module foundation.
+2. Add deployment documentation.
+3. Add dashboard drill-down record actions.
+4. Add security audit report view.
+5. Add automation management UI.
