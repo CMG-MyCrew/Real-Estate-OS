@@ -15,6 +15,10 @@
       .kpi { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; }
       .kpi strong { display: block; font-size: 24px; margin-top: 4px; }
       .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .editor-grid { display: grid; grid-template-columns: 340px 1fr; gap: 16px; }
+      label { display: block; font-size: 12px; font-weight: 700; color: #374151; margin-top: 8px; }
+      input, select, textarea { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; margin-top: 4px; }
+      textarea { min-height: 110px; font-family: monospace; }
       button { padding: 9px 12px; border: 0; border-radius: 8px; cursor: pointer; font-weight: 700; margin-right: 6px; margin-bottom: 6px; }
       .primary { background: #111827; color: #fff; }
       .secondary { background: #e5e7eb; color: #111827; }
@@ -23,6 +27,8 @@
       table { width: 100%; border-collapse: collapse; font-size: 13px; }
       th, td { text-align: left; border-bottom: 1px solid #e5e7eb; padding: 8px; vertical-align: top; }
       th { background: #f9fafb; }
+      tr.clickable { cursor: pointer; }
+      tr.clickable:hover { background: #f9fafb; }
       pre { white-space: pre-wrap; background: #0f172a; color: #e5e7eb; border-radius: 12px; padding: 12px; overflow: auto; max-height: 220px; }
       .pill { display: inline-block; border-radius: 999px; padding: 3px 8px; font-size: 12px; font-weight: 700; background: #e5e7eb; }
       .ok { background: #dcfce7; color: #166534; }
@@ -34,7 +40,7 @@
       <div class="header">
         <div>
           <h1>REOS Automation</h1>
-          <div class="muted">Scheduled jobs, triggers, automation rules, and run history.</div>
+          <div class="muted">Scheduled jobs, triggers, automation rules, rule editor, and run history.</div>
         </div>
         <div>
           <button class="secondary" onclick="loadDashboard()">Refresh</button>
@@ -54,54 +60,69 @@
         <div class="kpi"><span>Failed Runs</span><strong id="kpiFailed">0</strong></div>
       </section>
 
-      <section class="grid">
+      <section class="editor-grid">
         <div class="card">
-          <h2>Scheduled Jobs</h2>
-          <table id="jobsTable"></table>
+          <h2>Rule Editor</h2>
+          <input id="ruleId" type="hidden">
+          <label>Rule Name</label>
+          <input id="ruleName" placeholder="Example: AI Review High Priority Leads">
+          <label>Event</label>
+          <select id="ruleEvent"></select>
+          <label>Module</label>
+          <select id="ruleModule"></select>
+          <label>Action</label>
+          <select id="ruleAction"></select>
+          <label>Condition JSON</label>
+          <textarea id="ruleCondition">{}</textarea>
+          <label>Action JSON</label>
+          <textarea id="ruleActionJson">{}</textarea>
+          <label>Active</label>
+          <select id="ruleActive"><option value="true">Active</option><option value="false">Inactive</option></select>
+          <button class="primary" onclick="saveRule()">Save Rule</button>
+          <button class="secondary" onclick="validateRule()">Validate</button>
+          <button class="secondary" onclick="newRule()">New Rule</button>
+          <button class="success" onclick="runSelectedRule()">Run Rule</button>
         </div>
-        <div class="card">
-          <h2>Installed Triggers</h2>
-          <table id="triggersTable"></table>
+
+        <div>
+          <div class="card">
+            <h2>Automation Rules</h2>
+            <table id="rulesTable"></table>
+          </div>
+          <div class="grid">
+            <div class="card"><h2>Scheduled Jobs</h2><table id="jobsTable"></table></div>
+            <div class="card"><h2>Installed Triggers</h2><table id="triggersTable"></table></div>
+          </div>
         </div>
       </section>
 
       <section class="grid">
-        <div class="card">
-          <h2>Automation Rules</h2>
-          <table id="rulesTable"></table>
-        </div>
-        <div class="card">
-          <h2>Recent Runs</h2>
-          <table id="runsTable"></table>
-        </div>
-      </section>
-
-      <section class="card">
-        <h2>System Output</h2>
-        <pre id="output">Ready.</pre>
+        <div class="card"><h2>Recent Runs</h2><table id="runsTable"></table></div>
+        <div class="card"><h2>System Output</h2><pre id="output">Ready.</pre></div>
       </section>
     </main>
 
     <script>
-      function output(value) {
-        document.getElementById('output').textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
-      }
+      let editorOptions = { events: [], modules: [], actions: [] };
+      let rulesCache = [];
+
+      function output(value) { document.getElementById('output').textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2); }
 
       function loadDashboard() {
-        google.script.run
-          .withSuccessHandler(renderDashboard)
-          .withFailureHandler(function(error) { output({ error: error.message }); })
-          .reosAutomationGetAdminDashboard();
+        google.script.run.withSuccessHandler(renderDashboard).withFailureHandler(showError).reosAutomationGetAdminDashboard();
       }
 
       function renderDashboard(data) {
         const kpis = data.kpis || {};
+        editorOptions = data.editorOptions || editorOptions;
+        rulesCache = data.rules || [];
         document.getElementById('kpiJobs').textContent = kpis.jobs || 0;
         document.getElementById('kpiTriggers').textContent = kpis.installedTriggers || 0;
         document.getElementById('kpiRules').textContent = kpis.rules || 0;
         document.getElementById('kpiActiveRules').textContent = kpis.activeRules || 0;
         document.getElementById('kpiRuns').textContent = kpis.recentRuns || 0;
         document.getElementById('kpiFailed').textContent = kpis.failedRuns || 0;
+        renderEditorOptions();
         renderJobs(data.jobs || []);
         renderTriggers(data.triggers || []);
         renderRules(data.rules || []);
@@ -109,17 +130,23 @@
         output(data);
       }
 
+      function renderEditorOptions() {
+        fillSelect('ruleEvent', editorOptions.events || []);
+        fillSelect('ruleModule', editorOptions.modules || []);
+        fillSelect('ruleAction', (editorOptions.actions || []).map(function(action) { return action.key; }));
+      }
+
+      function fillSelect(id, values) {
+        const current = document.getElementById(id).value;
+        document.getElementById(id).innerHTML = (values || []).map(function(value) { return '<option value="' + escapeHtml(value) + '">' + escapeHtml(value) + '</option>'; }).join('');
+        if (current) document.getElementById(id).value = current;
+      }
+
       function renderJobs(jobs) {
         let html = '<tr><th>Name</th><th>Cadence</th><th>Handler</th><th>Installed</th><th>Actions</th></tr>';
         if (!jobs.length) html += '<tr><td colspan="5">No jobs found.</td></tr>';
         jobs.forEach(function(job) {
-          html += '<tr>' +
-            '<td>' + escapeHtml(job.name) + '</td>' +
-            '<td>' + escapeHtml(job.cadence + (job.hour !== undefined ? ' @ ' + job.hour + ':00' : '')) + '</td>' +
-            '<td>' + escapeHtml(job.handler) + '</td>' +
-            '<td>' + (job.installed ? '<span class="pill ok">Installed</span>' : '<span class="pill bad">Missing</span>') + '</td>' +
-            '<td><button class="secondary" onclick="runJob(\'' + escapeJs(job.key) + '\')">Run</button></td>' +
-            '</tr>';
+          html += '<tr><td>' + escapeHtml(job.name) + '</td><td>' + escapeHtml(job.cadence + (job.hour !== undefined ? ' @ ' + job.hour + ':00' : '')) + '</td><td>' + escapeHtml(job.handler) + '</td><td>' + (job.installed ? '<span class="pill ok">Installed</span>' : '<span class="pill bad">Missing</span>') + '</td><td><button class="secondary" onclick="runJob(\'' + escapeJs(job.key) + '\')">Run</button></td></tr>';
         });
         document.getElementById('jobsTable').innerHTML = html;
       }
@@ -127,9 +154,7 @@
       function renderTriggers(triggers) {
         let html = '<tr><th>Handler</th><th>Event Type</th><th>Source</th></tr>';
         if (!triggers.length) html += '<tr><td colspan="3">No installed automation triggers.</td></tr>';
-        triggers.forEach(function(trigger) {
-          html += '<tr><td>' + escapeHtml(trigger.handler) + '</td><td>' + escapeHtml(trigger.eventType) + '</td><td>' + escapeHtml(trigger.source) + '</td></tr>';
-        });
+        triggers.forEach(function(trigger) { html += '<tr><td>' + escapeHtml(trigger.handler) + '</td><td>' + escapeHtml(trigger.eventType) + '</td><td>' + escapeHtml(trigger.source) + '</td></tr>'; });
         document.getElementById('triggersTable').innerHTML = html;
       }
 
@@ -138,15 +163,8 @@
         if (!rules.length) html += '<tr><td colspan="7">No rules found.</td></tr>';
         rules.forEach(function(rule) {
           const active = rule.Active !== false;
-          html += '<tr>' +
-            '<td>' + escapeHtml(rule.Name || '') + '</td>' +
-            '<td>' + escapeHtml(rule.Event || '') + '</td>' +
-            '<td>' + escapeHtml(rule.Module || '') + '</td>' +
-            '<td>' + escapeHtml(rule.Action || '') + '</td>' +
-            '<td>' + (active ? '<span class="pill ok">Active</span>' : '<span class="pill bad">Inactive</span>') + '</td>' +
-            '<td>' + escapeHtml(rule['Run Count'] || 0) + '</td>' +
-            '<td><button class="secondary" onclick="setRuleActive(\'' + escapeJs(rule['Rule ID']) + '\', ' + (!active) + ')">' + (active ? 'Disable' : 'Enable') + '</button></td>' +
-            '</tr>';
+          const ruleId = rule['Rule ID'] || '';
+          html += '<tr class="clickable" onclick="editRule(\'' + escapeJs(ruleId) + '\')"><td>' + escapeHtml(rule.Name || '') + '</td><td>' + escapeHtml(rule.Event || '') + '</td><td>' + escapeHtml(rule.Module || '') + '</td><td>' + escapeHtml(rule.Action || '') + '</td><td>' + (active ? '<span class="pill ok">Active</span>' : '<span class="pill bad">Inactive</span>') + '</td><td>' + escapeHtml(rule['Run Count'] || 0) + '</td><td><button class="secondary" onclick="event.stopPropagation(); setRuleActive(\'' + escapeJs(ruleId) + '\', ' + (!active) + ')">' + (active ? 'Disable' : 'Enable') + '</button><button class="success" onclick="event.stopPropagation(); runRule(\'' + escapeJs(ruleId) + '\')">Run</button></td></tr>';
         });
         document.getElementById('rulesTable').innerHTML = html;
       }
@@ -156,67 +174,80 @@
         if (!runs.length) html += '<tr><td colspan="5">No runs found.</td></tr>';
         runs.forEach(function(run) {
           const status = String(run.Status || '');
-          html += '<tr>' +
-            '<td>' + escapeHtml(formatValue(run['Started At'])) + '</td>' +
-            '<td>' + escapeHtml(run['Rule ID'] || '') + '</td>' +
-            '<td>' + (status.toLowerCase() === 'success' ? '<span class="pill ok">Success</span>' : '<span class="pill bad">' + escapeHtml(status || 'Unknown') + '</span>') + '</td>' +
-            '<td>' + escapeHtml(run.Message || '') + '</td>' +
-            '<td>' + escapeHtml(run['Payload JSON'] || '') + '</td>' +
-            '</tr>';
+          html += '<tr><td>' + escapeHtml(formatValue(run['Started At'])) + '</td><td>' + escapeHtml(run['Rule ID'] || '') + '</td><td>' + (status.toLowerCase() === 'success' ? '<span class="pill ok">Success</span>' : '<span class="pill bad">' + escapeHtml(status || 'Unknown') + '</span>') + '</td><td>' + escapeHtml(run.Message || '') + '</td><td>' + escapeHtml(run['Payload JSON'] || '') + '</td></tr>';
         });
         document.getElementById('runsTable').innerHTML = html;
       }
 
-      function runAll() {
-        google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); })
-          .withFailureHandler(function(error) { output({ error: error.message }); })
-          .reosAutomationRunAll();
+      function newRule() {
+        document.getElementById('ruleId').value = '';
+        document.getElementById('ruleName').value = '';
+        document.getElementById('ruleEvent').value = 'manual.run';
+        document.getElementById('ruleModule').value = 'System';
+        document.getElementById('ruleAction').value = 'scanFollowUps';
+        document.getElementById('ruleCondition').value = '{}';
+        document.getElementById('ruleActionJson').value = '{}';
+        document.getElementById('ruleActive').value = 'true';
+        output('New rule ready.');
       }
 
-      function runJob(key) {
-        google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); })
-          .withFailureHandler(function(error) { output({ error: error.message }); })
-          .reosAutomationRunJob(key);
+      function editRule(ruleId) {
+        const rule = rulesCache.find(function(item) { return String(item['Rule ID']) === String(ruleId); });
+        if (!rule) return output({ error: 'Rule not found in cache: ' + ruleId });
+        document.getElementById('ruleId').value = rule['Rule ID'] || '';
+        document.getElementById('ruleName').value = rule.Name || '';
+        document.getElementById('ruleEvent').value = rule.Event || 'manual.run';
+        document.getElementById('ruleModule').value = rule.Module || 'System';
+        document.getElementById('ruleAction').value = rule.Action || '';
+        document.getElementById('ruleCondition').value = prettyJson(rule['Condition JSON'] || '{}');
+        document.getElementById('ruleActionJson').value = prettyJson(rule['Action JSON'] || '{}');
+        document.getElementById('ruleActive').value = String(rule.Active !== false);
+        output({ editing: rule });
       }
 
-      function installTriggers() {
-        google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); })
-          .withFailureHandler(function(error) { output({ error: error.message }); })
-          .reosAutomationInstallTriggers();
+      function collectRule() {
+        return {
+          'Rule ID': document.getElementById('ruleId').value,
+          Name: document.getElementById('ruleName').value,
+          Event: document.getElementById('ruleEvent').value,
+          Module: document.getElementById('ruleModule').value,
+          'Condition JSON': document.getElementById('ruleCondition').value,
+          Action: document.getElementById('ruleAction').value,
+          'Action JSON': document.getElementById('ruleActionJson').value,
+          Active: document.getElementById('ruleActive').value === 'true'
+        };
       }
 
-      function removeTriggers() {
-        google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); })
-          .withFailureHandler(function(error) { output({ error: error.message }); })
-          .reosAutomationRemoveTriggers();
+      function saveRule() {
+        google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); if (data['Rule ID']) document.getElementById('ruleId').value = data['Rule ID']; }).withFailureHandler(showError).reosAutomationSaveRule(collectRule());
       }
 
-      function seedRules() {
-        google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); })
-          .withFailureHandler(function(error) { output({ error: error.message }); })
-          .reosAutomationSeedDefaults();
+      function validateRule() {
+        google.script.run.withSuccessHandler(output).withFailureHandler(showError).reosAutomationValidateRule(collectRule());
       }
 
-      function setRuleActive(ruleId, active) {
-        google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); })
-          .withFailureHandler(function(error) { output({ error: error.message }); })
-          .reosAutomationSetRuleActive(ruleId, active);
+      function runSelectedRule() {
+        const ruleId = document.getElementById('ruleId').value;
+        if (!ruleId) return output({ error: 'Save or select a rule first.' });
+        runRule(ruleId);
       }
 
-      function formatValue(value) {
-        if (value === null || value === undefined) return '';
-        return String(value);
+      function runRule(ruleId) {
+        google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); }).withFailureHandler(showError).reosAutomationRunRule(ruleId, {});
       }
 
-      function escapeHtml(value) {
-        return String(value || '').replace(/[&<>'"]/g, function(char) {
-          return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char];
-        });
-      }
+      function runAll() { google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); }).withFailureHandler(showError).reosAutomationRunAll(); }
+      function runJob(key) { google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); }).withFailureHandler(showError).reosAutomationRunJob(key); }
+      function installTriggers() { google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); }).withFailureHandler(showError).reosAutomationInstallTriggers(); }
+      function removeTriggers() { google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); }).withFailureHandler(showError).reosAutomationRemoveTriggers(); }
+      function seedRules() { google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); }).withFailureHandler(showError).reosAutomationSeedDefaults(); }
+      function setRuleActive(ruleId, active) { google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); }).withFailureHandler(showError).reosAutomationSetRuleActive(ruleId, active); }
 
-      function escapeJs(value) {
-        return String(value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-      }
+      function prettyJson(value) { try { return JSON.stringify(typeof value === 'object' ? value : JSON.parse(String(value || '{}')), null, 2); } catch (error) { return String(value || '{}'); } }
+      function showError(error) { output({ error: error.message }); }
+      function formatValue(value) { return value === null || value === undefined ? '' : String(value); }
+      function escapeHtml(value) { return String(value || '').replace(/[&<>'"]/g, function(char) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]; }); }
+      function escapeJs(value) { return String(value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
 
       loadDashboard();
     </script>
