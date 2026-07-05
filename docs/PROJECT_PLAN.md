@@ -51,6 +51,8 @@ Status: In progress
 - Dashboard charts and pipeline visualizations added in `src/Index.html`.
 - AI core framework Sprint 1 rebuilt in `src/AI.gs` with provider abstraction, prompt builder, response parser, OpenAI-ready connector, stub rules engine, token/cost tracking placeholders, config helpers, and AI request audit logging.
 - AI lifecycle wired into `src/Main.gs` initialization and health checks through `AI_REQUESTS`.
+- AI lead qualification engine Sprint 2 added in `src/AI.gs` with seller motivation analysis, distress signal detection, investment scoring, confidence scoring, risk flags, missing-data checks, recommended strategy, next-best-action, and batch qualification.
+- AI use permission added to Agent and Coordinator roles in `src/Security.gs`.
 
 ### Active Objectives
 
@@ -99,6 +101,7 @@ Status: In progress
 - Vendor module can create/search/update vendors, create/search/assign/update work orders, and return vendor/work-order KPIs.
 - Property module can create/search/update properties, create units, create inspections, create/search maintenance requests, optionally create vendor work orders, and return property KPIs.
 - AI core can initialize config, build prompts, run stub lead qualification, support OpenAI-ready calls, parse responses, track usage, and log AI requests.
+- AI lead qualification can calculate seller motivation, distress signals, opportunity score, confidence, risk flags, recommended strategy, and next-best-action.
 - Deployment guide documents setup, authorization, validation, automation, production release, and rollback.
 - Apps Script sync guide documents GitHub-to-runtime file mapping, manual sync, clasp workflow, release process, and troubleshooting.
 - Dashboard drill-down supports viewing full records, activity history, and contextual actions.
