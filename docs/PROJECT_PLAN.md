@@ -24,7 +24,7 @@ Status: In progress
 - Dashboard shell wired to router navigation and route dispatching in `src/Index.html`.
 - Validation framework expanded in `src/Validation.gs` with required fields, allowed values, lookup validation, duplicates, number/boolean/date/email/phone validation, sanitizing, and clean validation responses.
 - Test runner added in `src/TestRunner.gs` for setup verification, health checks, required sheets, required headers, services, security, router, and validation.
-- REOS menu updated in `src/Main.gs` with Dashboard, CRM, Acquisitions, Vendors, Automation, Admin, Initialize Workbook, Health Check, and Run Tests actions.
+- REOS menu updated in `src/Main.gs` with Dashboard, CRM, Acquisitions, Vendors, Properties, Automation, Admin, Initialize Workbook, Health Check, and Run Tests actions.
 - Acquisitions module foundation added in `src/Acquisitions.gs` for distressed/off-market lead intake, scoring, pipeline, follow-ups, and dashboard metrics.
 - Acquisitions UI foundation added in `src/Acquisitions.html`.
 - Acquisition pipeline and distress indicator lookups added to setup seed data.
@@ -42,6 +42,10 @@ Status: In progress
 - Security audit report view added in `src/Admin.html` with event summary, permission-denied review, and user activity lookup.
 - Automation management UI added in `src/Automation.html` with job controls, trigger management, rule management, run history, and KPI summary.
 - Automation service expanded in `src/Automation.gs` with admin dashboard data, trigger inspection, job-level manual execution, rule activation toggles, and run history access.
+- Property management module foundation added in `src/Properties.gs` for assets, units, inspections, maintenance requests, occupancy tracking, search, and KPIs.
+- Property management UI added in `src/Properties.html`.
+- Property, maintenance, and inspection permissions added to `src/Security.gs`.
+- Property module wired into `src/Main.gs` menu, initialization, health check, and lookup seed data.
 
 ### Active Objectives
 
@@ -60,7 +64,7 @@ Status: In progress
 | 3. Security | In Progress | Roles, permissions, audit logs, audit reports. |
 | 4. CRM | In Progress | Contacts, leads, pipeline, activities. |
 | 5. Acquisitions | In Progress | Distressed property and off-market lead workflows. |
-| 6. Property Management | Planned | Assets, inspections, maintenance, occupancy. |
+| 6. Property Management | In Progress | Assets, inspections, maintenance, occupancy. |
 | 7. Vendors | In Progress | Vendor registry, work orders, field services. |
 | 8. Automation Engine | In Progress | Scheduled jobs, reminders, workflow scans, trigger management, automation UI. |
 | 9. AI Agents | Planned | Lead qualification, reporting, document processing. |
@@ -88,13 +92,14 @@ Status: In progress
 - Admin UI can create users, list users, update roles, activate users, deactivate users, review security events, review denied permissions, and inspect user activity history.
 - Automation engine can install/remove scheduled jobs, run follow-up scans, escalate overdue tasks, review acquisition leads, write automation run logs, and manage automation from UI.
 - Vendor module can create/search/update vendors, create/search/assign/update work orders, and return vendor/work-order KPIs.
+- Property module can create/search/update properties, create units, create inspections, create/search maintenance requests, optionally create vendor work orders, and return property KPIs.
 - Deployment guide documents setup, authorization, validation, automation, production release, and rollback.
 - Dashboard drill-down supports viewing full records, activity history, and contextual actions.
 
 ## Next Build Items
 
-1. Build property management module foundation.
-2. Add GitHub/Apps Script sync documentation.
-3. Add dashboard charts and pipeline visualizations.
-4. Add AI lead qualification foundation.
-5. Add automation rule editor forms.
+1. Add GitHub/Apps Script sync documentation.
+2. Add dashboard charts and pipeline visualizations.
+3. Add AI lead qualification foundation.
+4. Add automation rule editor forms.
+5. Add property dashboard drill-down actions.
