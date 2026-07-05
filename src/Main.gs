@@ -66,7 +66,22 @@ var REOS = REOS || {};
 
 REOS.init_ = function () {
   REOS.createRequiredSheets_();
+  if (REOS.Router && typeof REOS.Router.initializeDefaultModules === 'function') {
+    REOS.Router.initializeDefaultModules();
+  }
   REOS.setProperty_('REOS_LAST_OPENED_AT', new Date().toISOString());
+};
+
+REOS.buildMenu_ = function () {
+  const ui = SpreadsheetApp.getUi();
+  ui.createMenu('REOS')
+    .addItem('Open Dashboard', 'reosOpenDashboard')
+    .addItem('Open CRM', 'showCRM')
+    .addSeparator()
+    .addItem('Initialize Workbook', 'reosInitializeWorkbook')
+    .addItem('Health Check', 'runHealthCheck')
+    .addItem('Run Tests', 'reosRunTests')
+    .addToUi();
 };
 
 REOS.createRequiredSheets_ = function () {
@@ -158,3 +173,11 @@ REOS.healthCheck_ = function () {
   report.messages.unshift('REOS Version: ' + REOS.CONFIG.APP.VERSION);
   return report;
 };
+
+function reosOpenDashboard() {
+  const html = HtmlService.createHtmlOutputFromFile('Index')
+    .setTitle('REOS Enterprise')
+    .setWidth(1200)
+    .setHeight(800);
+  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Enterprise');
+}
