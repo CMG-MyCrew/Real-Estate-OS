@@ -2,7 +2,7 @@
  * REOS Enterprise v3.0 - Dashboard Records Review + Visualizations
  *
  * Aggregates CRM, acquisition, vendor, property, work-order, maintenance,
- * and task records for the main command center.
+ * and task records for the main command center with contextual drill-down actions.
  */
 
 var REOS = REOS || {};
@@ -50,47 +50,22 @@ REOS.Dashboard = (function () {
         openMaintenance: propertyDashboard.openMaintenance || 0,
         overdueMaintenance: propertyDashboard.overdueMaintenance || 0
       },
-      crm: {
-        recentClients: latest_(clients, 'Created At', 10),
-        activeClients: clients.filter(function (client) { return client.Active !== false; }).length
-      },
-      acquisitions: {
-        recentLeads: latest_(acquisitionLeads, 'Created At', 10),
-        byStatus: acquisitionDashboard.byStatus || {},
-        byPriority: acquisitionDashboard.byPriority || {}
-      },
-      vendors: {
-        recentVendors: latest_(vendors, 'Created At', 10),
-        recentWorkOrders: latest_(workOrders, 'Created At', 10),
-        workOrdersByStatus: vendorDashboard.workOrdersByStatus || {}
-      },
-      properties: {
-        recentProperties: latest_(properties, 'Created At', 10),
-        recentMaintenance: latest_(maintenance, 'Created At', 10),
-        byStatus: propertyDashboard.byStatus || {},
-        byOccupancy: propertyDashboard.byOccupancy || {},
-        maintenanceByStatus: propertyDashboard.maintenanceByStatus || {}
-      },
-      tasks: {
-        open: latest_(openTasks, 'Due Date', 10)
-      },
+      crm: { recentClients: latest_(clients, 'Created At', 10), activeClients: clients.filter(function (client) { return client.Active !== false; }).length },
+      acquisitions: { recentLeads: latest_(acquisitionLeads, 'Created At', 10), byStatus: acquisitionDashboard.byStatus || {}, byPriority: acquisitionDashboard.byPriority || {} },
+      vendors: { recentVendors: latest_(vendors, 'Created At', 10), recentWorkOrders: latest_(workOrders, 'Created At', 10), workOrdersByStatus: vendorDashboard.workOrdersByStatus || {} },
+      properties: { recentProperties: latest_(properties, 'Created At', 10), recentMaintenance: latest_(maintenance, 'Created At', 10), byStatus: propertyDashboard.byStatus || {}, byOccupancy: propertyDashboard.byOccupancy || {}, maintenanceByStatus: propertyDashboard.maintenanceByStatus || {} },
+      tasks: { open: latest_(openTasks, 'Due Date', 10) },
       charts: charts
     };
   }
 
   function buildCharts_(data) {
-    const acquisitionByStatus = objectToChartRows_(data.acquisitionDashboard.byStatus || {}, 'stage', 'count');
-    const acquisitionByPriority = objectToChartRows_(data.acquisitionDashboard.byPriority || {}, 'priority', 'count');
-    const workOrdersByStatus = objectToChartRows_(data.vendorDashboard.workOrdersByStatus || {}, 'status', 'count');
-    const occupancy = objectToChartRows_(data.propertyDashboard.byOccupancy || {}, 'status', 'count');
-    const maintenanceByStatus = objectToChartRows_(data.propertyDashboard.maintenanceByStatus || {}, 'status', 'count');
-
     return {
-      acquisitionPipeline: acquisitionByStatus,
-      acquisitionPriority: acquisitionByPriority,
-      workOrdersByStatus: workOrdersByStatus,
-      propertyOccupancy: occupancy,
-      maintenanceByStatus: maintenanceByStatus,
+      acquisitionPipeline: objectToChartRows_(data.acquisitionDashboard.byStatus || {}, 'stage', 'count'),
+      acquisitionPriority: objectToChartRows_(data.acquisitionDashboard.byPriority || {}, 'priority', 'count'),
+      workOrdersByStatus: objectToChartRows_(data.vendorDashboard.workOrdersByStatus || {}, 'status', 'count'),
+      propertyOccupancy: objectToChartRows_(data.propertyDashboard.byOccupancy || {}, 'status', 'count'),
+      maintenanceByStatus: objectToChartRows_(data.propertyDashboard.maintenanceByStatus || {}, 'status', 'count'),
       operatingSnapshot: [
         { metric: 'Open Tasks', count: data.tasks.length || 0 },
         { metric: 'Open Work Orders', count: data.vendorDashboard.openWorkOrders || 0 },
@@ -131,6 +106,7 @@ REOS.Dashboard = (function () {
 
     let record = null;
     let activity = [];
+    let related = {};
 
     if (type === 'client') {
       record = REOS.CRM.getClient(id);
@@ -147,6 +123,11 @@ REOS.Dashboard = (function () {
     } else if (type === 'property') {
       record = REOS.Properties.getProperty(id);
       activity = getActivities_('Property', id);
+      related = getPropertyRelated_(id);
+    } else if (type === 'maintenance') {
+      record = getMaintenance_(id);
+      activity = getActivities_('Maintenance', id).concat(getActivities_('Property', record ? record['Property ID'] : ''));
+      related = { property: record && record['Property ID'] ? REOS.Properties.getProperty(record['Property ID']) : null };
     } else if (type === 'task') {
       record = REOS.Database.findById(REOS.CONFIG.SHEETS.TASKS, 'Task ID', id);
       activity = getActivities_('Task', id);
@@ -156,14 +137,7 @@ REOS.Dashboard = (function () {
 
     if (!record) throw new Error('Record not found: ' + recordType + ' ' + recordId);
 
-    return {
-      ok: true,
-      recordType: type,
-      recordId: id,
-      record: record,
-      activity: latest_(activity, 'Created At', 20),
-      actions: getAvailableActions_(type, record)
-    };
+    return { ok: true, recordType: type, recordId: id, record: record, related: related, activity: latest_(activity, 'Created At', 20), actions: getAvailableActions_(type, record) };
   }
 
   function runRecordAction(recordType, recordId, action, payload) {
@@ -174,6 +148,9 @@ REOS.Dashboard = (function () {
     if (!id || !actionName) throw new Error('Record ID and action are required.');
 
     let result;
+    let detailType = type;
+    let detailId = id;
+
     if ((type === 'lead' || type === 'acquisition') && actionName === 'moveStage') {
       result = REOS.Acquisitions.moveStage(id, payload.status, payload.notes || 'Updated from dashboard drill-down.');
     } else if (type === 'client' && actionName === 'archive') {
@@ -184,26 +161,47 @@ REOS.Dashboard = (function () {
       result = REOS.Vendors.assignWorkOrder(id, payload.vendorId);
     } else if (type === 'vendor' && actionName === 'deactivate') {
       result = REOS.Vendors.deactivateVendor(id);
+    } else if (type === 'property' && actionName === 'updatePropertyStatus') {
+      result = REOS.Properties.updateProperty(id, { Status: payload.status, Notes: payload.notes || 'Status updated from dashboard.' });
+    } else if (type === 'property' && actionName === 'updateOccupancy') {
+      result = REOS.Properties.updateProperty(id, { 'Occupancy Status': payload.occupancyStatus, Notes: payload.notes || 'Occupancy updated from dashboard.' });
+    } else if (type === 'property' && actionName === 'createUnit') {
+      result = REOS.Properties.createUnit(Object.assign({ 'Property ID': id }, payload.unit || {}));
+    } else if (type === 'property' && actionName === 'createInspection') {
+      result = REOS.Properties.createInspection(Object.assign({ 'Property ID': id }, payload.inspection || {}));
+    } else if (type === 'property' && actionName === 'createMaintenance') {
+      result = REOS.Properties.createMaintenanceRequest(Object.assign({ 'Property ID': id }, payload.maintenance || {}));
+    } else if (type === 'maintenance' && actionName === 'updateMaintenanceStatus') {
+      result = REOS.Properties.updateMaintenanceStatus(id, payload.status, payload.notes || 'Updated from dashboard drill-down.');
     } else if (type === 'task' && actionName === 'complete') {
       REOS.Security.requirePermission('tasks:write');
-      result = REOS.Database.update(REOS.CONFIG.SHEETS.TASKS, 'Task ID', id, {
-        Status: 'Completed',
-        'Completed At': new Date(),
-        Notes: payload.notes || 'Completed from dashboard drill-down.'
-      });
+      result = REOS.Database.update(REOS.CONFIG.SHEETS.TASKS, 'Task ID', id, { Status: 'Completed', 'Completed At': new Date(), Notes: payload.notes || 'Completed from dashboard drill-down.' });
     } else {
       throw new Error('Unsupported dashboard action: ' + type + '.' + actionName);
     }
 
     REOS.Logger.audit('Dashboard record action', { recordType: type, recordId: id, action: actionName });
-    return { ok: true, action: actionName, result: result, detail: getRecord(type, id) };
+    return { ok: true, action: actionName, result: result, detail: getRecord(detailType, detailId) };
+  }
+
+  function getPropertyRelated_(propertyId) {
+    return {
+      units: safeList_(function () { return REOS.Properties.listUnits(propertyId); }),
+      inspections: safeList_(function () { return REOS.Properties.listInspections({ propertyId: propertyId, limit: 25 }); }),
+      maintenance: safeList_(function () { return REOS.Properties.listMaintenance({ propertyId: propertyId, limit: 25 }); })
+    };
+  }
+
+  function getMaintenance_(maintenanceId) {
+    REOS.Security.requirePermission('maintenance:read');
+    return REOS.Database.findById('MAINTENANCE_REQUESTS', 'Maintenance ID', maintenanceId);
   }
 
   function getActivities_(relatedType, relatedId) {
     return safeList_(function () {
+      if (!relatedId) return [];
       return REOS.Database.getAll(REOS.CONFIG.SHEETS.ACTIVITIES).filter(function (activity) {
-        return String(activity['Related Type'] || '') === String(relatedType || '') &&
-          String(activity['Related ID'] || '') === String(relatedId || '');
+        return String(activity['Related Type'] || '') === String(relatedType || '') && String(activity['Related ID'] || '') === String(relatedId || '');
       });
     });
   }
@@ -213,6 +211,8 @@ REOS.Dashboard = (function () {
     if (type === 'lead' || type === 'acquisition') return ['moveStage'];
     if (type === 'vendor') return ['deactivate'];
     if (type === 'workorder' || type === 'work_order') return ['updateStatus', 'assignVendor'];
+    if (type === 'property') return ['updatePropertyStatus', 'updateOccupancy', 'createUnit', 'createInspection', 'createMaintenance'];
+    if (type === 'maintenance') return ['updateMaintenanceStatus'];
     if (type === 'task' && String(record.Status || '') !== 'Completed') return ['complete'];
     return [];
   }
@@ -226,31 +226,16 @@ REOS.Dashboard = (function () {
   }
 
   function safeList_(fn) {
-    try {
-      const value = fn();
-      return Array.isArray(value) ? value : [];
-    } catch (error) {
-      REOS.Logger.warn('Dashboard list failed', { error: error.message });
-      return [];
-    }
+    try { const value = fn(); return Array.isArray(value) ? value : []; }
+    catch (error) { REOS.Logger.warn('Dashboard list failed', { error: error.message }); return []; }
   }
 
   function safeCall_(fn, fallback) {
-    try {
-      return fn();
-    } catch (error) {
-      REOS.Logger.warn('Dashboard call failed', { error: error.message });
-      return fallback;
-    }
+    try { return fn(); }
+    catch (error) { REOS.Logger.warn('Dashboard call failed', { error: error.message }); return fallback; }
   }
 
-  return {
-    getOverview: getOverview,
-    searchRecords: searchRecords,
-    getRecord: getRecord,
-    runRecordAction: runRecordAction,
-    getExecutiveDashboard: getOverview
-  };
+  return { getOverview: getOverview, searchRecords: searchRecords, getRecord: getRecord, runRecordAction: runRecordAction, getExecutiveDashboard: getOverview };
 })();
 
 function showDashboard() {
