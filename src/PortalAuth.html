@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top"><meta charset="utf-8">
+    <style>
+      body{margin:0;font-family:Arial,sans-serif;background:#f6f8fb;color:#1f2937}.shell{padding:22px}.header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:16px}h1{margin:0 0 6px;font-size:26px}h2{margin:0 0 10px;font-size:17px}.muted{color:#6b7280}.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-bottom:16px}label{font-size:12px;font-weight:700;color:#374151}input,select{padding:9px;border:1px solid #d1d5db;border-radius:8px}button{padding:9px 12px;border:0;border-radius:8px;cursor:pointer;font-weight:700}.primary{background:#111827;color:#fff}.secondary{background:#e5e7eb;color:#111827}.success{background:#dcfce7;color:#166534}.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:15px;margin-bottom:16px;box-shadow:0 4px 14px rgba(15,23,42,.05)}.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin-bottom:16px}.kpi{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:14px}.kpi span{color:#6b7280;font-size:12px;font-weight:700}.kpi strong{display:block;font-size:24px;margin-top:4px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;border-bottom:1px solid #e5e7eb;padding:8px;vertical-align:top}th{background:#f9fafb;color:#374151}pre{white-space:pre-wrap;background:#0f172a;color:#e5e7eb;border-radius:12px;padding:12px;max-height:260px;overflow:auto}
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <div class="header"><div><h1>v3.2.1 Portal Auth & Web App Shell</h1><div class="muted">Login tokens, session validation, route registry, shell preview, logout flow, and web app entrypoint.</div></div><button class="secondary" onclick="loadDashboard()">Refresh</button></div>
+      <section class="kpis"><div class="kpi"><span>Login Events</span><strong id="kEvents">0</strong></div><div class="kpi"><span>Routes</span><strong id="kRoutes">0</strong></div><div class="kpi"><span>Accounts</span><strong id="kAccounts">0</strong></div><div class="kpi"><span>Active Sessions</span><strong id="kSessions">0</strong></div></section>
+      <section class="grid">
+        <div class="card"><h2>Routes</h2><button class="success" onclick="seedRoutes()">Seed Default Routes</button></div>
+        <div class="card"><h2>Request Login</h2><label>Email</label><input id="email" style="width:100%"><br><br><button class="primary" onclick="requestLogin()">Create Login Session</button></div>
+        <div class="card"><h2>Shell Preview</h2><label>Session Token</label><input id="token" style="width:100%"><label>Route</label><select id="route" style="width:100%"><option>home</option><option>documents</option><option>messages</option><option>tasks</option></select><br><br><button class="secondary" onclick="loadShell()">Load Shell Data</button> <button class="secondary" onclick="logout()">Logout</button></div>
+      </section>
+      <section class="card"><h2>Routes</h2><table id="routesTable"></table></section>
+      <section class="card"><h2>Login Events</h2><table id="eventsTable"></table></section>
+      <section class="card"><h2>System Output</h2><pre id="output">Ready.</pre></section>
+    </main>
+    <script>
+      function loadDashboard(){google.script.run.withSuccessHandler(render).withFailureHandler(showError).reosPortalAuthAdminDashboard();}
+      function seedRoutes(){google.script.run.withSuccessHandler(done).withFailureHandler(showError).reosPortalAuthSeedRoutes();}
+      function requestLogin(){google.script.run.withSuccessHandler(function(d){if(d.sessionToken)document.getElementById('token').value=d.sessionToken;done(d);}).withFailureHandler(showError).reosPortalRequestLogin(valueOf('email'));}
+      function loadShell(){google.script.run.withSuccessHandler(done).withFailureHandler(showError).reosPortalShellData(valueOf('token'),valueOf('route'));}
+      function logout(){google.script.run.withSuccessHandler(done).withFailureHandler(showError).reosPortalLogout(valueOf('token'));}
+      function done(d){output(d);loadDashboard();}
+      function render(data){const k=data.kpis||{};setText('kEvents',k.loginEvents);setText('kRoutes',k.routes);setText('kAccounts',k.portalAccounts);setText('kSessions',k.activeSessions);renderRoutes(data.routes||[]);renderEvents(data.loginEvents||[]);output(data);}
+      function renderRoutes(rows){let h='<tr><th>Route</th><th>Role</th><th>Title</th><th>Active</th></tr>';if(!rows.length)h+='<tr><td colspan="4">No portal routes.</td></tr>';rows.forEach(r=>{h+='<tr><td>'+esc(r.Route)+'</td><td>'+esc(r['Portal Role'])+'</td><td>'+esc(r.Title)+'</td><td>'+esc(r.Active)+'</td></tr>';});document.getElementById('routesTable').innerHTML=h;}
+      function renderEvents(rows){let h='<tr><th>Created</th><th>Email</th><th>Event</th><th>Status</th><th>Message</th></tr>';if(!rows.length)h+='<tr><td colspan="5">No login events.</td></tr>';rows.forEach(r=>{h+='<tr><td>'+esc(r['Created At'])+'</td><td>'+esc(r.Email)+'</td><td>'+esc(r['Event Type'])+'</td><td>'+esc(r.Status)+'</td><td>'+esc(r.Message)+'</td></tr>';});document.getElementById('eventsTable').innerHTML=h;}
+      function output(v){document.getElementById('output').textContent=typeof v==='string'?v:JSON.stringify(v,null,2);}function showError(e){output({error:e.message});}function valueOf(id){const el=document.getElementById(id);return el?el.value:''}function setText(id,v){document.getElementById(id).textContent=v||0}function esc(v){return String(v==null?'':v).replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));}
+      loadDashboard();
+    </script>
+  </body>
+</html>
