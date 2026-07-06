@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top"><meta charset="utf-8">
+    <style>
+      body{margin:0;font-family:Arial,sans-serif;background:#f6f8fb;color:#1f2937}.shell{padding:22px}.header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:16px}h1{margin:0 0 6px;font-size:26px}h2{margin:0 0 10px;font-size:17px}.muted{color:#6b7280}.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-bottom:16px}label{font-size:12px;font-weight:700;color:#374151}input,select{padding:9px;border:1px solid #d1d5db;border-radius:8px}button{padding:9px 12px;border:0;border-radius:8px;cursor:pointer;font-weight:700}.primary{background:#111827;color:#fff}.secondary{background:#e5e7eb;color:#111827}.success{background:#dcfce7;color:#166534}.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:15px;margin-bottom:16px;box-shadow:0 4px 14px rgba(15,23,42,.05)}.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin-bottom:16px}.kpi{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:14px}.kpi span{color:#6b7280;font-size:12px;font-weight:700}.kpi strong{display:block;font-size:24px;margin-top:4px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;border-bottom:1px solid #e5e7eb;padding:8px;vertical-align:top}th{background:#f9fafb;color:#374151}pre{white-space:pre-wrap;background:#0f172a;color:#e5e7eb;border-radius:12px;padding:12px;max-height:260px;overflow:auto}
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <div class="header"><div><h1>v3.1.2 QuickBooks Connector</h1><div class="muted">Connection registry, account mapping, export queue, dry-run sync logging, and connector readiness.</div></div><button class="secondary" onclick="loadDashboard()">Refresh</button></div>
+      <section class="kpis"><div class="kpi"><span>Connections</span><strong id="kConnections">0</strong></div><div class="kpi"><span>Active</span><strong id="kActive">0</strong></div><div class="kpi"><span>Queued</span><strong id="kQueued">0</strong></div><div class="kpi"><span>Failed</span><strong id="kFailed">0</strong></div><div class="kpi"><span>Account Maps</span><strong id="kMaps">0</strong></div><div class="kpi"><span>Logs</span><strong id="kLogs">0</strong></div></section>
+      <section class="grid">
+        <div class="card"><h2>Create Connection</h2><label>Environment</label><select id="environment" style="width:100%"><option>Sandbox</option><option>Production</option></select><label>Company Name</label><input id="companyName" style="width:100%"><label>Company ID</label><input id="companyId" style="width:100%"><label>Redirect URI</label><input id="redirectUri" style="width:100%"><button class="primary" onclick="createConnection()">Create Connection</button></div>
+        <div class="card"><h2>Sync Operations</h2><label>Connection ID</label><input id="connectionId" style="width:100%"><br><br><button class="success" onclick="seedMappings()">Seed Account Mappings</button> <button class="secondary" onclick="queueExports()">Queue Finance Exports</button> <button class="primary" onclick="dryRun()">Run Dry-Run Sync</button></div>
+      </section>
+      <section class="card"><h2>Connections</h2><table id="connectionsTable"></table></section>
+      <section class="card"><h2>Export Queue</h2><table id="queueTable"></table></section>
+      <section class="card"><h2>Account Mappings</h2><table id="mapsTable"></table></section>
+      <section class="card"><h2>Sync Log</h2><table id="logsTable"></table></section>
+      <section class="card"><h2>System Output</h2><pre id="output">Ready.</pre></section>
+    </main>
+    <script>
+      function loadDashboard(){google.script.run.withSuccessHandler(render).withFailureHandler(showError).reosQuickBooksDashboard();}
+      function createConnection(){const r={Environment:valueOf('environment'),'Company Name':valueOf('companyName'),'Company ID':valueOf('companyId'),'Redirect URI':valueOf('redirectUri')};google.script.run.withSuccessHandler(done).withFailureHandler(showError).reosQuickBooksCreateConnection(r);}
+      function seedMappings(){google.script.run.withSuccessHandler(done).withFailureHandler(showError).reosQuickBooksSeedAccountMappings();}
+      function queueExports(){google.script.run.withSuccessHandler(done).withFailureHandler(showError).reosQuickBooksQueueFinanceExports(valueOf('connectionId'));}
+      function dryRun(){google.script.run.withSuccessHandler(done).withFailureHandler(showError).reosQuickBooksDryRunSync(valueOf('connectionId'));}
+      function done(d){output(d);loadDashboard();}
+      function render(data){const k=data.kpis||{};setText('kConnections',k.connections);setText('kActive',k.activeConnections);setText('kQueued',k.queued);setText('kFailed',k.failed);setText('kMaps',k.accountMaps);setText('kLogs',k.logs);renderConnections(data.connections||[]);renderQueue(data.queue||[]);renderMaps(data.accountMaps||[]);renderLogs(data.logs||[]);output(data);}
+      function renderConnections(rows){let h='<tr><th>ID</th><th>Environment</th><th>Company</th><th>Status</th><th>Connected</th></tr>';if(!rows.length)h+='<tr><td colspan="5">No connections.</td></tr>';rows.forEach(r=>{h+='<tr><td>'+esc(r['QB Connection ID'])+'</td><td>'+esc(r.Environment)+'</td><td>'+esc(r['Company Name'])+'</td><td>'+esc(r.Status)+'</td><td>'+esc(r['Connected At'])+'</td></tr>';});document.getElementById('connectionsTable').innerHTML=h;}
+      function renderQueue(rows){let h='<tr><th>ID</th><th>Object</th><th>Operation</th><th>Status</th><th>Attempts</th></tr>';if(!rows.length)h+='<tr><td colspan="5">No queued items.</td></tr>';rows.forEach(r=>{h+='<tr><td>'+esc(r['QB Queue ID'])+'</td><td>'+esc(r['Object Type'])+' '+esc(r['Object ID'])+'</td><td>'+esc(r.Operation)+'</td><td>'+esc(r.Status)+'</td><td>'+esc(r.Attempts)+'</td></tr>';});document.getElementById('queueTable').innerHTML=h;}
+      function renderMaps(rows){let h='<tr><th>REOS Category</th><th>Type</th><th>QB Account</th><th>QB ID</th></tr>';if(!rows.length)h+='<tr><td colspan="4">No mappings.</td></tr>';rows.forEach(r=>{h+='<tr><td>'+esc(r['REOS Category'])+'</td><td>'+esc(r['REOS Type'])+'</td><td>'+esc(r['QB Account Name'])+'</td><td>'+esc(r['QB Account ID'])+'</td></tr>';});document.getElementById('mapsTable').innerHTML=h;}
+      function renderLogs(rows){let h='<tr><th>Created</th><th>Object</th><th>Status</th><th>Message</th></tr>';if(!rows.length)h+='<tr><td colspan="4">No logs.</td></tr>';rows.forEach(r=>{h+='<tr><td>'+esc(r['Created At'])+'</td><td>'+esc(r['Object Type'])+' '+esc(r['Object ID'])+'</td><td>'+esc(r.Status)+'</td><td>'+esc(r.Message)+'</td></tr>';});document.getElementById('logsTable').innerHTML=h;}
+      function output(v){document.getElementById('output').textContent=typeof v==='string'?v:JSON.stringify(v,null,2);}function showError(e){output({error:e.message});}function valueOf(id){const el=document.getElementById(id);return el?el.value:''}function setText(id,v){document.getElementById(id).textContent=v||0}function esc(v){return String(v==null?'':v).replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));}
+      loadDashboard();
+    </script>
+  </body>
+</html>
