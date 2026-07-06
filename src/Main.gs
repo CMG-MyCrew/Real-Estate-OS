@@ -59,6 +59,7 @@ REOS.init_ = function () {
 
 REOS.buildMenu_ = function () {
   SpreadsheetApp.getUi().createMenu('REOS')
+    .addItem('Open Dashboard Hub', 'showDashboardHub')
     .addItem('Open Dashboard', 'reosOpenDashboard')
     .addItem('Open Executive Dashboard', 'showExecutiveDashboard')
     .addItem('Open CRM', 'showCRM')
