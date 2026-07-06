@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <style>
+      body { margin: 0; font-family: Arial, sans-serif; background: #f6f8fb; color: #1f2937; }
+      .shell { padding: 22px; }
+      .header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
+      h1 { margin: 0 0 6px; font-size: 26px; }
+      h2 { margin: 0 0 10px; font-size: 17px; }
+      .muted { color: #6b7280; }
+      .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; margin-bottom: 16px; }
+      .field { display: flex; flex-direction: column; gap: 4px; }
+      label { font-size: 12px; font-weight: 700; color: #374151; }
+      input, select, textarea { padding: 9px; border: 1px solid #d1d5db; border-radius: 8px; box-sizing: border-box; }
+      textarea { min-height: 70px; }
+      button { padding: 9px 12px; border: 0; border-radius: 8px; cursor: pointer; font-weight: 700; }
+      .primary { background: #111827; color: #fff; }
+      .secondary { background: #e5e7eb; color: #111827; }
+      .success { background: #dcfce7; color: #166534; }
+      .danger { background: #fee2e2; color: #991b1b; }
+      .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 15px; margin-bottom: 16px; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05); }
+      .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 12px; margin-bottom: 16px; }
+      .kpi { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; }
+      .kpi span { color: #6b7280; font-size: 12px; font-weight: 700; }
+      .kpi strong { display: block; font-size: 27px; margin-top: 4px; }
+      .grid { display: grid; grid-template-columns: 360px 1fr; gap: 16px; }
+      table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      th, td { text-align: left; border-bottom: 1px solid #e5e7eb; padding: 8px; vertical-align: top; }
+      th { background: #f9fafb; color: #374151; }
+      tr.clickable { cursor: pointer; }
+      tr.clickable:hover { background: #f9fafb; }
+      pre { white-space: pre-wrap; background: #0f172a; color: #e5e7eb; border-radius: 12px; padding: 12px; max-height: 220px; overflow: auto; }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <div class="header">
+        <div>
+          <h1>Document & Photo Management</h1>
+          <div class="muted">Link Drive files to leads, properties, vendors, work orders, inspections, maintenance, and CRM records.</div>
+        </div>
+        <button class="secondary" onclick="loadDashboard()">Refresh</button>
+      </div>
+
+      <section class="kpis">
+        <div class="kpi"><span>Documents</span><strong id="kDocuments">0</strong></div>
+        <div class="kpi"><span>Photos</span><strong id="kPhotos">0</strong></div>
+        <div class="kpi"><span>Active</span><strong id="kActive">0</strong></div>
+        <div class="kpi"><span>Folders</span><strong id="kFolders">0</strong></div>
+        <div class="kpi"><span>Events</span><strong id="kEvents">0</strong></div>
+      </section>
+
+      <section class="grid">
+        <div class="card">
+          <h2>Link Drive File</h2>
+          <div class="field"><label>Record Type</label><select id="recordType"><option>Acquisition Lead</option><option>Property</option><option>Vendor</option><option>Work Order</option><option>Inspection</option><option>Maintenance</option><option>CRM Client</option><option>General</option></select></div>
+          <div class="field"><label>Record ID</label><input id="recordId" placeholder="LEAD-001 / PROP-001"></div>
+          <div class="field"><label>Document Type</label><select id="documentType"></select></div>
+          <div class="field"><label>Title</label><input id="title" placeholder="Photo, invoice, contract..."></div>
+          <div class="field"><label>Drive File URL or ID</label><input id="fileUrl" placeholder="https://drive.google.com/file/d/... or file id"></div>
+          <div class="field"><label>Tags</label><input id="tags" placeholder="before, kitchen, invoice"></div>
+          <div class="field"><label>Description</label><textarea id="description"></textarea></div>
+          <button class="success" onclick="linkFile()">Link File</button>
+          <button class="secondary" onclick="createFolder()">Create Folder</button>
+        </div>
+        <div class="card"><h2>Documents</h2><table id="documentsTable"></table></div>
+      </section>
+
+      <section class="card"><h2>Folders</h2><table id="foldersTable"></table></section>
+      <section class="card"><h2>Document Events</h2><table id="eventsTable"></table></section>
+      <section class="card"><h2>System Output</h2><pre id="output">Ready.</pre></section>
+    </main>
+
+    <script>
+      let dashboard = null;
+      function loadDashboard() { google.script.run.withSuccessHandler(renderDashboard).withFailureHandler(showError).reosDocumentsDashboard({ limit: 100 }); }
+      function renderDashboard(data) {
+        dashboard = data;
+        const k = data.kpis || {};
+        setText('kDocuments', k.documents); setText('kPhotos', k.photos); setText('kActive', k.active); setText('kFolders', k.folders); setText('kEvents', k.events);
+        renderTypes(data.types || []); renderDocuments(data.documents || []); renderFolders(data.folders || []); renderEvents(data.events || []); output(data);
+      }
+      function renderTypes(types) { document.getElementById('documentType').innerHTML = types.map(function(t) { return '<option>' + esc(t) + '</option>'; }).join(''); }
+      function renderDocuments(rows) {
+        let html = '<tr><th>Title</th><th>Type</th><th>Record</th><th>Status</th><th>File</th><th>Actions</th></tr>';
+        if (!rows.length) html += '<tr><td colspan="6">No documents linked yet.</td></tr>';
+        rows.forEach(function(row) { html += '<tr class="clickable"><td>' + esc(row.Title) + '</td><td>' + esc(row['Document Type']) + '</td><td>' + esc(row['Record Type'] + ' ' + row['Record ID']) + '</td><td>' + esc(row.Status) + '</td><td>' + (row['File URL'] ? '<a href="' + esc(row['File URL']) + '" target="_blank">Open</a>' : '') + '</td><td><button class="danger" onclick="archiveDoc(\'' + escJs(row['Document ID']) + '\')">Archive</button></td></tr>'; });
+        document.getElementById('documentsTable').innerHTML = html;
+      }
+      function renderFolders(rows) {
+        let html = '<tr><th>Folder</th><th>Record</th><th>Status</th><th>Open</th></tr>';
+        if (!rows.length) html += '<tr><td colspan="4">No folders created yet.</td></tr>';
+        rows.forEach(function(row) { html += '<tr><td>' + esc(row['Folder Name']) + '</td><td>' + esc(row['Record Type'] + ' ' + row['Record ID']) + '</td><td>' + esc(row.Status) + '</td><td>' + (row['Folder URL'] ? '<a href="' + esc(row['Folder URL']) + '" target="_blank">Open</a>' : '') + '</td></tr>'; });
+        document.getElementById('foldersTable').innerHTML = html;
+      }
+      function renderEvents(rows) {
+        let html = '<tr><th>Created</th><th>Document</th><th>Event</th><th>Message</th><th>User</th></tr>';
+        if (!rows.length) html += '<tr><td colspan="5">No document events yet.</td></tr>';
+        rows.forEach(function(row) { html += '<tr><td>' + esc(row['Created At']) + '</td><td>' + esc(row['Document ID']) + '</td><td>' + esc(row['Event Type']) + '</td><td>' + esc(row.Message) + '</td><td>' + esc(row.User) + '</td></tr>'; });
+        document.getElementById('eventsTable').innerHTML = html;
+      }
+      function linkFile() {
+        const value = valueOf('fileUrl');
+        const record = { 'Record Type': valueOf('recordType'), 'Record ID': valueOf('recordId'), 'Document Type': valueOf('documentType'), Title: valueOf('title'), Tags: valueOf('tags'), Description: valueOf('description') };
+        if (value.indexOf('http') === 0) record['File URL'] = value; else record['File ID'] = value;
+        google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); }).withFailureHandler(showError).reosDocumentsLinkFile(record);
+      }
+      function createFolder() { google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); }).withFailureHandler(showError).reosDocumentsCreateFolder(valueOf('recordType'), valueOf('recordId'), ''); }
+      function archiveDoc(id) { google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); }).withFailureHandler(showError).reosDocumentsArchive(id); }
+      function output(value) { document.getElementById('output').textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2); }
+      function showError(error) { output({ error: error.message }); }
+      function valueOf(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+      function setText(id, value) { document.getElementById(id).textContent = value || 0; }
+      function esc(value) { return String(value === null || value === undefined ? '' : value).replace(/[&<>'"]/g, function(ch) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[ch]; }); }
+      function escJs(value) { return String(value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+      loadDashboard();
+    </script>
+  </body>
+</html>
