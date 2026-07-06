@@ -28,10 +28,11 @@ Status: In progress
 - Automation Dashboard Sprint 8.6 added in `src/AutomationDashboard.html` with trigger health, rule execution metrics, run status charts, rules-by-module charts, recent runs, trigger controls, job execution, date filters, CSV export, and menu access.
 - AI Command Center Dashboard Sprint 8.7 added in `src/AIDashboard.html` with AI usage KPIs, request-type charts, provider/status charts, token tracking, AI logs, configuration review, AI opportunity queue, date filters, CSV export, and menu access.
 - Executive Dashboard Sprint 8.8 added in `src/ExecutiveDashboard.html` with enterprise KPI rollup, health panels, alert section, chart rollups, executive summary table, date filters, CSV export, and menu access.
+- External Data Integrations Sprint 8.9 added in `src/ExternalIntegrations.gs` and `src/ExternalIntegrations.html` with provider registry, dry-run testing, request logging, response mapping, provider configuration, health KPIs, and menu access for MLS, ATTOM, BatchData, PropertyRadar, county records, and Google Maps stubs.
 - Dashboard shell wired to router navigation and route dispatching in `src/Index.html`.
 - Validation framework expanded in `src/Validation.gs` with required fields, allowed values, lookup validation, duplicates, number/boolean/date/email/phone validation, sanitizing, and clean validation responses.
 - Test runner added in `src/TestRunner.gs` for setup verification, health checks, required sheets, required headers, services, security, router, and validation.
-- REOS menu updated in `src/Main.gs` with Dashboard, Executive Dashboard, CRM, CRM Dashboard, Acquisitions, Acquisitions Dashboard, Vendors, Vendor Dashboard, Properties, Property Dashboard, Automation, Automation Dashboard, AI Workspace, AI Dashboard, Admin, Initialize Workbook, Health Check, and Run Tests actions.
+- REOS menu updated in `src/Main.gs` with Dashboard, Executive Dashboard, CRM, CRM Dashboard, Acquisitions, Acquisitions Dashboard, Vendors, Vendor Dashboard, Properties, Property Dashboard, Automation, Automation Dashboard, External Integrations, AI Workspace, AI Dashboard, Admin, Initialize Workbook, Health Check, and Run Tests actions.
 - Acquisitions module foundation added in `src/Acquisitions.gs` for distressed/off-market lead intake, scoring, pipeline, follow-ups, and dashboard metrics.
 - Acquisitions UI foundation added in `src/Acquisitions.html`.
 - Acquisition pipeline and distress indicator lookups added to setup seed data.
@@ -61,7 +62,7 @@ Status: In progress
 - Dashboard framework Sprint 8.1 added in `src/DashboardService.gs`, `src/DashboardComponents.html`, `src/DashboardFilters.html`, and `src/DashboardCharts.js` with reusable KPI, chart, table, alert, filter, cache, date-range, and CSV export services.
 - AI core framework Sprint 1 rebuilt in `src/AI.gs` with provider abstraction, prompt builder, response parser, OpenAI-ready connector, stub rules engine, token/cost tracking placeholders, config helpers, and AI request audit logging.
 - AI lifecycle wired into `src/Main.gs` initialization and health checks through `AI_REQUESTS`.
-- AI lead qualification engine Sprint 2 added in `src/AI.gs` with seller motivation analysis, distress signal detection, investment scoring, confidence scoring, risk flags, missing-data checks, recommended strategy, next-best-action, and batch qualification.
+- AI lead qualification engine Sprint 2 added in `src/AI.gs` with seller motivation analysis, distress signal detection, investment scoring, confidence scoring, risk flags, missing-data checks, recommended strategy, and next-best-action.
 - AI use permission added to Agent and Coordinator roles in `src/Security.gs`.
 - AI next-best-action engine Sprint 3 added in `src/AI.gs` with ranked action plans, outreach channel recommendations, priority/due-date logic, action reasoning, batch recommendations, and optional task creation.
 - AI summary generator Sprint 4 added in `src/AISummaries.gs` with executive summaries, property overview, seller profile, motivation summary, risk summary, equity summary, offer guidance, and follow-up strategy.
@@ -74,7 +75,7 @@ Status: In progress
 
 - Keep `REOS` as the shared namespace across all Apps Script files.
 - Standardize lifecycle functions: `onOpen`, `onInstall`, `installREOS`, and `runHealthCheck`.
-- Maintain module-ready architecture for CRM, acquisitions, properties, vendors, automation, dashboards, and AI agents.
+- Maintain module-ready architecture for CRM, acquisitions, properties, vendors, automation, dashboards, integrations, and AI agents.
 - Keep GitHub as the source of truth for all framework code.
 
 ## Phase Roadmap
@@ -92,8 +93,9 @@ Status: In progress
 | 8. Automation Engine | In Progress | Scheduled jobs, reminders, workflow scans, trigger management, automation UI, automation dashboard, rule editor. |
 | 9. AI Agents | In Progress | AI core, provider abstraction, lead qualification, next-best-action, summary generation, AI workspace, AI command center, report generation, document processing. |
 | 10. Dashboards | In Progress | Dashboard framework, CRM dashboard, acquisitions dashboard, property dashboard, vendor dashboard, automation dashboard, AI dashboard, executive dashboard, record review, drill-downs, charts, and pipeline visualizations. |
-| 11. Testing | In Progress | QA scripts, validation, regression checks. |
-| 12. Deployment | In Progress | Production release process, checklists, documentation, sync workflow. |
+| 11. External Integrations | In Progress | Provider registry, dry-run API stubs, request logs, property data mapping, skip tracing, public records, geocoding, and future live API connectors. |
+| 12. Testing | In Progress | QA scripts, validation, regression checks. |
+| 13. Deployment | In Progress | Production release process, checklists, documentation, sync workflow. |
 
 ## Core Framework Acceptance Criteria
 
@@ -114,6 +116,7 @@ Status: In progress
 - Automation Dashboard can display trigger health, rule execution charts, run status metrics, rules-by-module metrics, recent runs, trigger controls, job execution controls, date filters, and CSV export data.
 - AI Command Center can display AI usage KPIs, request-type charts, provider/status charts, token tracking, AI logs, configuration review, AI opportunity queue, date filters, and CSV export data.
 - Executive Dashboard can display enterprise KPI rollups, cross-module health panels, alerts, chart rollups, executive summary, date filters, and CSV export data.
+- External Integrations can seed providers, manage provider configuration, run dry-run requests, log external requests, map external property/lead records, and prepare live API connectors.
 - Main dashboard can load modules, dispatch routes, initialize workbook, and run health checks.
 - Validation framework supports reusable record validation, lookup validation, duplicate checks, and clean error handling.
 - Test runner can verify setup, schema, services, router, security, validation, and health status.
@@ -138,8 +141,8 @@ Status: In progress
 
 ## Next Build Items
 
-1. Add external data integration stubs.
-2. Add automation rule templates library.
-3. Add release candidate QA checklist.
-4. Add module dashboard navigation hub.
-5. Add dashboard print/PDF export support.
+1. Add automation rule templates library.
+2. Add release candidate QA checklist.
+3. Add module dashboard navigation hub.
+4. Add dashboard print/PDF export support.
+5. Add document/photo management foundation.
