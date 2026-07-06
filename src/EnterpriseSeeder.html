@@ -29,34 +29,37 @@
       <div class="header">
         <div>
           <h1>Enterprise Data Seeder</h1>
-          <div class="muted">GA Phase 3 baseline enterprise data: lookups, dashboard settings, inspection templates, environment defaults, automation templates, and AI agents.</div>
+          <div class="muted">GA Phase 3 baseline seed for lookups, automation templates, AI agents, inspection templates, dashboard settings, and environment settings.</div>
         </div>
         <button class="secondary" onclick="loadDashboard()">Refresh</button>
       </div>
+
       <div class="toolbar">
         <div><label>Environment</label><br><select id="environment"><option>Production</option><option>Staging</option><option>Testing</option></select></div>
-        <button class="primary" onclick="runSeed()">Run Phase 3 Seed</button>
+        <button class="primary" onclick="runSeed()">Run Enterprise Seed</button>
       </div>
+
       <section class="kpis">
         <div class="kpi"><span>Runs</span><strong id="kRuns">0</strong></div>
         <div class="kpi"><span>Latest Status</span><strong id="kStatus">-</strong></div>
         <div class="kpi"><span>Created</span><strong id="kCreated">0</strong></div>
         <div class="kpi"><span>Skipped</span><strong id="kSkipped">0</strong></div>
-        <div class="kpi"><span>Warnings</span><strong id="kWarnings">0</strong></div>
-        <div class="kpi"><span>Errors</span><strong id="kErrors">0</strong></div>
+        <div class="kpi"><span>Failed</span><strong id="kFailed">0</strong></div>
       </section>
+
       <section class="card"><h2>Latest Seed Items</h2><table id="itemsTable"></table></section>
       <section class="card"><h2>Seed Runs</h2><table id="runsTable"></table></section>
       <section class="card"><h2>System Output</h2><pre id="output">Ready.</pre></section>
     </main>
+
     <script>
-      function loadDashboard(){google.script.run.withSuccessHandler(render).withFailureHandler(showError).reosEnterpriseSeederDashboard();}
-      function runSeed(){google.script.run.withSuccessHandler(function(d){output(d);loadDashboard();}).withFailureHandler(showError).reosEnterpriseSeederRun({environment:valueOf('environment')});}
-      function render(data){const k=data.kpis||{};setText('kRuns',k.runs);setText('kStatus',k.latestStatus);setText('kCreated',k.itemsCreated);setText('kSkipped',k.itemsSkipped);setText('kWarnings',k.warnings);setText('kErrors',k.errors);renderItems(data.latestItems||[]);renderRuns(data.runs||[]);output(data);}
-      function renderItems(rows){let h='<tr><th>Area</th><th>Item</th><th>Status</th><th>Message</th></tr>';if(!rows.length)h+='<tr><td colspan="4">No seed items yet.</td></tr>';rows.forEach(r=>{h+='<tr><td>'+esc(r.Area)+'</td><td>'+esc(r['Item Key'])+'</td><td>'+esc(r.Status)+'</td><td>'+esc(r.Message)+'</td></tr>';});document.getElementById('itemsTable').innerHTML=h;}
-      function renderRuns(rows){let h='<tr><th>Started</th><th>Environment</th><th>Status</th><th>Created</th><th>Skipped</th><th>Warnings</th><th>Errors</th></tr>';if(!rows.length)h+='<tr><td colspan="7">No seed runs yet.</td></tr>';rows.forEach(r=>{h+='<tr><td>'+esc(r['Started At'])+'</td><td>'+esc(r.Environment)+'</td><td>'+esc(r.Status)+'</td><td>'+esc(r['Items Created'])+'</td><td>'+esc(r['Items Skipped'])+'</td><td>'+esc(r.Warnings)+'</td><td>'+esc(r.Errors)+'</td></tr>';});document.getElementById('runsTable').innerHTML=h;}
-      function output(v){document.getElementById('output').textContent=typeof v==='string'?v:JSON.stringify(v,null,2);}function showError(e){output({error:e.message});}
-      function valueOf(id){const el=document.getElementById(id);return el?el.value:'';}function setText(id,v){document.getElementById(id).textContent=v||0;}function esc(v){return String(v==null?'':v).replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));}
+      function loadDashboard(){ google.script.run.withSuccessHandler(render).withFailureHandler(showError).reosEnterpriseSeederDashboard(); }
+      function runSeed(){ google.script.run.withSuccessHandler(function(d){output(d);loadDashboard();}).withFailureHandler(showError).reosEnterpriseSeederRun({environment:valueOf('environment')}); }
+      function render(data){ const k=data.kpis||{}; setText('kRuns',k.runs); setText('kStatus',k.latestStatus); setText('kCreated',k.created); setText('kSkipped',k.skipped); setText('kFailed',k.failed); renderItems(data.latestItems||[]); renderRuns(data.runs||[]); output(data); }
+      function renderItems(rows){ let h='<tr><th>Area</th><th>Name</th><th>Status</th><th>Message</th></tr>'; if(!rows.length) h+='<tr><td colspan="4">No seed items yet.</td></tr>'; rows.forEach(r=>{h+='<tr><td>'+esc(r.Area)+'</td><td>'+esc(r.Name)+'</td><td>'+esc(r.Status)+'</td><td>'+esc(r.Message)+'</td></tr>';}); document.getElementById('itemsTable').innerHTML=h; }
+      function renderRuns(rows){ let h='<tr><th>Started</th><th>Environment</th><th>Status</th><th>Created</th><th>Skipped</th><th>Failed</th></tr>'; if(!rows.length) h+='<tr><td colspan="6">No seed runs yet.</td></tr>'; rows.forEach(r=>{h+='<tr><td>'+esc(r['Started At'])+'</td><td>'+esc(r.Environment)+'</td><td>'+esc(r.Status)+'</td><td>'+esc(r['Items Created'])+'</td><td>'+esc(r['Items Skipped'])+'</td><td>'+esc(r['Items Failed'])+'</td></tr>';}); document.getElementById('runsTable').innerHTML=h; }
+      function output(v){document.getElementById('output').textContent=typeof v==='string'?v:JSON.stringify(v,null,2);} function showError(e){output({error:e.message});}
+      function valueOf(id){const el=document.getElementById(id); return el?el.value:'';} function setText(id,v){document.getElementById(id).textContent=v||0;} function esc(v){return String(v==null?'':v).replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));}
       loadDashboard();
     </script>
   </body>
