@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <style>
+      body { margin: 0; font-family: Arial, sans-serif; background: #f6f8fb; color: #1f2937; }
+      .shell { padding: 22px; }
+      .header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
+      h1 { margin: 0 0 6px; font-size: 26px; }
+      h2 { margin: 0 0 10px; font-size: 17px; }
+      .muted { color: #6b7280; }
+      .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; margin-bottom: 16px; }
+      .field { display: flex; flex-direction: column; gap: 4px; }
+      label { font-size: 12px; font-weight: 700; color: #374151; }
+      input, select { padding: 9px; border: 1px solid #d1d5db; border-radius: 8px; min-width: 145px; }
+      button { padding: 9px 12px; border: 0; border-radius: 8px; cursor: pointer; font-weight: 700; }
+      .primary { background: #111827; color: #fff; }
+      .secondary { background: #e5e7eb; color: #111827; }
+      .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 15px; margin-bottom: 16px; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05); }
+      .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 12px; margin-bottom: 16px; }
+      .kpi { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; }
+      .kpi span { color: #6b7280; font-size: 12px; font-weight: 700; }
+      .kpi strong { display: block; font-size: 27px; margin-top: 4px; }
+      .health-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+      .health-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 15px; }
+      .health-card strong { display: block; font-size: 22px; margin-top: 6px; }
+      .charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 16px; }
+      .bar-row { display: grid; grid-template-columns: 140px 1fr 45px; gap: 8px; align-items: center; font-size: 12px; margin-bottom: 8px; }
+      .bar-track { height: 12px; background: #e5e7eb; border-radius: 999px; overflow: hidden; }
+      .bar-fill { height: 100%; background: #111827; border-radius: 999px; min-width: 2px; }
+      .funnel { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 8px; }
+      .stage { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 10px; text-align: center; }
+      .stage strong { display: block; font-size: 21px; }
+      table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      th, td { text-align: left; border-bottom: 1px solid #e5e7eb; padding: 8px; vertical-align: top; }
+      th { background: #f9fafb; color: #374151; }
+      .alert { border-left: 4px solid #111827; background: #f9fafb; padding: 10px; margin-bottom: 8px; border-radius: 8px; }
+      .warning { border-left-color: #f59e0b; }
+      .info { border-left-color: #2563eb; }
+      pre { white-space: pre-wrap; background: #0f172a; color: #e5e7eb; border-radius: 12px; padding: 12px; max-height: 220px; overflow: auto; }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <div class="header">
+        <div>
+          <h1>Executive Dashboard</h1>
+          <div class="muted">Enterprise scorecard for acquisition, CRM, property operations, vendors, automation, and AI health.</div>
+        </div>
+        <button class="secondary" onclick="loadDashboard()">Refresh</button>
+      </div>
+
+      <div class="toolbar">
+        <div class="field"><label>Start Date</label><input id="startDate" type="date"></div>
+        <div class="field"><label>End Date</label><input id="endDate" type="date"></div>
+        <div class="field"><label>Date Field</label><select id="dateField"><option>Created At</option><option>Updated At</option><option>Started At</option><option>Due Date</option></select></div>
+        <button class="primary" onclick="loadDashboard()">Apply Filters</button>
+        <button class="secondary" onclick="clearFilters()">Clear</button>
+        <button class="secondary" onclick="exportCsv()">Export CSV</button>
+      </div>
+
+      <section id="alerts"></section>
+      <section id="kpis" class="kpis"></section>
+      <section class="card"><h2>Enterprise Health Panels</h2><div id="healthPanels" class="health-grid"></div></section>
+      <section id="charts" class="charts"></section>
+      <section class="card"><h2>Executive Summary</h2><table id="summaryTable"></table></section>
+      <section class="card"><h2>System Output</h2><pre id="output">Ready.</pre></section>
+    </main>
+
+    <script>
+      let currentDashboard = null;
+      function options() { return { startDate: valueOf('startDate'), endDate: valueOf('endDate'), dateField: valueOf('dateField') || 'Created At', useCache: false }; }
+      function loadDashboard() { google.script.run.withSuccessHandler(renderDashboard).withFailureHandler(showError).reosDashboardServiceGet('executive', options()); }
+      function renderDashboard(data) { currentDashboard = data; renderAlerts(data.alerts || []); renderKpis(data.kpis || []); renderHealth(data.kpis || []); renderCharts(data.charts || []); renderSummary(data); output(data); }
+      function renderAlerts(alerts) { document.getElementById('alerts').innerHTML = alerts.length ? '<div class="card"><h2>Alerts</h2>' + alerts.map(function(a) { return '<div class="alert ' + esc(a.level || '') + '"><strong>' + esc(a.level || 'alert') + '</strong>: ' + esc(a.message || '') + '</div>'; }).join('') + '</div>' : ''; }
+      function renderKpis(kpis) { document.getElementById('kpis').innerHTML = kpis.map(function(k) { return '<div class="kpi"><span>' + esc(k.label) + '</span><strong>' + esc(k.value) + '</strong></div>'; }).join(''); }
+      function findKpi(kpis, label) { const item = kpis.find(function(k) { return String(k.label || '').toLowerCase() === String(label || '').toLowerCase(); }); return item ? Number(item.value || 0) : 0; }
+      function renderHealth(kpis) { const panels = [
+        { name: 'Acquisitions', value: findKpi(kpis, 'Acquisition Leads') + ' leads', note: findKpi(kpis, 'Hot Acquisition Leads') + ' hot · ' + findKpi(kpis, 'Follow Ups Due') + ' follow-ups due' },
+        { name: 'CRM', value: findKpi(kpis, 'Clients') + ' clients', note: findKpi(kpis, 'Open Tasks') + ' open tasks' },
+        { name: 'Properties', value: findKpi(kpis, 'Properties') + ' assets', note: findKpi(kpis, 'Vacant Properties') + ' vacant · ' + findKpi(kpis, 'Open Maintenance') + ' maintenance' },
+        { name: 'Vendors', value: findKpi(kpis, 'Vendors') + ' vendors', note: findKpi(kpis, 'Open Work Orders') + ' open work orders' },
+        { name: 'Automation', value: 'Operational', note: 'Review automation dashboard for trigger health' },
+        { name: 'AI', value: 'Enabled', note: 'Review AI dashboard for usage and provider status' }
+      ];
+      document.getElementById('healthPanels').innerHTML = panels.map(function(p) { return '<div class="health-card"><span class="muted">' + esc(p.name) + '</span><strong>' + esc(p.value) + '</strong><div class="muted">' + esc(p.note) + '</div></div>'; }).join(''); }
+      function renderCharts(charts) { document.getElementById('charts').innerHTML = charts.map(function(chart) { return '<div class="card"><h2>' + esc(chart.title) + '</h2>' + (chart.type === 'funnel' ? renderFunnel(chart.rows || []) : renderBars(chart.rows || [])) + '</div>'; }).join(''); }
+      function renderBars(rows) { if (!rows.length) return '<span class="muted">No chart data.</span>'; const max = rows.reduce(function(m, r) { return Math.max(m, Number(r.value || r.count || 0)); }, 1); return rows.map(function(row) { const value = Number(row.value || row.count || 0); const width = Math.max(2, Math.round((value / max) * 100)); return '<div class="bar-row"><span>' + esc(row.label || row.stage || row.metric || row.status || '') + '</span><div class="bar-track"><div class="bar-fill" style="width:' + width + '%"></div></div><strong>' + value + '</strong></div>'; }).join(''); }
+      function renderFunnel(rows) { if (!rows.length) return '<span class="muted">No funnel data.</span>'; return '<div class="funnel">' + rows.map(function(row) { return '<div class="stage"><strong>' + esc(row.value || row.count || 0) + '</strong><span>' + esc(row.label || row.stage || '') + '</span></div>'; }).join('') + '</div>'; }
+      function renderSummary(data) { const rows = [ ['Generated At', data.generatedAt || ''], ['Dashboard Key', data.key || 'executive'], ['Title', data.title || 'Executive Dashboard'], ['Filter Start', (data.filters && data.filters.startDate) || ''], ['Filter End', (data.filters && data.filters.endDate) || ''] ]; document.getElementById('summaryTable').innerHTML = '<tr><th>Field</th><th>Value</th></tr>' + rows.map(function(row) { return '<tr><td>' + esc(row[0]) + '</td><td>' + esc(row[1]) + '</td></tr>'; }).join(''); }
+      function exportCsv() { google.script.run.withSuccessHandler(function(csv) { output(csv); }).withFailureHandler(showError).reosDashboardServiceExportCsv('executive', options()); }
+      function clearFilters() { document.getElementById('startDate').value = ''; document.getElementById('endDate').value = ''; document.getElementById('dateField').value = 'Created At'; loadDashboard(); }
+      function output(value) { document.getElementById('output').textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2); }
+      function showError(error) { output({ error: error.message }); }
+      function valueOf(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+      function esc(value) { return String(value === null || value === undefined ? '' : value).replace(/[&<>'"]/g, function(ch) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[ch]; }); }
+      loadDashboard();
+    </script>
+  </body>
+</html>
