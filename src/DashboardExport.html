@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <style>
+      body { margin: 0; font-family: Arial, sans-serif; background: #f6f8fb; color: #1f2937; }
+      .shell { padding: 22px; }
+      .header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
+      h1 { margin: 0 0 6px; font-size: 26px; }
+      h2 { margin: 0 0 10px; font-size: 17px; }
+      .muted { color: #6b7280; }
+      .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; margin-bottom: 16px; }
+      .field { display: flex; flex-direction: column; gap: 4px; }
+      label { font-size: 12px; font-weight: 700; color: #374151; }
+      input, select { padding: 9px; border: 1px solid #d1d5db; border-radius: 8px; min-width: 145px; }
+      button { padding: 9px 12px; border: 0; border-radius: 8px; cursor: pointer; font-weight: 700; }
+      .primary { background: #111827; color: #fff; }
+      .secondary { background: #e5e7eb; color: #111827; }
+      .success { background: #dcfce7; color: #166534; }
+      .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 15px; margin-bottom: 16px; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05); }
+      .grid { display: grid; grid-template-columns: 360px 1fr; gap: 16px; }
+      iframe { width: 100%; height: 560px; border: 1px solid #d1d5db; border-radius: 12px; background: #fff; }
+      table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      th, td { text-align: left; border-bottom: 1px solid #e5e7eb; padding: 8px; vertical-align: top; }
+      th { background: #f9fafb; color: #374151; }
+      pre { white-space: pre-wrap; background: #0f172a; color: #e5e7eb; border-radius: 12px; padding: 12px; max-height: 220px; overflow: auto; }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <div class="header">
+        <div>
+          <h1>Dashboard Export Center</h1>
+          <div class="muted">Print-ready dashboards, PDF-ready Drive exports, CSV export, and export audit history.</div>
+        </div>
+        <button class="secondary" onclick="loadCenter()">Refresh</button>
+      </div>
+
+      <section class="grid">
+        <div class="card">
+          <h2>Export Options</h2>
+          <div class="field"><label>Dashboard</label><select id="dashboardKey"></select></div>
+          <div class="field"><label>Start Date</label><input id="startDate" type="date"></div>
+          <div class="field"><label>End Date</label><input id="endDate" type="date"></div>
+          <div class="field"><label>Date Field</label><select id="dateField"><option>Created At</option><option>Updated At</option><option>Started At</option><option>Due Date</option></select></div>
+          <div class="toolbar">
+            <button class="primary" onclick="previewPrint()">Preview Print</button>
+            <button class="success" onclick="createPdfStub()">Create PDF-Ready File</button>
+            <button class="secondary" onclick="exportCsv()">Export CSV</button>
+          </div>
+        </div>
+        <div class="card"><h2>Print Preview</h2><iframe id="preview"></iframe></div>
+      </section>
+
+      <section class="card"><h2>Recent Exports</h2><table id="exportsTable"></table></section>
+      <section class="card"><h2>System Output</h2><pre id="output">Ready.</pre></section>
+    </main>
+
+    <script>
+      function options() { return { startDate: valueOf('startDate'), endDate: valueOf('endDate'), dateField: valueOf('dateField') || 'Created At', useCache: false }; }
+      function loadCenter() { google.script.run.withSuccessHandler(renderCenter).withFailureHandler(showError).reosDashboardExportCenter(); }
+      function renderCenter(data) { renderDashboardOptions(data.dashboards || []); renderExports(data.recentExports || []); output(data); }
+      function renderDashboardOptions(rows) { document.getElementById('dashboardKey').innerHTML = rows.map(function(row) { return '<option value="' + esc(row.key) + '">' + esc(row.title) + '</option>'; }).join(''); }
+      function previewPrint() { google.script.run.withSuccessHandler(function(html) { const frame = document.getElementById('preview'); frame.srcdoc = html; output({ ok: true, message: 'Print preview generated.' }); loadCenter(); }).withFailureHandler(showError).reosDashboardExportPrintHtml(valueOf('dashboardKey'), options()); }
+      function createPdfStub() { google.script.run.withSuccessHandler(function(data) { output(data); loadCenter(); }).withFailureHandler(showError).reosDashboardExportPdfStub(valueOf('dashboardKey'), options()); }
+      function exportCsv() { google.script.run.withSuccessHandler(function(csv) { output(csv); loadCenter(); }).withFailureHandler(showError).reosDashboardExportCsv(valueOf('dashboardKey'), options()); }
+      function renderExports(rows) { let html = '<tr><th>Created</th><th>Dashboard</th><th>Format</th><th>Status</th><th>File</th><th>Requested By</th></tr>'; if (!rows.length) html += '<tr><td colspan="6">No exports yet.</td></tr>'; rows.forEach(function(row) { const url = row['File URL']; html += '<tr><td>' + esc(row['Created At']) + '</td><td>' + esc(row['Dashboard Key']) + '</td><td>' + esc(row.Format) + '</td><td>' + esc(row.Status) + '</td><td>' + (url ? '<a href="' + esc(url) + '" target="_blank">' + esc(row['File Name'] || 'Open') + '</a>' : esc(row['File Name'] || '')) + '</td><td>' + esc(row['Requested By']) + '</td></tr>'; }); document.getElementById('exportsTable').innerHTML = html; }
+      function output(value) { document.getElementById('output').textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2); }
+      function showError(error) { output({ error: error.message }); }
+      function valueOf(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+      function esc(value) { return String(value === null || value === undefined ? '' : value).replace(/[&<>'"]/g, function(ch) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[ch]; }); }
+      loadCenter();
+    </script>
+  </body>
+</html>
