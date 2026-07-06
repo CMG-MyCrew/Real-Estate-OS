@@ -1,47 +1,67 @@
 # REOS Enterprise v3.0.0 GA — Phase 3 Enterprise Data Seeding
 
-Phase 3 seeds production-ready enterprise data after the Deployment Wizard has provisioned the workbook.
+Phase 3 seeds production baseline data after the production workbook has been provisioned by the Deployment Wizard.
 
 ## Added Files
 
 | File | Purpose |
 | --- | --- |
-| `src/DataSeeder.gs` | Enterprise data seeding engine for lookup packs, automation templates, AI agents, inspection templates, dashboard settings, and environment config. |
-| `src/DataSeeder.html` | Admin UI for running and reviewing seed runs. |
-| `docs/GA_PHASE_3_ENTERPRISE_DATA_SEEDING.md` | Phase 3 operating guide. |
+| `src/EnterpriseSeeder.gs` | Server-side seeding engine for enterprise baseline data. |
+| `src/EnterpriseSeeder.html` | Admin UI for running and reviewing enterprise seed runs. |
+| `docs/GA_PHASE_3_ENTERPRISE_DATA_SEEDING.md` | Phase 3 execution guide. |
 
 ## New Sheets
 
 | Sheet | Purpose |
 | --- | --- |
-| `DATA_SEED_RUNS` | Tracks each enterprise seed run. |
-| `DATA_SEED_ITEMS` | Tracks each seeded, skipped, or failed item. |
-| `INSPECTION_TEMPLATES` | Stores reusable field/property inspection templates. |
-| `DASHBOARD_SETTINGS` | Stores dashboard configuration values. |
-| `ENVIRONMENT_CONFIG` | Stores environment configuration metadata. |
+| `SEED_RUNS` | Stores each enterprise seed execution. |
+| `SEED_ITEMS` | Stores item-level seed results. |
+| `INSPECTION_TEMPLATES` | Stores reusable inspection checklist templates. |
+| `DASHBOARD_SETTINGS` | Stores dashboard defaults and feature settings. |
+| `ENVIRONMENT_SETTINGS` | Stores environment-level feature flags and operating settings. |
 
-## Seed Packs
+## Seed Areas
 
-The seeder initializes lookup values, automation templates, AI agents, inspection templates, dashboard settings, environment configuration, and production Script Properties.
+- Lookup values
+- Acquisition sources
+- Inspection types
+- Vendor tiers
+- Dashboard views
+- Automation templates
+- AI agents
+- Inspection templates
+- Dashboard defaults
+- Production feature flags
 
 ## Menu Access
 
-`REOS → Open Data Seeder`
+After syncing Apps Script and refreshing the workbook:
+
+`REOS → Open Enterprise Seeder`
 
 Admin access is required.
 
+## Phase 3 Execution
+
+1. Complete GA Phase 2 Deployment Wizard.
+2. Open Enterprise Seeder.
+3. Select environment.
+4. Run Enterprise Seed.
+5. Review skipped, created, and failed items.
+6. Resolve any failures.
+7. Re-run until seed status is `Complete` or accepted.
+
 ## Exit Criteria
 
-- Data seed run status is `Complete`.
-- Failed item count is zero.
-- Lookup pack is seeded.
-- Automation templates are available.
-- AI agents are available.
-- Inspection templates are available.
-- Dashboard settings are available.
-- Environment config is available.
-- Health Check includes all Phase 3 sheets.
+- Seed run is recorded in `SEED_RUNS`.
+- No failed seed items remain.
+- Inspection templates exist.
+- Dashboard settings exist.
+- Environment settings exist.
+- Automation templates are seeded.
+- AI agents are seeded.
+- Lookup values include production operating categories.
 
 ## Next Phase
 
-Proceed to **Phase 4 — Operational Validation** after enterprise data has been seeded and verified.
+Proceed to **GA Phase 4 — Operational Validation** after enterprise data seeding is complete.
