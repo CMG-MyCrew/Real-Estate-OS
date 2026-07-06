@@ -207,6 +207,12 @@ function showAutomationDashboard() {
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Automation Dashboard');
 }
 
+function showExternalIntegrations() {
+  REOS.Security.requireAdmin();
+  const html = HtmlService.createHtmlOutputFromFile('ExternalIntegrations').setTitle('REOS External Integrations').setWidth(1200).setHeight(800);
+  SpreadsheetApp.getUi().showModalDialog(html, 'REOS External Integrations');
+}
+
 function showAI() {
   REOS.Security.requirePermission('ai:use');
   const html = HtmlService.createHtmlOutputFromFile('AI').setTitle('REOS AI Workspace').setWidth(1200).setHeight(800);
