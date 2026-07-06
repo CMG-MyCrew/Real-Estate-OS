@@ -3,7 +3,7 @@
 Repository: `CMG-MyCrew/Real-Estate-OS`
 Primary platform: Google Apps Script + Google Sheets + GitHub
 
-## Current Sprint: Document Management & Release Preparation
+## Current Sprint: AI Orchestration & Production Release
 
 Status: In progress
 
@@ -34,30 +34,18 @@ Status: In progress
 - Dashboard Hub Sprint 8.12 added in `src/DashboardHub.gs` and `src/DashboardHub.html`.
 - Sprint 13 Production Hardening added in `src/ProductionHardening.gs`, `src/ProductionHardening.html`, and `docs/PRODUCTION_HARDENING.md`.
 - Sprint 14 Dashboard Print/PDF Export Support added in `src/DashboardExport.gs` and `src/DashboardExport.html`.
-- Sprint 15 Document/Photo Management Foundation upgraded in `src/Documents.gs` and added `src/Documents.html` with Drive folder registry, document/photo link tracking, record associations, metadata updates, archive actions, document event logging, document KPIs, and menu access.
-- Dashboard shell wired to router navigation and route dispatching in `src/Index.html`.
-- Validation framework expanded in `src/Validation.gs`.
-- Test runner added in `src/TestRunner.gs`.
-- REOS menu updated in `src/Main.gs` with Dashboard Hub, Dashboard Export, Documents, Dashboard, Executive Dashboard, CRM, CRM Dashboard, Acquisitions, Acquisitions Dashboard, Vendors, Vendor Dashboard, Properties, Property Dashboard, Automation, Automation Dashboard, Automation Templates, External Integrations, Production Hardening, AI Workspace, AI Dashboard, Admin, Initialize Workbook, Health Check, and Run Tests actions.
-- Acquisitions module foundation added in `src/Acquisitions.gs`.
-- Acquisitions UI foundation added in `src/Acquisitions.html`.
-- Dashboard records review service added in `src/Dashboard.gs`.
-- Role-management UI added in `src/Admin.html`.
-- Workflow automation foundation rebuilt in `src/Automation.gs`.
-- Vendor management foundation added in `src/Vendors.gs`.
-- Vendor management UI added in `src/Vendors.html`.
-- Property management module foundation added in `src/Properties.gs`.
-- Property management UI added in `src/Properties.html`.
+- Sprint 15 Document/Photo Management Foundation upgraded in `src/Documents.gs` and added `src/Documents.html`.
+- Sprint 20 AI Automation Agents added in `src/AIAgents.gs`, `src/AIAgents.html`, and `docs/AI_AUTOMATION_AGENTS.md` with agent seeding, agent run history, autonomous recommendations, agent task queue, release readiness summary, and menu access.
+- REOS menu updated in `src/Main.gs` with Dashboard Hub, Dashboard Export, Documents, AI Agents, Dashboard, Executive Dashboard, CRM, CRM Dashboard, Acquisitions, Acquisitions Dashboard, Vendors, Vendor Dashboard, Properties, Property Dashboard, Automation, Automation Dashboard, Automation Templates, External Integrations, Production Hardening, AI Workspace, AI Dashboard, Admin, Initialize Workbook, Health Check, and Run Tests actions.
 - GitHub/Apps Script sync guide added in `docs/APPS_SCRIPT_SYNC.md`.
 - Deployment guide added in `docs/DEPLOYMENT.md`.
 - Production release checklist template added in `docs/PRODUCTION_RELEASE_CHECKLIST.md`.
-- AI core, lead qualification, next-best-action, summaries, workspace, and report generation foundations added.
 
 ### Active Objectives
 
 - Keep `REOS` as the shared namespace across all Apps Script files.
 - Standardize lifecycle functions: `onOpen`, `onInstall`, `installREOS`, and `runHealthCheck`.
-- Maintain module-ready architecture for CRM, acquisitions, properties, vendors, automation, dashboards, integrations, production hardening, exports, documents, and AI agents.
+- Maintain module-ready architecture for CRM, acquisitions, properties, vendors, automation, dashboards, integrations, production hardening, exports, documents, AI agents, and release orchestration.
 - Keep GitHub as the source of truth for all framework code.
 
 ## Phase Roadmap
@@ -73,23 +61,25 @@ Status: In progress
 | 6. Property Management | In Progress | Assets, inspections, maintenance, occupancy, drill-down actions, operations dashboard. |
 | 7. Vendors | In Progress | Vendor registry, work orders, field services, operations dashboard. |
 | 8. Automation Engine | In Progress | Scheduled jobs, reminders, workflow scans, trigger management, automation UI, automation dashboard, rule editor, templates. |
-| 9. AI Agents | In Progress | AI core, provider abstraction, lead qualification, next-best-action, summary generation, AI workspace, AI command center, report generation, document processing. |
+| 9. AI Agents | In Progress | AI core, provider abstraction, lead qualification, next-best-action, summary generation, AI workspace, AI command center, report generation, document processing, autonomous agents, release summary. |
 | 10. Dashboards | In Progress | Dashboard framework, dashboard hub, module dashboards, executive dashboard, record review, drill-downs, charts, and pipeline visualizations. |
 | 11. External Integrations | In Progress | Provider registry, dry-run API stubs, request logs, property data mapping, skip tracing, public records, geocoding, and future live API connectors. |
 | 12. Testing | In Progress | QA scripts, validation, regression checks, release candidate checklist. |
 | 13. Production Hardening | In Progress | Readiness audits, performance checks, trigger audits, secrets review, log retention, cache cleanup, release gate reporting. |
 | 14. Dashboard Export & Deployment | In Progress | Print-ready dashboards, PDF-ready export stubs, CSV export, export audit logging, production release process. |
 | 15. Document Management | In Progress | Drive-backed folder registry, file links, photo/document tracking, record associations, document event audit logging. |
+| 20. AI Orchestration & Production Release | In Progress | Cross-module AI agents, autonomous recommendations, operational task queues, release readiness summary, and Enterprise v3.0 production release preparation. |
 
 ## Core Framework Acceptance Criteria
 
 - Spreadsheet opens with a REOS menu.
 - Install routine creates required sheets and seeds settings/lookups.
-- Health check validates required sheets, including `AUTOMATION_TEMPLATES`, `HARDENING_REPORTS`, `HARDENING_CHECKS`, `DASHBOARD_EXPORTS`, `DOCUMENTS`, `DOCUMENT_FOLDERS`, and `DOCUMENT_EVENTS`.
+- Health check validates required sheets, including `AUTOMATION_TEMPLATES`, `HARDENING_REPORTS`, `HARDENING_CHECKS`, `DASHBOARD_EXPORTS`, `DOCUMENTS`, `DOCUMENT_FOLDERS`, `DOCUMENT_EVENTS`, `AI_AGENTS`, `AI_AGENT_RUNS`, and `AI_AGENT_TASKS`.
 - Dashboard shell opens from the REOS menu.
 - Dashboard Hub provides permission-aware navigation, quick actions, enterprise KPIs, notifications, system health, recent activity, and global search.
 - Dashboard Export can generate print-ready dashboard HTML, create PDF-ready Drive files, pass through CSV exports, and log export activity.
 - Document Management can create Drive folders, link Drive files, track photos/documents, associate files to operational records, archive documents, and log document events.
+- AI Agents can seed agents, run active agents, log runs, create recommendation tasks, update task status, and generate release readiness summaries.
 - Logger writes structured records to `SYSTEM_LOG`.
 - Database layer can insert, update, query, and soft-delete sheet records.
 - Security layer can enforce permissions and generate audit reports.
@@ -110,8 +100,8 @@ Status: In progress
 
 ## Next Build Items
 
-1. Add release notes template.
-2. Add mobile field operations shell.
-3. Add final release candidate package.
-4. Add production launch checklist execution guide.
-5. Add document permission hardening and Drive move/copy helpers.
+1. Run full RC QA using `docs/RELEASE_CANDIDATE_QA.md`.
+2. Run production hardening audit.
+3. Generate final release notes.
+4. Sync all Apps Script files from GitHub.
+5. Package REOS Enterprise v3.0 RC1.
