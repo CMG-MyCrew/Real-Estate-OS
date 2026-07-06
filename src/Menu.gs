@@ -1,5 +1,5 @@
 /**
- * REOS Enterprise v3.0 - Custom Menu
+ * REOS Enterprise v3.2.7 - Unified Menu
  */
 
 var REOS = REOS || {};
@@ -7,174 +7,60 @@ var REOS = REOS || {};
 REOS.buildMenu_ = function () {
   const ui = SpreadsheetApp.getUi();
   ui.createMenu('REOS')
-    .addItem('Home', 'goHome')
-    .addItem('Open Dashboard', 'showDashboard')
-    .addItem('Open Agent Portal', 'showAgentPortal')
-    .addItem('Open AI Assistant', 'showAIAssistant')
-    .addItem('Open Mobile App Preview', 'showMobileApp')
-    .addItem('Open Integration Hub', 'showIntegrations')
-    .addItem('Open API Platform', 'showAPIPlatform')
-    .addItem('Open Enterprise Admin', 'showAdmin')
-    .addItem('Open Performance Console', 'showPerformance')
-    .addItem('Open System Audit', 'showSystemAudit')
-    .addItem('Open Help Center', 'showHelpCenter')
-    .addItem('Open Brokerage Management', 'showBrokerage')
-    .addItem('Open Business Intelligence', 'showBI')
-    .addItem('Open SaaS Admin', 'showSaaSAdmin')
-    .addItem('Open Production Console', 'showProduction')
-    .addItem('Open Enterprise Security', 'showSecurity')
-    .addItem('Open Sidebar', 'showSidebar')
+    .addItem('Run Phase 1 Upgrade', 'reosRunPhase1Upgrade')
+    .addItem('Validate Phase 1 Upgrade', 'reosValidatePhase1Upgrade')
+    .addItem('Core Diagnostics', 'reosCoreDiagnostics')
+    .addItem('Sync Module Sheets', 'reosCoreSyncModules')
     .addSeparator()
-    .addItem('Open CRM App', 'showCRM')
-    .addItem('Open Tasks App', 'showTasks')
-    .addItem('Open Transactions App', 'showTransactions')
-    .addItem('Open Investments App', 'showInvestments')
-    .addItem('Open Rentals App', 'showRentals')
-    .addItem('Open Finance App', 'showFinance')
-    .addItem('Open Documents App', 'showDocuments')
-    .addItem('Open Client Portal', 'showClientPortal')
-    .addItem('Open Vendor Portal', 'showVendorPortal')
-    .addItem('Open Automation App', 'showAutomation')
+    .addItem('Open Dashboard Hub', 'showDashboardHub')
+    .addItem('Open Finance Manager', 'showFinanceManager')
+    .addItem('Open Finance Enhancements', 'showFinanceEnhancements')
+    .addItem('Open Finance Dashboards', 'showFinanceDashboards')
+    .addItem('Open QuickBooks Connector', 'showQuickBooksConnector')
+    .addItem('Open QuickBooks OAuth', 'showQuickBooksOAuth')
     .addSeparator()
-    .addItem('AI Daily Briefing', 'aiDailyBriefing')
+    .addItem('Open Portal Foundation', 'showPortalFoundation')
+    .addItem('Open Portal Auth', 'showPortalAuth')
+    .addItem('Open Investor Portal', 'showInvestorPortal')
+    .addItem('Open Vendor Portal UI', 'showVendorPortalUI')
+    .addItem('Open Client/Lender Portal', 'showClientLenderPortal')
     .addSeparator()
-    .addItem('Seed Automation Rules', 'automationSeedDefaults')
-    .addItem('Install Automation Triggers', 'triggersInstallAll')
-    .addSeparator()
-    .addItem('CRM Sheet', 'goCRM')
-    .addItem('Leads Sheet', 'goLeads')
-    .addItem('Tasks Sheet', 'goTasks')
+    .addItem('Open CRM', 'showCRM')
+    .addItem('Open Documents', 'showDocuments')
+    .addItem('Open Automation', 'showAutomation')
+    .addItem('Open AI Workspace', 'showAI')
+    .addItem('Open Admin', 'showAdmin')
     .addSeparator()
     .addItem('Health Check', 'runHealthCheck')
-    .addSeparator()
     .addItem('Install / Repair REOS', 'installREOS')
     .addToUi();
 };
 
-function showAutomation() {
-  const html = HtmlService.createHtmlOutputFromFile('Automation')
-    .setWidth(900)
-    .setHeight(650);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Automation');
-}
+function showDashboardHub() { safeShowMenuModal_('DashboardHub', 'REOS Dashboard Hub', 1200, 800); }
+function showFinanceManager() { safeShowMenuModal_('FinanceManager', 'REOS Finance Manager', 1200, 800); }
+function showFinanceEnhancements() { safeShowMenuModal_('FinanceEnhancements', 'REOS Finance Enhancements', 1200, 800); }
+function showFinanceDashboards() { safeShowMenuModal_('FinanceDashboards', 'REOS Finance Dashboards', 1200, 850); }
+function showQuickBooksConnector() { safeShowMenuModal_('QuickBooksConnector', 'REOS QuickBooks Connector', 1200, 800); }
+function showQuickBooksOAuth() { safeShowMenuModal_('QuickBooksOAuth', 'REOS QuickBooks OAuth', 1200, 800); }
+function showPortalFoundation() { safeShowMenuModal_('PortalFoundation', 'REOS Portal Foundation', 1200, 850); }
+function showPortalAuth() { safeShowMenuModal_('PortalAuth', 'REOS Portal Auth', 1200, 850); }
+function showInvestorPortal() { safeShowMenuModal_('InvestorPortal', 'REOS Investor Portal', 1200, 850); }
+function showVendorPortalUI() { safeShowMenuModal_('VendorPortal', 'REOS Vendor Portal', 1200, 850); }
+function showClientLenderPortal() { safeShowMenuModal_('ClientLenderPortal', 'REOS Client Lender Portal', 1200, 850); }
+function showCRM() { safeShowMenuModal_('CRM', 'REOS CRM', 1200, 800); }
+function showDocuments() { safeShowMenuModal_('Documents', 'REOS Documents', 1200, 800); }
+function showAutomation() { safeShowMenuModal_('Automation', 'REOS Automation', 1200, 800); }
+function showAI() { safeShowMenuModal_('AI', 'REOS AI Workspace', 1200, 800); }
+function showAdmin() { safeShowMenuModal_('Admin', 'REOS Admin', 1200, 800); }
 
-function showDocuments() {
-  const html = HtmlService.createHtmlOutputFromFile('Documents')
-    .setWidth(1000)
-    .setHeight(700);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Documents');
-}
-
-function showClientPortal() {
-  const html = HtmlService.createHtmlOutputFromFile('ClientPortal')
-    .setWidth(1100)
-    .setHeight(760);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Client Portal');
-}
-
-function showAgentPortal() {
-  const html = HtmlService.createHtmlOutputFromFile('AgentPortal')
-    .setWidth(1200)
-    .setHeight(800);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Agent Portal');
-}
-
-function showVendorPortal() {
-  const html = HtmlService.createHtmlOutputFromFile('VendorPortal')
-    .setWidth(1100)
-    .setHeight(760);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Vendor Portal');
-}
-
-function showAIAssistant() {
-  const html = HtmlService.createHtmlOutputFromFile('AIAssistant')
-    .setWidth(1000)
-    .setHeight(720);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS AI Assistant');
-}
-
-function showMobileApp() {
-  const template = HtmlService.createTemplateFromFile('AppShell');
-  template.initialPage = 'home';
-  const html = template.evaluate()
-    .setWidth(430)
-    .setHeight(820);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Mobile App');
-}
-
-function showIntegrations() {
-  const html = HtmlService.createHtmlOutputFromFile('Integrations')
-    .setWidth(1000)
-    .setHeight(720);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Integration Hub');
-}
-
-function showBrokerage() {
-  const html = HtmlService.createHtmlOutputFromFile('Brokerage')
-    .setWidth(1100)
-    .setHeight(760);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Brokerage Management');
-}
-
-function showBI() {
-  const html = HtmlService.createHtmlOutputFromFile('BI')
-    .setWidth(1100)
-    .setHeight(760);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Business Intelligence');
-}
-
-function showSaaSAdmin() {
-  const html = HtmlService.createHtmlOutputFromFile('SaaSAdmin')
-    .setWidth(1100)
-    .setHeight(760);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS SaaS Admin');
-}
-
-function showProduction() {
-  const html = HtmlService.createHtmlOutputFromFile('Production')
-    .setWidth(1100)
-    .setHeight(760);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Production Console');
-}
-
-function showSecurity() {
-  const html = HtmlService.createHtmlOutputFromFile('Security')
-    .setWidth(1100)
-    .setHeight(760);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Enterprise Security');
-}
-
-function showAPIPlatform() {
-  const html = HtmlService.createHtmlOutputFromFile('APIPlatform')
-    .setWidth(1100)
-    .setHeight(760);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS API Platform');
-}
-
-function showAdmin() {
-  const html = HtmlService.createHtmlOutputFromFile('Admin')
-    .setWidth(1200)
-    .setHeight(800);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Enterprise Administration');
-}
-
-function showPerformance() {
-  const html = HtmlService.createHtmlOutputFromFile('Performance')
-    .setWidth(1100)
-    .setHeight(760);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Performance Optimization');
-}
-
-function showHelpCenter() {
-  const html = HtmlService.createHtmlOutputFromFile('HelpCenter')
-    .setWidth(1100)
-    .setHeight(760);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Help Center');
-}
-
-function showSystemAudit() {
-  const html = HtmlService.createHtmlOutputFromFile('SystemAudit')
-    .setWidth(1200)
-    .setHeight(800);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Final System Audit');
+function safeShowMenuModal_(file, title, width, height) {
+  try {
+    if (REOS.CoreFoundation && typeof REOS.CoreFoundation.safeOpen === 'function') return REOS.CoreFoundation.safeOpen(file, title, width, height);
+    const html = HtmlService.createHtmlOutputFromFile(file).setWidth(width || 1200).setHeight(height || 800).setTitle(title);
+    SpreadsheetApp.getUi().showModalDialog(html, title);
+    return true;
+  } catch (error) {
+    SpreadsheetApp.getUi().alert(title + ' is not available yet.\n\n' + error.message);
+    return false;
+  }
 }
