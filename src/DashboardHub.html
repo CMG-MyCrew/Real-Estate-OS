@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <style>
+      body { margin: 0; font-family: Arial, sans-serif; background: #f6f8fb; color: #1f2937; }
+      .app { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+      .sidebar { background: #111827; color: #fff; padding: 18px; }
+      .sidebar h1 { font-size: 20px; margin: 0 0 4px; }
+      .sidebar .muted { color: #9ca3af; font-size: 12px; margin-bottom: 18px; }
+      .nav-item { padding: 10px; border-radius: 10px; margin-bottom: 6px; cursor: pointer; display: flex; gap: 8px; align-items: center; }
+      .nav-item:hover { background: #1f2937; }
+      .main { padding: 22px; }
+      .header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
+      h2 { margin: 0 0 10px; font-size: 18px; }
+      .muted { color: #6b7280; }
+      .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px; }
+      input { padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; min-width: 260px; }
+      button { padding: 10px 13px; border: 0; border-radius: 8px; cursor: pointer; font-weight: 700; }
+      .primary { background: #111827; color: #fff; }
+      .secondary { background: #e5e7eb; color: #111827; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(235px, 1fr)); gap: 14px; margin-bottom: 18px; }
+      .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 13px; padding: 15px; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05); }
+      .tile { cursor: pointer; transition: transform 120ms ease, box-shadow 120ms ease; }
+      .tile:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(15, 23, 42, 0.09); }
+      .tile .icon { font-size: 24px; margin-bottom: 8px; }
+      .tile strong { display: block; font-size: 16px; margin-bottom: 6px; }
+      .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 12px; margin-bottom: 18px; }
+      .kpi { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 13px; }
+      .kpi span { color: #6b7280; font-size: 12px; font-weight: 700; }
+      .kpi strong { display: block; font-size: 25px; margin-top: 4px; }
+      .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .alert { border-left: 4px solid #111827; background: #f9fafb; padding: 10px; margin-bottom: 8px; border-radius: 8px; }
+      .warning { border-left-color: #f59e0b; }
+      .info { border-left-color: #2563eb; }
+      table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      th, td { text-align: left; border-bottom: 1px solid #e5e7eb; padding: 8px; vertical-align: top; }
+      th { background: #f9fafb; color: #374151; }
+      pre { white-space: pre-wrap; background: #0f172a; color: #e5e7eb; border-radius: 12px; padding: 12px; max-height: 220px; overflow: auto; }
+      @media (max-width: 850px) { .app { grid-template-columns: 1fr; } .sidebar { position: static; } .columns { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <h1>REOS Hub</h1>
+        <div class="muted">Enterprise Workspace</div>
+        <div id="sidebarNav"></div>
+      </aside>
+      <main class="main">
+        <div class="header">
+          <div>
+            <h2>Dashboard Navigation Hub</h2>
+            <div class="muted">Centralized workspace for dashboards, quick actions, notifications, and system health.</div>
+          </div>
+          <button class="secondary" onclick="loadHub()">Refresh</button>
+        </div>
+
+        <div class="toolbar">
+          <input id="globalSearch" placeholder="Search dashboards and quick actions">
+          <button class="primary" onclick="runSearch()">Search</button>
+          <button class="secondary" onclick="clearSearch()">Clear</button>
+        </div>
+
+        <section id="searchResults"></section>
+        <section id="kpis" class="kpis"></section>
+        <section class="card" style="margin-bottom:18px;"><h2>Notifications</h2><div id="notifications"></div></section>
+        <section><h2>Dashboards</h2><div id="dashboards" class="grid"></div></section>
+        <section><h2>Quick Actions</h2><div id="quickActions" class="grid"></div></section>
+        <section class="columns">
+          <div class="card"><h2>System Health</h2><div id="systemHealth"></div></div>
+          <div class="card"><h2>Recent Activity</h2><table id="activityTable"></table></div>
+        </section>
+        <section class="card" style="margin-top:16px;"><h2>System Output</h2><pre id="output">Ready.</pre></section>
+      </main>
+    </div>
+
+    <script>
+      let hub = null;
+      function loadHub() { google.script.run.withSuccessHandler(renderHub).withFailureHandler(showError).reosDashboardHubGet(); }
+      function renderHub(data) { hub = data; renderSidebar(data.dashboards || []); renderKpis(data.kpis || {}); renderNotifications(data.notifications || []); renderDashboards(data.dashboards || []); renderActions(data.quickActions || []); renderHealth(data.systemHealth || {}); renderActivity(data.recentActivity || []); output(data); }
+      function renderSidebar(items) { document.getElementById('sidebarNav').innerHTML = items.map(function(item) { return '<div class="nav-item" onclick="openDashboard(\'' + escJs(item.key) + '\')"><span>' + esc(item.icon || '•') + '</span><span>' + esc(item.title) + '</span></div>'; }).join(''); }
+      function renderKpis(kpis) { const keys = Object.keys(kpis || {}).slice(0, 12); document.getElementById('kpis').innerHTML = keys.map(function(key) { return '<div class="kpi"><span>' + esc(labelize(key)) + '</span><strong>' + esc(kpis[key]) + '</strong></div>'; }).join(''); }
+      function renderNotifications(rows) { document.getElementById('notifications').innerHTML = rows.length ? rows.map(function(row) { return '<div class="alert ' + esc(row.level || '') + '"><strong>' + esc(row.title || '') + '</strong><br>' + esc(row.message || '') + '</div>'; }).join('') : '<div class="muted">No notifications.</div>'; }
+      function renderDashboards(rows) { document.getElementById('dashboards').innerHTML = rows.map(function(item) { return '<div class="card tile" onclick="openDashboard(\'' + escJs(item.key) + '\')"><div class="icon">' + esc(item.icon || '📊') + '</div><strong>' + esc(item.title) + '</strong><div class="muted">' + esc(item.description) + '</div></div>'; }).join(''); }
+      function renderActions(rows) { document.getElementById('quickActions').innerHTML = rows.map(function(item) { return '<div class="card tile" onclick="runQuickAction(\'' + escJs(item.key) + '\')"><strong>' + esc(item.title) + '</strong><div class="muted">' + esc(item.description) + '</div></div>'; }).join(''); }
+      function renderHealth(health) { document.getElementById('systemHealth').innerHTML = '<strong>' + (health.ok ? 'OK' : 'Needs Review') + '</strong><table>' + (health.messages || []).slice(0, 14).map(function(m) { return '<tr><td>' + esc(m) + '</td></tr>'; }).join('') + '</table>'; }
+      function renderActivity(rows) { let html = '<tr><th>Time</th><th>Level</th><th>Message</th></tr>'; if (!rows.length) html += '<tr><td colspan="3">No activity found.</td></tr>'; rows.forEach(function(row) { html += '<tr><td>' + esc(row.Timestamp || row['Created At'] || '') + '</td><td>' + esc(row.Level || '') + '</td><td>' + esc(row.Message || row.Event || '') + '</td></tr>'; }); document.getElementById('activityTable').innerHTML = html; }
+      function openDashboard(key) { google.script.run.withSuccessHandler(function(result) { output(result); if (result.functionName) google.script.run[result.functionName](); }).withFailureHandler(showError).reosDashboardHubOpenDashboard(key); }
+      function runQuickAction(key) { google.script.run.withSuccessHandler(output).withFailureHandler(showError).reosDashboardHubRunQuickAction(key); }
+      function runSearch() { google.script.run.withSuccessHandler(renderSearch).withFailureHandler(showError).reosDashboardHubSearch(document.getElementById('globalSearch').value); }
+      function renderSearch(rows) { document.getElementById('searchResults').innerHTML = '<section class="card"><h2>Search Results</h2>' + (rows.length ? rows.map(function(item) { return '<div class="alert"><strong>' + esc(item.title) + '</strong><br><span class="muted">' + esc(item.description || '') + '</span></div>'; }).join('') : '<div class="muted">No results.</div>') + '</section>'; }
+      function clearSearch() { document.getElementById('globalSearch').value = ''; document.getElementById('searchResults').innerHTML = ''; }
+      function output(value) { document.getElementById('output').textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2); }
+      function showError(error) { output({ error: error.message }); }
+      function labelize(value) { return String(value || '').replace(/([A-Z])/g, ' $1').replace(/^./, function(s) { return s.toUpperCase(); }); }
+      function esc(value) { return String(value === null || value === undefined ? '' : value).replace(/[&<>'"]/g, function(ch) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[ch]; }); }
+      function escJs(value) { return String(value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+      loadHub();
+    </script>
+  </body>
+</html>
