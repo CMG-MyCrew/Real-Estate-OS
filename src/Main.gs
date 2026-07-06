@@ -1,8 +1,5 @@
 /**
  * REOS Enterprise v3.0 - Main Application Bootstrap
- *
- * This file contains lifecycle entry points and install routines for the
- * Google Sheets-bound Apps Script application.
  */
 
 function onOpen(e) {
@@ -15,9 +12,7 @@ function onOpen(e) {
   }
 }
 
-function onInstall(e) {
-  onOpen(e);
-}
+function onInstall(e) { onOpen(e); }
 
 function installREOS() {
   const lock = LockService.getScriptLock();
@@ -28,6 +23,7 @@ function installREOS() {
     REOS.seedLookups_();
     REOS.seedInitialAdmin_();
     if (REOS.ExternalIntegrations && typeof REOS.ExternalIntegrations.ensureSheets === 'function') REOS.ExternalIntegrations.ensureSheets();
+    if (REOS.AutomationTemplates && typeof REOS.AutomationTemplates.ensureSheets === 'function') REOS.AutomationTemplates.ensureSheets();
     REOS.setProperty_('REOS_VERSION', REOS.CONFIG.APP.VERSION);
     REOS.setProperty_('REOS_INSTALLED_AT', new Date().toISOString());
     REOS.log_('INFO', 'REOS installation completed', { version: REOS.CONFIG.APP.VERSION });
@@ -42,8 +38,7 @@ function installREOS() {
 
 function runHealthCheck() {
   const report = REOS.healthCheck_();
-  const message = report.messages.join('\n');
-  SpreadsheetApp.getUi().alert('REOS Health Check', message, SpreadsheetApp.getUi().ButtonSet.OK);
+  SpreadsheetApp.getUi().alert('REOS Health Check', report.messages.join('\n'), SpreadsheetApp.getUi().ButtonSet.OK);
   return report;
 }
 
@@ -57,13 +52,13 @@ REOS.init_ = function () {
   if (REOS.Properties && typeof REOS.Properties.initialize === 'function') REOS.Properties.initialize();
   if (REOS.Automation && typeof REOS.Automation.ensureSheets === 'function') REOS.Automation.ensureSheets();
   if (REOS.ExternalIntegrations && typeof REOS.ExternalIntegrations.ensureSheets === 'function') REOS.ExternalIntegrations.ensureSheets();
+  if (REOS.AutomationTemplates && typeof REOS.AutomationTemplates.ensureSheets === 'function') REOS.AutomationTemplates.ensureSheets();
   if (REOS.AI && typeof REOS.AI.initialize === 'function') REOS.AI.initialize();
   REOS.setProperty_('REOS_LAST_OPENED_AT', new Date().toISOString());
 };
 
 REOS.buildMenu_ = function () {
-  const ui = SpreadsheetApp.getUi();
-  ui.createMenu('REOS')
+  SpreadsheetApp.getUi().createMenu('REOS')
     .addItem('Open Dashboard', 'reosOpenDashboard')
     .addItem('Open Executive Dashboard', 'showExecutiveDashboard')
     .addItem('Open CRM', 'showCRM')
@@ -76,6 +71,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open Property Dashboard', 'showPropertyDashboard')
     .addItem('Open Automation', 'showAutomation')
     .addItem('Open Automation Dashboard', 'showAutomationDashboard')
+    .addItem('Open Automation Templates', 'showAutomationTemplates')
     .addItem('Open External Integrations', 'showExternalIntegrations')
     .addItem('Open AI Workspace', 'showAI')
     .addItem('Open AI Dashboard', 'showAIDashboard')
@@ -89,8 +85,7 @@ REOS.buildMenu_ = function () {
 
 REOS.createRequiredSheets_ = function () {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const requiredSheets = Object.keys(REOS.CONFIG.SHEETS).map(function (key) { return REOS.CONFIG.SHEETS[key]; });
-  requiredSheets.forEach(function (sheetName) {
+  Object.keys(REOS.CONFIG.SHEETS).map(function (key) { return REOS.CONFIG.SHEETS[key]; }).forEach(function (sheetName) {
     let sheet = ss.getSheetByName(sheetName);
     if (!sheet) {
       sheet = ss.insertSheet(sheetName);
@@ -157,7 +152,7 @@ REOS.healthCheck_ = function () {
     if (!exists) report.ok = false;
     report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
   });
-  ['VENDORS', 'WORK_ORDERS', 'AUTOMATION_RULES', 'AUTOMATION_RUNS', 'PROPERTIES', 'UNITS', 'INSPECTIONS', 'MAINTENANCE_REQUESTS', 'AI_REQUESTS', 'EXTERNAL_PROVIDERS', 'EXTERNAL_REQUESTS'].forEach(function (name) {
+  ['VENDORS', 'WORK_ORDERS', 'AUTOMATION_RULES', 'AUTOMATION_RUNS', 'AUTOMATION_TEMPLATES', 'PROPERTIES', 'UNITS', 'INSPECTIONS', 'MAINTENANCE_REQUESTS', 'AI_REQUESTS', 'EXTERNAL_PROVIDERS', 'EXTERNAL_REQUESTS'].forEach(function (name) {
     const exists = !!ss.getSheetByName(name);
     if (!exists) report.ok = false;
     report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
@@ -166,67 +161,14 @@ REOS.healthCheck_ = function () {
   return report;
 };
 
-function reosOpenDashboard() {
-  const html = HtmlService.createHtmlOutputFromFile('Index').setTitle('REOS Enterprise').setWidth(1200).setHeight(800);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Enterprise');
-}
-
-function showExecutiveDashboard() {
-  REOS.Security.requirePermission('dashboard:view');
-  const html = HtmlService.createHtmlOutputFromFile('ExecutiveDashboard').setTitle('REOS Executive Dashboard').setWidth(1200).setHeight(800);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Executive Dashboard');
-}
-
-function showCRMDashboard() {
-  REOS.Security.requirePermission('crm:read');
-  const html = HtmlService.createHtmlOutputFromFile('CRMDashboard').setTitle('REOS CRM Dashboard').setWidth(1200).setHeight(800);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS CRM Dashboard');
-}
-
-function showAcquisitionsDashboard() {
-  REOS.Security.requirePermission('leads:read');
-  const html = HtmlService.createHtmlOutputFromFile('AcquisitionsDashboard').setTitle('REOS Acquisitions Dashboard').setWidth(1200).setHeight(800);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Acquisitions Dashboard');
-}
-
-function showVendorDashboard() {
-  REOS.Security.requirePermission('vendors:read');
-  const html = HtmlService.createHtmlOutputFromFile('VendorDashboard').setTitle('REOS Vendor Dashboard').setWidth(1200).setHeight(800);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Vendor Dashboard');
-}
-
-function showPropertyDashboard() {
-  REOS.Security.requirePermission('properties:read');
-  const html = HtmlService.createHtmlOutputFromFile('PropertyDashboard').setTitle('REOS Property Dashboard').setWidth(1200).setHeight(800);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Property Dashboard');
-}
-
-function showAutomationDashboard() {
-  REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('AutomationDashboard').setTitle('REOS Automation Dashboard').setWidth(1200).setHeight(800);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Automation Dashboard');
-}
-
-function showExternalIntegrations() {
-  REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('ExternalIntegrations').setTitle('REOS External Integrations').setWidth(1200).setHeight(800);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS External Integrations');
-}
-
-function showAI() {
-  REOS.Security.requirePermission('ai:use');
-  const html = HtmlService.createHtmlOutputFromFile('AI').setTitle('REOS AI Workspace').setWidth(1200).setHeight(800);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS AI Workspace');
-}
-
-function showAIDashboard() {
-  REOS.Security.requirePermission('ai:use');
-  const html = HtmlService.createHtmlOutputFromFile('AIDashboard').setTitle('REOS AI Dashboard').setWidth(1200).setHeight(800);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS AI Dashboard');
-}
-
-function showAdmin() {
-  REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('Admin').setTitle('REOS Admin').setWidth(1100).setHeight(760);
-  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Admin');
-}
+function reosOpenDashboard() { SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('Index').setTitle('REOS Enterprise').setWidth(1200).setHeight(800), 'REOS Enterprise'); }
+function showExecutiveDashboard() { REOS.Security.requirePermission('dashboard:view'); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('ExecutiveDashboard').setTitle('REOS Executive Dashboard').setWidth(1200).setHeight(800), 'REOS Executive Dashboard'); }
+function showCRMDashboard() { REOS.Security.requirePermission('crm:read'); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('CRMDashboard').setTitle('REOS CRM Dashboard').setWidth(1200).setHeight(800), 'REOS CRM Dashboard'); }
+function showAcquisitionsDashboard() { REOS.Security.requirePermission('leads:read'); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('AcquisitionsDashboard').setTitle('REOS Acquisitions Dashboard').setWidth(1200).setHeight(800), 'REOS Acquisitions Dashboard'); }
+function showVendorDashboard() { REOS.Security.requirePermission('vendors:read'); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('VendorDashboard').setTitle('REOS Vendor Dashboard').setWidth(1200).setHeight(800), 'REOS Vendor Dashboard'); }
+function showPropertyDashboard() { REOS.Security.requirePermission('properties:read'); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('PropertyDashboard').setTitle('REOS Property Dashboard').setWidth(1200).setHeight(800), 'REOS Property Dashboard'); }
+function showAutomationDashboard() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('AutomationDashboard').setTitle('REOS Automation Dashboard').setWidth(1200).setHeight(800), 'REOS Automation Dashboard'); }
+function showExternalIntegrations() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('ExternalIntegrations').setTitle('REOS External Integrations').setWidth(1200).setHeight(800), 'REOS External Integrations'); }
+function showAI() { REOS.Security.requirePermission('ai:use'); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('AI').setTitle('REOS AI Workspace').setWidth(1200).setHeight(800), 'REOS AI Workspace'); }
+function showAIDashboard() { REOS.Security.requirePermission('ai:use'); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('AIDashboard').setTitle('REOS AI Dashboard').setWidth(1200).setHeight(800), 'REOS AI Dashboard'); }
+function showAdmin() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('Admin').setTitle('REOS Admin').setWidth(1100).setHeight(760), 'REOS Admin'); }
