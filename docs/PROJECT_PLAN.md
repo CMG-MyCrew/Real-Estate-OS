@@ -3,7 +3,7 @@
 Repository: `CMG-MyCrew/Real-Estate-OS`
 Primary platform: Google Apps Script + Google Sheets + GitHub
 
-## Current Sprint: v3.1.3 Finance Dashboards
+## Current Sprint: v3.2 Portal Foundation
 
 Status: In progress
 
@@ -13,18 +13,15 @@ Status: In progress
 - Main application bootstrap exists in `src/Main.gs`.
 - Configuration object exists in `src/Config.gs`.
 - Database framework exists in `src/Database.gs`.
-- Core operational, dashboard, AI, deployment, launch, maintenance, and finance foundations are in place.
-- v3.1 Financial Management added in `src/FinanceManager.gs`, `src/FinanceManager.html`, and `docs/V3_1_FINANCIAL_MANAGEMENT.md`.
-- v3.1.1 Finance Enhancements added in `src/FinanceEnhancements.gs`, `src/FinanceEnhancements.html`, and `docs/V3_1_1_FINANCE_ENHANCEMENTS.md`.
-- v3.1.2 QuickBooks Connector Foundation added in `src/QuickBooksConnector.gs`, `src/QuickBooksConnector.html`, and `docs/V3_1_2_QUICKBOOKS_CONNECTOR.md`.
-- v3.1.2.2 QuickBooks OAuth / Token Foundation added in `src/QuickBooksOAuth.gs`, `src/QuickBooksOAuth.html`, and `docs/V3_1_2_2_QUICKBOOKS_OAUTH.md`.
-- v3.1.3 Finance Dashboards added in `src/FinanceDashboards.gs`, `src/FinanceDashboards.html`, and `docs/V3_1_3_FINANCE_DASHBOARDS.md` with executive finance KPIs, cash flow metrics, monthly trends, AR/AP aging charts, property profitability, budget variance, finance snapshots, and menu access.
+- Core operational, dashboard, AI, deployment, launch, maintenance, finance, QuickBooks, and dashboard foundations are in place.
+- v3.1.3 Finance Dashboards added in `src/FinanceDashboards.gs`, `src/FinanceDashboards.html`, and `docs/V3_1_3_FINANCE_DASHBOARDS.md`.
+- v3.2 Portal Foundation added in `src/PortalFoundation.gs`, `src/PortalFoundation.html`, and `docs/V3_2_PORTAL_FOUNDATION.md` with portal accounts, invitations, sessions, document shares, messages, tasks, activity logs, investor/lender/client/vendor role dashboards, admin UI, menu access, and health-check wiring.
 
 ### Active Objectives
 
 - Keep `REOS` as the shared namespace across all Apps Script files.
 - Keep GitHub as the source of truth for all framework code.
-- Provide executive financial visibility before moving into portal foundation work.
+- Build secure portal access incrementally before exposing a public web app shell.
 
 ## Phase Roadmap
 
@@ -32,24 +29,24 @@ Status: In progress
 | --- | --- | --- |
 | Product Foundations | Complete | Core framework, CRM, acquisitions, property, vendors, automation, AI, dashboards, integrations, hardening, export, and documents. |
 | GA Release | Complete | Deployment, seeding, validation, monitoring, release package, and production launch/sign-off. |
-| v3.0.1 Maintenance | Complete | Patch issue tracking, regression runs, hotfix approvals, and patch release readiness. |
 | v3.1 Financial Management | Complete | Invoices, vendor payments, expenses, approvals, property P&L, and accounting-ready exports. |
 | v3.1.1 Finance Enhancements | Complete | Invoice line items, PDF-ready invoice output, accounting category mapping, receivables aging, and payables aging. |
 | v3.1.2 QuickBooks Connector | In Progress | Connector registry, OAuth/token foundation, account/entity mapping, export queue, dry-run sync logging, and sandbox testing. |
-| v3.1.3 Finance Dashboards | In Progress | Executive financial dashboards, KPI snapshots, cash flow, profitability, aging, and budget variance. |
+| v3.1.3 Finance Dashboards | Complete | Executive financial dashboards, KPI snapshots, cash flow, profitability, aging, and budget variance. |
+| v3.2 Portal Foundation | In Progress | Investor, lender, client, and vendor portal account model, invitations, sessions, document sharing, messages, tasks, and portal dashboards. |
 
 ## Acceptance Criteria
 
-- Health check validates `FIN_DASHBOARD_SNAPSHOTS` and `FIN_BUDGETS`.
-- Finance Dashboards is available from the REOS menu.
-- Dashboard KPIs calculate from finance source sheets.
-- AR/AP aging charts and monthly finance trend charts are available.
-- Property P&L and budget variance tables are available.
-- Finance dashboard snapshots can be created.
+- Health check validates `PORTAL_ACCOUNTS`, `PORTAL_SESSIONS`, `PORTAL_INVITATIONS`, `PORTAL_DOCUMENT_SHARES`, `PORTAL_MESSAGES`, `PORTAL_TASKS`, and `PORTAL_ACTIVITY_LOG`.
+- Portal Foundation is available from the REOS menu.
+- Admin can create portal invitations.
+- Invitations can create active portal accounts.
+- Portal document shares, messages, and tasks can be created.
+- Role-specific portal dashboard data can be loaded for investor, lender, client, and vendor accounts.
 
 ## Next Build Items
 
-1. Build v3.2 Portal Foundation.
-2. Build v3.1.2.3 QuickBooks sandbox API request wrapper.
-3. Add Chart of Accounts pull and mapping review.
-4. Add customer/vendor lookup and entity matching.
+1. Build v3.2.1 Portal Authentication & Web App Shell.
+2. Build v3.2.2 Investor Portal UI.
+3. Build v3.2.3 Vendor Portal UI.
+4. Build v3.1.2.3 QuickBooks sandbox API request wrapper.
