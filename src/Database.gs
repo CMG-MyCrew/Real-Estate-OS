@@ -1,8 +1,6 @@
 /**
- * REOS Enterprise v3.0 - Database Framework
- *
- * A lightweight data-access layer for Google Sheets tables.
- * Tables are expected to have a header row in row 1.
+ * REOS Enterprise v3.2.6 - Database Framework
+ * Sheet-table data layer with safe table creation, insert, update, query, and soft delete.
  */
 
 var REOS = REOS || {};
@@ -15,6 +13,19 @@ REOS.Database = (function () {
   function getSheet(sheetName) {
     const sheet = getSpreadsheet_().getSheetByName(sheetName);
     if (!sheet) throw new Error('Sheet not found: ' + sheetName);
+    return sheet;
+  }
+
+  function ensureTable(sheetName, headers) {
+    const ss = getSpreadsheet_();
+    let sheet = ss.getSheetByName(sheetName);
+    if (!sheet) sheet = ss.insertSheet(sheetName);
+    if (sheet.getLastRow() === 0) {
+      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+      sheet.setFrozenRows(1);
+      sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold').setWrap(true);
+      sheet.autoResizeColumns(1, headers.length);
+    }
     return sheet;
   }
 
@@ -54,19 +65,20 @@ REOS.Database = (function () {
     const headers = getHeaders(sheetName);
     const lastRow = sheet.getLastRow();
     const lastColumn = Math.max(sheet.getLastColumn(), headers.length);
-
     if (lastRow < 2) return [];
-
     const rows = sheet.getRange(2, 1, lastRow - 1, lastColumn).getValues();
-    return rows
-      .filter(function (row) { return row.some(function (cell) { return cell !== '' && cell !== null; }); })
-      .map(function (row, index) { return rowToObject(headers, row, index + 2); });
+    return rows.filter(function (row) {
+      return row.some(function (cell) { return cell !== '' && cell !== null; });
+    }).map(function (row, index) {
+      return rowToObject(headers, row, index + 2);
+    });
   }
 
   function findById(sheetName, idField, idValue) {
-    const records = getAll(sheetName);
     const id = String(idValue || '').trim();
-    return records.find(function (record) { return String(record[idField] || '').trim() === id; }) || null;
+    return getAll(sheetName).find(function (record) {
+      return String(record[idField] || '').trim() === id;
+    }) || null;
   }
 
   function findRowById(sheetName, idField, idValue) {
@@ -78,24 +90,18 @@ REOS.Database = (function () {
     options = options || {};
     const lock = LockService.getScriptLock();
     lock.waitLock(30000);
-
     try {
       const sheet = getSheet(sheetName);
       const headers = getHeaders(sheetName);
       const now = new Date();
-
-      if (options.idField && !record[options.idField]) {
-        record[options.idField] = REOS.generateId_(options.idPrefix || 'ID');
-      }
-
+      record = Object.assign({}, record || {});
+      if (options.idField && !record[options.idField]) record[options.idField] = REOS.generateId_(options.idPrefix || 'ID');
       if (headers.indexOf('Created At') !== -1 && !record['Created At']) record['Created At'] = now;
       if (headers.indexOf('Updated At') !== -1) record['Updated At'] = now;
-
       const row = objectToRow(headers, record);
       sheet.appendRow(row);
-
       const inserted = rowToObject(headers, row, sheet.getLastRow());
-      REOS.Logger.info('DB insert', { sheet: sheetName, id: options.idField ? inserted[options.idField] : null });
+      if (REOS.Logger) REOS.Logger.info('DB insert', { sheet: sheetName, id: options.idField ? inserted[options.idField] : null });
       return inserted;
     } finally {
       lock.releaseLock();
@@ -105,35 +111,34 @@ REOS.Database = (function () {
   function update(sheetName, idField, idValue, changes) {
     const lock = LockService.getScriptLock();
     lock.waitLock(30000);
-
     try {
       const sheet = getSheet(sheetName);
       const headers = getHeaders(sheetName);
       const rowNumber = findRowById(sheetName, idField, idValue);
       if (!rowNumber) throw new Error('Record not found: ' + idValue);
-
       const currentValues = sheet.getRange(rowNumber, 1, 1, headers.length).getValues()[0];
       const currentRecord = rowToObject(headers, currentValues, rowNumber);
       const updatedRecord = Object.assign({}, currentRecord, changes || {});
       delete updatedRecord._rowNumber;
-
       if (headers.indexOf('Updated At') !== -1) updatedRecord['Updated At'] = new Date();
-
       const row = objectToRow(headers, updatedRecord);
       sheet.getRange(rowNumber, 1, 1, row.length).setValues([row]);
-
-      REOS.Logger.info('DB update', { sheet: sheetName, id: idValue });
+      if (REOS.Logger) REOS.Logger.info('DB update', { sheet: sheetName, id: idValue });
       return rowToObject(headers, row, rowNumber);
     } finally {
       lock.releaseLock();
     }
   }
 
+  function upsert(sheetName, idField, idValue, record, options) {
+    const existing = idValue ? findById(sheetName, idField, idValue) : null;
+    if (existing) return update(sheetName, idField, idValue, record || {});
+    return insert(sheetName, record || {}, options || { idField: idField });
+  }
+
   function softDelete(sheetName, idField, idValue) {
     const headers = getHeaders(sheetName);
-    if (headers.indexOf('Active') !== -1) {
-      return update(sheetName, idField, idValue, { Active: false, Status: 'Archived' });
-    }
+    if (headers.indexOf('Active') !== -1) return update(sheetName, idField, idValue, { Active: false, Status: 'Archived' });
     return update(sheetName, idField, idValue, { Status: 'Archived' });
   }
 
@@ -143,6 +148,7 @@ REOS.Database = (function () {
 
   return {
     getSheet: getSheet,
+    ensureTable: ensureTable,
     getHeaders: getHeaders,
     getHeaderMap: getHeaderMap,
     getAll: getAll,
@@ -150,6 +156,7 @@ REOS.Database = (function () {
     findRowById: findRowById,
     insert: insert,
     update: update,
+    upsert: upsert,
     softDelete: softDelete,
     query: query,
     rowToObject: rowToObject,
