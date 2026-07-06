@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top"><meta name="viewport" content="width=device-width, initial-scale=1"><meta charset="utf-8">
+    <style>
+      body{margin:0;font-family:Arial,sans-serif;background:#f6f8fb;color:#111827}.app{min-height:100vh}.top{background:#111827;color:#fff;padding:16px 20px}.top h1{margin:0;font-size:20px}.wrap{display:grid;grid-template-columns:240px 1fr;gap:0}.nav{background:#fff;border-right:1px solid #e5e7eb;min-height:calc(100vh - 56px);padding:14px}.nav button{display:block;width:100%;text-align:left;margin:4px 0;padding:10px;border:0;border-radius:8px;background:#f3f4f6;cursor:pointer}.main{padding:18px}.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:14px;margin-bottom:14px}.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}.kpi{background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px}.kpi span{display:block;color:#6b7280;font-size:12px;font-weight:bold}.kpi strong{font-size:24px}.muted{color:#6b7280}pre{white-space:pre-wrap;background:#0f172a;color:#e5e7eb;border-radius:12px;padding:12px;overflow:auto}@media(max-width:760px){.wrap{grid-template-columns:1fr}.nav{min-height:auto;border-right:0;border-bottom:1px solid #e5e7eb}.nav button{display:inline-block;width:auto}.main{padding:12px}}
+    </style>
+  </head>
+  <body>
+    <div class="app"><header class="top"><h1>REOS Portal</h1><div class="muted" id="identity">Loading...</div></header><div class="wrap"><nav class="nav" id="nav"></nav><main class="main"><section class="card"><h2 id="title">Portal</h2><div id="content">Loading portal shell...</div></section><section class="card"><h2>Debug Output</h2><pre id="output"></pre></section></main></div></div>
+    <script>
+      const TOKEN='<?= token ?>'; let currentRoute='<?= route ?>' || 'home';
+      function load(route){currentRoute=route||currentRoute;google.script.run.withSuccessHandler(render).withFailureHandler(showError).reosPortalShellData(TOKEN,currentRoute);}
+      function render(data){document.getElementById('output').textContent=JSON.stringify(data,null,2);if(!data.ok){document.getElementById('identity').textContent=data.message||'Session invalid';document.getElementById('content').innerHTML='<p>Please request a new portal login link.</p>';return;}document.getElementById('identity').textContent=(data.account['Display Name']||data.account.Email)+' · '+data.account['Portal Role'];document.getElementById('nav').innerHTML=(data.nav||[]).map(r=>'<button onclick="load(\''+escJs(r.Route)+'\')">'+esc(r.Title)+'</button>').join('')+'<button onclick="logout()">Logout</button>';document.getElementById('title').textContent=data.view.title||'Dashboard';renderView(data.view,data.portal);}
+      function renderView(view,portal){if(view.kpis){document.getElementById('content').innerHTML='<div class="kpis"><div class="kpi"><span>Documents</span><strong>'+esc(portal.kpis.documents)+'</strong></div><div class="kpi"><span>Messages</span><strong>'+esc(portal.kpis.openMessages)+'</strong></div><div class="kpi"><span>Tasks</span><strong>'+esc(portal.kpis.openTasks)+'</strong></div></div><pre>'+esc(JSON.stringify(view.roleDashboard||{},null,2))+'</pre>';return;}const rows=view.records||[];document.getElementById('content').innerHTML=rows.length?'<pre>'+esc(JSON.stringify(rows,null,2))+'</pre>':'<p>No records available.</p>';}
+      function logout(){google.script.run.withSuccessHandler(function(){document.getElementById('content').innerHTML='<p>You are logged out.</p>';}).reosPortalLogout(TOKEN);}function showError(e){document.getElementById('output').textContent=JSON.stringify({error:e.message},null,2);}function esc(v){return String(v==null?'':v).replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));}function escJs(v){return String(v||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
+      load(currentRoute);
+    </script>
+  </body>
+</html>
