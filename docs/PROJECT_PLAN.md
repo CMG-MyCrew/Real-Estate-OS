@@ -3,7 +3,7 @@
 Repository: `CMG-MyCrew/Real-Estate-OS`
 Primary platform: Google Apps Script + Google Sheets + GitHub
 
-## Current Sprint: GA Phase 2 Production Deployment
+## Current Sprint: GA Phase 3 Enterprise Data Seeding
 
 Status: In progress
 
@@ -36,8 +36,9 @@ Status: In progress
 - Sprint 14 Dashboard Print/PDF Export Support added in `src/DashboardExport.gs` and `src/DashboardExport.html`.
 - Sprint 15 Document/Photo Management Foundation upgraded in `src/Documents.gs` and added `src/Documents.html`.
 - Sprint 20 AI Automation Agents added in `src/AIAgents.gs`, `src/AIAgents.html`, and `docs/AI_AUTOMATION_AGENTS.md`.
-- GA Phase 2 Production Deployment Wizard added in `src/DeploymentWizard.gs`, `src/DeploymentWizard.html`, and `docs/GA_PHASE_2_PRODUCTION_DEPLOYMENT.md` with deployment run tracking, deployment checks, Script Properties setup, production Drive folder creation, module seeding, automation template seeding, AI agent seeding, health check execution, production hardening audit, readiness scoring, and menu access.
-- REOS menu updated in `src/Main.gs` with Dashboard Hub, Deployment Wizard, Dashboard Export, Documents, AI Agents, Dashboard, Executive Dashboard, CRM, CRM Dashboard, Acquisitions, Acquisitions Dashboard, Vendors, Vendor Dashboard, Properties, Property Dashboard, Automation, Automation Dashboard, Automation Templates, External Integrations, Production Hardening, AI Workspace, AI Dashboard, Admin, Initialize Workbook, Health Check, and Run Tests actions.
+- GA Phase 2 Production Deployment Wizard added in `src/DeploymentWizard.gs`, `src/DeploymentWizard.html`, and `docs/GA_PHASE_2_PRODUCTION_DEPLOYMENT.md`.
+- GA Phase 3 Enterprise Data Seeding added in `src/EnterpriseSeeder.gs`, `src/EnterpriseSeeder.html`, and `docs/GA_PHASE_3_ENTERPRISE_DATA_SEEDING.md` with seed run tracking, seed item audit logging, production lookups, dashboard settings, environment defaults, inspection templates, automation template seeding, AI agent seeding, and menu access.
+- REOS menu updated in `src/Main.gs` with Dashboard Hub, Deployment Wizard, Enterprise Seeder, Dashboard Export, Documents, AI Agents, Dashboard, Executive Dashboard, CRM, CRM Dashboard, Acquisitions, Acquisitions Dashboard, Vendors, Vendor Dashboard, Properties, Property Dashboard, Automation, Automation Dashboard, Automation Templates, External Integrations, Production Hardening, AI Workspace, AI Dashboard, Admin, Initialize Workbook, Health Check, and Run Tests actions.
 - GitHub/Apps Script sync guide added in `docs/APPS_SCRIPT_SYNC.md`.
 - Deployment guide added in `docs/DEPLOYMENT.md`.
 - Production release checklist template added in `docs/PRODUCTION_RELEASE_CHECKLIST.md`.
@@ -46,7 +47,7 @@ Status: In progress
 
 - Keep `REOS` as the shared namespace across all Apps Script files.
 - Standardize lifecycle functions: `onOpen`, `onInstall`, `installREOS`, and `runHealthCheck`.
-- Maintain module-ready architecture for CRM, acquisitions, properties, vendors, automation, dashboards, integrations, production hardening, exports, documents, AI agents, release orchestration, and deployment provisioning.
+- Maintain module-ready architecture for CRM, acquisitions, properties, vendors, automation, dashboards, integrations, production hardening, exports, documents, AI agents, release orchestration, deployment provisioning, and enterprise seeding.
 - Keep GitHub as the source of truth for all framework code.
 
 ## Phase Roadmap
@@ -71,19 +72,21 @@ Status: In progress
 | 15. Document Management | In Progress | Drive-backed folder registry, file links, photo/document tracking, record associations, document event audit logging. |
 | 20. AI Orchestration & Production Release | In Progress | Cross-module AI agents, autonomous recommendations, operational task queues, release readiness summary, and Enterprise v3.0 production release preparation. |
 | GA Phase 1. Code Freeze | Planned | Release branch, RC tag, version manifest, and code freeze checklist. |
-| GA Phase 2. Production Deployment | In Progress | Deployment Wizard, production workbook provisioning, Script Properties, Drive folder setup, module seeding, hardening audit, and readiness report. |
+| GA Phase 2. Production Deployment | Complete | Deployment Wizard, production workbook provisioning, Script Properties, Drive folder setup, module seeding, hardening audit, and readiness report. |
+| GA Phase 3. Enterprise Data Seeding | In Progress | Enterprise lookups, dashboard settings, environment defaults, inspection templates, automation templates, AI agents, and seed audit reports. |
 
 ## Core Framework Acceptance Criteria
 
 - Spreadsheet opens with a REOS menu.
 - Install routine creates required sheets and seeds settings/lookups.
-- Health check validates required sheets, including `AUTOMATION_TEMPLATES`, `HARDENING_REPORTS`, `HARDENING_CHECKS`, `DASHBOARD_EXPORTS`, `DOCUMENTS`, `DOCUMENT_FOLDERS`, `DOCUMENT_EVENTS`, `AI_AGENTS`, `AI_AGENT_RUNS`, `AI_AGENT_TASKS`, `DEPLOYMENT_RUNS`, and `DEPLOYMENT_CHECKS`.
+- Health check validates required sheets, including `AUTOMATION_TEMPLATES`, `HARDENING_REPORTS`, `HARDENING_CHECKS`, `DASHBOARD_EXPORTS`, `DOCUMENTS`, `DOCUMENT_FOLDERS`, `DOCUMENT_EVENTS`, `AI_AGENTS`, `AI_AGENT_RUNS`, `AI_AGENT_TASKS`, `DEPLOYMENT_RUNS`, `DEPLOYMENT_CHECKS`, `SEED_RUNS`, `SEED_ITEMS`, `DASHBOARD_SETTINGS`, `INSPECTION_TEMPLATES`, and `ENVIRONMENT_SETTINGS`.
 - Dashboard shell opens from the REOS menu.
 - Dashboard Hub provides permission-aware navigation, quick actions, enterprise KPIs, notifications, system health, recent activity, and global search.
 - Dashboard Export can generate print-ready dashboard HTML, create PDF-ready Drive files, pass through CSV exports, and log export activity.
 - Document Management can create Drive folders, link Drive files, track photos/documents, associate files to operational records, archive documents, and log document events.
 - AI Agents can seed agents, run active agents, log runs, create recommendation tasks, update task status, and generate release readiness summaries.
 - Deployment Wizard can provision the production workbook, configure required Script Properties, create production Drive folders, seed module systems, run health and hardening checks, persist deployment run/check records, and return readiness score/status.
+- Enterprise Seeder can seed production baseline lookups, dashboard settings, environment settings, inspection templates, automation templates, AI agents, and persist seed run/item records.
 - Logger writes structured records to `SYSTEM_LOG`.
 - Database layer can insert, update, query, and soft-delete sheet records.
 - Security layer can enforce permissions and generate audit reports.
@@ -104,8 +107,8 @@ Status: In progress
 
 ## Next Build Items
 
-1. Build GA Phase 3 Enterprise Data Seeding.
-2. Run Deployment Wizard in staging workbook.
-3. Resolve deployment warnings/blockers.
-4. Run production hardening audit after deployment.
+1. Build GA Phase 4 Operational Validation.
+2. Run Enterprise Seeder in staging workbook.
+3. Resolve seed warnings/errors.
+4. Run production hardening audit after seeding.
 5. Package REOS Enterprise v3.0.0 GA release.
