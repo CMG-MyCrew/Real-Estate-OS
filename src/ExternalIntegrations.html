@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <style>
+      body { margin: 0; font-family: Arial, sans-serif; background: #f6f8fb; color: #1f2937; }
+      .shell { padding: 22px; }
+      .header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
+      h1 { margin: 0 0 6px; font-size: 26px; }
+      h2 { margin: 0 0 10px; font-size: 17px; }
+      .muted { color: #6b7280; }
+      .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; margin-bottom: 16px; }
+      .field { display: flex; flex-direction: column; gap: 4px; }
+      label { font-size: 12px; font-weight: 700; color: #374151; }
+      input, select, textarea { padding: 9px; border: 1px solid #d1d5db; border-radius: 8px; min-width: 145px; box-sizing: border-box; }
+      textarea { width: 100%; min-height: 120px; font-family: monospace; }
+      button { padding: 9px 12px; border: 0; border-radius: 8px; cursor: pointer; font-weight: 700; }
+      .primary { background: #111827; color: #fff; }
+      .secondary { background: #e5e7eb; color: #111827; }
+      .success { background: #dcfce7; color: #166534; }
+      .danger { background: #fee2e2; color: #991b1b; }
+      .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 15px; margin-bottom: 16px; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05); }
+      .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 12px; margin-bottom: 16px; }
+      .kpi { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; }
+      .kpi span { color: #6b7280; font-size: 12px; font-weight: 700; }
+      .kpi strong { display: block; font-size: 27px; margin-top: 4px; }
+      .grid { display: grid; grid-template-columns: 360px 1fr; gap: 16px; }
+      table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      th, td { text-align: left; border-bottom: 1px solid #e5e7eb; padding: 8px; vertical-align: top; }
+      th { background: #f9fafb; color: #374151; }
+      tr.clickable { cursor: pointer; }
+      tr.clickable:hover { background: #f9fafb; }
+      .pill { display: inline-block; border-radius: 999px; padding: 3px 8px; font-size: 12px; font-weight: 700; background: #e5e7eb; }
+      .ok { background: #dcfce7; color: #166534; }
+      .bad { background: #fee2e2; color: #991b1b; }
+      pre { white-space: pre-wrap; background: #0f172a; color: #e5e7eb; border-radius: 12px; padding: 12px; max-height: 220px; overflow: auto; }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <div class="header">
+        <div>
+          <h1>External Integrations</h1>
+          <div class="muted">Provider registry, dry-run API testing, request logs, and mapping stubs for property data integrations.</div>
+        </div>
+        <div class="toolbar">
+          <button class="primary" onclick="initialize()">Initialize</button>
+          <button class="secondary" onclick="loadDashboard()">Refresh</button>
+        </div>
+      </div>
+
+      <section class="kpis">
+        <div class="kpi"><span>Providers</span><strong id="kpiProviders">0</strong></div>
+        <div class="kpi"><span>Enabled</span><strong id="kpiEnabled">0</strong></div>
+        <div class="kpi"><span>Dry Run</span><strong id="kpiDryRun">0</strong></div>
+        <div class="kpi"><span>Recent Requests</span><strong id="kpiRequests">0</strong></div>
+        <div class="kpi"><span>Failed</span><strong id="kpiFailed">0</strong></div>
+      </section>
+
+      <section class="grid">
+        <div class="card">
+          <h2>Provider Editor</h2>
+          <input id="providerId" type="hidden">
+          <label>Provider</label><input id="providerKey" disabled>
+          <label>Base URL</label><input id="baseUrl" placeholder="https://api.example.com">
+          <label>Enabled</label><select id="enabled"><option value="false">Disabled</option><option value="true">Enabled</option></select>
+          <label>Dry Run</label><select id="dryRun"><option value="true">Dry Run</option><option value="false">Live Calls</option></select>
+          <label>Daily Limit</label><input id="dailyLimit" type="number" value="100">
+          <label>Notes</label><textarea id="notes"></textarea>
+          <button class="primary" onclick="saveProvider()">Save Provider</button>
+          <button class="secondary" onclick="clearEditor()">Clear</button>
+        </div>
+
+        <div class="card">
+          <h2>Dry-Run Test Request</h2>
+          <div class="toolbar">
+            <div class="field"><label>Provider</label><select id="testProvider"><option>attom</option><option>batchdata</option><option>propertyradar</option><option>county</option><option>maps</option><option>mls</option></select></div>
+            <div class="field"><label>Operation</label><input id="testOperation" value="propertyLookup"></div>
+          </div>
+          <label>Payload JSON</label>
+          <textarea id="testPayload">{"address":"123 Main St, Jacksonville, FL"}</textarea>
+          <button class="success" onclick="runTest()">Run Test</button>
+          <button class="secondary" onclick="fillSample('property')">Property Sample</button>
+          <button class="secondary" onclick="fillSample('skip')">Skip Trace Sample</button>
+          <button class="secondary" onclick="fillSample('distress')">Distress Search Sample</button>
+        </div>
+      </section>
+
+      <section class="card"><h2>Providers</h2><table id="providersTable"></table></section>
+      <section class="card"><h2>Recent Requests</h2><table id="requestsTable"></table></section>
+      <section class="card"><h2>System Output</h2><pre id="output">Ready.</pre></section>
+    </main>
+
+    <script>
+      let providers = [];
+      function output(value) { document.getElementById('output').textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2); }
+      function initialize() { google.script.run.withSuccessHandler(renderDashboard).withFailureHandler(showError).reosExternalInitialize(); }
+      function loadDashboard() { google.script.run.withSuccessHandler(renderDashboard).withFailureHandler(showError).reosExternalGetDashboard(); }
+      function renderDashboard(data) {
+        providers = data.providers || [];
+        const k = data.kpis || {};
+        setText('kpiProviders', k.providers); setText('kpiEnabled', k.enabledProviders); setText('kpiDryRun', k.dryRunProviders); setText('kpiRequests', k.recentRequests); setText('kpiFailed', k.failedRequests);
+        renderProviders(providers); renderRequests(data.requests || []); output(data);
+      }
+      function renderProviders(rows) {
+        let html = '<tr><th>Provider</th><th>Name</th><th>Category</th><th>Enabled</th><th>Dry Run</th><th>Auth</th><th>Actions</th></tr>';
+        if (!rows.length) html += '<tr><td colspan="7">No providers found. Click Initialize.</td></tr>';
+        rows.forEach(function(row) {
+          html += '<tr class="clickable" onclick="editProvider(\'' + escJs(row['Provider ID']) + '\')"><td>' + esc(row.Provider) + '</td><td>' + esc(row.Name) + '</td><td>' + esc(row.Category) + '</td><td>' + (row.Enabled === true ? '<span class="pill ok">Enabled</span>' : '<span class="pill bad">Disabled</span>') + '</td><td>' + (row['Dry Run'] !== false ? '<span class="pill ok">Dry</span>' : '<span class="pill bad">Live</span>') + '</td><td>' + esc(row['Auth Type']) + '</td><td><button class="secondary" onclick="event.stopPropagation(); editProvider(\'' + escJs(row['Provider ID']) + '\')">Edit</button></td></tr>';
+        });
+        document.getElementById('providersTable').innerHTML = html;
+      }
+      function renderRequests(rows) {
+        let html = '<tr><th>Started</th><th>Provider</th><th>Operation</th><th>Status</th><th>Record</th><th>Error</th></tr>';
+        if (!rows.length) html += '<tr><td colspan="6">No requests yet.</td></tr>';
+        rows.forEach(function(row) { html += '<tr><td>' + esc(row['Started At']) + '</td><td>' + esc(row.Provider) + '</td><td>' + esc(row.Operation) + '</td><td>' + esc(row.Status) + '</td><td>' + esc(row['Record Type'] + ' ' + row['Record ID']) + '</td><td>' + esc(row.Error) + '</td></tr>'; });
+        document.getElementById('requestsTable').innerHTML = html;
+      }
+      function editProvider(id) {
+        const row = providers.find(function(item) { return String(item['Provider ID']) === String(id); });
+        if (!row) return;
+        document.getElementById('providerId').value = row['Provider ID'] || '';
+        document.getElementById('providerKey').value = row.Provider || '';
+        document.getElementById('baseUrl').value = row['Base URL'] || '';
+        document.getElementById('enabled').value = String(row.Enabled === true);
+        document.getElementById('dryRun').value = String(row['Dry Run'] !== false);
+        document.getElementById('dailyLimit').value = row['Daily Limit'] || 100;
+        document.getElementById('notes').value = row.Notes || '';
+      }
+      function saveProvider() {
+        const id = document.getElementById('providerId').value;
+        if (!id) return output({ error: 'Select a provider first.' });
+        const changes = { 'Base URL': valueOf('baseUrl'), Enabled: valueOf('enabled') === 'true', 'Dry Run': valueOf('dryRun') === 'true', 'Daily Limit': Number(valueOf('dailyLimit') || 100), Notes: valueOf('notes') };
+        google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); }).withFailureHandler(showError).reosExternalUpdateProvider(id, changes);
+      }
+      function runTest() {
+        let payload;
+        try { payload = JSON.parse(valueOf('testPayload') || '{}'); } catch (error) { return output({ error: 'Payload JSON invalid: ' + error.message }); }
+        google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); }).withFailureHandler(showError).reosExternalInvoke(valueOf('testProvider'), valueOf('testOperation'), payload, { recordType: 'Test', recordId: 'UI' });
+      }
+      function fillSample(type) {
+        if (type === 'property') { setValue('testProvider', 'attom'); setValue('testOperation', 'propertyLookup'); setValue('testPayload', '{"address":"123 Main St, Jacksonville, FL"}'); }
+        if (type === 'skip') { setValue('testProvider', 'batchdata'); setValue('testOperation', 'skipTrace'); setValue('testPayload', '{"ownerName":"Jane Seller","address":"123 Main St, Jacksonville, FL"}'); }
+        if (type === 'distress') { setValue('testProvider', 'propertyradar'); setValue('testOperation', 'distressSearch'); setValue('testPayload', '{"city":"Jacksonville","state":"FL","distressIndicators":["Tax Delinquent","Absentee Owner"],"limit":25}'); }
+      }
+      function clearEditor() { ['providerId','providerKey','baseUrl','notes'].forEach(function(id) { setValue(id, ''); }); setValue('enabled', 'false'); setValue('dryRun', 'true'); setValue('dailyLimit', '100'); }
+      function showError(error) { output({ error: error.message }); }
+      function valueOf(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+      function setValue(id, value) { const el = document.getElementById(id); if (el) el.value = value; }
+      function setText(id, value) { document.getElementById(id).textContent = value || 0; }
+      function esc(value) { return String(value === null || value === undefined ? '' : value).replace(/[&<>'"]/g, function(ch) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[ch]; }); }
+      function escJs(value) { return String(value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+      loadDashboard();
+    </script>
+  </body>
+</html>
