@@ -3,7 +3,7 @@
 Repository: `CMG-MyCrew/Real-Estate-OS`
 Primary platform: Google Apps Script + Google Sheets + GitHub
 
-## Current Sprint: v3.1.2.2 QuickBooks OAuth / Token Foundation
+## Current Sprint: v3.1.3 Finance Dashboards
 
 Status: In progress
 
@@ -17,13 +17,14 @@ Status: In progress
 - v3.1 Financial Management added in `src/FinanceManager.gs`, `src/FinanceManager.html`, and `docs/V3_1_FINANCIAL_MANAGEMENT.md`.
 - v3.1.1 Finance Enhancements added in `src/FinanceEnhancements.gs`, `src/FinanceEnhancements.html`, and `docs/V3_1_1_FINANCE_ENHANCEMENTS.md`.
 - v3.1.2 QuickBooks Connector Foundation added in `src/QuickBooksConnector.gs`, `src/QuickBooksConnector.html`, and `docs/V3_1_2_QUICKBOOKS_CONNECTOR.md`.
-- v3.1.2.2 QuickBooks OAuth / Token Foundation added in `src/QuickBooksOAuth.gs`, `src/QuickBooksOAuth.html`, and `docs/V3_1_2_2_QUICKBOOKS_OAUTH.md` with OAuth state tracking, authorization URL generation, callback recording, token exchange foundation, refresh-token foundation, sandbox-safe connection tests, token event logs, and menu access.
+- v3.1.2.2 QuickBooks OAuth / Token Foundation added in `src/QuickBooksOAuth.gs`, `src/QuickBooksOAuth.html`, and `docs/V3_1_2_2_QUICKBOOKS_OAUTH.md`.
+- v3.1.3 Finance Dashboards added in `src/FinanceDashboards.gs`, `src/FinanceDashboards.html`, and `docs/V3_1_3_FINANCE_DASHBOARDS.md` with executive finance KPIs, cash flow metrics, monthly trends, AR/AP aging charts, property profitability, budget variance, finance snapshots, and menu access.
 
 ### Active Objectives
 
 - Keep `REOS` as the shared namespace across all Apps Script files.
 - Keep GitHub as the source of truth for all framework code.
-- Keep QuickBooks connector safe-by-default and dry-run-first until sandbox credentials are verified.
+- Provide executive financial visibility before moving into portal foundation work.
 
 ## Phase Roadmap
 
@@ -35,19 +36,20 @@ Status: In progress
 | v3.1 Financial Management | Complete | Invoices, vendor payments, expenses, approvals, property P&L, and accounting-ready exports. |
 | v3.1.1 Finance Enhancements | Complete | Invoice line items, PDF-ready invoice output, accounting category mapping, receivables aging, and payables aging. |
 | v3.1.2 QuickBooks Connector | In Progress | Connector registry, OAuth/token foundation, account/entity mapping, export queue, dry-run sync logging, and sandbox testing. |
+| v3.1.3 Finance Dashboards | In Progress | Executive financial dashboards, KPI snapshots, cash flow, profitability, aging, and budget variance. |
 
 ## Acceptance Criteria
 
-- Health check validates `QB_OAUTH_STATES`, `QB_TOKEN_EVENTS`, and `QB_CONNECTION_TESTS`.
-- QuickBooks OAuth is available from the REOS menu.
-- OAuth authorization URLs can be generated for connection records.
-- Authorization callbacks can be recorded.
-- Token exchange and refresh flows support dry-run mode and live mode guards.
-- Sandbox connection test supports dry-run mode and live mode guards.
+- Health check validates `FIN_DASHBOARD_SNAPSHOTS` and `FIN_BUDGETS`.
+- Finance Dashboards is available from the REOS menu.
+- Dashboard KPIs calculate from finance source sheets.
+- AR/AP aging charts and monthly finance trend charts are available.
+- Property P&L and budget variance tables are available.
+- Finance dashboard snapshots can be created.
 
 ## Next Build Items
 
-1. Build v3.1.2.3 QuickBooks sandbox API request wrapper.
-2. Add Chart of Accounts pull and mapping review.
-3. Add customer/vendor lookup and entity matching.
-4. Build v3.1.3 Finance Dashboards.
+1. Build v3.2 Portal Foundation.
+2. Build v3.1.2.3 QuickBooks sandbox API request wrapper.
+3. Add Chart of Accounts pull and mapping review.
+4. Add customer/vendor lookup and entity matching.
