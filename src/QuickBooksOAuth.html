@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top"><meta charset="utf-8">
+    <style>
+      body{margin:0;font-family:Arial,sans-serif;background:#f6f8fb;color:#1f2937}.shell{padding:22px}.header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:16px}h1{margin:0 0 6px;font-size:26px}h2{margin:0 0 10px;font-size:17px}.muted{color:#6b7280}.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-bottom:16px}label{font-size:12px;font-weight:700;color:#374151}input{padding:9px;border:1px solid #d1d5db;border-radius:8px}button{padding:9px 12px;border:0;border-radius:8px;cursor:pointer;font-weight:700}.primary{background:#111827;color:#fff}.secondary{background:#e5e7eb;color:#111827}.success{background:#dcfce7;color:#166534}.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:15px;margin-bottom:16px;box-shadow:0 4px 14px rgba(15,23,42,.05)}.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin-bottom:16px}.kpi{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:14px}.kpi span{color:#6b7280;font-size:12px;font-weight:700}.kpi strong{display:block;font-size:24px;margin-top:4px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;border-bottom:1px solid #e5e7eb;padding:8px;vertical-align:top}th{background:#f9fafb;color:#374151}pre{white-space:pre-wrap;background:#0f172a;color:#e5e7eb;border-radius:12px;padding:12px;max-height:260px;overflow:auto}
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <div class="header"><div><h1>QuickBooks OAuth / Token Foundation</h1><div class="muted">Authorization URL generation, callback recording, dry-run token exchange, refresh flow, and sandbox connection tests.</div></div><button class="secondary" onclick="loadDashboard()">Refresh</button></div>
+      <section class="kpis"><div class="kpi"><span>OAuth States</span><strong id="kStates">0</strong></div><div class="kpi"><span>Active States</span><strong id="kActiveStates">0</strong></div><div class="kpi"><span>Token Events</span><strong id="kTokenEvents">0</strong></div><div class="kpi"><span>Failed Events</span><strong id="kFailedEvents">0</strong></div><div class="kpi"><span>Connection Tests</span><strong id="kTests">0</strong></div><div class="kpi"><span>Passed Tests</span><strong id="kPassedTests">0</strong></div></section>
+      <section class="grid">
+        <div class="card"><h2>Authorization</h2><label>Connection ID</label><input id="connectionId" style="width:100%"><br><br><button class="primary" onclick="buildUrl()">Build Authorization URL</button><br><br><label>State</label><input id="state" style="width:100%"><label>Code</label><input id="code" style="width:100%"><label>Realm ID</label><input id="realmId" style="width:100%"><button class="secondary" onclick="recordCallback()">Record Callback</button></div>
+        <div class="card"><h2>Token Actions</h2><label>Connection ID</label><input id="tokenConnectionId" style="width:100%"><label>Authorization Code</label><input id="tokenCode" style="width:100%"><label>Realm ID</label><input id="tokenRealmId" style="width:100%"><br><br><button class="secondary" onclick="exchangeDryRun()">Dry-Run Token Exchange</button> <button class="secondary" onclick="refreshDryRun()">Dry-Run Refresh</button> <button class="success" onclick="sandboxDryRun()">Sandbox Test</button></div>
+      </section>
+      <section class="card"><h2>OAuth States</h2><table id="statesTable"></table></section>
+      <section class="card"><h2>Token Events</h2><table id="eventsTable"></table></section>
+      <section class="card"><h2>Connection Tests</h2><table id="testsTable"></table></section>
+      <section class="card"><h2>System Output</h2><pre id="output">Ready.</pre></section>
+    </main>
+    <script>
+      function loadDashboard(){google.script.run.withSuccessHandler(render).withFailureHandler(showError).reosQuickBooksOAuthDashboard();}
+      function buildUrl(){google.script.run.withSuccessHandler(done).withFailureHandler(showError).reosQuickBooksBuildAuthorizationUrl(valueOf('connectionId'));}
+      function recordCallback(){google.script.run.withSuccessHandler(done).withFailureHandler(showError).reosQuickBooksRecordCallback(valueOf('connectionId'),valueOf('state'),valueOf('code'),valueOf('realmId'));}
+      function exchangeDryRun(){google.script.run.withSuccessHandler(done).withFailureHandler(showError).reosQuickBooksExchangeCode(valueOf('tokenConnectionId'),valueOf('tokenCode'),valueOf('tokenRealmId'),false);}
+      function refreshDryRun(){google.script.run.withSuccessHandler(done).withFailureHandler(showError).reosQuickBooksRefreshToken(valueOf('tokenConnectionId'),false);}
+      function sandboxDryRun(){google.script.run.withSuccessHandler(done).withFailureHandler(showError).reosQuickBooksSandboxTest(valueOf('tokenConnectionId'),false);}
+      function done(d){output(d);loadDashboard();}
+      function render(data){const k=data.kpis||{};setText('kStates',k.states);setText('kActiveStates',k.activeStates);setText('kTokenEvents',k.tokenEvents);setText('kFailedEvents',k.failedTokenEvents);setText('kTests',k.connectionTests);setText('kPassedTests',k.passedTests);renderStates(data.states||[]);renderEvents(data.tokenEvents||[]);renderTests(data.tests||[]);output(data);}
+      function renderStates(rows){let h='<tr><th>Connection</th><th>Status</th><th>State</th><th>Expires</th><th>URL</th></tr>';if(!rows.length)h+='<tr><td colspan="5">No OAuth states.</td></tr>';rows.forEach(r=>{h+='<tr><td>'+esc(r['Connection ID'])+'</td><td>'+esc(r.Status)+'</td><td>'+esc(r.State)+'</td><td>'+esc(r['Expires At'])+'</td><td>'+esc(r['Authorization URL'])+'</td></tr>';});document.getElementById('statesTable').innerHTML=h;}
+      function renderEvents(rows){let h='<tr><th>Created</th><th>Connection</th><th>Type</th><th>Status</th><th>Message</th></tr>';if(!rows.length)h+='<tr><td colspan="5">No token events.</td></tr>';rows.forEach(r=>{h+='<tr><td>'+esc(r['Created At'])+'</td><td>'+esc(r['Connection ID'])+'</td><td>'+esc(r['Event Type'])+'</td><td>'+esc(r.Status)+'</td><td>'+esc(r.Message)+'</td></tr>';});document.getElementById('eventsTable').innerHTML=h;}
+      function renderTests(rows){let h='<tr><th>Created</th><th>Connection</th><th>Environment</th><th>Status</th><th>Message</th></tr>';if(!rows.length)h+='<tr><td colspan="5">No connection tests.</td></tr>';rows.forEach(r=>{h+='<tr><td>'+esc(r['Created At'])+'</td><td>'+esc(r['Connection ID'])+'</td><td>'+esc(r.Environment)+'</td><td>'+esc(r.Status)+'</td><td>'+esc(r.Message)+'</td></tr>';});document.getElementById('testsTable').innerHTML=h;}
+      function output(v){document.getElementById('output').textContent=typeof v==='string'?v:JSON.stringify(v,null,2);}function showError(e){output({error:e.message});}function valueOf(id){const el=document.getElementById(id);return el?el.value:''}function setText(id,v){document.getElementById(id).textContent=v||0}function esc(v){return String(v==null?'':v).replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));}
+      loadDashboard();
+    </script>
+  </body>
+</html>
