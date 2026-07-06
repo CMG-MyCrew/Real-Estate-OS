@@ -60,7 +60,7 @@ REOS.ensureModuleSheets_ = function () {
     'ExternalIntegrations', 'AutomationTemplates', 'ProductionHardening', 'DashboardExport', 'Documents',
     'AIAgents', 'DeploymentWizard', 'EnterpriseSeeder', 'OperationalValidator', 'ProductionMonitoring',
     'ReleasePackage', 'ProductionLaunch', 'MaintenanceManager', 'FinanceManager', 'FinanceEnhancements',
-    'QuickBooksConnector', 'QuickBooksOAuth'
+    'QuickBooksConnector', 'QuickBooksOAuth', 'FinanceDashboards'
   ];
   modules.forEach(function (name) {
     if (REOS[name] && typeof REOS[name].ensureSheets === 'function') REOS[name].ensureSheets();
@@ -72,6 +72,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open Dashboard Hub', 'showDashboardHub')
     .addItem('Open Finance Manager', 'showFinanceManager')
     .addItem('Open Finance Enhancements', 'showFinanceEnhancements')
+    .addItem('Open Finance Dashboards', 'showFinanceDashboards')
     .addItem('Open QuickBooks Connector', 'showQuickBooksConnector')
     .addItem('Open QuickBooks OAuth', 'showQuickBooksOAuth')
     .addItem('Open Deployment Wizard', 'showDeploymentWizard')
@@ -179,7 +180,7 @@ REOS.healthCheck_ = function () {
     if (!exists) report.ok = false;
     report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
   });
-  ['VENDORS', 'WORK_ORDERS', 'AUTOMATION_RULES', 'AUTOMATION_RUNS', 'AUTOMATION_TEMPLATES', 'PROPERTIES', 'UNITS', 'INSPECTIONS', 'MAINTENANCE_REQUESTS', 'AI_REQUESTS', 'EXTERNAL_PROVIDERS', 'EXTERNAL_REQUESTS', 'HARDENING_REPORTS', 'HARDENING_CHECKS', 'DASHBOARD_EXPORTS', 'DOCUMENTS', 'DOCUMENT_FOLDERS', 'DOCUMENT_EVENTS', 'AI_AGENTS', 'AI_AGENT_RUNS', 'AI_AGENT_TASKS', 'DEPLOYMENT_RUNS', 'DEPLOYMENT_CHECKS', 'SEED_RUNS', 'SEED_ITEMS', 'DASHBOARD_SETTINGS', 'INSPECTION_TEMPLATES', 'ENVIRONMENT_SETTINGS', 'OPERATIONAL_VALIDATION_RUNS', 'OPERATIONAL_VALIDATION_CHECKS', 'MONITORING_SNAPSHOTS', 'MONITORING_ALERTS', 'MONITORING_METRICS', 'RELEASE_PACKAGES', 'RELEASE_ARTIFACTS', 'PRODUCTION_LAUNCHES', 'PRODUCTION_SIGNOFFS', 'PRODUCTION_LAUNCH_CHECKS', 'PATCH_ISSUES', 'REGRESSION_RUNS', 'HOTFIX_APPROVALS', 'PATCH_RELEASES', 'FIN_INVOICES', 'FIN_VENDOR_PAYMENTS', 'FIN_EXPENSES', 'FIN_PAYMENT_APPROVALS', 'FIN_QB_EXPORTS', 'FIN_INVOICE_LINES', 'FIN_ACCOUNT_CATEGORIES', 'FIN_INVOICE_PDFS', 'QB_CONNECTIONS', 'QB_SYNC_LOG', 'QB_ACCOUNT_MAP', 'QB_ENTITY_MAP', 'QB_EXPORT_QUEUE', 'QB_OAUTH_STATES', 'QB_TOKEN_EVENTS', 'QB_CONNECTION_TESTS'].forEach(function (name) {
+  ['VENDORS', 'WORK_ORDERS', 'AUTOMATION_RULES', 'AUTOMATION_RUNS', 'AUTOMATION_TEMPLATES', 'PROPERTIES', 'UNITS', 'INSPECTIONS', 'MAINTENANCE_REQUESTS', 'AI_REQUESTS', 'EXTERNAL_PROVIDERS', 'EXTERNAL_REQUESTS', 'HARDENING_REPORTS', 'HARDENING_CHECKS', 'DASHBOARD_EXPORTS', 'DOCUMENTS', 'DOCUMENT_FOLDERS', 'DOCUMENT_EVENTS', 'AI_AGENTS', 'AI_AGENT_RUNS', 'AI_AGENT_TASKS', 'DEPLOYMENT_RUNS', 'DEPLOYMENT_CHECKS', 'SEED_RUNS', 'SEED_ITEMS', 'DASHBOARD_SETTINGS', 'INSPECTION_TEMPLATES', 'ENVIRONMENT_SETTINGS', 'OPERATIONAL_VALIDATION_RUNS', 'OPERATIONAL_VALIDATION_CHECKS', 'MONITORING_SNAPSHOTS', 'MONITORING_ALERTS', 'MONITORING_METRICS', 'RELEASE_PACKAGES', 'RELEASE_ARTIFACTS', 'PRODUCTION_LAUNCHES', 'PRODUCTION_SIGNOFFS', 'PRODUCTION_LAUNCH_CHECKS', 'PATCH_ISSUES', 'REGRESSION_RUNS', 'HOTFIX_APPROVALS', 'PATCH_RELEASES', 'FIN_INVOICES', 'FIN_VENDOR_PAYMENTS', 'FIN_EXPENSES', 'FIN_PAYMENT_APPROVALS', 'FIN_QB_EXPORTS', 'FIN_INVOICE_LINES', 'FIN_ACCOUNT_CATEGORIES', 'FIN_INVOICE_PDFS', 'QB_CONNECTIONS', 'QB_SYNC_LOG', 'QB_ACCOUNT_MAP', 'QB_ENTITY_MAP', 'QB_EXPORT_QUEUE', 'QB_OAUTH_STATES', 'QB_TOKEN_EVENTS', 'QB_CONNECTION_TESTS', 'FIN_DASHBOARD_SNAPSHOTS', 'FIN_BUDGETS'].forEach(function (name) {
     const exists = !!ss.getSheetByName(name);
     if (!exists) report.ok = false;
     report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
@@ -211,6 +212,7 @@ function showProductionLaunch() { REOS.Security.requireAdmin(); SpreadsheetApp.g
 function showMaintenanceManager() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('MaintenanceManager').setTitle('REOS Maintenance Manager').setWidth(1200).setHeight(800), 'REOS Maintenance Manager'); }
 function showFinanceManager() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('FinanceManager').setTitle('REOS Finance Manager').setWidth(1200).setHeight(800), 'REOS Finance Manager'); }
 function showFinanceEnhancements() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('FinanceEnhancements').setTitle('REOS Finance Enhancements').setWidth(1200).setHeight(800), 'REOS Finance Enhancements'); }
+function showFinanceDashboards() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('FinanceDashboards').setTitle('REOS Finance Dashboards').setWidth(1200).setHeight(850), 'REOS Finance Dashboards'); }
 function showQuickBooksConnector() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('QuickBooksConnector').setTitle('REOS QuickBooks Connector').setWidth(1200).setHeight(800), 'REOS QuickBooks Connector'); }
 function showQuickBooksOAuth() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('QuickBooksOAuth').setTitle('REOS QuickBooks OAuth').setWidth(1200).setHeight(800), 'REOS QuickBooks OAuth'); }
 function showAdmin() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('Admin').setTitle('REOS Admin').setWidth(1100).setHeight(760), 'REOS Admin'); }
