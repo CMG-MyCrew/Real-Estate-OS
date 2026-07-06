@@ -31,10 +31,11 @@ Status: In progress
 - External Data Integrations Sprint 8.9 added in `src/ExternalIntegrations.gs` and `src/ExternalIntegrations.html`.
 - Automation Rule Templates Sprint 8.10 added in `src/AutomationTemplates.gs` and `src/AutomationTemplates.html` with template seeding, template dashboard, category KPIs, create-rule-from-template workflow, override handling, and menu access.
 - Release Candidate QA Checklist Sprint 8.11 added in `docs/RELEASE_CANDIDATE_QA.md` with end-to-end module testing, dashboard QA, automation template QA, external integration dry-run QA, AI QA, security QA, deployment checks, regression matrix, and release decision criteria.
+- Dashboard Hub Sprint 8.12 added in `src/DashboardHub.gs` and `src/DashboardHub.html` with permission-aware dashboard navigation, module tiles, enterprise KPIs, notifications, system health, recent activity, global search, quick actions, and menu access.
 - Dashboard shell wired to router navigation and route dispatching in `src/Index.html`.
 - Validation framework expanded in `src/Validation.gs`.
 - Test runner added in `src/TestRunner.gs`.
-- REOS menu updated in `src/Main.gs` with Dashboard, Executive Dashboard, CRM, CRM Dashboard, Acquisitions, Acquisitions Dashboard, Vendors, Vendor Dashboard, Properties, Property Dashboard, Automation, Automation Dashboard, Automation Templates, External Integrations, AI Workspace, AI Dashboard, Admin, Initialize Workbook, Health Check, and Run Tests actions.
+- REOS menu updated in `src/Main.gs` with Dashboard Hub, Dashboard, Executive Dashboard, CRM, CRM Dashboard, Acquisitions, Acquisitions Dashboard, Vendors, Vendor Dashboard, Properties, Property Dashboard, Automation, Automation Dashboard, Automation Templates, External Integrations, AI Workspace, AI Dashboard, Admin, Initialize Workbook, Health Check, and Run Tests actions.
 - Acquisitions module foundation added in `src/Acquisitions.gs`.
 - Acquisitions UI foundation added in `src/Acquisitions.html`.
 - Dashboard records review service added in `src/Dashboard.gs`.
@@ -70,7 +71,7 @@ Status: In progress
 | 7. Vendors | In Progress | Vendor registry, work orders, field services, operations dashboard. |
 | 8. Automation Engine | In Progress | Scheduled jobs, reminders, workflow scans, trigger management, automation UI, automation dashboard, rule editor, templates. |
 | 9. AI Agents | In Progress | AI core, provider abstraction, lead qualification, next-best-action, summary generation, AI workspace, AI command center, report generation, document processing. |
-| 10. Dashboards | In Progress | Dashboard framework, module dashboards, executive dashboard, record review, drill-downs, charts, and pipeline visualizations. |
+| 10. Dashboards | In Progress | Dashboard framework, dashboard hub, module dashboards, executive dashboard, record review, drill-downs, charts, and pipeline visualizations. |
 | 11. External Integrations | In Progress | Provider registry, dry-run API stubs, request logs, property data mapping, skip tracing, public records, geocoding, and future live API connectors. |
 | 12. Testing | In Progress | QA scripts, validation, regression checks, release candidate checklist. |
 | 13. Deployment | In Progress | Production release process, checklists, documentation, sync workflow. |
@@ -81,6 +82,7 @@ Status: In progress
 - Install routine creates required sheets and seeds settings/lookups.
 - Health check validates required sheets, including `AUTOMATION_TEMPLATES`.
 - Dashboard shell opens from the REOS menu.
+- Dashboard Hub provides permission-aware navigation, quick actions, enterprise KPIs, notifications, system health, recent activity, and global search.
 - Logger writes structured records to `SYSTEM_LOG`.
 - Database layer can insert, update, query, and soft-delete sheet records.
 - Security layer can enforce permissions and generate audit reports.
@@ -100,8 +102,8 @@ Status: In progress
 
 ## Next Build Items
 
-1. Add module dashboard navigation hub.
-2. Add dashboard print/PDF export support.
-3. Add document/photo management foundation.
-4. Add production hardening pass.
-5. Add release notes template.
+1. Add dashboard print/PDF export support.
+2. Add document/photo management foundation.
+3. Add production hardening pass.
+4. Add release notes template.
+5. Add mobile field operations shell.
