@@ -1,5 +1,5 @@
 /**
- * REOS Enterprise v3.0 - Logger Framework
+ * REOS Enterprise v3.2.7 - Logger Framework
  */
 
 var REOS = REOS || {};
@@ -7,10 +7,9 @@ var REOS = REOS || {};
 REOS.Logger = (function () {
   function ensureLogSheet_() {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const name = REOS.CONFIG.SHEETS.SYSTEM_LOG;
+    const name = REOS.CONFIG && REOS.CONFIG.SHEETS ? REOS.CONFIG.SHEETS.SYSTEM_LOG : 'SYSTEM_LOG';
     let sheet = ss.getSheetByName(name);
     if (!sheet) sheet = ss.insertSheet(name);
-
     if (sheet.getLastRow() === 0) {
       sheet.appendRow(['Timestamp', 'Level', 'User', 'Action', 'Details']);
       sheet.setFrozenRows(1);
@@ -21,28 +20,18 @@ REOS.Logger = (function () {
 
   function write(level, action, details) {
     try {
-      const sheet = ensureLogSheet_();
-      const user = Session.getActiveUser().getEmail() || 'unknown';
-      sheet.appendRow([
-        new Date(),
-        String(level || 'INFO').toUpperCase(),
-        user,
-        action || '',
-        JSON.stringify(details || {})
-      ]);
+      const user = REOS.getCurrentUser_ ? REOS.getCurrentUser_() : 'unknown';
+      const detailsJson = REOS.toJson_ ? REOS.toJson_(details || {}) : JSON.stringify(details || {});
+      ensureLogSheet_().appendRow([new Date(), String(level || 'INFO').toUpperCase(), user, action || '', detailsJson]);
     } catch (error) {
       console.error('Logger write failed: ' + error.message);
     }
   }
 
-  function info(action, details) {
-    write('INFO', action, details);
-  }
-
-  function warn(action, details) {
-    write('WARN', action, details);
-  }
-
+  function info(action, details) { write('INFO', action, details); }
+  function warn(action, details) { write('WARN', action, details); }
+  function debug(action, details) { write('DEBUG', action, details); }
+  function audit(action, details) { write('AUDIT', action, details); }
   function error(action, err, details) {
     const payload = Object.assign({}, details || {}, {
       message: err && err.message ? err.message : String(err),
@@ -50,27 +39,10 @@ REOS.Logger = (function () {
     });
     write('ERROR', action, payload);
   }
-
-  function audit(action, details) {
-    write('AUDIT', action, details);
-  }
-
   function time(label) {
     const startedAt = Date.now();
-    return {
-      end: function (details) {
-        const elapsedMs = Date.now() - startedAt;
-        info(label, Object.assign({}, details || {}, { elapsedMs: elapsedMs }));
-      }
-    };
+    return { end: function (details) { info(label, Object.assign({}, details || {}, { elapsedMs: Date.now() - startedAt })); } };
   }
 
-  return {
-    write: write,
-    info: info,
-    warn: warn,
-    error: error,
-    audit: audit,
-    time: time
-  };
+  return { write: write, info: info, warn: warn, debug: debug, error: error, audit: audit, time: time };
 })();
