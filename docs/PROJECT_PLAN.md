@@ -26,10 +26,11 @@ Status: In progress
 - Property Operations Dashboard Sprint 8.4 added in `src/PropertyDashboard.html` with occupancy KPIs, property status charts, property type analytics, maintenance backlog, recent properties, date filters, CSV export, and menu access.
 - Vendor Operations Dashboard Sprint 8.5 added in `src/VendorDashboard.html` with vendor KPIs, service category analytics, work-order status charts, priority workload charts, active work-order focus, date filters, CSV export, and menu access.
 - Automation Dashboard Sprint 8.6 added in `src/AutomationDashboard.html` with trigger health, rule execution metrics, run status charts, rules-by-module charts, recent runs, trigger controls, job execution, date filters, CSV export, and menu access.
+- AI Command Center Dashboard Sprint 8.7 added in `src/AIDashboard.html` with AI usage KPIs, request-type charts, provider/status charts, token tracking, AI logs, configuration review, AI opportunity queue, date filters, CSV export, and menu access.
 - Dashboard shell wired to router navigation and route dispatching in `src/Index.html`.
 - Validation framework expanded in `src/Validation.gs` with required fields, allowed values, lookup validation, duplicates, number/boolean/date/email/phone validation, sanitizing, and clean validation responses.
 - Test runner added in `src/TestRunner.gs` for setup verification, health checks, required sheets, required headers, services, security, router, and validation.
-- REOS menu updated in `src/Main.gs` with Dashboard, CRM, CRM Dashboard, Acquisitions, Acquisitions Dashboard, Vendors, Vendor Dashboard, Properties, Property Dashboard, Automation, Automation Dashboard, AI Workspace, Admin, Initialize Workbook, Health Check, and Run Tests actions.
+- REOS menu updated in `src/Main.gs` with Dashboard, CRM, CRM Dashboard, Acquisitions, Acquisitions Dashboard, Vendors, Vendor Dashboard, Properties, Property Dashboard, Automation, Automation Dashboard, AI Workspace, AI Dashboard, Admin, Initialize Workbook, Health Check, and Run Tests actions.
 - Acquisitions module foundation added in `src/Acquisitions.gs` for distressed/off-market lead intake, scoring, pipeline, follow-ups, and dashboard metrics.
 - Acquisitions UI foundation added in `src/Acquisitions.html`.
 - Acquisition pipeline and distress indicator lookups added to setup seed data.
@@ -88,8 +89,8 @@ Status: In progress
 | 6. Property Management | In Progress | Assets, inspections, maintenance, occupancy, drill-down actions, operations dashboard. |
 | 7. Vendors | In Progress | Vendor registry, work orders, field services, operations dashboard. |
 | 8. Automation Engine | In Progress | Scheduled jobs, reminders, workflow scans, trigger management, automation UI, automation dashboard, rule editor. |
-| 9. AI Agents | In Progress | AI core, provider abstraction, lead qualification, next-best-action, summary generation, AI workspace, report generation, document processing. |
-| 10. Dashboards | In Progress | Dashboard framework, CRM dashboard, acquisitions dashboard, property dashboard, vendor dashboard, automation dashboard, executive KPIs, record review, drill-downs, charts, and pipeline visualizations. |
+| 9. AI Agents | In Progress | AI core, provider abstraction, lead qualification, next-best-action, summary generation, AI workspace, AI command center, report generation, document processing. |
+| 10. Dashboards | In Progress | Dashboard framework, CRM dashboard, acquisitions dashboard, property dashboard, vendor dashboard, automation dashboard, AI dashboard, executive KPIs, record review, drill-downs, charts, and pipeline visualizations. |
 | 11. Testing | In Progress | QA scripts, validation, regression checks. |
 | 12. Deployment | In Progress | Production release process, checklists, documentation, sync workflow. |
 
@@ -110,6 +111,7 @@ Status: In progress
 - Property Operations Dashboard can display occupancy KPIs, property status charts, property type analytics, maintenance status, maintenance backlog, recent properties, date filters, and CSV export data.
 - Vendor Operations Dashboard can display vendor KPIs, service category charts, work-order status charts, priority workload, recent vendors, active work orders, date filters, and CSV export data.
 - Automation Dashboard can display trigger health, rule execution charts, run status metrics, rules-by-module metrics, recent runs, trigger controls, job execution controls, date filters, and CSV export data.
+- AI Command Center can display AI usage KPIs, request-type charts, provider/status charts, token tracking, AI logs, configuration review, AI opportunity queue, date filters, and CSV export data.
 - Main dashboard can load modules, dispatch routes, initialize workbook, and run health checks.
 - Validation framework supports reusable record validation, lookup validation, duplicate checks, and clean error handling.
 - Test runner can verify setup, schema, services, router, security, validation, and health status.
@@ -134,8 +136,8 @@ Status: In progress
 
 ## Next Build Items
 
-1. Add AI command center dashboard.
-2. Add executive dashboard shell.
-3. Add external data integration stubs.
-4. Add automation rule templates library.
-5. Add release candidate QA checklist.
+1. Add executive dashboard shell.
+2. Add external data integration stubs.
+3. Add automation rule templates library.
+4. Add release candidate QA checklist.
+5. Add module dashboard navigation hub.
