@@ -26,6 +26,7 @@ function installREOS() {
     if (REOS.AutomationTemplates && typeof REOS.AutomationTemplates.ensureSheets === 'function') REOS.AutomationTemplates.ensureSheets();
     if (REOS.ProductionHardening && typeof REOS.ProductionHardening.ensureSheets === 'function') REOS.ProductionHardening.ensureSheets();
     if (REOS.DashboardExport && typeof REOS.DashboardExport.ensureSheets === 'function') REOS.DashboardExport.ensureSheets();
+    if (REOS.Documents && typeof REOS.Documents.ensureSheets === 'function') REOS.Documents.ensureSheets();
     REOS.setProperty_('REOS_VERSION', REOS.CONFIG.APP.VERSION);
     REOS.setProperty_('REOS_INSTALLED_AT', new Date().toISOString());
     REOS.log_('INFO', 'REOS installation completed', { version: REOS.CONFIG.APP.VERSION });
@@ -57,6 +58,7 @@ REOS.init_ = function () {
   if (REOS.AutomationTemplates && typeof REOS.AutomationTemplates.ensureSheets === 'function') REOS.AutomationTemplates.ensureSheets();
   if (REOS.ProductionHardening && typeof REOS.ProductionHardening.ensureSheets === 'function') REOS.ProductionHardening.ensureSheets();
   if (REOS.DashboardExport && typeof REOS.DashboardExport.ensureSheets === 'function') REOS.DashboardExport.ensureSheets();
+  if (REOS.Documents && typeof REOS.Documents.ensureSheets === 'function') REOS.Documents.ensureSheets();
   if (REOS.AI && typeof REOS.AI.initialize === 'function') REOS.AI.initialize();
   REOS.setProperty_('REOS_LAST_OPENED_AT', new Date().toISOString());
 };
@@ -65,6 +67,7 @@ REOS.buildMenu_ = function () {
   SpreadsheetApp.getUi().createMenu('REOS')
     .addItem('Open Dashboard Hub', 'showDashboardHub')
     .addItem('Open Dashboard Export', 'showDashboardExport')
+    .addItem('Open Documents', 'showDocuments')
     .addItem('Open Dashboard', 'reosOpenDashboard')
     .addItem('Open Executive Dashboard', 'showExecutiveDashboard')
     .addItem('Open CRM', 'showCRM')
@@ -138,6 +141,7 @@ REOS.seedLookups_ = function () {
     ['Occupancy Status', 'Vacant', 1, true], ['Occupancy Status', 'Occupied', 2, true], ['Occupancy Status', 'Partially Occupied', 3, true], ['Occupancy Status', 'Unknown', 4, true],
     ['Maintenance Status', 'New', 1, true], ['Maintenance Status', 'Assigned', 2, true], ['Maintenance Status', 'Scheduled', 3, true], ['Maintenance Status', 'In Progress', 4, true], ['Maintenance Status', 'Completed', 5, true], ['Maintenance Status', 'Cancelled', 6, true], ['Maintenance Status', 'On Hold', 7, true],
     ['Priority', 'Critical', 1, true], ['Priority', 'High', 2, true], ['Priority', 'Medium', 3, true], ['Priority', 'Low', 4, true],
+    ['Document Type', 'Photo', 1, true], ['Document Type', 'Contract', 2, true], ['Document Type', 'Invoice', 3, true], ['Document Type', 'Estimate', 4, true], ['Document Type', 'Inspection Report', 5, true], ['Document Type', 'Scope of Work', 6, true], ['Document Type', 'Permit', 7, true], ['Document Type', 'Proof of Completion', 8, true], ['Document Type', 'Other', 9, true],
     ['Client Type', 'Buyer', 1, true], ['Client Type', 'Seller', 2, true], ['Client Type', 'Investor', 3, true], ['Client Type', 'Tenant', 4, true], ['Client Type', 'Vendor', 5, true]
   ];
   sheet.clear();
@@ -159,7 +163,7 @@ REOS.healthCheck_ = function () {
     if (!exists) report.ok = false;
     report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
   });
-  ['VENDORS', 'WORK_ORDERS', 'AUTOMATION_RULES', 'AUTOMATION_RUNS', 'AUTOMATION_TEMPLATES', 'PROPERTIES', 'UNITS', 'INSPECTIONS', 'MAINTENANCE_REQUESTS', 'AI_REQUESTS', 'EXTERNAL_PROVIDERS', 'EXTERNAL_REQUESTS', 'HARDENING_REPORTS', 'HARDENING_CHECKS', 'DASHBOARD_EXPORTS'].forEach(function (name) {
+  ['VENDORS', 'WORK_ORDERS', 'AUTOMATION_RULES', 'AUTOMATION_RUNS', 'AUTOMATION_TEMPLATES', 'PROPERTIES', 'UNITS', 'INSPECTIONS', 'MAINTENANCE_REQUESTS', 'AI_REQUESTS', 'EXTERNAL_PROVIDERS', 'EXTERNAL_REQUESTS', 'HARDENING_REPORTS', 'HARDENING_CHECKS', 'DASHBOARD_EXPORTS', 'DOCUMENTS', 'DOCUMENT_FOLDERS', 'DOCUMENT_EVENTS'].forEach(function (name) {
     const exists = !!ss.getSheetByName(name);
     if (!exists) report.ok = false;
     report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
@@ -178,6 +182,7 @@ function showAutomationDashboard() { REOS.Security.requireAdmin(); SpreadsheetAp
 function showExternalIntegrations() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('ExternalIntegrations').setTitle('REOS External Integrations').setWidth(1200).setHeight(800), 'REOS External Integrations'); }
 function showProductionHardening() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('ProductionHardening').setTitle('REOS Production Hardening').setWidth(1200).setHeight(800), 'REOS Production Hardening'); }
 function showDashboardExport() { REOS.Security.requirePermission('dashboard:view'); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('DashboardExport').setTitle('REOS Dashboard Export').setWidth(1200).setHeight(800), 'REOS Dashboard Export'); }
+function showDocuments() { REOS.Security.requirePermission('dashboard:view'); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('Documents').setTitle('REOS Documents').setWidth(1200).setHeight(800), 'REOS Documents'); }
 function showAI() { REOS.Security.requirePermission('ai:use'); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('AI').setTitle('REOS AI Workspace').setWidth(1200).setHeight(800), 'REOS AI Workspace'); }
 function showAIDashboard() { REOS.Security.requirePermission('ai:use'); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('AIDashboard').setTitle('REOS AI Dashboard').setWidth(1200).setHeight(800), 'REOS AI Dashboard'); }
 function showAdmin() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('Admin').setTitle('REOS Admin').setWidth(1100).setHeight(760), 'REOS Admin'); }
