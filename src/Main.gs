@@ -60,7 +60,7 @@ REOS.ensureModuleSheets_ = function () {
     'ExternalIntegrations', 'AutomationTemplates', 'ProductionHardening', 'DashboardExport', 'Documents',
     'AIAgents', 'DeploymentWizard', 'EnterpriseSeeder', 'OperationalValidator', 'ProductionMonitoring',
     'ReleasePackage', 'ProductionLaunch', 'MaintenanceManager', 'FinanceManager', 'FinanceEnhancements',
-    'QuickBooksConnector', 'QuickBooksOAuth', 'FinanceDashboards', 'PortalFoundation', 'PortalAuth', 'InvestorPortal'
+    'QuickBooksConnector', 'QuickBooksOAuth', 'FinanceDashboards', 'PortalFoundation', 'PortalAuth', 'InvestorPortal', 'VendorPortal'
   ];
   modules.forEach(function (name) {
     if (REOS[name] && typeof REOS[name].ensureSheets === 'function') REOS[name].ensureSheets();
@@ -78,6 +78,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open Portal Foundation', 'showPortalFoundation')
     .addItem('Open Portal Auth', 'showPortalAuth')
     .addItem('Open Investor Portal', 'showInvestorPortal')
+    .addItem('Open Vendor Portal UI', 'showVendorPortalUI')
     .addItem('Open Deployment Wizard', 'showDeploymentWizard')
     .addItem('Open Enterprise Seeder', 'showEnterpriseSeeder')
     .addItem('Open Operational Validator', 'showOperationalValidator')
@@ -124,23 +125,12 @@ REOS.createRequiredSheets_ = function () {
   });
 };
 
-REOS.applyDefaultSheetStyle_ = function (sheet) {
-  sheet.setFrozenRows(1);
-  sheet.getRange('A1:Z1').setFontWeight('bold');
-};
+REOS.applyDefaultSheetStyle_ = function (sheet) { sheet.setFrozenRows(1); sheet.getRange('A1:Z1').setFontWeight('bold'); };
 
 REOS.seedSettings_ = function () {
   const sheet = REOS.getSheet_(REOS.CONFIG.SHEETS.SETTINGS);
   if (sheet.getLastRow() > 1) return;
-  const rows = [
-    ['Setting', 'Value', 'Description'],
-    ['Business Name', 'REOS Enterprise', 'Displayed application name'],
-    ['Default Time Zone', REOS.CONFIG.APP.TIME_ZONE, 'Application time zone'],
-    ['Currency', 'USD', 'Default currency'],
-    ['Default Commission Rate', '0.03', 'Default commission percentage'],
-    ['Default Broker Split', '0.80', 'Default agent split'],
-    ['Tax Reserve Rate', '0.30', 'Default tax reserve percentage']
-  ];
+  const rows = [['Setting', 'Value', 'Description'], ['Business Name', 'REOS Enterprise', 'Displayed application name'], ['Default Time Zone', REOS.CONFIG.APP.TIME_ZONE, 'Application time zone'], ['Currency', 'USD', 'Default currency'], ['Default Commission Rate', '0.03', 'Default commission percentage'], ['Default Broker Split', '0.80', 'Default agent split'], ['Tax Reserve Rate', '0.30', 'Default tax reserve percentage']];
   sheet.clear();
   sheet.getRange(1, 1, rows.length, rows[0].length).setValues(rows);
   REOS.applyDefaultSheetStyle_(sheet);
@@ -149,37 +139,19 @@ REOS.seedSettings_ = function () {
 REOS.seedLookups_ = function () {
   const sheet = REOS.getSheet_(REOS.CONFIG.SHEETS.LOOKUPS);
   if (sheet.getLastRow() > 1) return;
-  const rows = [
-    ['Category', 'Value', 'Sort Order', 'Active'],
-    ['Lead Status', 'New', 1, true], ['Lead Status', 'Contacted', 2, true], ['Lead Status', 'Appointment', 3, true], ['Lead Status', 'Active', 4, true], ['Lead Status', 'Under Contract', 5, true], ['Lead Status', 'Closed', 6, true], ['Lead Status', 'Lost', 7, true],
-    ['Acquisition Status', 'New', 1, true], ['Acquisition Status', 'Skip Trace', 2, true], ['Acquisition Status', 'Contacted', 3, true], ['Acquisition Status', 'Appointment', 4, true], ['Acquisition Status', 'Offer Sent', 5, true], ['Acquisition Status', 'Under Contract', 6, true], ['Acquisition Status', 'Closed', 7, true], ['Acquisition Status', 'Lost', 8, true],
-    ['Priority', 'Critical', 1, true], ['Priority', 'High', 2, true], ['Priority', 'Medium', 3, true], ['Priority', 'Low', 4, true],
-    ['Portal Role', 'Investor', 1, true], ['Portal Role', 'Lender', 2, true], ['Portal Role', 'Client', 3, true], ['Portal Role', 'Vendor', 4, true]
-  ];
+  const rows = [['Category', 'Value', 'Sort Order', 'Active'], ['Lead Status', 'New', 1, true], ['Lead Status', 'Contacted', 2, true], ['Lead Status', 'Appointment', 3, true], ['Lead Status', 'Active', 4, true], ['Lead Status', 'Under Contract', 5, true], ['Lead Status', 'Closed', 6, true], ['Lead Status', 'Lost', 7, true], ['Acquisition Status', 'New', 1, true], ['Acquisition Status', 'Skip Trace', 2, true], ['Acquisition Status', 'Contacted', 3, true], ['Acquisition Status', 'Appointment', 4, true], ['Acquisition Status', 'Offer Sent', 5, true], ['Acquisition Status', 'Under Contract', 6, true], ['Acquisition Status', 'Closed', 7, true], ['Acquisition Status', 'Lost', 8, true], ['Priority', 'Critical', 1, true], ['Priority', 'High', 2, true], ['Priority', 'Medium', 3, true], ['Priority', 'Low', 4, true], ['Portal Role', 'Investor', 1, true], ['Portal Role', 'Lender', 2, true], ['Portal Role', 'Client', 3, true], ['Portal Role', 'Vendor', 4, true]];
   sheet.clear();
   sheet.getRange(1, 1, rows.length, rows[0].length).setValues(rows);
   REOS.applyDefaultSheetStyle_(sheet);
 };
 
-REOS.seedInitialAdmin_ = function () {
-  if (REOS.Users && typeof REOS.Users.seedAdminIfEmpty === 'function') return REOS.Users.seedAdminIfEmpty();
-  return null;
-};
+REOS.seedInitialAdmin_ = function () { if (REOS.Users && typeof REOS.Users.seedAdminIfEmpty === 'function') return REOS.Users.seedAdminIfEmpty(); return null; };
 
 REOS.healthCheck_ = function () {
   const report = { ok: true, messages: [] };
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  Object.keys(REOS.CONFIG.SHEETS).forEach(function (key) {
-    const name = REOS.CONFIG.SHEETS[key];
-    const exists = !!ss.getSheetByName(name);
-    if (!exists) report.ok = false;
-    report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
-  });
-  ['VENDORS', 'WORK_ORDERS', 'AUTOMATION_RULES', 'AUTOMATION_RUNS', 'AUTOMATION_TEMPLATES', 'PROPERTIES', 'UNITS', 'INSPECTIONS', 'MAINTENANCE_REQUESTS', 'AI_REQUESTS', 'EXTERNAL_PROVIDERS', 'EXTERNAL_REQUESTS', 'HARDENING_REPORTS', 'HARDENING_CHECKS', 'DASHBOARD_EXPORTS', 'DOCUMENTS', 'DOCUMENT_FOLDERS', 'DOCUMENT_EVENTS', 'AI_AGENTS', 'AI_AGENT_RUNS', 'AI_AGENT_TASKS', 'DEPLOYMENT_RUNS', 'DEPLOYMENT_CHECKS', 'SEED_RUNS', 'SEED_ITEMS', 'DASHBOARD_SETTINGS', 'INSPECTION_TEMPLATES', 'ENVIRONMENT_SETTINGS', 'OPERATIONAL_VALIDATION_RUNS', 'OPERATIONAL_VALIDATION_CHECKS', 'MONITORING_SNAPSHOTS', 'MONITORING_ALERTS', 'MONITORING_METRICS', 'RELEASE_PACKAGES', 'RELEASE_ARTIFACTS', 'PRODUCTION_LAUNCHES', 'PRODUCTION_SIGNOFFS', 'PRODUCTION_LAUNCH_CHECKS', 'PATCH_ISSUES', 'REGRESSION_RUNS', 'HOTFIX_APPROVALS', 'PATCH_RELEASES', 'FIN_INVOICES', 'FIN_VENDOR_PAYMENTS', 'FIN_EXPENSES', 'FIN_PAYMENT_APPROVALS', 'FIN_QB_EXPORTS', 'FIN_INVOICE_LINES', 'FIN_ACCOUNT_CATEGORIES', 'FIN_INVOICE_PDFS', 'QB_CONNECTIONS', 'QB_SYNC_LOG', 'QB_ACCOUNT_MAP', 'QB_ENTITY_MAP', 'QB_EXPORT_QUEUE', 'QB_OAUTH_STATES', 'QB_TOKEN_EVENTS', 'QB_CONNECTION_TESTS', 'FIN_DASHBOARD_SNAPSHOTS', 'FIN_BUDGETS', 'PORTAL_ACCOUNTS', 'PORTAL_SESSIONS', 'PORTAL_INVITATIONS', 'PORTAL_DOCUMENT_SHARES', 'PORTAL_MESSAGES', 'PORTAL_TASKS', 'PORTAL_ACTIVITY_LOG', 'PORTAL_LOGIN_EVENTS', 'PORTAL_ROUTES', 'INVESTOR_PORTAL_UPDATES', 'INVESTOR_PROPERTY_WATCHLIST'].forEach(function (name) {
-    const exists = !!ss.getSheetByName(name);
-    if (!exists) report.ok = false;
-    report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
-  });
+  Object.keys(REOS.CONFIG.SHEETS).forEach(function (key) { const name = REOS.CONFIG.SHEETS[key]; const exists = !!ss.getSheetByName(name); if (!exists) report.ok = false; report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name); });
+  ['VENDORS', 'WORK_ORDERS', 'AUTOMATION_RULES', 'AUTOMATION_RUNS', 'AUTOMATION_TEMPLATES', 'PROPERTIES', 'UNITS', 'INSPECTIONS', 'MAINTENANCE_REQUESTS', 'AI_REQUESTS', 'EXTERNAL_PROVIDERS', 'EXTERNAL_REQUESTS', 'HARDENING_REPORTS', 'HARDENING_CHECKS', 'DASHBOARD_EXPORTS', 'DOCUMENTS', 'DOCUMENT_FOLDERS', 'DOCUMENT_EVENTS', 'AI_AGENTS', 'AI_AGENT_RUNS', 'AI_AGENT_TASKS', 'DEPLOYMENT_RUNS', 'DEPLOYMENT_CHECKS', 'SEED_RUNS', 'SEED_ITEMS', 'DASHBOARD_SETTINGS', 'INSPECTION_TEMPLATES', 'ENVIRONMENT_SETTINGS', 'OPERATIONAL_VALIDATION_RUNS', 'OPERATIONAL_VALIDATION_CHECKS', 'MONITORING_SNAPSHOTS', 'MONITORING_ALERTS', 'MONITORING_METRICS', 'RELEASE_PACKAGES', 'RELEASE_ARTIFACTS', 'PRODUCTION_LAUNCHES', 'PRODUCTION_SIGNOFFS', 'PRODUCTION_LAUNCH_CHECKS', 'PATCH_ISSUES', 'REGRESSION_RUNS', 'HOTFIX_APPROVALS', 'PATCH_RELEASES', 'FIN_INVOICES', 'FIN_VENDOR_PAYMENTS', 'FIN_EXPENSES', 'FIN_PAYMENT_APPROVALS', 'FIN_QB_EXPORTS', 'FIN_INVOICE_LINES', 'FIN_ACCOUNT_CATEGORIES', 'FIN_INVOICE_PDFS', 'QB_CONNECTIONS', 'QB_SYNC_LOG', 'QB_ACCOUNT_MAP', 'QB_ENTITY_MAP', 'QB_EXPORT_QUEUE', 'QB_OAUTH_STATES', 'QB_TOKEN_EVENTS', 'QB_CONNECTION_TESTS', 'FIN_DASHBOARD_SNAPSHOTS', 'FIN_BUDGETS', 'PORTAL_ACCOUNTS', 'PORTAL_SESSIONS', 'PORTAL_INVITATIONS', 'PORTAL_DOCUMENT_SHARES', 'PORTAL_MESSAGES', 'PORTAL_TASKS', 'PORTAL_ACTIVITY_LOG', 'PORTAL_LOGIN_EVENTS', 'PORTAL_ROUTES', 'INVESTOR_PORTAL_UPDATES', 'INVESTOR_PROPERTY_WATCHLIST', 'VENDOR_PORTAL_UPDATES', 'VENDOR_WORK_SUBMISSIONS'].forEach(function (name) { const exists = !!ss.getSheetByName(name); if (!exists) report.ok = false; report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name); });
   report.messages.unshift('REOS Version: ' + REOS.CONFIG.APP.VERSION);
   return report;
 };
@@ -213,4 +185,5 @@ function showQuickBooksOAuth() { REOS.Security.requireAdmin(); SpreadsheetApp.ge
 function showPortalFoundation() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('PortalFoundation').setTitle('REOS Portal Foundation').setWidth(1200).setHeight(850), 'REOS Portal Foundation'); }
 function showPortalAuth() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('PortalAuth').setTitle('REOS Portal Auth').setWidth(1200).setHeight(850), 'REOS Portal Auth'); }
 function showInvestorPortal() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('InvestorPortal').setTitle('REOS Investor Portal').setWidth(1200).setHeight(850), 'REOS Investor Portal'); }
+function showVendorPortalUI() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('VendorPortal').setTitle('REOS Vendor Portal').setWidth(1200).setHeight(850), 'REOS Vendor Portal'); }
 function showAdmin() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('Admin').setTitle('REOS Admin').setWidth(1100).setHeight(760), 'REOS Admin'); }
