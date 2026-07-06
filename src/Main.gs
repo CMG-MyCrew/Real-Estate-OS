@@ -29,6 +29,7 @@ function installREOS() {
     if (REOS.Documents && typeof REOS.Documents.ensureSheets === 'function') REOS.Documents.ensureSheets();
     if (REOS.AIAgents && typeof REOS.AIAgents.ensureSheets === 'function') REOS.AIAgents.ensureSheets();
     if (REOS.DeploymentWizard && typeof REOS.DeploymentWizard.ensureSheets === 'function') REOS.DeploymentWizard.ensureSheets();
+    if (REOS.EnterpriseSeeder && typeof REOS.EnterpriseSeeder.ensureSheets === 'function') REOS.EnterpriseSeeder.ensureSheets();
     REOS.setProperty_('REOS_VERSION', REOS.CONFIG.APP.VERSION);
     REOS.setProperty_('REOS_INSTALLED_AT', new Date().toISOString());
     REOS.log_('INFO', 'REOS installation completed', { version: REOS.CONFIG.APP.VERSION });
@@ -63,6 +64,7 @@ REOS.init_ = function () {
   if (REOS.Documents && typeof REOS.Documents.ensureSheets === 'function') REOS.Documents.ensureSheets();
   if (REOS.AIAgents && typeof REOS.AIAgents.ensureSheets === 'function') REOS.AIAgents.ensureSheets();
   if (REOS.DeploymentWizard && typeof REOS.DeploymentWizard.ensureSheets === 'function') REOS.DeploymentWizard.ensureSheets();
+  if (REOS.EnterpriseSeeder && typeof REOS.EnterpriseSeeder.ensureSheets === 'function') REOS.EnterpriseSeeder.ensureSheets();
   if (REOS.AI && typeof REOS.AI.initialize === 'function') REOS.AI.initialize();
   REOS.setProperty_('REOS_LAST_OPENED_AT', new Date().toISOString());
 };
@@ -71,6 +73,7 @@ REOS.buildMenu_ = function () {
   SpreadsheetApp.getUi().createMenu('REOS')
     .addItem('Open Dashboard Hub', 'showDashboardHub')
     .addItem('Open Deployment Wizard', 'showDeploymentWizard')
+    .addItem('Open Enterprise Seeder', 'showEnterpriseSeeder')
     .addItem('Open Dashboard Export', 'showDashboardExport')
     .addItem('Open Documents', 'showDocuments')
     .addItem('Open AI Agents', 'showAIAgents')
@@ -169,7 +172,7 @@ REOS.healthCheck_ = function () {
     if (!exists) report.ok = false;
     report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
   });
-  ['VENDORS', 'WORK_ORDERS', 'AUTOMATION_RULES', 'AUTOMATION_RUNS', 'AUTOMATION_TEMPLATES', 'PROPERTIES', 'UNITS', 'INSPECTIONS', 'MAINTENANCE_REQUESTS', 'AI_REQUESTS', 'EXTERNAL_PROVIDERS', 'EXTERNAL_REQUESTS', 'HARDENING_REPORTS', 'HARDENING_CHECKS', 'DASHBOARD_EXPORTS', 'DOCUMENTS', 'DOCUMENT_FOLDERS', 'DOCUMENT_EVENTS', 'AI_AGENTS', 'AI_AGENT_RUNS', 'AI_AGENT_TASKS', 'DEPLOYMENT_RUNS', 'DEPLOYMENT_CHECKS'].forEach(function (name) {
+  ['VENDORS', 'WORK_ORDERS', 'AUTOMATION_RULES', 'AUTOMATION_RUNS', 'AUTOMATION_TEMPLATES', 'PROPERTIES', 'UNITS', 'INSPECTIONS', 'MAINTENANCE_REQUESTS', 'AI_REQUESTS', 'EXTERNAL_PROVIDERS', 'EXTERNAL_REQUESTS', 'HARDENING_REPORTS', 'HARDENING_CHECKS', 'DASHBOARD_EXPORTS', 'DOCUMENTS', 'DOCUMENT_FOLDERS', 'DOCUMENT_EVENTS', 'AI_AGENTS', 'AI_AGENT_RUNS', 'AI_AGENT_TASKS', 'DEPLOYMENT_RUNS', 'DEPLOYMENT_CHECKS', 'SEED_RUNS', 'SEED_ITEMS', 'DASHBOARD_SETTINGS', 'INSPECTION_TEMPLATES', 'ENVIRONMENT_SETTINGS'].forEach(function (name) {
     const exists = !!ss.getSheetByName(name);
     if (!exists) report.ok = false;
     report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
@@ -193,4 +196,5 @@ function showAI() { REOS.Security.requirePermission('ai:use'); SpreadsheetApp.ge
 function showAIDashboard() { REOS.Security.requirePermission('ai:use'); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('AIDashboard').setTitle('REOS AI Dashboard').setWidth(1200).setHeight(800), 'REOS AI Dashboard'); }
 function showAIAgents() { REOS.Security.requirePermission('ai:use'); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('AIAgents').setTitle('REOS AI Agents').setWidth(1200).setHeight(800), 'REOS AI Agents'); }
 function showDeploymentWizard() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('DeploymentWizard').setTitle('REOS Deployment Wizard').setWidth(1200).setHeight(800), 'REOS Deployment Wizard'); }
+function showEnterpriseSeeder() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('EnterpriseSeeder').setTitle('REOS Enterprise Seeder').setWidth(1200).setHeight(800), 'REOS Enterprise Seeder'); }
 function showAdmin() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('Admin').setTitle('REOS Admin').setWidth(1100).setHeight(760), 'REOS Admin'); }
