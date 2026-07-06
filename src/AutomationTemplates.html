@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <style>
+      body { margin: 0; font-family: Arial, sans-serif; background: #f6f8fb; color: #1f2937; }
+      .shell { padding: 22px; }
+      .header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
+      h1 { margin: 0 0 6px; font-size: 26px; }
+      h2 { margin: 0 0 10px; font-size: 17px; }
+      .muted { color: #6b7280; }
+      .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; margin-bottom: 16px; }
+      button { padding: 9px 12px; border: 0; border-radius: 8px; cursor: pointer; font-weight: 700; }
+      .primary { background: #111827; color: #fff; }
+      .secondary { background: #e5e7eb; color: #111827; }
+      .success { background: #dcfce7; color: #166534; }
+      .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 15px; margin-bottom: 16px; }
+      .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 12px; margin-bottom: 16px; }
+      .kpi { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; }
+      .kpi span { color: #6b7280; font-size: 12px; font-weight: 700; }
+      .kpi strong { display: block; font-size: 27px; margin-top: 4px; }
+      .grid { display: grid; grid-template-columns: 360px 1fr; gap: 16px; }
+      input, select, textarea { padding: 9px; border: 1px solid #d1d5db; border-radius: 8px; width: 100%; box-sizing: border-box; margin: 4px 0 8px; }
+      label { font-size: 12px; font-weight: 700; color: #374151; }
+      textarea { min-height: 100px; font-family: monospace; }
+      table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      th, td { text-align: left; border-bottom: 1px solid #e5e7eb; padding: 8px; vertical-align: top; }
+      th { background: #f9fafb; color: #374151; }
+      tr.clickable { cursor: pointer; }
+      tr.clickable:hover { background: #f9fafb; }
+      pre { white-space: pre-wrap; background: #0f172a; color: #e5e7eb; border-radius: 12px; padding: 12px; max-height: 220px; overflow: auto; }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <div class="header">
+        <div>
+          <h1>Automation Rule Templates</h1>
+          <div class="muted">Seed reusable automation blueprints and create rules from approved templates.</div>
+        </div>
+        <div class="toolbar">
+          <button class="primary" onclick="seedTemplates()">Seed Templates</button>
+          <button class="secondary" onclick="loadDashboard()">Refresh</button>
+        </div>
+      </div>
+
+      <section class="kpis">
+        <div class="kpi"><span>Templates</span><strong id="kpiTemplates">0</strong></div>
+        <div class="kpi"><span>Default Active</span><strong id="kpiActive">0</strong></div>
+        <div class="kpi"><span>Categories</span><strong id="kpiCategories">0</strong></div>
+      </section>
+
+      <section class="grid">
+        <div class="card">
+          <h2>Create Rule From Template</h2>
+          <input id="templateId" type="hidden">
+          <label>Template</label><input id="templateName" disabled>
+          <label>Rule Name Override</label><input id="ruleName" placeholder="Optional">
+          <label>Active</label><select id="active"><option value="template">Use Template Default</option><option value="true">Active</option><option value="false">Inactive</option></select>
+          <label>Condition JSON Override</label><textarea id="conditionJson" placeholder="Optional JSON override"></textarea>
+          <label>Action JSON Override</label><textarea id="actionJson" placeholder="Optional JSON override"></textarea>
+          <button class="success" onclick="createRule()">Create Rule</button>
+          <button class="secondary" onclick="clearEditor()">Clear</button>
+        </div>
+        <div class="card"><h2>Templates</h2><table id="templatesTable"></table></div>
+      </section>
+
+      <section class="card"><h2>System Output</h2><pre id="output">Ready.</pre></section>
+    </main>
+
+    <script>
+      let templates = [];
+      function output(value) { document.getElementById('output').textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2); }
+      function loadDashboard() { google.script.run.withSuccessHandler(renderDashboard).withFailureHandler(showError).reosAutomationTemplatesDashboard(); }
+      function seedTemplates() { google.script.run.withSuccessHandler(function(data) { output(data); loadDashboard(); }).withFailureHandler(showError).reosAutomationTemplatesSeed(); }
+      function renderDashboard(data) {
+        templates = data.templates || [];
+        const k = data.kpis || {};
+        setText('kpiTemplates', k.templates); setText('kpiActive', k.defaultActive); setText('kpiCategories', k.categories);
+        renderTemplates(templates); output(data);
+      }
+      function renderTemplates(rows) {
+        let html = '<tr><th>Name</th><th>Category</th><th>Event</th><th>Module</th><th>Action</th><th>Default</th><th>Actions</th></tr>';
+        if (!rows.length) html += '<tr><td colspan="7">No templates found. Click Seed Templates.</td></tr>';
+        rows.forEach(function(row) {
+          const id = row['Template ID'] || '';
+          html += '<tr class="clickable" onclick="selectTemplate(\'' + escJs(id) + '\')"><td>' + esc(row.Name) + '</td><td>' + esc(row.Category) + '</td><td>' + esc(row.Event) + '</td><td>' + esc(row.Module) + '</td><td>' + esc(row.Action) + '</td><td>' + esc(row['Default Active']) + '</td><td><button class="secondary" onclick="event.stopPropagation(); selectTemplate(\'' + escJs(id) + '\')">Select</button></td></tr>';
+        });
+        document.getElementById('templatesTable').innerHTML = html;
+      }
+      function selectTemplate(id) {
+        const row = templates.find(function(item) { return String(item['Template ID']) === String(id); });
+        if (!row) return;
+        document.getElementById('templateId').value = row['Template ID'];
+        document.getElementById('templateName').value = row.Name || '';
+        document.getElementById('ruleName').value = row.Name || '';
+        document.getElementById('conditionJson').value = pretty(row['Condition JSON']);
+        document.getElementById('actionJson').value = pretty(row['Action JSON']);
+        document.getElementById('active').value = 'template';
+        output(row);
+      }
+      function createRule() {
+        const id = valueOf('templateId');
+        if (!id) return output({ error: 'Select a template first.' });
+        let overrides = {};
+        if (valueOf('ruleName')) overrides.Name = valueOf('ruleName');
+        if (valueOf('active') !== 'template') overrides.Active = valueOf('active') === 'true';
+        if (valueOf('conditionJson')) { try { JSON.parse(valueOf('conditionJson')); overrides['Condition JSON'] = valueOf('conditionJson'); } catch (error) { return output({ error: 'Condition JSON invalid: ' + error.message }); } }
+        if (valueOf('actionJson')) { try { JSON.parse(valueOf('actionJson')); overrides['Action JSON'] = valueOf('actionJson'); } catch (error) { return output({ error: 'Action JSON invalid: ' + error.message }); } }
+        google.script.run.withSuccessHandler(output).withFailureHandler(showError).reosAutomationTemplatesCreateRule(id, overrides);
+      }
+      function clearEditor() { ['templateId','templateName','ruleName','conditionJson','actionJson'].forEach(function(id) { document.getElementById(id).value = ''; }); document.getElementById('active').value = 'template'; }
+      function pretty(value) { try { return JSON.stringify(typeof value === 'object' ? value : JSON.parse(String(value || '{}')), null, 2); } catch (error) { return String(value || ''); } }
+      function showError(error) { output({ error: error.message }); }
+      function valueOf(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+      function setText(id, value) { document.getElementById(id).textContent = value || 0; }
+      function esc(value) { return String(value === null || value === undefined ? '' : value).replace(/[&<>'"]/g, function(ch) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[ch]; }); }
+      function escJs(value) { return String(value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+      loadDashboard();
+    </script>
+  </body>
+</html>
