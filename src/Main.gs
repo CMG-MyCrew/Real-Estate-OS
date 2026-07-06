@@ -56,7 +56,7 @@ REOS.init_ = function () {
 };
 
 REOS.ensureModuleSheets_ = function () {
-  const modules = ['ExternalIntegrations', 'AutomationTemplates', 'ProductionHardening', 'DashboardExport', 'Documents', 'AIAgents', 'DeploymentWizard', 'EnterpriseSeeder', 'OperationalValidator', 'ProductionMonitoring', 'ReleasePackage', 'ProductionLaunch'];
+  const modules = ['ExternalIntegrations', 'AutomationTemplates', 'ProductionHardening', 'DashboardExport', 'Documents', 'AIAgents', 'DeploymentWizard', 'EnterpriseSeeder', 'OperationalValidator', 'ProductionMonitoring', 'ReleasePackage', 'ProductionLaunch', 'MaintenanceManager'];
   modules.forEach(function (name) {
     if (REOS[name] && typeof REOS[name].ensureSheets === 'function') REOS[name].ensureSheets();
   });
@@ -71,6 +71,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open Production Monitoring', 'showProductionMonitoring')
     .addItem('Open Release Package', 'showReleasePackage')
     .addItem('Open Production Launch', 'showProductionLaunch')
+    .addItem('Open Maintenance Manager', 'showMaintenanceManager')
     .addItem('Open Dashboard Export', 'showDashboardExport')
     .addItem('Open Documents', 'showDocuments')
     .addItem('Open AI Agents', 'showAIAgents')
@@ -169,7 +170,7 @@ REOS.healthCheck_ = function () {
     if (!exists) report.ok = false;
     report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
   });
-  ['VENDORS', 'WORK_ORDERS', 'AUTOMATION_RULES', 'AUTOMATION_RUNS', 'AUTOMATION_TEMPLATES', 'PROPERTIES', 'UNITS', 'INSPECTIONS', 'MAINTENANCE_REQUESTS', 'AI_REQUESTS', 'EXTERNAL_PROVIDERS', 'EXTERNAL_REQUESTS', 'HARDENING_REPORTS', 'HARDENING_CHECKS', 'DASHBOARD_EXPORTS', 'DOCUMENTS', 'DOCUMENT_FOLDERS', 'DOCUMENT_EVENTS', 'AI_AGENTS', 'AI_AGENT_RUNS', 'AI_AGENT_TASKS', 'DEPLOYMENT_RUNS', 'DEPLOYMENT_CHECKS', 'SEED_RUNS', 'SEED_ITEMS', 'DASHBOARD_SETTINGS', 'INSPECTION_TEMPLATES', 'ENVIRONMENT_SETTINGS', 'OPERATIONAL_VALIDATION_RUNS', 'OPERATIONAL_VALIDATION_CHECKS', 'MONITORING_SNAPSHOTS', 'MONITORING_ALERTS', 'MONITORING_METRICS', 'RELEASE_PACKAGES', 'RELEASE_ARTIFACTS', 'PRODUCTION_LAUNCHES', 'PRODUCTION_SIGNOFFS', 'PRODUCTION_LAUNCH_CHECKS'].forEach(function (name) {
+  ['VENDORS', 'WORK_ORDERS', 'AUTOMATION_RULES', 'AUTOMATION_RUNS', 'AUTOMATION_TEMPLATES', 'PROPERTIES', 'UNITS', 'INSPECTIONS', 'MAINTENANCE_REQUESTS', 'AI_REQUESTS', 'EXTERNAL_PROVIDERS', 'EXTERNAL_REQUESTS', 'HARDENING_REPORTS', 'HARDENING_CHECKS', 'DASHBOARD_EXPORTS', 'DOCUMENTS', 'DOCUMENT_FOLDERS', 'DOCUMENT_EVENTS', 'AI_AGENTS', 'AI_AGENT_RUNS', 'AI_AGENT_TASKS', 'DEPLOYMENT_RUNS', 'DEPLOYMENT_CHECKS', 'SEED_RUNS', 'SEED_ITEMS', 'DASHBOARD_SETTINGS', 'INSPECTION_TEMPLATES', 'ENVIRONMENT_SETTINGS', 'OPERATIONAL_VALIDATION_RUNS', 'OPERATIONAL_VALIDATION_CHECKS', 'MONITORING_SNAPSHOTS', 'MONITORING_ALERTS', 'MONITORING_METRICS', 'RELEASE_PACKAGES', 'RELEASE_ARTIFACTS', 'PRODUCTION_LAUNCHES', 'PRODUCTION_SIGNOFFS', 'PRODUCTION_LAUNCH_CHECKS', 'PATCH_ISSUES', 'REGRESSION_RUNS', 'HOTFIX_APPROVALS', 'PATCH_RELEASES'].forEach(function (name) {
     const exists = !!ss.getSheetByName(name);
     if (!exists) report.ok = false;
     report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
@@ -198,4 +199,5 @@ function showOperationalValidator() { REOS.Security.requireAdmin(); SpreadsheetA
 function showProductionMonitoring() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('ProductionMonitoring').setTitle('REOS Production Monitoring').setWidth(1200).setHeight(800), 'REOS Production Monitoring'); }
 function showReleasePackage() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('ReleasePackage').setTitle('REOS Release Package').setWidth(1200).setHeight(800), 'REOS Release Package'); }
 function showProductionLaunch() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('ProductionLaunch').setTitle('REOS Production Launch').setWidth(1200).setHeight(800), 'REOS Production Launch'); }
+function showMaintenanceManager() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('MaintenanceManager').setTitle('REOS Maintenance Manager').setWidth(1200).setHeight(800), 'REOS Maintenance Manager'); }
 function showAdmin() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('Admin').setTitle('REOS Admin').setWidth(1100).setHeight(760), 'REOS Admin'); }
