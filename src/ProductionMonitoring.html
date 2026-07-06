@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <style>
+      body { margin:0; font-family:Arial,sans-serif; background:#f6f8fb; color:#1f2937; }
+      .shell { padding:22px; }
+      .header { display:flex; justify-content:space-between; gap:16px; align-items:flex-start; margin-bottom:16px; }
+      h1 { margin:0 0 6px; font-size:26px; } h2 { margin:0 0 10px; font-size:17px; }
+      .muted { color:#6b7280; }
+      .toolbar { display:flex; flex-wrap:wrap; gap:8px; align-items:end; margin-bottom:16px; }
+      label { font-size:12px; font-weight:700; color:#374151; }
+      select { padding:9px; border:1px solid #d1d5db; border-radius:8px; }
+      button { padding:9px 12px; border:0; border-radius:8px; cursor:pointer; font-weight:700; }
+      .primary { background:#111827; color:#fff; } .secondary { background:#e5e7eb; color:#111827; }
+      .card { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:15px; margin-bottom:16px; box-shadow:0 4px 14px rgba(15,23,42,.05); }
+      .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); gap:12px; margin-bottom:16px; }
+      .kpi { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:14px; }
+      .kpi span { color:#6b7280; font-size:12px; font-weight:700; } .kpi strong { display:block; font-size:27px; margin-top:4px; }
+      table { width:100%; border-collapse:collapse; font-size:13px; }
+      th,td { text-align:left; border-bottom:1px solid #e5e7eb; padding:8px; vertical-align:top; }
+      th { background:#f9fafb; color:#374151; }
+      pre { white-space:pre-wrap; background:#0f172a; color:#e5e7eb; border-radius:12px; padding:12px; max-height:260px; overflow:auto; }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <div class="header"><div><h1>Production Monitoring</h1><div class="muted">GA Phase 5 post-deployment health snapshots, metrics, alerts, and monitoring history.</div></div><button class="secondary" onclick="loadDashboard()">Refresh</button></div>
+      <div class="toolbar"><div><label>Environment</label><br><select id="environment"><option>Production</option><option>Staging</option><option>Testing</option></select></div><button class="primary" onclick="runSnapshot()">Run Monitoring Snapshot</button></div>
+      <section class="kpis"><div class="kpi"><span>Snapshots</span><strong id="kSnapshots">0</strong></div><div class="kpi"><span>Status</span><strong id="kStatus">-</strong></div><div class="kpi"><span>Score</span><strong id="kScore">0</strong></div><div class="kpi"><span>Critical</span><strong id="kCritical">0</strong></div><div class="kpi"><span>Warnings</span><strong id="kWarnings">0</strong></div></section>
+      <section class="card"><h2>Latest Alerts</h2><table id="alertsTable"></table></section>
+      <section class="card"><h2>Latest Metrics</h2><table id="metricsTable"></table></section>
+      <section class="card"><h2>Snapshots</h2><table id="snapshotsTable"></table></section>
+      <section class="card"><h2>System Output</h2><pre id="output">Ready.</pre></section>
+    </main>
+    <script>
+      function loadDashboard(){ google.script.run.withSuccessHandler(render).withFailureHandler(showError).reosProductionMonitoringDashboard(); }
+      function runSnapshot(){ google.script.run.withSuccessHandler(function(d){output(d);loadDashboard();}).withFailureHandler(showError).reosProductionMonitoringRun({environment:valueOf('environment')}); }
+      function render(data){ const k=data.kpis||{}; setText('kSnapshots',k.snapshots); setText('kStatus',k.latestStatus); setText('kScore',k.latestScore); setText('kCritical',k.criticalAlerts); setText('kWarnings',k.warnings); renderAlerts(data.latestAlerts||[]); renderMetrics(data.latestMetrics||[]); renderSnapshots(data.snapshots||[]); output(data); }
+      function renderAlerts(rows){ let h='<tr><th>Area</th><th>Severity</th><th>Status</th><th>Message</th></tr>'; if(!rows.length) h+='<tr><td colspan="4">No active alerts.</td></tr>'; rows.forEach(r=>{h+='<tr><td>'+esc(r.Area)+'</td><td>'+esc(r.Severity)+'</td><td>'+esc(r.Status)+'</td><td>'+esc(r.Message)+'</td></tr>';}); document.getElementById('alertsTable').innerHTML=h; }
+      function renderMetrics(rows){ let h='<tr><th>Area</th><th>Metric</th><th>Value</th><th>Threshold</th><th>Status</th></tr>'; if(!rows.length) h+='<tr><td colspan="5">No metrics yet.</td></tr>'; rows.forEach(r=>{h+='<tr><td>'+esc(r.Area)+'</td><td>'+esc(r.Metric)+'</td><td>'+esc(r.Value)+'</td><td>'+esc(r.Threshold)+'</td><td>'+esc(r.Status)+'</td></tr>';}); document.getElementById('metricsTable').innerHTML=h; }
+      function renderSnapshots(rows){ let h='<tr><th>Created</th><th>Environment</th><th>Status</th><th>Score</th><th>Critical</th><th>Warnings</th></tr>'; if(!rows.length) h+='<tr><td colspan="6">No snapshots yet.</td></tr>'; rows.forEach(r=>{h+='<tr><td>'+esc(r['Created At'])+'</td><td>'+esc(r.Environment)+'</td><td>'+esc(r.Status)+'</td><td>'+esc(r.Score)+'</td><td>'+esc(r['Critical Alerts'])+'</td><td>'+esc(r.Warnings)+'</td></tr>';}); document.getElementById('snapshotsTable').innerHTML=h; }
+      function output(v){document.getElementById('output').textContent=typeof v==='string'?v:JSON.stringify(v,null,2);} function showError(e){output({error:e.message});}
+      function valueOf(id){const el=document.getElementById(id); return el?el.value:'';} function setText(id,v){document.getElementById(id).textContent=v||0;} function esc(v){return String(v==null?'':v).replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));}
+      loadDashboard();
+    </script>
+  </body>
+</html>
