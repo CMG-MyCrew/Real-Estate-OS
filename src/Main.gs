@@ -5,9 +5,6 @@
  * Google Sheets-bound Apps Script application.
  */
 
-/**
- * Runs when the spreadsheet opens.
- */
 function onOpen(e) {
   try {
     REOS.init_();
@@ -18,20 +15,13 @@ function onOpen(e) {
   }
 }
 
-/**
- * Runs when the add-on is installed, if deployed as an add-on later.
- */
 function onInstall(e) {
   onOpen(e);
 }
 
-/**
- * One-time setup function. Run manually after binding the script to a Sheet.
- */
 function installREOS() {
   const lock = LockService.getScriptLock();
   lock.waitLock(30000);
-
   try {
     REOS.createRequiredSheets_();
     REOS.seedSettings_();
@@ -73,6 +63,7 @@ REOS.buildMenu_ = function () {
   const ui = SpreadsheetApp.getUi();
   ui.createMenu('REOS')
     .addItem('Open Dashboard', 'reosOpenDashboard')
+    .addItem('Open Executive Dashboard', 'showExecutiveDashboard')
     .addItem('Open CRM', 'showCRM')
     .addItem('Open CRM Dashboard', 'showCRMDashboard')
     .addItem('Open Acquisitions', 'showAcquisitions')
@@ -132,88 +123,17 @@ REOS.seedLookups_ = function () {
   if (sheet.getLastRow() > 1) return;
   const rows = [
     ['Category', 'Value', 'Sort Order', 'Active'],
-    ['Lead Status', 'New', 1, true],
-    ['Lead Status', 'Contacted', 2, true],
-    ['Lead Status', 'Appointment', 3, true],
-    ['Lead Status', 'Active', 4, true],
-    ['Lead Status', 'Under Contract', 5, true],
-    ['Lead Status', 'Closed', 6, true],
-    ['Lead Status', 'Lost', 7, true],
-    ['Acquisition Status', 'New', 1, true],
-    ['Acquisition Status', 'Skip Trace', 2, true],
-    ['Acquisition Status', 'Contacted', 3, true],
-    ['Acquisition Status', 'Appointment', 4, true],
-    ['Acquisition Status', 'Offer Sent', 5, true],
-    ['Acquisition Status', 'Under Contract', 6, true],
-    ['Acquisition Status', 'Closed', 7, true],
-    ['Acquisition Status', 'Lost', 8, true],
-    ['Distress Indicator', 'Absentee Owner', 1, true],
-    ['Distress Indicator', 'Tax Delinquent', 2, true],
-    ['Distress Indicator', 'Probate', 3, true],
-    ['Distress Indicator', 'Code Violation', 4, true],
-    ['Distress Indicator', 'Vacant', 5, true],
-    ['Distress Indicator', 'Pre-Foreclosure', 6, true],
-    ['Distress Indicator', 'REO', 7, true],
-    ['Distress Indicator', 'Eviction', 8, true],
-    ['Distress Indicator', 'Inherited', 9, true],
-    ['Distress Indicator', 'Tired Landlord', 10, true],
-    ['Vendor Service Category', 'Property Preservation', 1, true],
-    ['Vendor Service Category', 'Commercial Cleaning', 2, true],
-    ['Vendor Service Category', 'Trash Out', 3, true],
-    ['Vendor Service Category', 'Lawn Care', 4, true],
-    ['Vendor Service Category', 'Lock Change', 5, true],
-    ['Vendor Service Category', 'Board Up', 6, true],
-    ['Vendor Service Category', 'Winterization', 7, true],
-    ['Vendor Service Category', 'Inspection', 8, true],
-    ['Vendor Service Category', 'Repairs', 9, true],
-    ['Vendor Service Category', 'Photography', 10, true],
-    ['Vendor Service Category', 'Janitorial', 11, true],
-    ['Vendor Service Category', 'Debris Removal', 12, true],
-    ['Work Order Status', 'New', 1, true],
-    ['Work Order Status', 'Assigned', 2, true],
-    ['Work Order Status', 'Scheduled', 3, true],
-    ['Work Order Status', 'In Progress', 4, true],
-    ['Work Order Status', 'Completed', 5, true],
-    ['Work Order Status', 'Cancelled', 6, true],
-    ['Work Order Status', 'On Hold', 7, true],
-    ['Property Type', 'Single Family', 1, true],
-    ['Property Type', 'Duplex', 2, true],
-    ['Property Type', 'Triplex', 3, true],
-    ['Property Type', 'Fourplex', 4, true],
-    ['Property Type', 'Condo', 5, true],
-    ['Property Type', 'Townhome', 6, true],
-    ['Property Type', 'Multifamily', 7, true],
-    ['Property Type', 'Commercial', 8, true],
-    ['Property Type', 'Land', 9, true],
-    ['Property Type', 'Other', 10, true],
-    ['Property Status', 'Prospect', 1, true],
-    ['Property Status', 'Owned', 2, true],
-    ['Property Status', 'Under Rehab', 3, true],
-    ['Property Status', 'Available', 4, true],
-    ['Property Status', 'Occupied', 5, true],
-    ['Property Status', 'Listed', 6, true],
-    ['Property Status', 'Sold', 7, true],
-    ['Property Status', 'Archived', 8, true],
-    ['Occupancy Status', 'Vacant', 1, true],
-    ['Occupancy Status', 'Occupied', 2, true],
-    ['Occupancy Status', 'Partially Occupied', 3, true],
-    ['Occupancy Status', 'Unknown', 4, true],
-    ['Maintenance Status', 'New', 1, true],
-    ['Maintenance Status', 'Assigned', 2, true],
-    ['Maintenance Status', 'Scheduled', 3, true],
-    ['Maintenance Status', 'In Progress', 4, true],
-    ['Maintenance Status', 'Completed', 5, true],
-    ['Maintenance Status', 'Cancelled', 6, true],
-    ['Maintenance Status', 'On Hold', 7, true],
-    ['Priority', 'Critical', 1, true],
-    ['Priority', 'High', 2, true],
-    ['Priority', 'Medium', 3, true],
-    ['Priority', 'Low', 4, true],
-    ['Client Type', 'Buyer', 1, true],
-    ['Client Type', 'Seller', 2, true],
-    ['Client Type', 'Investor', 3, true],
-    ['Client Type', 'Tenant', 4, true],
-    ['Client Type', 'Vendor', 5, true]
+    ['Lead Status', 'New', 1, true], ['Lead Status', 'Contacted', 2, true], ['Lead Status', 'Appointment', 3, true], ['Lead Status', 'Active', 4, true], ['Lead Status', 'Under Contract', 5, true], ['Lead Status', 'Closed', 6, true], ['Lead Status', 'Lost', 7, true],
+    ['Acquisition Status', 'New', 1, true], ['Acquisition Status', 'Skip Trace', 2, true], ['Acquisition Status', 'Contacted', 3, true], ['Acquisition Status', 'Appointment', 4, true], ['Acquisition Status', 'Offer Sent', 5, true], ['Acquisition Status', 'Under Contract', 6, true], ['Acquisition Status', 'Closed', 7, true], ['Acquisition Status', 'Lost', 8, true],
+    ['Distress Indicator', 'Absentee Owner', 1, true], ['Distress Indicator', 'Tax Delinquent', 2, true], ['Distress Indicator', 'Probate', 3, true], ['Distress Indicator', 'Code Violation', 4, true], ['Distress Indicator', 'Vacant', 5, true], ['Distress Indicator', 'Pre-Foreclosure', 6, true], ['Distress Indicator', 'REO', 7, true], ['Distress Indicator', 'Eviction', 8, true], ['Distress Indicator', 'Inherited', 9, true], ['Distress Indicator', 'Tired Landlord', 10, true],
+    ['Vendor Service Category', 'Property Preservation', 1, true], ['Vendor Service Category', 'Commercial Cleaning', 2, true], ['Vendor Service Category', 'Trash Out', 3, true], ['Vendor Service Category', 'Lawn Care', 4, true], ['Vendor Service Category', 'Lock Change', 5, true], ['Vendor Service Category', 'Board Up', 6, true], ['Vendor Service Category', 'Winterization', 7, true], ['Vendor Service Category', 'Inspection', 8, true], ['Vendor Service Category', 'Repairs', 9, true], ['Vendor Service Category', 'Photography', 10, true], ['Vendor Service Category', 'Janitorial', 11, true], ['Vendor Service Category', 'Debris Removal', 12, true],
+    ['Work Order Status', 'New', 1, true], ['Work Order Status', 'Assigned', 2, true], ['Work Order Status', 'Scheduled', 3, true], ['Work Order Status', 'In Progress', 4, true], ['Work Order Status', 'Completed', 5, true], ['Work Order Status', 'Cancelled', 6, true], ['Work Order Status', 'On Hold', 7, true],
+    ['Property Type', 'Single Family', 1, true], ['Property Type', 'Duplex', 2, true], ['Property Type', 'Triplex', 3, true], ['Property Type', 'Fourplex', 4, true], ['Property Type', 'Condo', 5, true], ['Property Type', 'Townhome', 6, true], ['Property Type', 'Multifamily', 7, true], ['Property Type', 'Commercial', 8, true], ['Property Type', 'Land', 9, true], ['Property Type', 'Other', 10, true],
+    ['Property Status', 'Prospect', 1, true], ['Property Status', 'Owned', 2, true], ['Property Status', 'Under Rehab', 3, true], ['Property Status', 'Available', 4, true], ['Property Status', 'Occupied', 5, true], ['Property Status', 'Listed', 6, true], ['Property Status', 'Sold', 7, true], ['Property Status', 'Archived', 8, true],
+    ['Occupancy Status', 'Vacant', 1, true], ['Occupancy Status', 'Occupied', 2, true], ['Occupancy Status', 'Partially Occupied', 3, true], ['Occupancy Status', 'Unknown', 4, true],
+    ['Maintenance Status', 'New', 1, true], ['Maintenance Status', 'Assigned', 2, true], ['Maintenance Status', 'Scheduled', 3, true], ['Maintenance Status', 'In Progress', 4, true], ['Maintenance Status', 'Completed', 5, true], ['Maintenance Status', 'Cancelled', 6, true], ['Maintenance Status', 'On Hold', 7, true],
+    ['Priority', 'Critical', 1, true], ['Priority', 'High', 2, true], ['Priority', 'Medium', 3, true], ['Priority', 'Low', 4, true],
+    ['Client Type', 'Buyer', 1, true], ['Client Type', 'Seller', 2, true], ['Client Type', 'Investor', 3, true], ['Client Type', 'Tenant', 4, true], ['Client Type', 'Vendor', 5, true]
   ];
   sheet.clear();
   sheet.getRange(1, 1, rows.length, rows[0].length).setValues(rows);
@@ -246,6 +166,12 @@ REOS.healthCheck_ = function () {
 function reosOpenDashboard() {
   const html = HtmlService.createHtmlOutputFromFile('Index').setTitle('REOS Enterprise').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Enterprise');
+}
+
+function showExecutiveDashboard() {
+  REOS.Security.requirePermission('dashboard:view');
+  const html = HtmlService.createHtmlOutputFromFile('ExecutiveDashboard').setTitle('REOS Executive Dashboard').setWidth(1200).setHeight(800);
+  SpreadsheetApp.getUi().showModalDialog(html, 'REOS Executive Dashboard');
 }
 
 function showCRMDashboard() {
