@@ -84,6 +84,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open Automation', 'showAutomation')
     .addItem('Open Automation Dashboard', 'showAutomationDashboard')
     .addItem('Open AI Workspace', 'showAI')
+    .addItem('Open AI Dashboard', 'showAIDashboard')
     .addItem('Open Admin', 'showAdmin')
     .addSeparator()
     .addItem('Initialize Workbook', 'reosInitializeWorkbook')
@@ -281,6 +282,12 @@ function showAI() {
   REOS.Security.requirePermission('ai:use');
   const html = HtmlService.createHtmlOutputFromFile('AI').setTitle('REOS AI Workspace').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS AI Workspace');
+}
+
+function showAIDashboard() {
+  REOS.Security.requirePermission('ai:use');
+  const html = HtmlService.createHtmlOutputFromFile('AIDashboard').setTitle('REOS AI Dashboard').setWidth(1200).setHeight(800);
+  SpreadsheetApp.getUi().showModalDialog(html, 'REOS AI Dashboard');
 }
 
 function showAdmin() {
