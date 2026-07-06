@@ -3,7 +3,7 @@
 Repository: `CMG-MyCrew/Real-Estate-OS`
 Primary platform: Google Apps Script + Google Sheets + GitHub
 
-## Current Sprint: Production Hardening
+## Current Sprint: Dashboard Export & Deployment
 
 Status: In progress
 
@@ -32,11 +32,12 @@ Status: In progress
 - Automation Rule Templates Sprint 8.10 added in `src/AutomationTemplates.gs` and `src/AutomationTemplates.html`.
 - Release Candidate QA Checklist Sprint 8.11 added in `docs/RELEASE_CANDIDATE_QA.md`.
 - Dashboard Hub Sprint 8.12 added in `src/DashboardHub.gs` and `src/DashboardHub.html`.
-- Sprint 13 Production Hardening added in `src/ProductionHardening.gs`, `src/ProductionHardening.html`, and `docs/PRODUCTION_HARDENING.md` with readiness audits, hardening reports, check persistence, performance checks, trigger audits, secrets review, automation JSON validation, integration safety checks, AI failure review, cache cleanup, log-retention review, and menu access.
+- Sprint 13 Production Hardening added in `src/ProductionHardening.gs`, `src/ProductionHardening.html`, and `docs/PRODUCTION_HARDENING.md`.
+- Sprint 14 Dashboard Print/PDF Export Support added in `src/DashboardExport.gs` and `src/DashboardExport.html` with print-ready dashboard HTML, PDF-ready Drive export stubs, CSV export pass-through, export audit logging, export history, and menu access.
 - Dashboard shell wired to router navigation and route dispatching in `src/Index.html`.
 - Validation framework expanded in `src/Validation.gs`.
 - Test runner added in `src/TestRunner.gs`.
-- REOS menu updated in `src/Main.gs` with Dashboard Hub, Dashboard, Executive Dashboard, CRM, CRM Dashboard, Acquisitions, Acquisitions Dashboard, Vendors, Vendor Dashboard, Properties, Property Dashboard, Automation, Automation Dashboard, Automation Templates, External Integrations, Production Hardening, AI Workspace, AI Dashboard, Admin, Initialize Workbook, Health Check, and Run Tests actions.
+- REOS menu updated in `src/Main.gs` with Dashboard Hub, Dashboard Export, Dashboard, Executive Dashboard, CRM, CRM Dashboard, Acquisitions, Acquisitions Dashboard, Vendors, Vendor Dashboard, Properties, Property Dashboard, Automation, Automation Dashboard, Automation Templates, External Integrations, Production Hardening, AI Workspace, AI Dashboard, Admin, Initialize Workbook, Health Check, and Run Tests actions.
 - Acquisitions module foundation added in `src/Acquisitions.gs`.
 - Acquisitions UI foundation added in `src/Acquisitions.html`.
 - Dashboard records review service added in `src/Dashboard.gs`.
@@ -55,7 +56,7 @@ Status: In progress
 
 - Keep `REOS` as the shared namespace across all Apps Script files.
 - Standardize lifecycle functions: `onOpen`, `onInstall`, `installREOS`, and `runHealthCheck`.
-- Maintain module-ready architecture for CRM, acquisitions, properties, vendors, automation, dashboards, integrations, production hardening, and AI agents.
+- Maintain module-ready architecture for CRM, acquisitions, properties, vendors, automation, dashboards, integrations, production hardening, exports, and AI agents.
 - Keep GitHub as the source of truth for all framework code.
 
 ## Phase Roadmap
@@ -76,15 +77,16 @@ Status: In progress
 | 11. External Integrations | In Progress | Provider registry, dry-run API stubs, request logs, property data mapping, skip tracing, public records, geocoding, and future live API connectors. |
 | 12. Testing | In Progress | QA scripts, validation, regression checks, release candidate checklist. |
 | 13. Production Hardening | In Progress | Readiness audits, performance checks, trigger audits, secrets review, log retention, cache cleanup, release gate reporting. |
-| 14. Deployment | In Progress | Production release process, checklists, documentation, sync workflow. |
+| 14. Dashboard Export & Deployment | In Progress | Print-ready dashboards, PDF-ready export stubs, CSV export, export audit logging, production release process. |
 
 ## Core Framework Acceptance Criteria
 
 - Spreadsheet opens with a REOS menu.
 - Install routine creates required sheets and seeds settings/lookups.
-- Health check validates required sheets, including `AUTOMATION_TEMPLATES`, `HARDENING_REPORTS`, and `HARDENING_CHECKS`.
+- Health check validates required sheets, including `AUTOMATION_TEMPLATES`, `HARDENING_REPORTS`, `HARDENING_CHECKS`, and `DASHBOARD_EXPORTS`.
 - Dashboard shell opens from the REOS menu.
 - Dashboard Hub provides permission-aware navigation, quick actions, enterprise KPIs, notifications, system health, recent activity, and global search.
+- Dashboard Export can generate print-ready dashboard HTML, create PDF-ready Drive files, pass through CSV exports, and log export activity.
 - Logger writes structured records to `SYSTEM_LOG`.
 - Database layer can insert, update, query, and soft-delete sheet records.
 - Security layer can enforce permissions and generate audit reports.
@@ -105,8 +107,8 @@ Status: In progress
 
 ## Next Build Items
 
-1. Add dashboard print/PDF export support.
-2. Add document/photo management foundation.
-3. Add release notes template.
-4. Add mobile field operations shell.
-5. Add final release candidate package.
+1. Add document/photo management foundation.
+2. Add release notes template.
+3. Add mobile field operations shell.
+4. Add final release candidate package.
+5. Add production launch checklist execution guide.
