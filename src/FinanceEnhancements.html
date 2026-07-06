@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top"><meta charset="utf-8">
+    <style>
+      body{margin:0;font-family:Arial,sans-serif;background:#f6f8fb;color:#1f2937}.shell{padding:22px}.header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:16px}h1{margin:0 0 6px;font-size:26px}h2{margin:0 0 10px;font-size:17px}.muted{color:#6b7280}.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-bottom:16px}label{font-size:12px;font-weight:700;color:#374151}input,select,textarea{padding:9px;border:1px solid #d1d5db;border-radius:8px}textarea{min-height:52px}button{padding:9px 12px;border:0;border-radius:8px;cursor:pointer;font-weight:700}.primary{background:#111827;color:#fff}.secondary{background:#e5e7eb;color:#111827}.success{background:#dcfce7;color:#166534}.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:15px;margin-bottom:16px;box-shadow:0 4px 14px rgba(15,23,42,.05)}.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin-bottom:16px}.kpi{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:14px}.kpi span{color:#6b7280;font-size:12px;font-weight:700}.kpi strong{display:block;font-size:24px;margin-top:4px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:16px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;border-bottom:1px solid #e5e7eb;padding:8px;vertical-align:top}th{background:#f9fafb;color:#374151}pre{white-space:pre-wrap;background:#0f172a;color:#e5e7eb;border-radius:12px;padding:12px;max-height:260px;overflow:auto}
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <div class="header"><div><h1>v3.1.1 Finance Enhancements</h1><div class="muted">Invoice line items, PDF-ready invoice snapshots, accounting categories, AR aging, and AP aging.</div></div><button class="secondary" onclick="loadDashboard()">Refresh</button></div>
+      <div class="toolbar"><button class="success" onclick="seedCategories()">Seed Account Categories</button></div>
+      <section class="kpis"><div class="kpi"><span>Invoice Lines</span><strong id="kLines">0</strong></div><div class="kpi"><span>Categories</span><strong id="kCategories">0</strong></div><div class="kpi"><span>PDF Records</span><strong id="kPdfs">0</strong></div><div class="kpi"><span>AR Total</span><strong id="kArTotal">$0.00</strong></div><div class="kpi"><span>AP Total</span><strong id="kApTotal">$0.00</strong></div></section>
+      <section class="grid">
+        <div class="card"><h2>Add Invoice Line</h2><label>Invoice ID</label><input id="invoiceId" style="width:100%"><label>Item</label><input id="item" value="Service" style="width:100%"><label>Description</label><textarea id="description" style="width:100%"></textarea><label>Quantity</label><input id="quantity" type="number" value="1" style="width:100%"><label>Unit Price</label><input id="unitPrice" type="number" value="0" style="width:100%"><label>Tax Rate</label><input id="taxRate" type="number" value="0" step="0.01" style="width:100%"><label><input id="taxable" type="checkbox"> Taxable</label><br><br><button class="primary" onclick="addLine()">Add Line & Recalculate</button></div>
+        <div class="card"><h2>Invoice Output</h2><label>Invoice ID</label><input id="previewInvoiceId" style="width:100%"><br><br><button class="secondary" onclick="previewInvoice()">Preview Invoice HTML</button> <button class="primary" onclick="pdfRecord()">Create PDF-Ready Record</button></div>
+      </section>
+      <section class="card"><h2>Receivables Aging</h2><table id="arTable"></table></section>
+      <section class="card"><h2>Payables Aging</h2><table id="apTable"></table></section>
+      <section class="card"><h2>Recent Invoice Lines</h2><table id="linesTable"></table></section>
+      <section class="card"><h2>Accounting Categories</h2><table id="categoriesTable"></table></section>
+      <section class="card"><h2>System Output</h2><pre id="output">Ready.</pre></section>
+    </main>
+    <script>
+      function loadDashboard(){google.script.run.withSuccessHandler(render).withFailureHandler(showError).reosFinanceEnhancementsDashboard();}
+      function seedCategories(){google.script.run.withSuccessHandler(done).withFailureHandler(showError).reosFinanceSeedAccountCategories();}
+      function addLine(){const r={'Invoice ID':valueOf('invoiceId'),Item:valueOf('item'),Description:valueOf('description'),Quantity:Number(valueOf('quantity')),'Unit Price':Number(valueOf('unitPrice')),Taxable:document.getElementById('taxable').checked,'Tax Rate':Number(valueOf('taxRate'))};google.script.run.withSuccessHandler(done).withFailureHandler(showError).reosFinanceAddInvoiceLine(r);}
+      function previewInvoice(){google.script.run.withSuccessHandler(done).withFailureHandler(showError).reosFinanceInvoicePreview(valueOf('previewInvoiceId'));}
+      function pdfRecord(){google.script.run.withSuccessHandler(done).withFailureHandler(showError).reosFinanceGenerateInvoicePdfRecord(valueOf('previewInvoiceId'));}
+      function done(d){output(d);loadDashboard();}
+      function render(data){const k=data.kpis||{};setText('kLines',k.invoiceLines);setText('kCategories',k.accountCategories);setText('kPdfs',k.invoicePdfs);setText('kArTotal',money((data.receivablesAging||{}).total));setText('kApTotal',money((data.payablesAging||{}).total));renderAging('arTable',data.receivablesAging||{});renderAging('apTable',data.payablesAging||{});renderLines(data.recentLines||[]);renderCategories(data.categories||[]);output(data);}
+      function renderAging(id,a){document.getElementById(id).innerHTML='<tr><th>Current</th><th>1-30</th><th>31-60</th><th>61-90</th><th>90+</th><th>Total</th></tr><tr><td>'+money(a.current)+'</td><td>'+money(a.days30)+'</td><td>'+money(a.days60)+'</td><td>'+money(a.days90)+'</td><td>'+money(a.days120)+'</td><td>'+money(a.total)+'</td></tr>';}
+      function renderLines(rows){let h='<tr><th>Invoice</th><th>Line</th><th>Item</th><th>Qty</th><th>Unit</th><th>Total</th></tr>';if(!rows.length)h+='<tr><td colspan="6">No invoice lines.</td></tr>';rows.forEach(r=>{h+='<tr><td>'+esc(r['Invoice ID'])+'</td><td>'+esc(r['Line #'])+'</td><td>'+esc(r.Item)+'</td><td>'+esc(r.Quantity)+'</td><td>'+money(r['Unit Price'])+'</td><td>'+money(r['Line Total'])+'</td></tr>';});document.getElementById('linesTable').innerHTML=h;}
+      function renderCategories(rows){let h='<tr><th>Type</th><th>Name</th><th>Code</th><th>QuickBooks</th><th>Default For</th></tr>';if(!rows.length)h+='<tr><td colspan="5">No account categories.</td></tr>';rows.forEach(r=>{h+='<tr><td>'+esc(r.Type)+'</td><td>'+esc(r.Name)+'</td><td>'+esc(r.Code)+'</td><td>'+esc(r['QuickBooks Account'])+'</td><td>'+esc(r['Default For'])+'</td></tr>';});document.getElementById('categoriesTable').innerHTML=h;}
+      function output(v){document.getElementById('output').textContent=typeof v==='string'?v:JSON.stringify(v,null,2);}function showError(e){output({error:e.message});}function valueOf(id){const el=document.getElementById(id);return el?el.value:''}function setText(id,v){document.getElementById(id).textContent=v||0}function money(v){return '$'+Number(v||0).toFixed(2)}function esc(v){return String(v==null?'':v).replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));}
+      loadDashboard();
+    </script>
+  </body>
+</html>
