@@ -56,7 +56,7 @@ REOS.init_ = function () {
 };
 
 REOS.ensureModuleSheets_ = function () {
-  const modules = ['ExternalIntegrations', 'AutomationTemplates', 'ProductionHardening', 'DashboardExport', 'Documents', 'AIAgents', 'DeploymentWizard', 'EnterpriseSeeder', 'OperationalValidator', 'ProductionMonitoring'];
+  const modules = ['ExternalIntegrations', 'AutomationTemplates', 'ProductionHardening', 'DashboardExport', 'Documents', 'AIAgents', 'DeploymentWizard', 'EnterpriseSeeder', 'OperationalValidator', 'ProductionMonitoring', 'ReleasePackage'];
   modules.forEach(function (name) {
     if (REOS[name] && typeof REOS[name].ensureSheets === 'function') REOS[name].ensureSheets();
   });
@@ -69,6 +69,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open Enterprise Seeder', 'showEnterpriseSeeder')
     .addItem('Open Operational Validator', 'showOperationalValidator')
     .addItem('Open Production Monitoring', 'showProductionMonitoring')
+    .addItem('Open Release Package', 'showReleasePackage')
     .addItem('Open Dashboard Export', 'showDashboardExport')
     .addItem('Open Documents', 'showDocuments')
     .addItem('Open AI Agents', 'showAIAgents')
@@ -167,7 +168,7 @@ REOS.healthCheck_ = function () {
     if (!exists) report.ok = false;
     report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
   });
-  ['VENDORS', 'WORK_ORDERS', 'AUTOMATION_RULES', 'AUTOMATION_RUNS', 'AUTOMATION_TEMPLATES', 'PROPERTIES', 'UNITS', 'INSPECTIONS', 'MAINTENANCE_REQUESTS', 'AI_REQUESTS', 'EXTERNAL_PROVIDERS', 'EXTERNAL_REQUESTS', 'HARDENING_REPORTS', 'HARDENING_CHECKS', 'DASHBOARD_EXPORTS', 'DOCUMENTS', 'DOCUMENT_FOLDERS', 'DOCUMENT_EVENTS', 'AI_AGENTS', 'AI_AGENT_RUNS', 'AI_AGENT_TASKS', 'DEPLOYMENT_RUNS', 'DEPLOYMENT_CHECKS', 'SEED_RUNS', 'SEED_ITEMS', 'DASHBOARD_SETTINGS', 'INSPECTION_TEMPLATES', 'ENVIRONMENT_SETTINGS', 'OPERATIONAL_VALIDATION_RUNS', 'OPERATIONAL_VALIDATION_CHECKS', 'MONITORING_SNAPSHOTS', 'MONITORING_ALERTS', 'MONITORING_METRICS'].forEach(function (name) {
+  ['VENDORS', 'WORK_ORDERS', 'AUTOMATION_RULES', 'AUTOMATION_RUNS', 'AUTOMATION_TEMPLATES', 'PROPERTIES', 'UNITS', 'INSPECTIONS', 'MAINTENANCE_REQUESTS', 'AI_REQUESTS', 'EXTERNAL_PROVIDERS', 'EXTERNAL_REQUESTS', 'HARDENING_REPORTS', 'HARDENING_CHECKS', 'DASHBOARD_EXPORTS', 'DOCUMENTS', 'DOCUMENT_FOLDERS', 'DOCUMENT_EVENTS', 'AI_AGENTS', 'AI_AGENT_RUNS', 'AI_AGENT_TASKS', 'DEPLOYMENT_RUNS', 'DEPLOYMENT_CHECKS', 'SEED_RUNS', 'SEED_ITEMS', 'DASHBOARD_SETTINGS', 'INSPECTION_TEMPLATES', 'ENVIRONMENT_SETTINGS', 'OPERATIONAL_VALIDATION_RUNS', 'OPERATIONAL_VALIDATION_CHECKS', 'MONITORING_SNAPSHOTS', 'MONITORING_ALERTS', 'MONITORING_METRICS', 'RELEASE_PACKAGES', 'RELEASE_ARTIFACTS'].forEach(function (name) {
     const exists = !!ss.getSheetByName(name);
     if (!exists) report.ok = false;
     report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
@@ -194,4 +195,5 @@ function showDeploymentWizard() { REOS.Security.requireAdmin(); SpreadsheetApp.g
 function showEnterpriseSeeder() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('EnterpriseSeeder').setTitle('REOS Enterprise Seeder').setWidth(1200).setHeight(800), 'REOS Enterprise Seeder'); }
 function showOperationalValidator() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('OperationalValidator').setTitle('REOS Operational Validator').setWidth(1200).setHeight(800), 'REOS Operational Validator'); }
 function showProductionMonitoring() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('ProductionMonitoring').setTitle('REOS Production Monitoring').setWidth(1200).setHeight(800), 'REOS Production Monitoring'); }
+function showReleasePackage() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('ReleasePackage').setTitle('REOS Release Package').setWidth(1200).setHeight(800), 'REOS Release Package'); }
 function showAdmin() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('Admin').setTitle('REOS Admin').setWidth(1100).setHeight(760), 'REOS Admin'); }
