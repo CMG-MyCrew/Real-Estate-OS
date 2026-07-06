@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <style>
+      body { margin:0; font-family:Arial,sans-serif; background:#f6f8fb; color:#1f2937; }
+      .shell { padding:22px; }
+      .header { display:flex; justify-content:space-between; gap:16px; align-items:flex-start; margin-bottom:16px; }
+      h1 { margin:0 0 6px; font-size:26px; } h2 { margin:0 0 10px; font-size:17px; }
+      .muted { color:#6b7280; }
+      .toolbar { display:flex; flex-wrap:wrap; gap:8px; align-items:end; margin-bottom:16px; }
+      label { font-size:12px; font-weight:700; color:#374151; }
+      input, select { padding:9px; border:1px solid #d1d5db; border-radius:8px; }
+      button { padding:9px 12px; border:0; border-radius:8px; cursor:pointer; font-weight:700; }
+      .primary { background:#111827; color:#fff; } .secondary { background:#e5e7eb; color:#111827; }
+      .card { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:15px; margin-bottom:16px; box-shadow:0 4px 14px rgba(15,23,42,.05); }
+      .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); gap:12px; margin-bottom:16px; }
+      .kpi { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:14px; }
+      .kpi span { color:#6b7280; font-size:12px; font-weight:700; } .kpi strong { display:block; font-size:27px; margin-top:4px; }
+      table { width:100%; border-collapse:collapse; font-size:13px; }
+      th,td { text-align:left; border-bottom:1px solid #e5e7eb; padding:8px; vertical-align:top; }
+      th { background:#f9fafb; color:#374151; }
+      pre { white-space:pre-wrap; background:#0f172a; color:#e5e7eb; border-radius:12px; padding:12px; max-height:260px; overflow:auto; }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <div class="header"><div><h1>GA Release Package</h1><div class="muted">GA Phase 6 version manifest, artifact checklist, readiness score, and final release package records.</div></div><button class="secondary" onclick="loadDashboard()">Refresh</button></div>
+      <div class="toolbar"><div><label>Version</label><br><input id="version" value="3.0.0"></div><div><label>Environment</label><br><select id="environment"><option>Production</option><option>Staging</option><option>Testing</option></select></div><button class="primary" onclick="generatePackage()">Generate GA Package</button></div>
+      <section class="kpis"><div class="kpi"><span>Packages</span><strong id="kPackages">0</strong></div><div class="kpi"><span>Status</span><strong id="kStatus">-</strong></div><div class="kpi"><span>Score</span><strong id="kScore">0</strong></div><div class="kpi"><span>Critical</span><strong id="kCritical">0</strong></div><div class="kpi"><span>Warnings</span><strong id="kWarnings">0</strong></div></section>
+      <section class="card"><h2>Latest Artifacts</h2><table id="artifactsTable"></table></section>
+      <section class="card"><h2>Release Packages</h2><table id="packagesTable"></table></section>
+      <section class="card"><h2>System Output</h2><pre id="output">Ready.</pre></section>
+    </main>
+    <script>
+      function loadDashboard(){ google.script.run.withSuccessHandler(render).withFailureHandler(showError).reosReleasePackageDashboard(); }
+      function generatePackage(){ google.script.run.withSuccessHandler(function(d){output(d);loadDashboard();}).withFailureHandler(showError).reosReleasePackageGenerate({version:valueOf('version'),environment:valueOf('environment')}); }
+      function render(data){ const k=data.kpis||{}; setText('kPackages',k.packages); setText('kStatus',k.latestStatus); setText('kScore',k.latestScore); setText('kCritical',k.criticalIssues); setText('kWarnings',k.warnings); renderArtifacts(data.latestArtifacts||[]); renderPackages(data.packages||[]); output(data); }
+      function renderArtifacts(rows){ let h='<tr><th>Artifact</th><th>Category</th><th>Status</th><th>Location</th><th>Notes</th></tr>'; if(!rows.length) h+='<tr><td colspan="5">No artifacts yet.</td></tr>'; rows.forEach(r=>{h+='<tr><td>'+esc(r.Artifact)+'</td><td>'+esc(r.Category)+'</td><td>'+esc(r.Status)+'</td><td>'+esc(r.Location)+'</td><td>'+esc(r.Notes)+'</td></tr>';}); document.getElementById('artifactsTable').innerHTML=h; }
+      function renderPackages(rows){ let h='<tr><th>Created</th><th>Version</th><th>Environment</th><th>Status</th><th>Score</th><th>Critical</th><th>Warnings</th></tr>'; if(!rows.length) h+='<tr><td colspan="7">No release packages yet.</td></tr>'; rows.forEach(r=>{h+='<tr><td>'+esc(r['Created At'])+'</td><td>'+esc(r.Version)+'</td><td>'+esc(r.Environment)+'</td><td>'+esc(r.Status)+'</td><td>'+esc(r.Score)+'</td><td>'+esc(r['Critical Issues'])+'</td><td>'+esc(r.Warnings)+'</td></tr>';}); document.getElementById('packagesTable').innerHTML=h; }
+      function output(v){document.getElementById('output').textContent=typeof v==='string'?v:JSON.stringify(v,null,2);} function showError(e){output({error:e.message});}
+      function valueOf(id){const el=document.getElementById(id); return el?el.value:'';} function setText(id,v){document.getElementById(id).textContent=v||0;} function esc(v){return String(v==null?'':v).replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));}
+      loadDashboard();
+    </script>
+  </body>
+</html>
