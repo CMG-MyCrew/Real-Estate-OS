@@ -27,6 +27,7 @@ function installREOS() {
     REOS.seedSettings_();
     REOS.seedLookups_();
     REOS.seedInitialAdmin_();
+    if (REOS.ExternalIntegrations && typeof REOS.ExternalIntegrations.ensureSheets === 'function') REOS.ExternalIntegrations.ensureSheets();
     REOS.setProperty_('REOS_VERSION', REOS.CONFIG.APP.VERSION);
     REOS.setProperty_('REOS_INSTALLED_AT', new Date().toISOString());
     REOS.log_('INFO', 'REOS installation completed', { version: REOS.CONFIG.APP.VERSION });
@@ -55,6 +56,7 @@ REOS.init_ = function () {
   if (REOS.Vendors && typeof REOS.Vendors.initialize === 'function') REOS.Vendors.initialize();
   if (REOS.Properties && typeof REOS.Properties.initialize === 'function') REOS.Properties.initialize();
   if (REOS.Automation && typeof REOS.Automation.ensureSheets === 'function') REOS.Automation.ensureSheets();
+  if (REOS.ExternalIntegrations && typeof REOS.ExternalIntegrations.ensureSheets === 'function') REOS.ExternalIntegrations.ensureSheets();
   if (REOS.AI && typeof REOS.AI.initialize === 'function') REOS.AI.initialize();
   REOS.setProperty_('REOS_LAST_OPENED_AT', new Date().toISOString());
 };
@@ -74,6 +76,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open Property Dashboard', 'showPropertyDashboard')
     .addItem('Open Automation', 'showAutomation')
     .addItem('Open Automation Dashboard', 'showAutomationDashboard')
+    .addItem('Open External Integrations', 'showExternalIntegrations')
     .addItem('Open AI Workspace', 'showAI')
     .addItem('Open AI Dashboard', 'showAIDashboard')
     .addItem('Open Admin', 'showAdmin')
@@ -154,7 +157,7 @@ REOS.healthCheck_ = function () {
     if (!exists) report.ok = false;
     report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
   });
-  ['VENDORS', 'WORK_ORDERS', 'AUTOMATION_RULES', 'AUTOMATION_RUNS', 'PROPERTIES', 'UNITS', 'INSPECTIONS', 'MAINTENANCE_REQUESTS', 'AI_REQUESTS'].forEach(function (name) {
+  ['VENDORS', 'WORK_ORDERS', 'AUTOMATION_RULES', 'AUTOMATION_RUNS', 'PROPERTIES', 'UNITS', 'INSPECTIONS', 'MAINTENANCE_REQUESTS', 'AI_REQUESTS', 'EXTERNAL_PROVIDERS', 'EXTERNAL_REQUESTS'].forEach(function (name) {
     const exists = !!ss.getSheetByName(name);
     if (!exists) report.ok = false;
     report.messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
