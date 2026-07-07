@@ -1,5 +1,5 @@
 /**
- * REOS Enterprise v3.2.7 - Core Foundation Synchronization
+ * REOS Enterprise v3.2.8 - Core Foundation Synchronization
  *
  * Centralizes startup checks, module registration, safe UI launching,
  * dependency diagnostics, and foundation health validation.
@@ -8,7 +8,7 @@
 var REOS = REOS || {};
 
 REOS.CoreFoundation = (function () {
-  const CORE_VERSION = '3.2.7';
+  const CORE_VERSION = '3.2.8';
 
   const REQUIRED_FUNCTIONS = [
     'REOS.CONFIG',
@@ -24,6 +24,7 @@ REOS.CoreFoundation = (function () {
 
   const MODULE_REGISTRY = [
     { name: 'Phase1Upgrade', label: 'Phase 1 Upgrade', required: true },
+    { name: 'Modules', label: 'Module Registry', required: true },
     { name: 'FinanceManager', label: 'Finance Manager', required: false },
     { name: 'FinanceEnhancements', label: 'Finance Enhancements', required: false },
     { name: 'FinanceDashboards', label: 'Finance Dashboards', required: false },
@@ -49,12 +50,10 @@ REOS.CoreFoundation = (function () {
   function startup() {
     ensureCoreTables();
     syncVersion();
+    if (REOS.Modules && typeof REOS.Modules.ensureSheets === 'function') REOS.Modules.ensureSheets();
+    if (REOS.Modules && typeof REOS.Modules.seedRegistry === 'function') REOS.Modules.seedRegistry();
     const diagnostics = diagnose();
-    if (!diagnostics.ok) {
-      log('WARN', 'Core startup diagnostics reported issues', diagnostics);
-    } else {
-      log('INFO', 'Core startup completed', { version: getVersion() });
-    }
+    log(diagnostics.ok ? 'INFO' : 'WARN', diagnostics.ok ? 'Core startup completed' : 'Core startup diagnostics reported issues', diagnostics);
     return diagnostics;
   }
 
@@ -68,6 +67,7 @@ REOS.CoreFoundation = (function () {
   }
 
   function ensureModuleSheets() {
+    if (REOS.Modules && typeof REOS.Modules.initializeEnabledModules === 'function') return REOS.Modules.initializeEnabledModules();
     const results = [];
     MODULE_REGISTRY.forEach(function (module) {
       const namespace = REOS[module.name];
@@ -103,15 +103,17 @@ REOS.CoreFoundation = (function () {
         hasEnsureSheets: !!(namespace && typeof namespace.ensureSheets === 'function')
       };
     });
+    const moduleRegistryHealth = REOS.Modules && typeof REOS.Modules.healthReport === 'function' ? REOS.Modules.healthReport() : null;
     const missingRequiredFunctions = requiredFunctions.filter(function (item) { return !item.exists; });
     const missingRequiredModules = modules.filter(function (item) { return item.required && !item.registered; });
     return {
-      ok: missingRequiredFunctions.length === 0 && missingRequiredModules.length === 0,
+      ok: missingRequiredFunctions.length === 0 && missingRequiredModules.length === 0 && (!moduleRegistryHealth || moduleRegistryHealth.ok),
       version: getVersion(),
       coreVersion: CORE_VERSION,
       generatedAt: new Date().toISOString(),
       requiredFunctions: requiredFunctions,
       modules: modules,
+      moduleRegistryHealth: moduleRegistryHealth,
       missingRequiredFunctions: missingRequiredFunctions,
       missingRequiredModules: missingRequiredModules
     };
@@ -127,6 +129,11 @@ REOS.CoreFoundation = (function () {
       if (!exists) ok = false;
       messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
     });
+    ['MODULE_REGISTRY', 'MODULE_DEPENDENCIES', 'MODULE_HEALTH'].forEach(function (name) {
+      const exists = !!ss.getSheetByName(name);
+      if (!exists) ok = false;
+      messages.push((exists ? 'OK' : 'MISSING') + ': ' + name);
+    });
     const diagnostics = diagnose();
     diagnostics.missingRequiredFunctions.forEach(function (item) {
       ok = false;
@@ -136,7 +143,7 @@ REOS.CoreFoundation = (function () {
       ok = false;
       messages.push('MISSING REQUIRED MODULE: ' + item.module);
     });
-    return { ok: ok, version: getVersion(), coreVersion: CORE_VERSION, messages: messages, diagnostics: diagnostics };
+    return { ok: ok && diagnostics.ok, version: getVersion(), coreVersion: CORE_VERSION, messages: messages, diagnostics: diagnostics };
   }
 
   function syncVersion() {
