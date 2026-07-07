@@ -9,6 +9,7 @@ REOS.buildMenu_ = function () {
   ui.createMenu('REOS')
     .addItem('Run Diagnostics', 'reosRunDiagnostics')
     .addItem('Diagnostics Summary', 'reosDiagnosticsSummary')
+    .addItem('Run Self-Healing', 'reosRunSelfHealing')
     .addSeparator()
     .addItem('Run Phase 1 Upgrade', 'reosRunPhase1Upgrade')
     .addItem('Validate Phase 1 Upgrade', 'reosValidatePhase1Upgrade')
