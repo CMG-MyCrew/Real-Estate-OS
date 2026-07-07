@@ -1,5 +1,5 @@
 /**
- * REOS Enterprise v3.2.7 - Configuration
+ * REOS Enterprise v3.2.8 - Configuration
  * Authoritative application configuration.
  */
 
@@ -8,7 +8,7 @@ var REOS = REOS || {};
 REOS.CONFIG = {
   APP: {
     NAME: 'REOS Enterprise',
-    VERSION: '3.2.7',
+    VERSION: '3.2.8',
     TIME_ZONE: 'America/New_York'
   },
 
@@ -25,6 +25,9 @@ REOS.CONFIG = {
     SYSTEM_AUDIT: 'SYSTEM_AUDIT',
     SECURITY_POLICIES: 'SECURITY_POLICIES',
     SECURITY_EVENTS: 'SECURITY_EVENTS',
+    MODULE_REGISTRY: 'MODULE_REGISTRY',
+    MODULE_DEPENDENCIES: 'MODULE_DEPENDENCIES',
+    MODULE_HEALTH: 'MODULE_HEALTH',
     CUSTOMERS: 'CUSTOMERS',
     PROPERTIES: 'PROPERTIES',
     UNITS: 'UNITS',
