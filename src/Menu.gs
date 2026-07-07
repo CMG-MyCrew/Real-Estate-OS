@@ -1,5 +1,5 @@
 /**
- * REOS Enterprise v3.2.9 - Unified Menu
+ * REOS Enterprise v3.2.10 - Unified Menu
  */
 
 var REOS = REOS || {};
@@ -10,6 +10,8 @@ REOS.buildMenu_ = function () {
     .addItem('Run Diagnostics', 'reosRunDiagnostics')
     .addItem('Diagnostics Summary', 'reosDiagnosticsSummary')
     .addItem('Run Self-Healing', 'reosRunSelfHealing')
+    .addItem('Run Environment Validation', 'reosRunEnvironmentValidation')
+    .addItem('Environment Summary', 'reosEnvironmentSummary')
     .addSeparator()
     .addItem('Run Phase 1 Upgrade', 'reosRunPhase1Upgrade')
     .addItem('Validate Phase 1 Upgrade', 'reosValidatePhase1Upgrade')
