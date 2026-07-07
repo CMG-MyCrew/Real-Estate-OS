@@ -1,5 +1,5 @@
 /**
- * REOS Enterprise v3.2.8 - Configuration
+ * REOS Enterprise v3.2.9 - Configuration
  * Authoritative application configuration.
  */
 
@@ -8,7 +8,7 @@ var REOS = REOS || {};
 REOS.CONFIG = {
   APP: {
     NAME: 'REOS Enterprise',
-    VERSION: '3.2.8',
+    VERSION: '3.2.9',
     TIME_ZONE: 'America/New_York'
   },
 
@@ -28,6 +28,8 @@ REOS.CONFIG = {
     MODULE_REGISTRY: 'MODULE_REGISTRY',
     MODULE_DEPENDENCIES: 'MODULE_DEPENDENCIES',
     MODULE_HEALTH: 'MODULE_HEALTH',
+    DIAGNOSTIC_RUNS: 'DIAGNOSTIC_RUNS',
+    DIAGNOSTIC_CHECKS: 'DIAGNOSTIC_CHECKS',
     CUSTOMERS: 'CUSTOMERS',
     PROPERTIES: 'PROPERTIES',
     UNITS: 'UNITS',
@@ -76,36 +78,13 @@ REOS.CONFIG = {
   },
 
   ROLES: {
-    ADMIN: 'Admin',
-    OWNER: 'Owner',
-    MANAGER: 'Manager',
-    ACCOUNTANT: 'Accountant',
-    AGENT: 'Agent',
-    VENDOR: 'Vendor',
-    CLIENT: 'Client',
-    INVESTOR: 'Investor',
-    LENDER: 'Lender'
+    ADMIN: 'Admin', OWNER: 'Owner', MANAGER: 'Manager', ACCOUNTANT: 'Accountant', AGENT: 'Agent', VENDOR: 'Vendor', CLIENT: 'Client', INVESTOR: 'Investor', LENDER: 'Lender'
   },
 
   ID_PREFIXES: {
-    CUSTOMER: 'CUS',
-    LEAD: 'LEAD',
-    TASK: 'TASK',
-    ACTIVITY: 'ACT',
-    PROPERTY: 'PROP',
-    WORK_ORDER: 'WO',
-    VENDOR: 'VEN',
-    INVOICE: 'INV',
-    PAYMENT: 'PAY',
-    EXPENSE: 'EXP',
-    PORTAL_ACCOUNT: 'PACC'
+    CUSTOMER: 'CUS', LEAD: 'LEAD', TASK: 'TASK', ACTIVITY: 'ACT', PROPERTY: 'PROP', WORK_ORDER: 'WO', VENDOR: 'VEN', INVOICE: 'INV', PAYMENT: 'PAY', EXPENSE: 'EXP', PORTAL_ACCOUNT: 'PACC'
   }
 };
 
-REOS.getProperty_ = function (key) {
-  return PropertiesService.getScriptProperties().getProperty(key);
-};
-
-REOS.setProperty_ = function (key, value) {
-  PropertiesService.getScriptProperties().setProperty(key, String(value));
-};
+REOS.getProperty_ = function (key) { return PropertiesService.getScriptProperties().getProperty(key); };
+REOS.setProperty_ = function (key, value) { PropertiesService.getScriptProperties().setProperty(key, String(value)); };
