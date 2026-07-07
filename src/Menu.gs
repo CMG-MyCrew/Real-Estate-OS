@@ -1,5 +1,5 @@
 /**
- * REOS Enterprise v3.2.8 - Unified Menu
+ * REOS Enterprise v3.2.9 - Unified Menu
  */
 
 var REOS = REOS || {};
@@ -7,6 +7,9 @@ var REOS = REOS || {};
 REOS.buildMenu_ = function () {
   const ui = SpreadsheetApp.getUi();
   ui.createMenu('REOS')
+    .addItem('Run Diagnostics', 'reosRunDiagnostics')
+    .addItem('Diagnostics Summary', 'reosDiagnosticsSummary')
+    .addSeparator()
     .addItem('Run Phase 1 Upgrade', 'reosRunPhase1Upgrade')
     .addItem('Validate Phase 1 Upgrade', 'reosValidatePhase1Upgrade')
     .addItem('Core Diagnostics', 'reosCoreDiagnostics')
