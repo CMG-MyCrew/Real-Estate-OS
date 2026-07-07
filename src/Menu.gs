@@ -12,6 +12,8 @@ REOS.buildMenu_ = function () {
     .addItem('Run Self-Healing', 'reosRunSelfHealing')
     .addItem('Run Environment Validation', 'reosRunEnvironmentValidation')
     .addItem('Environment Summary', 'reosEnvironmentSummary')
+    .addItem('Run Integration Monitor', 'reosRunIntegrationMonitor')
+    .addItem('Integration Summary', 'reosIntegrationSummary')
     .addSeparator()
     .addItem('Run Phase 1 Upgrade', 'reosRunPhase1Upgrade')
     .addItem('Validate Phase 1 Upgrade', 'reosValidatePhase1Upgrade')
