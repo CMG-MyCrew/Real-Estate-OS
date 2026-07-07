@@ -1,5 +1,5 @@
 /**
- * REOS Enterprise v3.2.7 - Unified Menu
+ * REOS Enterprise v3.2.8 - Unified Menu
  */
 
 var REOS = REOS || {};
@@ -11,6 +11,8 @@ REOS.buildMenu_ = function () {
     .addItem('Validate Phase 1 Upgrade', 'reosValidatePhase1Upgrade')
     .addItem('Core Diagnostics', 'reosCoreDiagnostics')
     .addItem('Sync Module Sheets', 'reosCoreSyncModules')
+    .addItem('Module Health Report', 'reosModulesHealthReport')
+    .addItem('Initialize Enabled Modules', 'reosModulesSyncEnabled')
     .addSeparator()
     .addItem('Open Dashboard Hub', 'showDashboardHub')
     .addItem('Open Finance Manager', 'showFinanceManager')
