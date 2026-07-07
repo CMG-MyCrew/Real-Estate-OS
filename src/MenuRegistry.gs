@@ -121,6 +121,8 @@ REOS.MenuRegistry = (function () {
       label: 'System',
       order: 90,
       items: [
+        { label: 'Menu Registry Summary', functionName: 'reosMenuRegistrySummary' },
+        { label: 'Rebuild REOS Menu', functionName: 'reosRebuildMenu' },
         { label: 'Health Check', functionName: 'runHealthCheck' },
         { label: 'Install / Repair REOS', functionName: 'installREOS' }
       ]
@@ -166,4 +168,12 @@ function reosMenuRegistrySummary() {
   var groups = REOS.MenuRegistry.getGroups();
   SpreadsheetApp.getUi().alert('REOS Menu Registry', JSON.stringify(groups, null, 2).slice(0, 1800), SpreadsheetApp.getUi().ButtonSet.OK);
   return groups;
+}
+
+function reosRebuildMenu() {
+  REOS.MenuRegistry.reset();
+  REOS.MenuRegistry.initializeDefaults();
+  REOS.buildMenu_();
+  SpreadsheetApp.getUi().alert('REOS menu rebuilt from registry.');
+  return REOS.MenuRegistry.getGroups();
 }
