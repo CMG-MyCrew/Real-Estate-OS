@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f6f8fb; color: #1f2937; }
+    header { background: #111827; color: white; padding: 18px 22px; }
+    h1 { margin: 0; font-size: 22px; }
+    .wrap { padding: 20px; }
+    .cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 18px; }
+    .card { background: white; border-radius: 10px; padding: 14px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+    .label { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: .04em; }
+    .value { font-size: 26px; font-weight: 700; margin-top: 8px; }
+    button { border: 0; border-radius: 8px; padding: 8px 10px; cursor: pointer; background: #2563eb; color: white; }
+    button.secondary { background: #6b7280; }
+    table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+    th, td { padding: 10px; border-bottom: 1px solid #e5e7eb; text-align: left; font-size: 13px; vertical-align: top; }
+    th { background: #f3f4f6; color: #374151; }
+    .pill { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+    .Critical { background: #fee2e2; color: #991b1b; }
+    .Error { background: #ffedd5; color: #9a3412; }
+    .Warning { background: #fef3c7; color: #92400e; }
+    .Info { background: #dbeafe; color: #1e40af; }
+    .toolbar { display: flex; gap: 8px; margin-bottom: 14px; }
+  </style>
+</head>
+<body>
+  <header><h1>REOS Error Dashboard</h1></header>
+  <div class="wrap">
+    <div class="toolbar">
+      <button onclick="loadData()">Refresh</button>
+      <button class="secondary" onclick="runScan()">Run Error Scan</button>
+    </div>
+    <div id="cards" class="cards"></div>
+    <table>
+      <thead>
+        <tr><th>Error ID</th><th>Severity</th><th>Category</th><th>Module</th><th>Function</th><th>Message</th><th>Status</th><th>Action</th></tr>
+      </thead>
+      <tbody id="rows"><tr><td colspan="8">Loading...</td></tr></tbody>
+    </table>
+  </div>
+<script>
+function loadData() {
+  google.script.run.withSuccessHandler(render).reosGetErrorDashboardData();
+}
+function runScan() {
+  google.script.run.withSuccessHandler(loadData).reosRunErrorScan();
+}
+function render(data) {
+  const s = data.summary || {};
+  document.getElementById('cards').innerHTML = [
+    card('Open', s.open || 0), card('Critical', s.criticalOpen || 0), card('Warnings', s.warningsOpen || 0), card('Today', s.today || 0), card('Resolved', s.resolved || 0)
+  ].join('');
+  const rows = data.openErrors || [];
+  document.getElementById('rows').innerHTML = rows.length ? rows.map(row).join('') : '<tr><td colspan="8">No open errors.</td></tr>';
+}
+function card(label, value) { return '<div class="card"><div class="label">'+esc(label)+'</div><div class="value">'+esc(value)+'</div></div>'; }
+function row(r) {
+  return '<tr>'+
+    '<td>'+esc(r['Error ID'])+'</td>'+
+    '<td><span class="pill '+esc(r.Severity)+'">'+esc(r.Severity)+'</span></td>'+
+    '<td>'+esc(r.Category)+'</td>'+
+    '<td>'+esc(r.Module)+'</td>'+
+    '<td>'+esc(r.Function)+'</td>'+
+    '<td>'+esc(r.Message)+'</td>'+
+    '<td>'+esc(r.Status)+'</td>'+
+    '<td><button onclick="resolveError(\''+esc(r['Error ID'])+'\')">Resolve</button></td>'+
+  '</tr>';
+}
+function resolveError(id) { google.script.run.withSuccessHandler(loadData).reosResolveError(id, 'Resolved from dashboard.'); }
+function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+loadData();
+</script>
+</body>
+</html>
