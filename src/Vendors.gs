@@ -340,7 +340,7 @@ REOS.Vendors = (function () {
 
 function reosInitializeVendors() { return REOS.Vendors.initialize(); }
 function showVendors() {
-  const html = HtmlService.createHtmlOutputFromFile('Vendors').setWidth(1200).setHeight(760);
+  const html = HtmlService.createHtmlOutputFromFile('VendorsUI').setWidth(1200).setHeight(760);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Vendors');
 }
 function vendorsDashboard() { return REOS.Vendors.dashboard(); }

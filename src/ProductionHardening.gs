@@ -265,6 +265,6 @@ function reosProductionCleanupLogs(daysToKeep) { return REOS.ProductionHardening
 function reosProductionClearDashboardCaches() { return REOS.ProductionHardening.clearDashboardCaches(); }
 function showProductionHardening() {
   REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('ProductionHardening').setTitle('REOS Production Hardening').setWidth(1200).setHeight(800);
+  const html = HtmlService.createHtmlOutputFromFile('ProductionHardeningUI').setTitle('REOS Production Hardening').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Production Hardening');
 }

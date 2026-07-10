@@ -250,6 +250,6 @@ function reosEnterpriseSeederRun(options) { return REOS.EnterpriseSeeder.runEnte
 function reosEnterpriseSeederItems(runId) { return REOS.EnterpriseSeeder.getRunItems(runId); }
 function showEnterpriseSeeder() {
   REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('EnterpriseSeeder').setTitle('REOS Enterprise Seeder').setWidth(1200).setHeight(800);
+  const html = HtmlService.createHtmlOutputFromFile('EnterpriseSeederUI').setTitle('REOS Enterprise Seeder').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Enterprise Seeder');
 }

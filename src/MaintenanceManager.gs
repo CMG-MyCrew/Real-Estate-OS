@@ -190,6 +190,6 @@ function reosMaintenanceCreatePatchRelease(version) { return REOS.MaintenanceMan
 function reosMaintenanceApproveHotfix(issueId, role, comments) { return REOS.MaintenanceManager.approveHotfix(issueId, role, comments || ''); }
 function showMaintenanceManager() {
   REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('MaintenanceManager').setTitle('REOS Maintenance Manager').setWidth(1200).setHeight(800);
+  const html = HtmlService.createHtmlOutputFromFile('MaintenanceManagerUI').setTitle('REOS Maintenance Manager').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Maintenance Manager');
 }

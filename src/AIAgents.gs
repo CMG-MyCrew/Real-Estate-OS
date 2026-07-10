@@ -233,6 +233,6 @@ function reosAIAgentsUpdateTask(taskId, changes) { return REOS.AIAgents.updateTa
 function reosAIAgentsReleaseSummary() { return REOS.AIAgents.generateProductionReleaseSummary(); }
 function showAIAgents() {
   REOS.Security.requirePermission('ai:use');
-  const html = HtmlService.createHtmlOutputFromFile('AIAgents').setTitle('REOS AI Agents').setWidth(1200).setHeight(800);
+  const html = HtmlService.createHtmlOutputFromFile('AIAgentsUI').setTitle('REOS AI Agents').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS AI Agents');
 }

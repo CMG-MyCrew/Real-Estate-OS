@@ -182,6 +182,6 @@ function reosPortalLogout(token) { return REOS.PortalAuth.logout(token); }
 function doGet(e) { return REOS.PortalAuth.doGet(e); }
 function showPortalAuth() {
   REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('PortalAuth').setTitle('REOS Portal Auth').setWidth(1200).setHeight(850);
+  const html = HtmlService.createHtmlOutputFromFile('PortalAuthUI').setTitle('REOS Portal Auth').setWidth(1200).setHeight(850);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Portal Auth');
 }

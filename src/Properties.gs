@@ -394,7 +394,7 @@ REOS.Properties = (function () {
 
 function reosInitializeProperties() { return REOS.Properties.initialize(); }
 function showProperties() {
-  const html = HtmlService.createHtmlOutputFromFile('Properties').setWidth(1200).setHeight(760);
+  const html = HtmlService.createHtmlOutputFromFile('PropertiesUI').setWidth(1200).setHeight(760);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Properties');
 }
 function propertiesDashboard() { return REOS.Properties.dashboard(); }

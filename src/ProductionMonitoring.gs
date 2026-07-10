@@ -163,6 +163,6 @@ function reosProductionMonitoringAlerts(snapshotId) { return REOS.ProductionMoni
 function reosProductionMonitoringMetrics(snapshotId) { return REOS.ProductionMonitoring.getSnapshotMetrics(snapshotId); }
 function showProductionMonitoring() {
   REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('ProductionMonitoring').setTitle('REOS Production Monitoring').setWidth(1200).setHeight(800);
+  const html = HtmlService.createHtmlOutputFromFile('ProductionMonitoringUI').setTitle('REOS Production Monitoring').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Production Monitoring');
 }

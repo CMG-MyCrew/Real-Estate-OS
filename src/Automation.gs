@@ -424,6 +424,6 @@ function automationDispatch(eventName, moduleName, payload) { return REOS.Automa
 function automationDailyRun() { return REOS.Automation.dailyRun(); }
 function showAutomation() {
   REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('Automation').setTitle('REOS Automation').setWidth(1200).setHeight(760);
+  const html = HtmlService.createHtmlOutputFromFile('AutomationUI').setTitle('REOS Automation').setWidth(1200).setHeight(760);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Automation');
 }

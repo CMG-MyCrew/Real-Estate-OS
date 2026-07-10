@@ -267,6 +267,6 @@ function reosDataSeederRun(options) { return REOS.DataSeeder.runEnterpriseSeed(o
 function reosDataSeederItems(runId) { return REOS.DataSeeder.getRunItems(runId); }
 function showDataSeeder() {
   REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('DataSeeder').setTitle('REOS Data Seeder').setWidth(1200).setHeight(800);
+  const html = HtmlService.createHtmlOutputFromFile('DataSeederUI').setTitle('REOS Data Seeder').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Data Seeder');
 }

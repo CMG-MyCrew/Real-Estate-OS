@@ -236,6 +236,6 @@ function reosQuickBooksRefreshToken(connectionId, liveMode) { return REOS.QuickB
 function reosQuickBooksSandboxTest(connectionId, liveMode) { return REOS.QuickBooksOAuth.runSandboxConnectionTest(connectionId, liveMode === true); }
 function showQuickBooksOAuth() {
   REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('QuickBooksOAuth').setTitle('REOS QuickBooks OAuth').setWidth(1200).setHeight(800);
+  const html = HtmlService.createHtmlOutputFromFile('QuickBooksOAuthUI').setTitle('REOS QuickBooks OAuth').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS QuickBooks OAuth');
 }

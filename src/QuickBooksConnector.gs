@@ -201,6 +201,6 @@ function reosQuickBooksQueueFinanceExports(connectionId) { return REOS.QuickBook
 function reosQuickBooksDryRunSync(connectionId) { return REOS.QuickBooksConnector.runDryRunSync(connectionId || ''); }
 function showQuickBooksConnector() {
   REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('QuickBooksConnector').setTitle('REOS QuickBooks Connector').setWidth(1200).setHeight(800);
+  const html = HtmlService.createHtmlOutputFromFile('QuickBooksConnectorUI').setTitle('REOS QuickBooks Connector').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS QuickBooks Connector');
 }

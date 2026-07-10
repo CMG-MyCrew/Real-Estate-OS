@@ -5,7 +5,7 @@
 var REOS = REOS || {};
 
 function showErrorDashboard() {
-  const html = HtmlService.createHtmlOutputFromFile('ErrorDashboard')
+  const html = HtmlService.createHtmlOutputFromFile('ErrorDashboardUI')
     .setTitle('REOS Error Dashboard')
     .setWidth(1200)
     .setHeight(850);

@@ -289,6 +289,6 @@ function reosPortalCreateTask(record) { return REOS.PortalFoundation.createTask(
 function reosPortalDashboard(accountId) { return REOS.PortalFoundation.getPortalDashboard(accountId); }
 function showPortalFoundation() {
   REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('PortalFoundation').setTitle('REOS Portal Foundation').setWidth(1200).setHeight(850);
+  const html = HtmlService.createHtmlOutputFromFile('PortalFoundationUI').setTitle('REOS Portal Foundation').setWidth(1200).setHeight(850);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Portal Foundation');
 }

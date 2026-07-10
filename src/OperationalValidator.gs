@@ -205,6 +205,6 @@ function reosOperationalValidatorRun(options) { return REOS.OperationalValidator
 function reosOperationalValidatorChecks(runId) { return REOS.OperationalValidator.getRunChecks(runId); }
 function showOperationalValidator() {
   REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('OperationalValidator').setTitle('REOS Operational Validator').setWidth(1200).setHeight(800);
+  const html = HtmlService.createHtmlOutputFromFile('OperationalValidatorUI').setTitle('REOS Operational Validator').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Operational Validator');
 }

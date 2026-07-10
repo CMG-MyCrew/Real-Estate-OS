@@ -53,4 +53,4 @@ function reosReleaseCenterDashboard(){ return REOS.ReleaseCenter.getDashboard();
 function reosReleaseCenterBuild(options){ return REOS.ReleaseCenter.buildReleaseCandidate(options||{}); }
 function reosReleaseCenterApprove(releaseId){ return REOS.ReleaseCenter.approveRelease(releaseId); }
 function reosReleaseCenterRecordDeployment(releaseId, environment, notes){ return REOS.ReleaseCenter.recordDeployment(releaseId, environment, notes); }
-function showReleaseCenter(){ REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('ReleaseCenter').setTitle('REOS Release Center').setWidth(1200).setHeight(800), 'REOS Release Center'); }
+function showReleaseCenter(){ REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('ReleaseCenterUI').setTitle('REOS Release Center').setWidth(1200).setHeight(800), 'REOS Release Center'); }

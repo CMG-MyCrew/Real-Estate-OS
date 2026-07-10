@@ -132,6 +132,6 @@ function reosDashboardHubRunQuickAction(key) { return REOS.DashboardHub.runQuick
 function reosDashboardHubSearch(query) { return REOS.DashboardHub.search(query); }
 function showDashboardHub() {
   REOS.Security.requirePermission('dashboard:view');
-  const html = HtmlService.createHtmlOutputFromFile('DashboardHub').setTitle('REOS Dashboard Hub').setWidth(1300).setHeight(850);
+  const html = HtmlService.createHtmlOutputFromFile('DashboardHubUI').setTitle('REOS Dashboard Hub').setWidth(1300).setHeight(850);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Dashboard Hub');
 }

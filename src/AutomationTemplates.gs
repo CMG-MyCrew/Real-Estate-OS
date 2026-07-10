@@ -205,6 +205,6 @@ function reosAutomationTemplatesCreateRule(templateId, overrides) { return REOS.
 function reosAutomationTemplatesDashboard() { return REOS.AutomationTemplates.getDashboard(); }
 function showAutomationTemplates() {
   REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('AutomationTemplates').setTitle('REOS Automation Templates').setWidth(1200).setHeight(800);
+  const html = HtmlService.createHtmlOutputFromFile('AutomationTemplatesUI').setTitle('REOS Automation Templates').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Automation Templates');
 }

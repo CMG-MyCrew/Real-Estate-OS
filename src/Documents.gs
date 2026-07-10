@@ -217,6 +217,6 @@ function reosDocumentsArchive(documentId) { return REOS.Documents.archiveDocumen
 function reosDocumentsEvents(documentId) { return REOS.Documents.getDocumentEvents(documentId); }
 function showDocuments() {
   REOS.Security.requirePermission('dashboard:view');
-  const html = HtmlService.createHtmlOutputFromFile('Documents').setTitle('REOS Documents').setWidth(1200).setHeight(800);
+  const html = HtmlService.createHtmlOutputFromFile('DocumentsUI').setTitle('REOS Documents').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Documents');
 }

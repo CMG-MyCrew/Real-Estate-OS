@@ -323,6 +323,6 @@ function reosExternalSearchDistressedProperties(criteria) { return REOS.External
 function reosExternalGeocodeAddress(address) { return REOS.ExternalIntegrations.geocodeAddress(address); }
 function showExternalIntegrations() {
   REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('ExternalIntegrations').setTitle('REOS External Integrations').setWidth(1200).setHeight(800);
+  const html = HtmlService.createHtmlOutputFromFile('ExternalIntegrationsUI').setTitle('REOS External Integrations').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS External Integrations');
 }

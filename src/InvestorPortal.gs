@@ -129,6 +129,6 @@ function reosInvestorPortalPublishUpdate(updateId) { return REOS.InvestorPortal.
 function reosInvestorPortalAddWatchlist(record) { return REOS.InvestorPortal.addWatchlistProperty(record || {}); }
 function showInvestorPortal() {
   REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('InvestorPortal').setTitle('REOS Investor Portal').setWidth(1200).setHeight(850);
+  const html = HtmlService.createHtmlOutputFromFile('InvestorPortalUI').setTitle('REOS Investor Portal').setWidth(1200).setHeight(850);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Investor Portal');
 }

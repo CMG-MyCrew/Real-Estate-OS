@@ -242,6 +242,6 @@ function reosFinanceCreateExpense(record) { return REOS.FinanceManager.createExp
 function reosFinanceQuickBooksExport() { return REOS.FinanceManager.generateQuickBooksExport(); }
 function showFinanceManager() {
   REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('FinanceManager').setTitle('REOS Finance Manager').setWidth(1200).setHeight(800);
+  const html = HtmlService.createHtmlOutputFromFile('FinanceManagerUI').setTitle('REOS Finance Manager').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Finance Manager');
 }

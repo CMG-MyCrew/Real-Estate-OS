@@ -227,6 +227,6 @@ function reosFinanceInvoicePreview(invoiceId) { return REOS.FinanceEnhancements.
 function reosFinanceGenerateInvoicePdfRecord(invoiceId) { return REOS.FinanceEnhancements.generateInvoicePdfRecord(invoiceId); }
 function showFinanceEnhancements() {
   REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('FinanceEnhancements').setTitle('REOS Finance Enhancements').setWidth(1200).setHeight(800);
+  const html = HtmlService.createHtmlOutputFromFile('FinanceEnhancementsUI').setTitle('REOS Finance Enhancements').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Finance Enhancements');
 }

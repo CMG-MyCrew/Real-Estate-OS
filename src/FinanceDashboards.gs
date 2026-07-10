@@ -217,6 +217,6 @@ function reosFinanceDashboardsCreateBudget(record) { return REOS.FinanceDashboar
 function reosFinanceDashboardsRecalculateBudgets() { return REOS.FinanceDashboards.recalculateBudgets(); }
 function showFinanceDashboards() {
   REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('FinanceDashboards').setTitle('REOS Finance Dashboards').setWidth(1200).setHeight(850);
+  const html = HtmlService.createHtmlOutputFromFile('FinanceDashboardsUI').setTitle('REOS Finance Dashboards').setWidth(1200).setHeight(850);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Finance Dashboards');
 }

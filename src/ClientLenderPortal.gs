@@ -79,4 +79,4 @@ function reosClientLenderPortalEnsureSheets() { return REOS.ClientLenderPortal.e
 function reosClientLenderPortalDashboard(accountId) { return REOS.ClientLenderPortal.getDashboard(accountId); }
 function reosClientLenderPortalCreateUpdate(record) { return REOS.ClientLenderPortal.createUpdate(record || {}); }
 function reosClientLenderPortalCreateNote(record) { return REOS.ClientLenderPortal.createNote(record || {}); }
-function showClientLenderPortal() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('ClientLenderPortal').setTitle('REOS Client Lender Portal').setWidth(1200).setHeight(850), 'REOS Client Lender Portal'); }
+function showClientLenderPortal() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('ClientLenderPortalUI').setTitle('REOS Client Lender Portal').setWidth(1200).setHeight(850), 'REOS Client Lender Portal'); }

@@ -181,6 +181,6 @@ function reosReleasePackageGenerate(options) { return REOS.ReleasePackage.genera
 function reosReleasePackageArtifacts(packageId) { return REOS.ReleasePackage.getArtifacts(packageId); }
 function showReleasePackage() {
   REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('ReleasePackage').setTitle('REOS Release Package').setWidth(1200).setHeight(800);
+  const html = HtmlService.createHtmlOutputFromFile('ReleasePackageUI').setTitle('REOS Release Package').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Release Package');
 }

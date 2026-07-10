@@ -174,4 +174,4 @@ function reosVendorPortalDashboard(accountId) { return REOS.VendorPortal.getVend
 function reosVendorPortalCreateUpdate(record) { return REOS.VendorPortal.createPortalUpdate(record || {}); }
 function reosVendorPortalSubmitCompletion(record) { return REOS.VendorPortal.createCompletionSubmission(record || {}); }
 function reosVendorPortalCompleteTask(taskId) { return REOS.VendorPortal.completePortalTask(taskId); }
-function showVendorPortalUI() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('VendorPortal').setTitle('REOS Vendor Portal').setWidth(1200).setHeight(850), 'REOS Vendor Portal'); }
+function showVendorPortalUI() { REOS.Security.requireAdmin(); SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutputFromFile('VendorPortalUI').setTitle('REOS Vendor Portal').setWidth(1200).setHeight(850), 'REOS Vendor Portal'); }

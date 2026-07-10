@@ -224,6 +224,6 @@ function reosProductionLaunchReject(launchId, role, comments) { return REOS.Prod
 function reosProductionLaunchPublish(launchId) { return REOS.ProductionLaunch.publishGA(launchId); }
 function showProductionLaunch() {
   REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('ProductionLaunch').setTitle('REOS Production Launch').setWidth(1200).setHeight(800);
+  const html = HtmlService.createHtmlOutputFromFile('ProductionLaunchUI').setTitle('REOS Production Launch').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Production Launch');
 }

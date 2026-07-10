@@ -288,7 +288,7 @@ function reosInitializeCRM() {
 }
 
 function showCRM() {
-  const html = HtmlService.createHtmlOutputFromFile('CRM')
+  const html = HtmlService.createHtmlOutputFromFile('CRMUI')
     .setWidth(1100)
     .setHeight(720);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS CRM');

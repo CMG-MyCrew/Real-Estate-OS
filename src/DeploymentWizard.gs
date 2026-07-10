@@ -294,6 +294,6 @@ function reosDeploymentWizardRun(options) { return REOS.DeploymentWizard.runProd
 function reosDeploymentWizardChecks(runId) { return REOS.DeploymentWizard.getRunChecks(runId); }
 function showDeploymentWizard() {
   REOS.Security.requireAdmin();
-  const html = HtmlService.createHtmlOutputFromFile('DeploymentWizard').setTitle('REOS Deployment Wizard').setWidth(1200).setHeight(800);
+  const html = HtmlService.createHtmlOutputFromFile('DeploymentWizardUI').setTitle('REOS Deployment Wizard').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Deployment Wizard');
 }

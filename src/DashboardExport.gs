@@ -176,6 +176,6 @@ function reosDashboardExportPdfStub(dashboardKey, options) { return REOS.Dashboa
 function reosDashboardExportCsv(dashboardKey, options) { return REOS.DashboardExport.exportCsv(dashboardKey, options || {}); }
 function showDashboardExport() {
   REOS.Security.requirePermission('dashboard:view');
-  const html = HtmlService.createHtmlOutputFromFile('DashboardExport').setTitle('REOS Dashboard Export').setWidth(1200).setHeight(800);
+  const html = HtmlService.createHtmlOutputFromFile('DashboardExportUI').setTitle('REOS Dashboard Export').setWidth(1200).setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Dashboard Export');
 }
