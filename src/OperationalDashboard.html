@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #f4f6f8; color: #1f2937; }
+    .shell { display: grid; grid-template-columns: 250px 1fr; min-height: 100vh; }
+    .side { background: #0f172a; color: white; padding: 20px; }
+    .side h1 { margin: 0; font-size: 22px; }
+    .side p { color: #94a3b8; font-size: 12px; }
+    .nav button { width: 100%; margin: 6px 0; padding: 10px; border: 0; border-radius: 8px; text-align: left; cursor: pointer; }
+    .main { padding: 22px; }
+    .top { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+    .actions { display:flex; gap:8px; flex-wrap:wrap; }
+    button { padding:10px 13px; border:0; border-radius:8px; cursor:pointer; font-weight:700; }
+    .primary { background:#0f172a; color:white; }
+    .secondary { background:#e2e8f0; }
+    .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:18px; }
+    .kpi,.card { background:white; border:1px solid #e5e7eb; border-radius:12px; padding:14px; box-shadow:0 4px 12px rgba(15,23,42,.05); }
+    .kpi span { font-size:12px; color:#64748b; font-weight:700; }
+    .kpi strong { display:block; font-size:26px; margin-top:5px; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .alert { padding:10px; border-left:4px solid #2563eb; background:#f8fafc; margin-bottom:8px; border-radius:8px; }
+    .critical { border-left-color:#dc2626; }
+    .warning { border-left-color:#f59e0b; }
+    .success { border-left-color:#16a34a; }
+    table { width:100%; border-collapse:collapse; font-size:13px; }
+    th,td { padding:8px; border-bottom:1px solid #e5e7eb; text-align:left; }
+    pre { background:#0f172a; color:#e2e8f0; padding:12px; border-radius:10px; max-height:220px; overflow:auto; white-space:pre-wrap; }
+    @media(max-width:900px){ .shell{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.side{display:none} }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <h1>REOS Operations</h1>
+    <p>Daily command workspace</p>
+    <div class="nav" id="quickActions"></div>
+  </aside>
+  <main class="main">
+    <div class="top">
+      <div><h2>Operational Dashboard</h2><div id="generated"></div></div>
+      <div class="actions">
+        <button class="primary" onclick="startDay()">Start of Day</button>
+        <button class="secondary" onclick="loadDashboard()">Refresh</button>
+      </div>
+    </div>
+    <section id="kpis" class="kpis"></section>
+    <section class="grid">
+      <div class="card"><h3>Operational Alerts</h3><div id="alerts"></div></div>
+      <div class="card"><h3>Pipeline by Stage</h3><table id="pipeline"></table></div>
+      <div class="card"><h3>Tasks by Role</h3><table id="roles"></table></div>
+      <div class="card"><h3>Top Deals / Assets</h3><table id="topDeals"></table></div>
+    </section>
+    <section class="card" style="margin-top:16px"><h3>System Output</h3><pre id="output">Ready.</pre></section>
+  </main>
+</div>
+<script>
+  function loadDashboard(){ google.script.run.withSuccessHandler(render).withFailureHandler(showError).reosOperationalDashboardGet(); }
+  function startDay(){ google.script.run.withSuccessHandler(function(r){output(r); render(r.dashboard);}).withFailureHandler(showError).reosOperationalDashboardStartOfDay(); }
+  function runAction(key){ google.script.run.withSuccessHandler(function(r){output(r); loadDashboard();}).withFailureHandler(showError).reosOperationalDashboardRunAction(key); }
+  function render(data){
+    document.getElementById('generated').textContent='Updated '+(data.generatedAt||'');
+    var a=data.acquisitions||{}, p=data.portfolio||{}, t=data.tasks||{}, q=data.quality||{};
+    var kpis={qualityScore:q.score||0,activeDeals:a.activeDeals||0,pipelines:a.pipelineCount||0,openTasks:t.open||a.openTasks||0,overdue:t.overdue||a.overdueTasks||0,draftOffers:a.draftOffers||0,portfolioAssets:p.totalAssets||0,totalEquity:p.totalEquity||0,projectedProfit:a.projectedProfit||p.projectedProfit||0};
+    document.getElementById('kpis').innerHTML=Object.keys(kpis).map(function(k){return '<div class="kpi"><span>'+esc(label(k))+'</span><strong>'+esc(kpis[k])+'</strong></div>';}).join('');
+    document.getElementById('alerts').innerHTML=(data.alerts||[]).map(function(x){return '<div class="alert '+esc(x.level||'')+'"><strong>'+esc(x.title||'')+'</strong><br>'+esc(x.message||'')+'</div>';}).join('');
+    renderMap('pipeline',(data.pipeline||{}).byStage||(a.pipelineByStage||{}));
+    renderMap('roles',(t.byRole||{}));
+    var tops=(a.topDeals||p.topAssets||[]); document.getElementById('topDeals').innerHTML='<tr><th>ID</th><th>Metric</th><th>Status</th></tr>'+tops.slice(0,10).map(function(x){return '<tr><td>'+esc(x.dealId||x.assetId||'')+'</td><td>'+esc(x.flipProfit||x.equity||x.currentValue||'')+'</td><td>'+esc(x.recommendation||x.strategy||x.riskLevel||'')+'</td></tr>';}).join('');
+    document.getElementById('quickActions').innerHTML=(data.quickActions||[]).map(function(x){return '<button onclick="runAction(\''+escJs(x.key)+'\')">'+esc(x.label)+'</button>';}).join('');
+    output(data);
+  }
+  function renderMap(id,map){ document.getElementById(id).innerHTML='<tr><th>Name</th><th>Count</th></tr>'+Object.keys(map||{}).map(function(k){return '<tr><td>'+esc(k)+'</td><td>'+esc(map[k])+'</td></tr>';}).join(''); }
+  function output(v){ document.getElementById('output').textContent=typeof v==='string'?v:JSON.stringify(v,null,2); }
+  function showError(e){ output({error:e.message}); }
+  function label(v){ return String(v).replace(/([A-Z])/g,' $1').replace(/^./,function(s){return s.toUpperCase();}); }
+  function esc(v){ return String(v===undefined||v===null?'':v).replace(/[&<>'"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c];}); }
+  function escJs(v){ return String(v||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+  loadDashboard();
+</script>
+</body>
+</html>
