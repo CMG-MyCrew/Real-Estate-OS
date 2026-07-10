@@ -7,7 +7,7 @@
 var REOS = REOS || {};
 
 REOS.Activities = (function () {
-  const SHEET = REOS.CONFIG.SHEETS.ACTIVITIES;
+  const SHEET = (REOS.CONFIG && REOS.CONFIG.SHEETS && REOS.CONFIG.SHEETS.ACTIVITIES) || 'ACTIVITIES';
   const ID_FIELD = 'Activity ID';
 
   const HEADERS = [

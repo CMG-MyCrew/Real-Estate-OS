@@ -7,7 +7,7 @@
 var REOS = REOS || {};
 
 REOS.Tasks = (function () {
-  const SHEET = REOS.CONFIG.SHEETS.TASKS;
+  const SHEET = (REOS.CONFIG && REOS.CONFIG.SHEETS && REOS.CONFIG.SHEETS.TASKS) || 'TASKS';
   const ID_FIELD = 'Task ID';
 
   const HEADERS = [

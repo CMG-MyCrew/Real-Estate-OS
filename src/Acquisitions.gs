@@ -8,7 +8,7 @@
 var REOS = REOS || {};
 
 REOS.Acquisitions = (function () {
-  const LEAD_SHEET = REOS.CONFIG.SHEETS.LEADS;
+  const LEAD_SHEET = (REOS.CONFIG && REOS.CONFIG.SHEETS && REOS.CONFIG.SHEETS.LEADS) || 'LEADS';
   const LEAD_ID = 'Lead ID';
 
   const PIPELINE = [

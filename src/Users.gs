@@ -5,7 +5,7 @@
 var REOS = REOS || {};
 
 REOS.Users = (function () {
-  const SHEET = REOS.CONFIG.SHEETS.USERS;
+  const SHEET = (REOS.CONFIG && REOS.CONFIG.SHEETS && REOS.CONFIG.SHEETS.USERS) || 'USERS';
   const ID_FIELD = 'User ID';
 
   const HEADERS = [
