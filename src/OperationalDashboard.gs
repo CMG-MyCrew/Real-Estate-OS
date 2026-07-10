@@ -1,7 +1,6 @@
 /**
- * REOS Enterprise v4.0.0 - Operational Dashboard
- * Unified daily operations workspace for acquisitions, portfolio, tasks,
- * system quality, alerts, and start-of-day orchestration.
+ * REOS Enterprise v4.0.1 - Operational Dashboard Phase 1 UI
+ * Live KPI cards, charts, searchable tables, filters, and navigation actions.
  */
 
 var REOS = REOS || {};
@@ -10,13 +9,10 @@ REOS.OperationalDashboard = (function () {
   var SNAPSHOTS = 'OPERATIONAL_DASHBOARD_SNAPSHOTS';
   var HEADERS = ['Snapshot ID','Generated At','Quality Score','Active Deals','Pipeline Count','Open Tasks','Overdue Tasks','Draft Offers','Portfolio Assets','Portfolio Equity','Projected Profit','Pending Distress Leads','Alerts JSON','Details JSON'];
 
-  function ensureSheets() {
-    REOS.Database.ensureTable(SNAPSHOTS, HEADERS);
-  }
+  function ensureSheets() { REOS.Database.ensureTable(SNAPSHOTS, HEADERS); }
 
   function getDashboard() {
     ensureSheets();
-
     var quality = safeCall_(function () { return REOS.AcquisitionQuality.runSmokeTest(); }, { ok: false, score: 0, status: 'Unavailable' });
     var command = safeCall_(function () { return REOS.AcquisitionCommandCenter.buildSnapshot().snapshot; }, {});
     var portfolio = safeCall_(function () { return REOS.PortfolioIntelligence.buildSnapshot().snapshot; }, {});
@@ -25,7 +21,12 @@ REOS.OperationalDashboard = (function () {
     var workflow = safeCall_(function () { return REOS.AcquisitionWorkflow.summary(); }, {});
     var events = safeCall_(function () { return REOS.PluginEventBus.summary(); }, {});
 
-    var alerts = buildAlerts_(quality, command, portfolio, tasks, pipeline, events);
+    var deals = safeAll_('DEALS');
+    var analyses = safeAll_('DEAL_ANALYSIS');
+    var offers = safeAll_('OFFERS');
+    var taskRows = safeAll_('ACQUISITION_TASK_QUEUE');
+    var pipelineRows = safeAll_('ACQUISITION_PIPELINE');
+
     var data = {
       ok: !!quality.ok,
       generatedAt: new Date().toISOString(),
@@ -36,14 +37,32 @@ REOS.OperationalDashboard = (function () {
       pipeline: pipeline,
       workflow: workflow,
       events: events,
-      alerts: alerts,
+      alerts: buildAlerts_(quality, command, portfolio, tasks, pipeline, events),
+      charts: {
+        pipelineByStage: pipeline.byStage || command.pipelineByStage || {},
+        tasksByRole: tasks.byRole || {},
+        offersByStatus: groupCount_(offers, 'Status'),
+        dealsByCity: groupCount_(deals, 'City')
+      },
+      records: {
+        deals: buildDealRows_(deals, analyses, pipelineRows),
+        tasks: buildTaskRows_(taskRows),
+        offers: buildOfferRows_(offers)
+      },
       quickActions: [
-        { key: 'importDistress', label: 'Import Distress Leads', functionName: 'reosDistressImporterRun' },
-        { key: 'runWorkflow', label: 'Run New Deal Workflow', functionName: 'reosAcquisitionWorkflowRunAllNewDeals' },
-        { key: 'generateTasks', label: 'Generate Latest Deal Tasks', functionName: 'reosAcquisitionTaskEngineGenerateForLatestDeal' },
-        { key: 'refreshCommand', label: 'Refresh Command Center', functionName: 'reosAcquisitionCommandCenterSnapshot' },
-        { key: 'refreshPortfolio', label: 'Refresh Portfolio', functionName: 'reosPortfolioIntelligenceSnapshot' },
-        { key: 'processEvents', label: 'Process Plugin Events', functionName: 'reosPluginEventProcessPending' }
+        { key: 'importDistress', label: 'Import Distress Leads', icon: '⇩', functionName: 'reosDistressImporterRun' },
+        { key: 'runWorkflow', label: 'Run New Deal Workflow', icon: '▶', functionName: 'reosAcquisitionWorkflowRunAllNewDeals' },
+        { key: 'generateTasks', label: 'Generate Latest Deal Tasks', icon: '✓', functionName: 'reosAcquisitionTaskEngineGenerateForLatestDeal' },
+        { key: 'refreshCommand', label: 'Refresh Command Center', icon: '↻', functionName: 'reosAcquisitionCommandCenterSnapshot' },
+        { key: 'refreshPortfolio', label: 'Refresh Portfolio', icon: '▦', functionName: 'reosPortfolioIntelligenceSnapshot' },
+        { key: 'processEvents', label: 'Process Plugin Events', icon: '⚡', functionName: 'reosPluginEventProcessPending' }
+      ],
+      navigation: [
+        { key: 'overview', label: 'Overview' },
+        { key: 'pipeline', label: 'Pipeline' },
+        { key: 'tasks', label: 'Tasks' },
+        { key: 'offers', label: 'Offers' },
+        { key: 'portfolio', label: 'Portfolio' }
       ]
     };
 
@@ -60,21 +79,12 @@ REOS.OperationalDashboard = (function () {
     steps.push(runStep_('Refresh Command Center', function () { return REOS.AcquisitionCommandCenter.buildSnapshot(); }));
     steps.push(runStep_('Refresh Portfolio', function () { return REOS.PortfolioIntelligence.buildSnapshot(); }));
     steps.push(runStep_('Task Summary', function () { return REOS.AcquisitionTaskEngine.summary(); }));
-
     var failed = steps.filter(function (step) { return !step.ok; });
-    var dashboard = getDashboard();
-    return {
-      ok: failed.length === 0,
-      generatedAt: new Date().toISOString(),
-      steps: steps,
-      failedSteps: failed.length,
-      dashboard: dashboard
-    };
+    return { ok: failed.length === 0, generatedAt: new Date().toISOString(), steps: steps, failedSteps: failed.length, dashboard: getDashboard() };
   }
 
   function runQuickAction(key) {
-    var dashboard = getDashboard();
-    var action = dashboard.quickActions.filter(function (item) { return item.key === key; })[0];
+    var action = getDashboard().quickActions.filter(function (item) { return item.key === key; })[0];
     if (!action) throw new Error('Unknown operational action: ' + key);
     if (typeof globalThis[action.functionName] !== 'function') throw new Error('Action function unavailable: ' + action.functionName);
     return globalThis[action.functionName]();
@@ -84,6 +94,37 @@ REOS.OperationalDashboard = (function () {
     ensureSheets();
     var rows = REOS.Database.getAll(SNAPSHOTS);
     return { ok: true, generatedAt: new Date().toISOString(), snapshots: rows.length, latest: rows.length ? rows[rows.length - 1] : null };
+  }
+
+  function buildDealRows_(deals, analyses, pipelines) {
+    return deals.slice().reverse().slice(0, 100).map(function (deal) {
+      var dealId = deal['Deal ID'];
+      var analysis = latestMatch_(analyses, 'Deal ID', dealId);
+      var pipeline = latestMatch_(pipelines, 'Deal ID', dealId);
+      return {
+        dealId: dealId,
+        address: deal.Address || '', city: deal.City || '', state: deal.State || '',
+        source: deal.Source || '', status: deal['Deal Status'] || '',
+        stage: pipeline ? pipeline['Current Stage'] : 'Not Started',
+        arv: Number((analysis || {}).ARV || 0),
+        mao: Number((analysis || {}).MAO || 0),
+        profit: Number((analysis || {})['Flip Profit'] || 0),
+        roi: Number((analysis || {})['ROI %'] || 0),
+        risk: (analysis || {})['Risk Level'] || ''
+      };
+    });
+  }
+
+  function buildTaskRows_(rows) {
+    return rows.slice().reverse().slice(0, 150).map(function (r) {
+      return { taskId: r['Acquisition Task ID'], dealId: r['Deal ID'], stage: r.Stage || '', task: r['Task Name'] || '', role: r['Owner Role'] || '', priority: r.Priority || '', dueAt: r['Due At'] || '', status: r.Status || '' };
+    });
+  }
+
+  function buildOfferRows_(rows) {
+    return rows.slice().reverse().slice(0, 100).map(function (r) {
+      return { offerId: r['Offer ID'], dealId: r['Deal ID'], type: r['Offer Type'] || '', amount: Number(r['Offer Amount'] || 0), status: r.Status || '', updatedAt: r['Updated At'] || r['Created At'] || '' };
+    });
   }
 
   function buildAlerts_(quality, command, portfolio, tasks, pipeline, events) {
@@ -99,33 +140,22 @@ REOS.OperationalDashboard = (function () {
   }
 
   function persistSnapshot_(data) {
-    var command = data.acquisitions || {};
-    var portfolio = data.portfolio || {};
+    var command = data.acquisitions || {}, portfolio = data.portfolio || {};
     return REOS.Database.insert(SNAPSHOTS, {
-      'Generated At': new Date(),
-      'Quality Score': Number((data.quality || {}).score || 0),
-      'Active Deals': Number(command.activeDeals || 0),
-      'Pipeline Count': Number(command.pipelineCount || 0),
-      'Open Tasks': Number(command.openTasks || (data.tasks || {}).open || 0),
-      'Overdue Tasks': Number(command.overdueTasks || (data.tasks || {}).overdue || 0),
-      'Draft Offers': Number(command.draftOffers || 0),
-      'Portfolio Assets': Number(portfolio.totalAssets || 0),
-      'Portfolio Equity': Number(portfolio.totalEquity || 0),
-      'Projected Profit': Number(command.projectedProfit || portfolio.projectedProfit || 0),
-      'Pending Distress Leads': Number(command.pendingDistressLeads || 0),
-      'Alerts JSON': REOS.toJson_(data.alerts || []),
-      'Details JSON': REOS.toJson_(data)
+      'Generated At': new Date(), 'Quality Score': Number((data.quality || {}).score || 0), 'Active Deals': Number(command.activeDeals || 0),
+      'Pipeline Count': Number(command.pipelineCount || 0), 'Open Tasks': Number(command.openTasks || (data.tasks || {}).open || 0),
+      'Overdue Tasks': Number(command.overdueTasks || (data.tasks || {}).overdue || 0), 'Draft Offers': Number(command.draftOffers || 0),
+      'Portfolio Assets': Number(portfolio.totalAssets || 0), 'Portfolio Equity': Number(portfolio.totalEquity || 0),
+      'Projected Profit': Number(command.projectedProfit || portfolio.projectedProfit || 0), 'Pending Distress Leads': Number(command.pendingDistressLeads || 0),
+      'Alerts JSON': REOS.toJson_(data.alerts || []), 'Details JSON': REOS.toJson_(data)
     }, { idField: 'Snapshot ID', idPrefix: 'ODASH' });
   }
 
-  function runStep_(name, fn) {
-    try { return { name: name, ok: true, result: fn() }; }
-    catch (error) { return { name: name, ok: false, error: error.message }; }
-  }
-
-  function safeCall_(fn, fallback) {
-    try { return fn(); } catch (error) { return fallback; }
-  }
+  function safeAll_(name) { try { return REOS.Database.getAll(name); } catch (e) { return []; } }
+  function latestMatch_(rows, field, value) { var matches = rows.filter(function (r) { return r[field] === value; }); return matches.length ? matches[matches.length - 1] : null; }
+  function groupCount_(rows, field) { return rows.reduce(function (m, r) { var k = r[field] || 'Unknown'; m[k] = (m[k] || 0) + 1; return m; }, {}); }
+  function runStep_(name, fn) { try { return { name: name, ok: true, result: fn() }; } catch (error) { return { name: name, ok: false, error: error.message }; } }
+  function safeCall_(fn, fallback) { try { return fn(); } catch (error) { return fallback; } }
 
   return { ensureSheets: ensureSheets, getDashboard: getDashboard, startOfDay: startOfDay, runQuickAction: runQuickAction, summary: summary };
 })();
@@ -135,6 +165,6 @@ function reosOperationalDashboardStartOfDay() { return REOS.OperationalDashboard
 function reosOperationalDashboardRunAction(key) { return REOS.OperationalDashboard.runQuickAction(key); }
 function reosOperationalDashboardSummary() { return REOS.OperationalDashboard.summary(); }
 function showOperationalDashboard() {
-  var html = HtmlService.createHtmlOutputFromFile('OperationalDashboardUI').setTitle('REOS Operational Dashboard').setWidth(1400).setHeight(900);
+  var html = HtmlService.createHtmlOutputFromFile('OperationalDashboardUI').setTitle('REOS Operational Dashboard').setWidth(1450).setHeight(920);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Operational Dashboard');
 }
