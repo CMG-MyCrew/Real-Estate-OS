@@ -135,6 +135,6 @@ function reosOperationalDashboardStartOfDay() { return REOS.OperationalDashboard
 function reosOperationalDashboardRunAction(key) { return REOS.OperationalDashboard.runQuickAction(key); }
 function reosOperationalDashboardSummary() { return REOS.OperationalDashboard.summary(); }
 function showOperationalDashboard() {
-  var html = HtmlService.createHtmlOutputFromFile('OperationalDashboard').setTitle('REOS Operational Dashboard').setWidth(1400).setHeight(900);
+  var html = HtmlService.createHtmlOutputFromFile('OperationalDashboardUI').setTitle('REOS Operational Dashboard').setWidth(1400).setHeight(900);
   SpreadsheetApp.getUi().showModalDialog(html, 'REOS Operational Dashboard');
 }
