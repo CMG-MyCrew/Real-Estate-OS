@@ -90,3 +90,115 @@ function reosDashboardTasks(){ return REOS.DashboardServices.tasks(); }
 function reosDashboardOffers(){ return REOS.DashboardServices.offers(); }
 function reosDashboardPortfolio(){ return REOS.DashboardServices.portfolio(); }
 function reosDashboardAlerts(){ return REOS.DashboardServices.alerts(); }
+
+function reosDashboardServicesPing() {
+  return {
+    ok: true,
+    message: 'Dashboard Services loaded.',
+    generatedAt: new Date().toISOString()
+  };
+}
+
+function reosDashboardBootstrapDebug() {
+  try {
+    return {
+      ok: true,
+      serviceAvailable: !!REOS.DashboardServices,
+      bootstrapAvailable:
+        !!REOS.DashboardServices &&
+        typeof REOS.DashboardServices.bootstrap === 'function',
+      result: REOS.DashboardServices.bootstrap()
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      name: error.name || 'Error',
+      message: error.message || String(error),
+      stack: error.stack || ''
+    };
+  }
+}
+
+function reosDashboardServicesPing() {
+  return {
+    ok: true,
+    message: 'Dashboard Services loaded.',
+    generatedAt: new Date().toISOString()
+  };
+}
+
+function reosDashboardBootstrapDebug() {
+  try {
+    return {
+      ok: true,
+      serviceAvailable: !!REOS.DashboardServices,
+      bootstrapAvailable:
+        !!REOS.DashboardServices &&
+        typeof REOS.DashboardServices.bootstrap === 'function',
+      result: REOS.DashboardServices.bootstrap()
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      name: error.name || 'Error',
+      message: error.message || String(error),
+      stack: error.stack || ''
+    };
+  }
+}
+
+function reosDashboardServicesPing() {
+  return {
+    ok: true,
+    message: 'Dashboard Services loaded.',
+    generatedAt: new Date().toISOString()
+  };
+}
+
+function reosDashboardBootstrapDebug() {
+  try {
+    return {
+      ok: true,
+      serviceAvailable: !!REOS.DashboardServices,
+      bootstrapAvailable:
+        !!REOS.DashboardServices &&
+        typeof REOS.DashboardServices.bootstrap === 'function',
+      result: REOS.DashboardServices.bootstrap()
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      name: error.name || 'Error',
+      message: error.message || String(error),
+      stack: error.stack || ''
+    };
+  }
+}
+
+function reosDashboardServicesPing() {
+  return {
+    ok: true,
+    message: 'Dashboard Services loaded.',
+    generatedAt: new Date().toISOString()
+  };
+}
+
+function reosDashboardBootstrapDebug() {
+  try {
+    return {
+      ok: true,
+      serviceAvailable: !!REOS.DashboardServices,
+      bootstrapAvailable:
+        !!REOS.DashboardServices &&
+        typeof REOS.DashboardServices.bootstrap === 'function',
+      result: REOS.DashboardServices.bootstrap()
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      name: error.name || 'Error',
+      message: error.message || String(error),
+      stack: error.stack || ''
+    };
+  }
+}
