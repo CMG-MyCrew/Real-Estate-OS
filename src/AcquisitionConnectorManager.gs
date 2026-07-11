@@ -166,13 +166,38 @@ REOS.AcquisitionConnectorManager = (function () {
   }
 
   function invoke_(connector, options) {
-    var handlerName = String(connector['Handler Function'] || '').trim();
-    if (!handlerName) throw new Error('Connector handler is not configured.');
-    if (typeof globalThis[handlerName] !== 'function') {
-      throw new Error('Connector handler unavailable: ' + handlerName);
+    var handlerName = String(
+      connector['Handler Function'] || ''
+    ).trim();
+
+    if (!handlerName) {
+      throw new Error('Connector handler is not configured.');
     }
 
-    return globalThis[handlerName]({
+    var handlers = {
+      reosConnectorHandleCountyCsv:
+        reosConnectorHandleCountyCsv,
+      reosConnectorHandleTaxDelinquent:
+        reosConnectorHandleTaxDelinquent,
+      reosConnectorHandleProbate:
+        reosConnectorHandleProbate,
+      reosConnectorHandleCodeViolations:
+        reosConnectorHandleCodeViolations,
+      reosConnectorHandleVacantProperties:
+        reosConnectorHandleVacantProperties,
+      reosConnectorHandleAbsenteeOwners:
+        reosConnectorHandleAbsenteeOwners
+    };
+
+    var handler = handlers[handlerName];
+
+    if (typeof handler !== 'function') {
+      throw new Error(
+        'Connector handler unavailable: ' + handlerName
+      );
+    }
+
+    return handler({
       connector: connector,
       config: REOS.ConnectorRegistry.getConfig(connector),
       options: options || {}
