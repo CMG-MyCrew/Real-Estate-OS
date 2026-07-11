@@ -1,6 +1,6 @@
 /**
- * REOS Enterprise v4.2.0 - Acquisition Connector Manager
- * Sprint 7.1 Increment 1: execution, health, and run logging.
+ * REOS Enterprise v4.2.1 - Acquisition Connector Manager
+ * Sprint 7.1 Increments 1-2: execution, health, logging, and CSV handlers.
  */
 var REOS = REOS || {};
 
@@ -16,6 +16,9 @@ REOS.AcquisitionConnectorManager = (function () {
     if (!REOS.ConnectorRegistry) throw new Error('ConnectorRegistry.gs is required.');
     REOS.ConnectorRegistry.ensureSheet();
     REOS.Database.ensureTable(RUNS, RUN_HEADERS);
+    if (REOS.CSVImportEngine && REOS.CSVImportEngine.ensureSheets) {
+      REOS.CSVImportEngine.ensureSheets();
+    }
     return { ok: true, registry: REOS.ConnectorRegistry.table, runs: RUNS };
   }
 
@@ -32,17 +35,11 @@ REOS.AcquisitionConnectorManager = (function () {
   function run(key, options) {
     ensureSheets();
     options = options || {};
-
     var connector = REOS.ConnectorRegistry.get(key);
     if (!connector) throw new Error('Unknown connector: ' + key);
+
     if (!REOS.ConnectorRegistry.isEnabled(connector) && !options.force) {
-      return {
-        ok: false,
-        skipped: true,
-        connectorKey: key,
-        status: 'Disabled',
-        message: 'Connector is disabled.'
-      };
+      return { ok: false, skipped: true, connectorKey: key, status: 'Disabled', message: 'Connector is disabled.' };
     }
 
     var started = new Date();
@@ -105,14 +102,14 @@ REOS.AcquisitionConnectorManager = (function () {
     var connectors = list().filter(function (connector) {
       return options.includeDisabled || REOS.ConnectorRegistry.isEnabled(connector);
     });
-
     var results = connectors.map(function (connector) {
       return run(connector['Connector Key'], {
         force: !!options.includeDisabled,
+        forceFiles: !!options.forceFiles,
+        fileId: options.fileId || '',
         context: options.context || {}
       });
     });
-
     return {
       ok: results.every(function (item) { return item.ok || item.skipped; }),
       generatedAt: new Date().toISOString(),
@@ -127,14 +124,12 @@ REOS.AcquisitionConnectorManager = (function () {
   function health() {
     ensureSheets();
     var now = new Date();
-    var connectors = list();
-    var items = connectors.map(function (connector) {
+    var items = list().map(function (connector) {
       var enabled = REOS.ConnectorRegistry.isEnabled(connector);
       var lastRun = connector['Last Run At'] ? new Date(connector['Last Run At']) : null;
       var ageHours = lastRun ? Math.round((now.getTime() - lastRun.getTime()) / 3600000) : null;
       var lastStatus = connector['Last Status'] || 'Never Run';
       var state = !enabled ? 'Disabled' : lastStatus === 'Failed' ? 'Unhealthy' : !lastRun ? 'Not Tested' : ageHours > 48 ? 'Stale' : 'Healthy';
-
       return {
         key: connector['Connector Key'],
         name: connector.Name,
@@ -146,7 +141,6 @@ REOS.AcquisitionConnectorManager = (function () {
         message: connector['Last Message'] || ''
       };
     });
-
     return {
       ok: items.every(function (item) { return !item.enabled || item.state === 'Healthy'; }),
       generatedAt: now.toISOString(),
@@ -161,42 +155,22 @@ REOS.AcquisitionConnectorManager = (function () {
 
   function recentRuns(limit) {
     ensureSheets();
-    limit = Number(limit || 25);
-    return REOS.Database.getAll(RUNS).slice().reverse().slice(0, limit);
+    return REOS.Database.getAll(RUNS).slice().reverse().slice(0, Number(limit || 25));
   }
 
   function invoke_(connector, options) {
-    var handlerName = String(
-      connector['Handler Function'] || ''
-    ).trim();
-
-    if (!handlerName) {
-      throw new Error('Connector handler is not configured.');
-    }
-
+    var handlerName = String(connector['Handler Function'] || '').trim();
+    if (!handlerName) throw new Error('Connector handler is not configured.');
     var handlers = {
-      reosConnectorHandleCountyCsv:
-        reosConnectorHandleCountyCsv,
-      reosConnectorHandleTaxDelinquent:
-        reosConnectorHandleTaxDelinquent,
-      reosConnectorHandleProbate:
-        reosConnectorHandleProbate,
-      reosConnectorHandleCodeViolations:
-        reosConnectorHandleCodeViolations,
-      reosConnectorHandleVacantProperties:
-        reosConnectorHandleVacantProperties,
-      reosConnectorHandleAbsenteeOwners:
-        reosConnectorHandleAbsenteeOwners
+      reosConnectorHandleCountyCsv: reosConnectorHandleCountyCsv,
+      reosConnectorHandleTaxDelinquent: reosConnectorHandleTaxDelinquent,
+      reosConnectorHandleProbate: reosConnectorHandleProbate,
+      reosConnectorHandleCodeViolations: reosConnectorHandleCodeViolations,
+      reosConnectorHandleVacantProperties: reosConnectorHandleVacantProperties,
+      reosConnectorHandleAbsenteeOwners: reosConnectorHandleAbsenteeOwners
     };
-
     var handler = handlers[handlerName];
-
-    if (typeof handler !== 'function') {
-      throw new Error(
-        'Connector handler unavailable: ' + handlerName
-      );
-    }
-
+    if (typeof handler !== 'function') throw new Error('Connector handler unavailable: ' + handlerName);
     return handler({
       connector: connector,
       config: REOS.ConnectorRegistry.getConfig(connector),
@@ -214,8 +188,7 @@ REOS.AcquisitionConnectorManager = (function () {
   }
 
   function currentUser_() {
-    try { return Session.getActiveUser().getEmail() || ''; }
-    catch (error) { return ''; }
+    try { return Session.getActiveUser().getEmail() || ''; } catch (error) { return ''; }
   }
 
   function publish_(topic, payload) {
@@ -245,23 +218,16 @@ function reosConnectorRunAll(options) { return REOS.AcquisitionConnectorManager.
 function reosConnectorHealth() { return REOS.AcquisitionConnectorManager.health(); }
 function reosConnectorRecentRuns(limit) { return REOS.AcquisitionConnectorManager.recentRuns(limit); }
 
-// Increment 1 placeholder handlers. Increment 2 will replace these with CSV/API ingestion.
-function reosConnectorHandleCountyCsv(context) { return reosConnectorPlaceholder_(context); }
-function reosConnectorHandleTaxDelinquent(context) { return reosConnectorPlaceholder_(context); }
-function reosConnectorHandleProbate(context) { return reosConnectorPlaceholder_(context); }
-function reosConnectorHandleCodeViolations(context) { return reosConnectorPlaceholder_(context); }
-function reosConnectorHandleVacantProperties(context) { return reosConnectorPlaceholder_(context); }
-function reosConnectorHandleAbsenteeOwners(context) { return reosConnectorPlaceholder_(context); }
+function reosConnectorHandleCountyCsv(context) { return reosConnectorCsv_(context); }
+function reosConnectorHandleTaxDelinquent(context) { return reosConnectorCsv_(context); }
+function reosConnectorHandleProbate(context) { return reosConnectorCsv_(context); }
+function reosConnectorHandleCodeViolations(context) { return reosConnectorCsv_(context); }
+function reosConnectorHandleVacantProperties(context) { return reosConnectorCsv_(context); }
+function reosConnectorHandleAbsenteeOwners(context) { return reosConnectorCsv_(context); }
 
-function reosConnectorPlaceholder_(context) {
-  var connector = (context || {}).connector || {};
-  return {
-    ok: true,
-    status: 'Complete',
-    message: 'Connector framework test completed; source ingestion is added in Increment 2.',
-    connectorKey: connector['Connector Key'] || '',
-    recordsFound: 0,
-    recordsImported: 0,
-    recordsSkipped: 0
-  };
+function reosConnectorCsv_(context) {
+  if (!REOS.CSVImportEngine || typeof REOS.CSVImportEngine.importConnector !== 'function') {
+    throw new Error('CSVImportEngine.gs is required for CSV connectors.');
+  }
+  return REOS.CSVImportEngine.importConnector(context || {});
 }
