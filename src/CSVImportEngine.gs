@@ -245,12 +245,32 @@ REOS.CSVImportEngine = (function () {
     var files = [];
 
     if (options.fileId || config.fileId) {
-      files.push(DriveApp.getFileById(options.fileId || config.fileId));
+      files.push(getDriveFile_(options.fileId || config.fileId));
       return files;
     }
 
     if (!config.driveFolderId) return files;
-    var iterator = DriveApp.getFolderById(config.driveFolderId).getFiles();
+
+    var folderId = String(config.driveFolderId || '').trim();
+
+    if (!/^[a-zA-Z0-9_-]{10,}$/.test(folderId)) {
+      throw new Error(
+        'The Google Drive folder ID is invalid: "' + folderId + '".'
+      );
+    }
+
+    var iterator;
+
+    try {
+      iterator = DriveApp.getFolderById(folderId).getFiles();
+    } catch (error) {
+      throw new Error(
+        'Unable to access the Google Drive folder. ' +
+        'Confirm the folder ID and permissions. Folder ID: ' +
+        folderId + '. Details: ' +
+        (error.message || String(error))
+      );
+    }
     var pattern = String(config.filePattern || '.csv').toLowerCase().replace('*', '');
     while (iterator.hasNext()) {
       var file = iterator.next();
@@ -264,9 +284,51 @@ REOS.CSVImportEngine = (function () {
     return files.slice(0, maxFiles);
   }
 
+  function getDriveFile_(fileId) {
+    var value = String(fileId || '').trim();
+
+    if (!value) {
+      throw new Error(
+        'No Google Drive file ID was provided. ' +
+        'Pass a valid Drive file ID or configure fileId on the connector.'
+      );
+    }
+
+    // Accept either a raw Drive ID or a complete Google Drive URL.
+    var urlMatch = value.match(/\/d\/([a-zA-Z0-9_-]+)/) ||
+      value.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+
+    if (urlMatch) {
+      value = urlMatch[1];
+    }
+
+    if (!/^[a-zA-Z0-9_-]{10,}$/.test(value)) {
+      throw new Error(
+        'The Google Drive file ID is invalid: "' + value + '". ' +
+        'Use the ID from the Drive file URL.'
+      );
+    }
+
+    try {
+      var file = DriveApp.getFileById(value);
+
+      // Force an access check so permission/deleted-file errors are caught here.
+      file.getName();
+
+      return file;
+    } catch (error) {
+      throw new Error(
+        'Unable to access the Google Drive file. ' +
+        'Confirm the file ID is correct and the Apps Script account has access. ' +
+        'File ID: ' + value + '. Details: ' +
+        (error.message || String(error))
+      );
+    }
+  }
+
   function parseFile_(fileId, options) {
     options = options || {};
-    var file = DriveApp.getFileById(fileId);
+    var file = getDriveFile_(fileId);
     var text = file.getBlob().getDataAsString(options.charset || 'UTF-8');
     text = text.replace(/^\uFEFF/, '');
     var delimiter = options.delimiter || detectDelimiter_(text);
