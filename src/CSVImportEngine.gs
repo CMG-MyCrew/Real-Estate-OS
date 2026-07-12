@@ -450,3 +450,12 @@ function reosCsvPreview(fileId, options) { return REOS.CSVImportEngine.previewFi
 function reosCsvValidate(fileId, options) { return REOS.CSVImportEngine.validateFile(fileId, options); }
 function reosCsvImport(fileId, options) { return REOS.CSVImportEngine.importFile(fileId, options); }
 function reosCsvImportConnector(context) { return REOS.CSVImportEngine.importConnector(context); }
+
+function reosCsvPreviewConfiguredFile() {
+  var fileIdOrUrl = 'PASTE_ACTUAL_GOOGLE_DRIVE_FILE_ID_OR_URL_HERE';
+
+  return {
+    preview: reosCsvPreview(fileIdOrUrl),
+    validation: reosCsvValidate(fileIdOrUrl)
+  };
+}
