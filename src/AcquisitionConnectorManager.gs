@@ -1,6 +1,6 @@
 /**
- * REOS Enterprise v4.2.1 - Acquisition Connector Manager
- * Sprint 7.1 Increments 1-2: execution, health, logging, and CSV handlers.
+ * REOS Enterprise v4.2.4 - Acquisition Connector Manager
+ * Sprint 7.1: execution, health, logging, and CSV handlers.
  */
 var REOS = REOS || {};
 
@@ -167,7 +167,8 @@ REOS.AcquisitionConnectorManager = (function () {
       reosConnectorHandleProbate: reosConnectorHandleProbate,
       reosConnectorHandleCodeViolations: reosConnectorHandleCodeViolations,
       reosConnectorHandleVacantProperties: reosConnectorHandleVacantProperties,
-      reosConnectorHandleAbsenteeOwners: reosConnectorHandleAbsenteeOwners
+      reosConnectorHandleAbsenteeOwners: reosConnectorHandleAbsenteeOwners,
+      reosConnectorHandleZillowImport: reosConnectorHandleZillowImport
     };
     var handler = handlers[handlerName];
     if (typeof handler !== 'function') throw new Error('Connector handler unavailable: ' + handlerName);
