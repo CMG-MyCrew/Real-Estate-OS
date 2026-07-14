@@ -96,3 +96,12 @@ function reosZillowImportDisable() {
 function reosConnectorHandleZillowImport(context) {
   return REOS.ZillowImportConnector.importConnector(context || {});
 }
+
+function reosConfigureZillowAuthorizedFolder() {
+  return REOS.ZillowImportConnector.configure({
+    driveFolderId: '1YEvMuOtz55nrm92ux2PhVIIqWkkE6nfn',
+    filePattern: '.csv',
+    maxFilesPerRun: 10,
+    defaultState: ''
+  });
+}
