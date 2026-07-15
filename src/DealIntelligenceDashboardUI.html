@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <style>
+    body{font-family:Arial,sans-serif;margin:0;background:#f5f7fb;color:#1f2937}
+    .wrap{padding:18px}.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+    h1{font-size:22px;margin:0}.sub{color:#6b7280;font-size:12px}
+    .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}
+    .card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+    .label{font-size:12px;color:#6b7280}.value{font-size:22px;font-weight:700;margin-top:4px}
+    .filters{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:14px}
+    select,button{padding:9px;border:1px solid #d1d5db;border-radius:7px;background:#fff}
+    button{cursor:pointer}.primary{background:#111827;color:#fff}.small{padding:6px 8px;font-size:12px}
+    table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden}
+    th,td{padding:10px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:12px}
+    th{background:#f9fafb;position:sticky;top:0}.actions{display:flex;gap:6px;white-space:nowrap}
+    .badge{padding:3px 7px;border-radius:999px;background:#eef2ff}.error{color:#b91c1c;margin:10px 0}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header"><div><h1>AI Deal Intelligence</h1><div class="sub" id="generated"></div></div><button class="primary" onclick="loadData()">Refresh</button></div>
+  <div class="kpis">
+    <div class="card"><div class="label">Open AI Deals</div><div class="value" id="openDeals">0</div></div>
+    <div class="card"><div class="label">A / A+ Opportunities</div><div class="value" id="topGradeDeals">0</div></div>
+    <div class="card"><div class="label">Average ROI</div><div class="value" id="averageROI">0%</div></div>
+    <div class="card"><div class="label">Projected Profit</div><div class="value" id="projectedProfit">$0</div></div>
+    <div class="card"><div class="label">Low-Risk Deals</div><div class="value" id="lowRiskDeals">0</div></div>
+  </div>
+  <div class="filters">
+    <select id="city"><option value="">All Cities</option></select>
+    <select id="state"><option value="">All States</option></select>
+    <select id="strategy"><option value="">All Strategies</option></select>
+    <select id="risk"><option value="">All Risk</option></select>
+    <select id="grade"><option value="">All Grades</option></select>
+    <button onclick="loadData()">Apply Filters</button>
+  </div>
+  <div class="error" id="error"></div>
+  <div style="max-height:620px;overflow:auto">
+    <table><thead><tr><th>Address</th><th>Score</th><th>Grade</th><th>Strategy</th><th>MAO</th><th>ROI</th><th>Profit</th><th>Risk</th><th>Status</th><th>Actions</th></tr></thead><tbody id="rows"></tbody></table>
+  </div>
+</div>
+<script>
+  const money=v=>'$'+Number(v||0).toLocaleString();
+  function filters(){return {city:city.value,state:state.value,strategy:strategy.value,risk:risk.value,grade:grade.value};}
+  function loadData(){error.textContent='';google.script.run.withSuccessHandler(render).withFailureHandler(e=>error.textContent=e.message||e).reosDealIntelligenceDashboardData(filters());}
+  function fill(id,values,label){const el=document.getElementById(id),current=el.value;el.innerHTML='<option value="">'+label+'</option>';(values||[]).forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;el.appendChild(o)});el.value=current;}
+  function render(data){generated.textContent='Updated '+new Date(data.generatedAt).toLocaleString();openDeals.textContent=data.kpis.openDeals;topGradeDeals.textContent=data.kpis.topGradeDeals;averageROI.textContent=data.kpis.averageROI+'%';projectedProfit.textContent=money(data.kpis.projectedProfit);lowRiskDeals.textContent=data.kpis.lowRiskDeals;fill('city',data.filters.cities,'All Cities');fill('state',data.filters.states,'All States');fill('strategy',data.filters.strategies,'All Strategies');fill('risk',data.filters.risks,'All Risk');fill('grade',data.filters.grades,'All Grades');rows.innerHTML=(data.records||[]).map(r=>`<tr><td>${r.address}, ${r.city} ${r.state}</td><td>${r.leadScore}</td><td><span class="badge">${r.grade}</span></td><td>${r.strategy}</td><td>${money(r.mao)}</td><td>${r.roi}%</td><td>${money(r.profit)}</td><td>${r.risk}</td><td>${r.status}</td><td><div class="actions"><button class="small" onclick="createOffer('${r.aiDealId}')">Create Offer</button><button class="small" onclick="promote('${r.aiDealId}')">Promote</button></div></td></tr>`).join('');}
+  function createOffer(id){google.script.run.withSuccessHandler(()=>{alert('Offer draft created.');loadData();}).withFailureHandler(e=>alert(e.message||e)).reosDealIntelligenceDashboardCreateOffer(id);}
+  function promote(id){if(!confirm('Promote this opportunity to DEALS and pipeline?'))return;google.script.run.withSuccessHandler(()=>{alert('Deal promoted.');loadData();}).withFailureHandler(e=>alert(e.message||e)).reosDealIntelligenceDashboardPromote(id);}
+  loadData();
+</script>
+</body>
+</html>
