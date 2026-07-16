@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <style>
+    body{font-family:Arial,sans-serif;margin:0;background:#f5f7fb;color:#1f2937}
+    .wrap{padding:18px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+    h2{margin:0}.actions button,.row-actions button{margin-left:6px}
+    button{border:0;border-radius:6px;padding:8px 12px;cursor:pointer;background:#1f5eff;color:white}
+    button.secondary{background:#64748b}.filters{display:flex;gap:10px;margin-bottom:14px}
+    select,input{padding:8px;border:1px solid #cbd5e1;border-radius:6px;background:white}
+    .kpis{display:grid;grid-template-columns:repeat(8,1fr);gap:10px;margin-bottom:14px}
+    .card{background:white;border-radius:8px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+    .label{font-size:12px;color:#64748b}.value{font-size:22px;font-weight:700;margin-top:4px}
+    table{width:100%;border-collapse:collapse;background:white;border-radius:8px;overflow:hidden}
+    th,td{padding:10px;border-bottom:1px solid #e2e8f0;text-align:left;font-size:13px}
+    th{background:#eef2ff}.status{font-weight:700}.muted{color:#64748b}
+    .error{color:#b91c1c;margin:10px 0}.empty{padding:20px;text-align:center;color:#64748b}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h2>Offer Execution</h2>
+    <div class="actions">
+      <button onclick="buildQueue()">Build Queue</button>
+      <button class="secondary" onclick="refresh()">Refresh</button>
+    </div>
+  </div>
+
+  <div class="filters">
+    <select id="status" onchange="refresh()"><option value="">All statuses</option></select>
+    <select id="method" onchange="refresh()"><option value="">All methods</option></select>
+  </div>
+
+  <div id="error" class="error"></div>
+  <div id="kpis" class="kpis"></div>
+  <div id="table"></div>
+</div>
+<script>
+  function server(name,args,ok){
+    google.script.run.withSuccessHandler(ok).withFailureHandler(function(e){
+      document.getElementById('error').textContent=e.message||String(e);
+    })[name].apply(null,args||[]);
+  }
+
+  function refresh(){
+    document.getElementById('error').textContent='';
+    var filters={status:document.getElementById('status').value,method:document.getElementById('method').value};
+    server('reosOfferExecutionDashboardData',[filters],function(raw){
+      var data=typeof raw==='string'?JSON.parse(raw):raw;
+      renderFilters(data);renderKpis(data.kpis||{});renderTable(data.records||[]);
+    });
+  }
+
+  function renderFilters(data){
+    fill('status',data.statuses||[]);fill('method',data.methods||[]);
+  }
+
+  function fill(id,values){
+    var el=document.getElementById(id),current=el.value;
+    if(el.options.length===1){
+      values.forEach(function(v){var o=document.createElement('option');o.value=v;o.textContent=v;el.appendChild(o);});
+      el.value=current;
+    }
+  }
+
+  function renderKpis(k){
+    var items=[['Total',k.total],['Ready',k.ready],['Submitted',k.submitted],['Countered',k.countered],['Accepted',k.accepted],['Rejected',k.rejected],['Expired',k.expired],['Offer Value','$'+Number(k.totalOfferValue||0).toLocaleString()]];
+    document.getElementById('kpis').innerHTML=items.map(function(x){return '<div class="card"><div class="label">'+x[0]+'</div><div class="value">'+(x[1]||0)+'</div></div>';}).join('');
+  }
+
+  function renderTable(rows){
+    if(!rows.length){document.getElementById('table').innerHTML='<div class="card empty">No execution records found.</div>';return;}
+    var html='<table><thead><tr><th>Offer</th><th>Property</th><th>Amount</th><th>Status</th><th>Recipient</th><th>Method</th><th>Follow Up</th><th>Actions</th></tr></thead><tbody>';
+    rows.forEach(function(r){
+      html+='<tr><td>'+esc(r['Offer ID'])+'</td><td>'+esc(r.Address)+'</td><td>$'+Number(r['Offer Amount']||0).toLocaleString()+'</td><td class="status">'+esc(r['Execution Status'])+'</td><td>'+esc(r['Recipient Name'])+'<div class="muted">'+esc(r['Recipient Email'])+'</div></td><td>'+esc(r['Submission Method'])+'</td><td>'+esc(r['Follow Up At'])+'</td><td class="row-actions">';
+      if(r['Execution Status']==='Ready') html+='<button onclick="submitOffer(\''+escJs(r['Execution ID'])+'\')">Submitted</button>';
+      if(r['Execution Status']==='Submitted'||r['Execution Status']==='Countered') html+='<button onclick="response(\''+escJs(r['Execution ID'])+'\')">Response</button>';
+      html+='</td></tr>';
+    });
+    html+='</tbody></table>';document.getElementById('table').innerHTML=html;
+  }
+
+  function buildQueue(){server('reosOfferExecutionBuildQueue',[],refresh);}
+  function submitOffer(id){
+    var email=prompt('Recipient email (optional):','');
+    var notes=prompt('Submission notes:','Offer submitted.');
+    server('reosOfferExecutionMarkSubmitted',[id,{recipientEmail:email||'',notes:notes||''}],refresh);
+  }
+  function response(id){
+    var status=prompt('Status: Countered, Accepted, Rejected, Expired, or Withdrawn','Countered');
+    if(!status)return;
+    var notes=prompt('Response notes:','')||'';
+    server('reosOfferExecutionRecordResponse',[id,status,notes],refresh);
+  }
+  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function escJs(v){return String(v==null?'':v).replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
+  refresh();
+</script>
+</body>
+</html>
