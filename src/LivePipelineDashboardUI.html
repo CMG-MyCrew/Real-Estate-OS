@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    body{font-family:Arial,sans-serif;margin:0;background:#f6f8fb;color:#1f2937}.wrap{padding:16px}.card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px;margin-bottom:12px}.title{font-size:18px;font-weight:700}.status{font-size:24px;font-weight:700;margin-top:8px}.good{color:#15803d}.bad{color:#b91c1c}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.metric{background:#f9fafb;border-radius:8px;padding:10px}.metric b{display:block;font-size:18px;margin-top:4px}table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:7px;border-bottom:1px solid #e5e7eb}button{width:100%;padding:10px;border:0;border-radius:8px;background:#111827;color:#fff;font-weight:700;cursor:pointer}.muted{color:#6b7280;font-size:12px}.pass{color:#15803d;font-weight:700}.fail{color:#b91c1c;font-weight:700}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card"><div class="title">Sprint 7.3 Increment 3</div><div class="muted">Live Pipeline Verification</div><div id="status" class="status">Loading…</div></div>
+  <div class="card grid">
+    <div class="metric">Integrity<b id="integrity">0%</b></div><div class="metric">Duplicate Protection<b id="duplicates">—</b></div>
+    <div class="metric">Passed<b id="passed">0</b></div><div class="metric">Failed<b id="failed">0</b></div>
+  </div>
+  <div class="card"><button onclick="runVerification()">Run Live Verification</button><div id="message" class="muted" style="margin-top:8px"></div></div>
+  <div class="card"><table><thead><tr><th>Stage</th><th>Status</th><th>Message</th></tr></thead><tbody id="rows"></tbody></table></div>
+</div>
+<script>
+  var data = <?!= initialData ?>;
+  render(data);
+  function render(d){
+    var l=d.latest||{}, status=l.Status||'Not Run';
+    var s=document.getElementById('status');s.textContent=status;s.className='status '+(status==='Verified'?'good':'bad');
+    document.getElementById('integrity').textContent=(d.totals.integrity||0)+'%';
+    document.getElementById('duplicates').textContent=l['Duplicate Protection']||'—';
+    document.getElementById('passed').textContent=d.totals.passed||0;
+    document.getElementById('failed').textContent=d.totals.failed||0;
+    document.getElementById('rows').innerHTML=(d.results||[]).map(function(r){return '<tr><td>'+esc(r.Stage)+'</td><td class="'+(r.Status==='Pass'?'pass':'fail')+'">'+esc(r.Status)+'</td><td>'+esc(r.Message||'')+'</td></tr>';}).join('');
+  }
+  function runVerification(){document.getElementById('message').textContent='Running verification…';google.script.run.withSuccessHandler(function(){google.script.run.withSuccessHandler(function(d){render(d);document.getElementById('message').textContent='Verification complete.';}).reosLivePipelineDashboardData();}).withFailureHandler(function(e){document.getElementById('message').textContent=e.message||e;}).reosLivePipelineRun();}
+  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+</script>
+</body>
+</html>
