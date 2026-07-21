@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <style>
+    :root { --bg:#eef3f8; --panel:#fff; --text:#172033; --muted:#67758d; --ok:#16884f; --warn:#b56a00; --bad:#c62828; --border:#dbe3ee; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Arial,sans-serif; background:var(--bg); color:var(--text); }
+    header { display:flex; justify-content:space-between; align-items:center; padding:18px 22px; background:#111a2d; color:#fff; }
+    header h1 { margin:0; font-size:22px; }
+    header p { margin:4px 0 0; color:#b9c4d8; font-size:12px; }
+    button { border:0; border-radius:8px; padding:10px 16px; font-weight:700; cursor:pointer; }
+    .primary { background:#2463eb; color:#fff; }
+    .secondary { background:#e7edf6; color:#172033; }
+    main { padding:20px; }
+    .status { padding:16px; background:var(--panel); border:1px solid var(--border); border-radius:12px; margin-bottom:16px; }
+    .status h2 { margin:0 0 6px; }
+    .ready { color:var(--ok); } .warning { color:var(--warn); } .failed { color:var(--bad); }
+    .grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:16px; }
+    .card { background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:15px; }
+    .card span { display:block; color:var(--muted); font-size:11px; text-transform:uppercase; font-weight:700; }
+    .card strong { display:block; font-size:27px; margin-top:7px; }
+    .panel { background:var(--panel); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+    .panel-head { padding:14px 16px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+    table { width:100%; border-collapse:collapse; }
+    th,td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--border); font-size:12px; vertical-align:top; }
+    th { background:#f7f9fc; color:#53627a; text-transform:uppercase; font-size:10px; }
+    .pill { display:inline-block; border-radius:999px; padding:4px 8px; font-weight:700; font-size:10px; }
+    .pill.Pass { background:#dff5e9; color:var(--ok); }
+    .pill.Warning { background:#fff1d8; color:var(--warn); }
+    .pill.Fail { background:#fde2e2; color:var(--bad); }
+    .empty { padding:30px; text-align:center; color:var(--muted); }
+    #message { margin-left:12px; color:#dbe5f6; font-size:12px; }
+    @media(max-width:900px){ .grid{grid-template-columns:repeat(2,1fr);} }
+  </style>
+</head>
+<body>
+<header>
+  <div><h1>Production Readiness</h1><p>Sprint 7.3 release gate and daily-use health check</p></div>
+  <div><button class="secondary" onclick="loadData()">Refresh</button> <button class="primary" onclick="runTests()">Run Tests</button><span id="message"></span></div>
+</header>
+<main>
+  <section class="status"><h2 id="statusTitle">Loading readiness data…</h2><div id="statusMeta"></div></section>
+  <section class="grid">
+    <div class="card"><span>Total tests</span><strong id="total">0</strong></div>
+    <div class="card"><span>Critical passed</span><strong id="passed">0</strong></div>
+    <div class="card"><span>Critical failed</span><strong id="failed">0</strong></div>
+    <div class="card"><span>Warnings</span><strong id="warnings">0</strong></div>
+    <div class="card"><span>Pass rate</span><strong id="rate">0%</strong></div>
+  </section>
+  <section class="panel">
+    <div class="panel-head"><strong>Latest Test Results</strong><span id="generated"></span></div>
+    <div id="tableWrap" class="empty">No readiness run has been recorded.</div>
+  </section>
+</main>
+<script>
+  function server(fn, success, failure) {
+    google.script.run.withSuccessHandler(success).withFailureHandler(failure || showError)[fn]();
+  }
+  function loadData() {
+    setMessage('Loading…');
+    server('reosProductionReadinessDashboardData', render, showError);
+  }
+  function runTests() {
+    setMessage('Running full readiness suite…');
+    server('reosProductionReadinessDashboardRun', function(){ loadData(); }, showError);
+  }
+  function render(data) {
+    setMessage('');
+    var run = data.latestRun || {};
+    var status = run.Status || 'Not Tested';
+    var title = document.getElementById('statusTitle');
+    title.textContent = status;
+    title.className = status === 'Ready' ? 'ready' : status === 'Ready With Warnings' ? 'warning' : 'failed';
+    document.getElementById('statusMeta').textContent = run['Completed At'] ? 'Latest run: ' + formatDate(run['Completed At']) : 'Run the readiness suite to create a baseline.';
+    document.getElementById('total').textContent = run['Total Tests'] || 0;
+    document.getElementById('passed').textContent = run['Critical Passed'] || 0;
+    document.getElementById('failed').textContent = run['Critical Failed'] || 0;
+    document.getElementById('warnings').textContent = run.Warnings || 0;
+    document.getElementById('rate').textContent = Number(run['Pass Rate %'] || 0).toFixed(1) + '%';
+    document.getElementById('generated').textContent = data.generatedAt ? formatDate(data.generatedAt) : '';
+    renderTable(data.results || []);
+  }
+  function renderTable(rows) {
+    var wrap = document.getElementById('tableWrap');
+    if (!rows.length) { wrap.className='empty'; wrap.textContent='No readiness results available.'; return; }
+    wrap.className='';
+    var html='<table><thead><tr><th>Category</th><th>Test</th><th>Severity</th><th>Status</th><th>Expected</th><th>Actual</th><th>Error</th><th>Duration</th></tr></thead><tbody>';
+    rows.forEach(function(r){ html+='<tr><td>'+esc(r.Category)+'</td><td><strong>'+esc(r['Test Name'])+'</strong></td><td>'+esc(r.Severity)+'</td><td><span class="pill '+esc(r.Status)+'">'+esc(r.Status)+'</span></td><td>'+esc(r['Expected Result'])+'</td><td>'+esc(r['Actual Result'])+'</td><td>'+esc(r['Error Message'])+'</td><td>'+Number(r['Duration Ms']||0)+' ms</td></tr>'; });
+    wrap.innerHTML=html+'</tbody></table>';
+  }
+  function showError(error){ setMessage('Error: '+(error && error.message ? error.message : error)); }
+  function setMessage(text){ document.getElementById('message').textContent=text; }
+  function formatDate(v){ try{return new Date(v).toLocaleString();}catch(e){return v||'';} }
+  function esc(v){ return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  loadData();
+</script>
+</body>
+</html>
