@@ -1,6 +1,6 @@
 /**
- * REOS Enterprise v4.4.3
- * Sprint 7.3 Increment 3.1 — Staged Live Pipeline Verification
+ * REOS Enterprise v4.4.4
+ * Sprint 7.3 Increment 3.2 — Stage-ID Live Pipeline Verification
  *
  * Repeated calls to reosLivePipelineRun() advance one stage at a time.
  * State is persisted in Script Properties so no single Apps Script execution
@@ -22,11 +22,11 @@ REOS.LivePipelineVerification = (function () {
     'Duplicate Protection','Started At','Completed At','Duration Ms','Summary JSON','Executed By'
   ];
   var RESULT_HEADERS = [
-    'Result ID','Run ID','Stage','Source Sheet','Destination Sheet','Input Record ID',
+    'Result ID','Run ID','Stage ID','Stage','Source Sheet','Destination Sheet','Input Record ID',
     'Output Record ID','Parent Record ID','Status','Duration Ms','Message','Checked At'
   ];
   var AUDIT_HEADERS = [
-    'Audit ID','Run ID','Event','Sheet','Record ID','Details JSON','Created At'
+    'Audit ID','Run ID','Stage ID','Event','Sheet','Record ID','Details JSON','Created At'
   ];
 
   var STAGES = [
@@ -80,7 +80,7 @@ REOS.LivePipelineVerification = (function () {
     var leadResult = createTestLead();
     var lead = leadResult.record || {};
     var state = {
-      version: '4.4.3',
+      version: '4.4.4',
       runId: 'LPVRUN-' + Utilities.formatDate(started, Session.getScriptTimeZone() || TZ, 'yyyyMMdd-HHmmss'),
       status: 'In Progress',
       stageIndex: 0,
@@ -94,7 +94,7 @@ REOS.LivePipelineVerification = (function () {
       executedBy: currentUser_()
     };
     saveState_(state);
-    audit_(state.runId, 'RUN_STARTED', RUNS, state.runId, {
+    audit_(state.runId, 0, 'RUN_STARTED', RUNS, state.runId, {
       leadId: state.leadId,
       createdLead: !!leadResult.created,
       stageCount: state.stageCount
@@ -128,7 +128,7 @@ REOS.LivePipelineVerification = (function () {
       if (!stage) return finalize_(state);
 
       var started = new Date();
-      audit_(state.runId, 'STAGE_STARTED', '', '', {
+      audit_(state.runId, stage.id, 'STAGE_STARTED', '', '', {
         stageId: stage.id,
         stageName: stage.name
       });
@@ -139,6 +139,7 @@ REOS.LivePipelineVerification = (function () {
       } catch (error) {
         var failure = writeResult_(
           state.runId,
+          stage.id,
           stage.name,
           '',
           '',
@@ -155,7 +156,7 @@ REOS.LivePipelineVerification = (function () {
 
       state.stageIndex += 1;
       saveState_(state);
-      audit_(state.runId, 'STAGE_COMPLETED', '', '', {
+      audit_(state.runId, stage.id, 'STAGE_COMPLETED', '', '', {
         stageId: stage.id,
         stageName: stage.name,
         nextStageIndex: state.stageIndex,
@@ -172,6 +173,7 @@ REOS.LivePipelineVerification = (function () {
   function stageInitialize_(state) {
     return verifyStage_(
       state.runId,
+      1,
       'Distress lead',
       '',
       'DISTRESS_LEADS',
@@ -181,9 +183,9 @@ REOS.LivePipelineVerification = (function () {
   }
 
   function stageIngest_(state) {
-    invokeStage_(state.runId, 'Lead normalization', REOS.LeadNormalization, 'normalize', [findTestRows_('DISTRESS_LEADS')[0] || {}]);
-    invokeStage_(state.runId, 'Lead deduplication', REOS.LeadDeduplication, 'scanSheet', ['DISTRESS_LEADS', 'Distress Lead ID']);
-    invokeStage_(state.runId, 'Ingestion orchestrator', REOS.AcquisitionIngestionOrchestrator, 'run', [{
+    invokeStage_(state.runId, 2, 'Lead normalization', REOS.LeadNormalization, 'normalize', [findTestRows_('DISTRESS_LEADS')[0] || {}]);
+    invokeStage_(state.runId, 2, 'Lead deduplication', REOS.LeadDeduplication, 'scanSheet', ['DISTRESS_LEADS', 'Distress Lead ID']);
+    invokeStage_(state.runId, 2, 'Ingestion orchestrator', REOS.AcquisitionIngestionOrchestrator, 'run', [{
       runConnectors: false,
       scanDuplicates: false,
       scoreLeads: false,
@@ -191,6 +193,7 @@ REOS.LivePipelineVerification = (function () {
     }]);
     return verifyStage_(
       state.runId,
+      2,
       'Intelligent acquisition lead',
       'DISTRESS_LEADS',
       'IA_LEADS',
@@ -200,10 +203,11 @@ REOS.LivePipelineVerification = (function () {
   }
 
   function stageAcquisitionIntelligence_(state) {
-    invokeStage_(state.runId, 'Acquisition intelligence', REOS.AcquisitionIntelligence, 'analyzeAll', []);
+    invokeStage_(state.runId, 3, 'Acquisition intelligence', REOS.AcquisitionIntelligence, 'analyzeAll', []);
     var rows = findRelatedRows_('IA_LEADS', state.leadId);
     return writeResult_(
       state.runId,
+      3,
       'Acquisition intelligence completed',
       'IA_LEADS',
       'IA_LEADS',
@@ -217,9 +221,10 @@ REOS.LivePipelineVerification = (function () {
   }
 
   function stageDealIntelligence_(state) {
-    invokeStage_(state.runId, 'Deal intelligence', REOS.AcquisitionDealIntelligence, 'analyzeAll', []);
+    invokeStage_(state.runId, 4, 'Deal intelligence', REOS.AcquisitionDealIntelligence, 'analyzeAll', []);
     return verifyStage_(
       state.runId,
+      4,
       'Deal intelligence record',
       'IA_LEADS',
       'AI_DEAL_INTELLIGENCE',
@@ -229,9 +234,10 @@ REOS.LivePipelineVerification = (function () {
   }
 
   function stageOfferAutomation_(state) {
-    invokeStage_(state.runId, 'Offer automation', REOS.AcquisitionOfferAutomation, 'generateDrafts', []);
+    invokeStage_(state.runId, 5, 'Offer automation', REOS.AcquisitionOfferAutomation, 'generateDrafts', []);
     return verifyStage_(
       state.runId,
+      5,
       'Offer queue record',
       'AI_DEAL_INTELLIGENCE',
       'AI_OFFER_QUEUE',
@@ -241,9 +247,10 @@ REOS.LivePipelineVerification = (function () {
   }
 
   function stageOfferReview_(state) {
-    invokeStage_(state.runId, 'Offer review', REOS.OfferReviewWorkflow, 'generateQueue', []);
+    invokeStage_(state.runId, 6, 'Offer review', REOS.OfferReviewWorkflow, 'generateQueue', []);
     return verifyStage_(
       state.runId,
+      6,
       'Offer review record',
       'AI_OFFER_QUEUE',
       'AI_OFFER_REVIEW',
@@ -253,9 +260,10 @@ REOS.LivePipelineVerification = (function () {
   }
 
   function stageOfferExecution_(state) {
-    invokeStage_(state.runId, 'Offer execution', REOS.OfferExecutionWorkflow, 'buildQueue', []);
+    invokeStage_(state.runId, 7, 'Offer execution', REOS.OfferExecutionWorkflow, 'buildQueue', []);
     var offerCheck = verifyStage_(
       state.runId,
+      7,
       'Offer record',
       'AI_OFFER_REVIEW',
       'OFFERS',
@@ -265,6 +273,7 @@ REOS.LivePipelineVerification = (function () {
     state.checks.push(offerCheck);
     return verifyStage_(
       state.runId,
+      7,
       'Execution queue record',
       'OFFERS',
       'OFFER_EXECUTION_QUEUE',
@@ -274,7 +283,7 @@ REOS.LivePipelineVerification = (function () {
   }
 
   function stageFinalize_(state) {
-    return verifyDuplicates_(state.runId, state.leadId);
+    return verifyDuplicates_(state.runId, 8, state.leadId);
   }
 
   function finalize() {
@@ -328,7 +337,7 @@ REOS.LivePipelineVerification = (function () {
     }, { idField: 'Run ID', idPrefix: 'LPVRUN', preserveProvidedId: true });
 
     saveState_(state);
-    audit_(state.runId, 'RUN_COMPLETED', RUNS, state.runId, summary);
+    audit_(state.runId, 0, 'RUN_COMPLETED', RUNS, state.runId, summary);
     return status();
   }
 
@@ -369,13 +378,13 @@ REOS.LivePipelineVerification = (function () {
     };
   }
 
-  function invokeStage_(runId, stage, module, method, args) {
+  function invokeStage_(runId, stageId, stage, module, method, args) {
     var start = new Date();
     if (!module || typeof module[method] !== 'function') {
       throw new Error(stage + ' module method unavailable: ' + method);
     }
     var value = module[method].apply(module, args || []);
-    audit_(runId, 'INVOKED_' + method.toUpperCase(), '', '', {
+    audit_(runId, stageId, 'INVOKED_' + method.toUpperCase(), '', '', {
       stage: stage,
       result: safeJson_(value),
       durationMs: new Date().getTime() - start.getTime()
@@ -383,7 +392,7 @@ REOS.LivePipelineVerification = (function () {
     return value;
   }
 
-  function verifyStage_(runId, stage, source, destination, parentId, finder) {
+  function verifyStage_(runId, stageId, stage, source, destination, parentId, finder) {
     var start = new Date();
     try {
       var rows = finder() || [];
@@ -391,6 +400,7 @@ REOS.LivePipelineVerification = (function () {
       var ok = !!row;
       return writeResult_(
         runId,
+        stageId,
         stage,
         source,
         destination,
@@ -404,6 +414,7 @@ REOS.LivePipelineVerification = (function () {
     } catch (error) {
       return writeResult_(
         runId,
+        stageId,
         stage,
         source,
         destination,
@@ -417,7 +428,7 @@ REOS.LivePipelineVerification = (function () {
     }
   }
 
-  function verifyDuplicates_(runId, leadId) {
+  function verifyDuplicates_(runId, stageId, leadId) {
     var sheets = [
       'DISTRESS_LEADS','IA_LEADS','AI_DEAL_INTELLIGENCE','AI_OFFER_QUEUE',
       'AI_OFFER_REVIEW','OFFERS','OFFER_EXECUTION_QUEUE'
@@ -429,6 +440,7 @@ REOS.LivePipelineVerification = (function () {
     });
     return writeResult_(
       runId,
+      stageId,
       'Duplicate protection',
       '',
       '',
@@ -460,8 +472,9 @@ REOS.LivePipelineVerification = (function () {
     });
   }
 
-  function writeResult_(runId, stage, source, destination, inputId, outputId, parentId, statusValue, duration, message) {
+  function writeResult_(runId, stageId, stage, source, destination, inputId, outputId, parentId, statusValue, duration, message) {
     var row = {
+      stageId: Number(stageId || 0),
       stage: stage,
       status: statusValue,
       sourceSheet: source,
@@ -474,6 +487,7 @@ REOS.LivePipelineVerification = (function () {
     };
     REOS.Database.insert(RESULTS, {
       'Run ID': runId,
+      'Stage ID': Number(stageId || 0),
       Stage: stage,
       'Source Sheet': source,
       'Destination Sheet': destination,
@@ -488,9 +502,10 @@ REOS.LivePipelineVerification = (function () {
     return row;
   }
 
-  function audit_(runId, event, sheet, recordId, details) {
+  function audit_(runId, stageId, event, sheet, recordId, details) {
     REOS.Database.insert(AUDIT, {
       'Run ID': runId,
+      'Stage ID': Number(stageId || 0),
       Event: event,
       Sheet: sheet || '',
       'Record ID': recordId || '',
