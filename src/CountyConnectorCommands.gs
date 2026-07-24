@@ -1,6 +1,7 @@
 /**
- * REOS Enterprise v4.5.0 - County Connector Commands
- * Public Apps Script entry points for setup, inspection, dry runs, and live syncs.
+ * REOS Enterprise v4.5.1 - County Connector Commands
+ * Public Apps Script entry points for setup, inspection, dry runs, live syncs,
+ * and terminal-driven clasp execution.
  */
 var REOS = REOS || {};
 
@@ -35,6 +36,44 @@ function REOS_COUNTY_SYNC_ALL_DRY_RUN() {
 
 function REOS_COUNTY_SYNC_ALL() {
   return REOS.CountyConnectorSDK.runAll({ dryRun: false, limit: 500 });
+}
+
+/**
+ * Stable entry point used by scripts/reos-county-sync.mjs through clasp run.
+ * Accepts one JSON-compatible options object and returns a JSON-compatible result.
+ */
+function REOS_COUNTY_TERMINAL_SYNC(options) {
+  options = options || {};
+  var action = String(options.action || 'sync').toLowerCase();
+  var connectorId = String(options.connectorId || '').trim();
+  var dataset = String(options.dataset || '').trim();
+  var limit = Math.max(1, Math.min(Number(options.limit || 100), 5000));
+  var cursor = String(options.cursor || '');
+  var dryRun = options.dryRun !== false;
+
+  if (action === 'setup') return REOS_COUNTY_SETUP();
+  if (action === 'list') return REOS_COUNTY_LIST();
+
+  if (action === 'sync-all') {
+    if (!dryRun && options.confirmLive !== true) {
+      throw new Error('Live terminal sync-all requires confirmLive=true.');
+    }
+    return REOS.CountyConnectorSDK.runAll({ dryRun: dryRun, limit: limit });
+  }
+
+  if (action !== 'sync') throw new Error('Unsupported county terminal action: ' + action);
+  if (!connectorId) throw new Error('connectorId is required for terminal sync.');
+  if (!dataset) throw new Error('dataset is required for terminal sync.');
+  if (!dryRun && options.confirmLive !== true) {
+    throw new Error('Live terminal sync requires confirmLive=true.');
+  }
+
+  return REOS.CountyConnectorSDK.run(connectorId, {
+    dataset: dataset,
+    limit: limit,
+    cursor: cursor,
+    dryRun: dryRun
+  });
 }
 
 function REOS_COUNTY_INSTALL_DAILY_TRIGGER() {
