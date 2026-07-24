@@ -1,6 +1,6 @@
 /**
- * REOS Enterprise v4.2.4 - Acquisition Connector Manager
- * Sprint 7.1: execution, health, logging, and CSV handlers.
+ * REOS Enterprise v4.5.0 - Acquisition Connector Manager
+ * Connector execution, health, logging, and handler routing.
  */
 var REOS = REOS || {};
 
@@ -16,9 +16,8 @@ REOS.AcquisitionConnectorManager = (function () {
     if (!REOS.ConnectorRegistry) throw new Error('ConnectorRegistry.gs is required.');
     REOS.ConnectorRegistry.ensureSheet();
     REOS.Database.ensureTable(RUNS, RUN_HEADERS);
-    if (REOS.CSVImportEngine && REOS.CSVImportEngine.ensureSheets) {
-      REOS.CSVImportEngine.ensureSheets();
-    }
+    if (REOS.CSVImportEngine && REOS.CSVImportEngine.ensureSheets) REOS.CSVImportEngine.ensureSheets();
+    if (REOS.ZillowGmailConnector && REOS.ZillowGmailConnector.ensureSheets) REOS.ZillowGmailConnector.ensureSheets();
     return { ok: true, registry: REOS.ConnectorRegistry.table, runs: RUNS };
   }
 
@@ -37,7 +36,6 @@ REOS.AcquisitionConnectorManager = (function () {
     options = options || {};
     var connector = REOS.ConnectorRegistry.get(key);
     if (!connector) throw new Error('Unknown connector: ' + key);
-
     if (!REOS.ConnectorRegistry.isEnabled(connector) && !options.force) {
       return { ok: false, skipped: true, connectorKey: key, status: 'Disabled', message: 'Connector is disabled.' };
     }
@@ -46,7 +44,6 @@ REOS.AcquisitionConnectorManager = (function () {
     var status = 'Complete';
     var result;
     var message = '';
-
     try {
       result = invoke_(connector, options);
       if (result && result.ok === false) status = result.status || 'Failed';
@@ -62,14 +59,14 @@ REOS.AcquisitionConnectorManager = (function () {
     var runRow = REOS.Database.insert(RUNS, {
       'Connector Key': connector['Connector Key'],
       'Connector Name': connector.Name,
-      'Status': status,
+      Status: status,
       'Started At': started,
       'Completed At': completed,
       'Duration Ms': completed.getTime() - started.getTime(),
       'Records Found': metrics.found,
       'Records Imported': metrics.imported,
       'Records Skipped': metrics.skipped,
-      'Message': message,
+      Message: message,
       'Details JSON': JSON.stringify(result || {}),
       'Executed By': currentUser_()
     }, { idField: 'Run ID', idPrefix: 'CRUN' });
@@ -168,6 +165,7 @@ REOS.AcquisitionConnectorManager = (function () {
       reosConnectorHandleCodeViolations: reosConnectorHandleCodeViolations,
       reosConnectorHandleVacantProperties: reosConnectorHandleVacantProperties,
       reosConnectorHandleAbsenteeOwners: reosConnectorHandleAbsenteeOwners,
+      reosConnectorHandleZillowGmail: reosConnectorHandleZillowGmail,
       reosConnectorHandleZillowImport: reosConnectorHandleZillowImport
     };
     var handler = handlers[handlerName];
