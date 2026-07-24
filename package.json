@@ -5,7 +5,13 @@
   "scripts": {
     "push": "clasp push",
     "pull": "clasp pull",
-    "open": "clasp open"
+    "open": "clasp open",
+    "county": "node scripts/reos-county-sync.mjs",
+    "county:setup": "node scripts/reos-county-sync.mjs setup",
+    "county:list": "node scripts/reos-county-sync.mjs list",
+    "county:dry": "node scripts/reos-county-sync.mjs sync",
+    "county:sync": "node scripts/reos-county-sync.mjs sync",
+    "county:sync-all": "node scripts/reos-county-sync.mjs sync-all"
   },
   "devDependencies": {
     "@google/clasp": "^2.4.2"
