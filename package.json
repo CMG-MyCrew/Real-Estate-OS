@@ -3,9 +3,16 @@
   "version": "3.0.0",
   "private": true,
   "scripts": {
+    "login": "clasp login",
+    "status": "clasp status",
     "push": "clasp push",
+    "push:force": "clasp push --force",
     "pull": "clasp pull",
-    "open": "clasp open"
+    "open": "clasp open",
+    "deploy:list": "clasp deployments",
+    "sync:down": "npm run pull && npm run status",
+    "sync:up": "npm run status && npm run push",
+    "sync:up:force": "npm run status && npm run push:force"
   },
   "devDependencies": {
     "@google/clasp": "^2.4.2"
