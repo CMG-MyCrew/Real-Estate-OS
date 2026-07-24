@@ -13,6 +13,7 @@ The framework provides:
 - Dry-run and live execution modes
 - Run-level audit records in `COUNTY_CONNECTOR_RUNS`
 - Daily Apps Script trigger installation
+- Terminal-driven syncs through Node.js and `clasp`
 
 ## Connector contract
 
@@ -44,11 +45,18 @@ REOS.CountyConnectorSDK.register({
 
 ## Initial setup
 
-1. Pull the branch and deploy with clasp.
-2. Confirm `DISTRESS_LEADS` contains the fields used by the connector framework.
-3. Run `REOS_COUNTY_SETUP()` once.
-4. Configure Philadelphia endpoint Script Properties.
-5. Run a dry test before enabling live persistence.
+```bash
+git checkout feature/county-connector-sdk
+npm install
+npx clasp login
+npx clasp status
+npm run county:setup
+npm run county:list
+```
+
+Then confirm `DISTRESS_LEADS` contains the connector fields, configure county endpoint Script Properties, and run a dry test before enabling live persistence.
+
+`clasp run` requires the Apps Script project to be configured for API execution. The terminal command reports the underlying clasp error when execution access is missing.
 
 ## Philadelphia Script Properties
 
@@ -62,7 +70,7 @@ Create one property per enabled dataset:
 
 The adapter expects Socrata-style query parameters but can be extended for ArcGIS, CKAN, CSV, SFTP, or county-specific APIs.
 
-## Commands
+## Apps Script commands
 
 ```javascript
 REOS_COUNTY_LIST();
@@ -73,7 +81,68 @@ REOS_COUNTY_SYNC_ALL();
 REOS_COUNTY_INSTALL_DAILY_TRIGGER();
 ```
 
-Live syncs are opt-in. `REOS_COUNTY_DRY_RUN` is the recommended first execution for every new connector and dataset.
+## Terminal sync commands
+
+All terminal executions automatically run `clasp push` first unless `--no-push` is supplied.
+
+List registered connectors:
+
+```bash
+npm run county:list
+```
+
+Dry-run one dataset:
+
+```bash
+npm run county:dry -- \
+  --connector PA-PHILADELPHIA \
+  --dataset tax_delinquent \
+  --limit 100
+```
+
+Run a live sync:
+
+```bash
+npm run county:sync -- \
+  --connector PA-PHILADELPHIA \
+  --dataset tax_delinquent \
+  --limit 500 \
+  --live
+```
+
+Continue from a source cursor:
+
+```bash
+npm run county:sync -- \
+  --connector PA-PHILADELPHIA \
+  --dataset code_violations \
+  --cursor 500 \
+  --limit 500 \
+  --live
+```
+
+Dry-run every registered connector:
+
+```bash
+npm run county:sync-all
+```
+
+Live sync every registered connector:
+
+```bash
+npm run county:sync-all -- --live
+```
+
+Print compact machine-readable output:
+
+```bash
+npm run county:dry -- \
+  --connector PA-PHILADELPHIA \
+  --dataset vacant_properties \
+  --json
+```
+
+Terminal execution defaults to dry-run. Persistence only occurs when `--live` is passed; the Apps Script gateway independently requires `confirmLive=true` as a second safety control.
 
 ## Required lead fields
 
@@ -125,6 +194,8 @@ Examples:
 ## Safety controls
 
 - New runs default to dry-run unless `dryRun: false` is explicitly passed.
+- Terminal live mode requires the explicit `--live` flag.
+- Apps Script terminal live mode independently requires `confirmLive=true`.
 - Connectors must be registered and enabled.
 - Dataset names are allow-listed per connector.
 - Invalid records are rejected without stopping the entire run.
