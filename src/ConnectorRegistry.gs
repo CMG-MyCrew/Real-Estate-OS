@@ -1,6 +1,6 @@
 /**
- * REOS Enterprise v4.2.4 - Connector Registry
- * Sprint 7.1: live acquisition connector definitions.
+ * REOS Enterprise v4.5.0 - Connector Registry
+ * Sprint 7.1+: live acquisition connector definitions.
  */
 var REOS = REOS || {};
 
@@ -19,6 +19,7 @@ REOS.ConnectorRegistry = (function () {
     ['code_violations','Code Violations Feed','CSV','Code Violations','reosConnectorHandleCodeViolations','false','Manual',80],
     ['vacant_properties','Vacant Properties Feed','CSV','Vacancy','reosConnectorHandleVacantProperties','false','Manual',75],
     ['absentee_owners','Absentee Owners Feed','CSV','Absentee Owner','reosConnectorHandleAbsenteeOwners','false','Manual',70],
+    ['zillow_gmail_leads','Zillow Gmail Multi-Folder Leads','GMAIL','Zillow Lead','reosConnectorHandleZillowGmail','false','Every 5 minutes',65],
     ['zillow_authorized_import','Authorized Zillow-Format Import','CSV','Listing Data','reosConnectorHandleZillowImport','false','Manual',60]
   ];
 
