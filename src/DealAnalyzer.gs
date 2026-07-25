@@ -284,17 +284,70 @@ REOS.DealAnalyzer = (function () {
 
 function reosDealAnalyzerEnsureSheets() {
   REOS.DealAnalyzer.ensureSheets();
-  SpreadsheetApp.getUi().alert('Deal Analyzer sheets ready.');
+
+  var result = {
+    ok: true,
+    message: 'Deal Analyzer sheets ready.'
+  };
+
+  notifyDealAnalyzer_(result.message, result);
+  return result;
 }
 
 function reosDealAnalyzerSeedDemo() {
   var result = REOS.DealAnalyzer.seedDemoDeal();
-  SpreadsheetApp.getUi().alert('REOS Deal Analyzer Demo', JSON.stringify(result, null, 2).slice(0, 1800), SpreadsheetApp.getUi().ButtonSet.OK);
+
+  notifyDealAnalyzer_(
+    'REOS Deal Analyzer demo completed.',
+    result
+  );
+
   return result;
 }
 
 function reosDealAnalyzerSummary() {
   var result = REOS.DealAnalyzer.summary();
-  SpreadsheetApp.getUi().alert('REOS Deal Analyzer Summary', JSON.stringify(result, null, 2).slice(0, 1800), SpreadsheetApp.getUi().ButtonSet.OK);
+
+  notifyDealAnalyzer_(
+    'REOS Deal Analyzer summary generated.',
+    result
+  );
+
   return result;
+}
+
+/**
+ * Displays a spreadsheet alert when UI access is available.
+ * Falls back to the execution log in standalone, trigger,
+ * API, web-app, and headless contexts.
+ */
+function notifyDealAnalyzer_(message, payload) {
+  var output = message;
+
+  if (payload !== undefined) {
+    try {
+      output += '\n\n' + JSON.stringify(payload, null, 2).slice(0, 1800);
+    } catch (jsonError) {
+      output += '\n\n[Unable to serialize response]';
+    }
+  }
+
+  console.log(output);
+
+  try {
+    var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+
+    if (spreadsheet) {
+      SpreadsheetApp.getUi().alert(
+        'REOS Deal Analyzer',
+        output,
+        SpreadsheetApp.getUi().ButtonSet.OK
+      );
+    }
+  } catch (uiError) {
+    console.log(
+      'Spreadsheet UI unavailable; result written to execution log. ' +
+      uiError.message
+    );
+  }
 }
