@@ -1,5 +1,5 @@
 /**
- * REOS Enterprise v3.4.0
+ * REOS Enterprise v3.4.1
  * Sprint 5.1 — Acquisition & Deal Analyzer Foundation
  */
 
@@ -43,42 +43,69 @@ REOS.DealAnalyzer = (function () {
 
   function calculate(input) {
     input = input || {};
-    var purchase = num_(input.purchasePrice);
-    var arv = num_(input.arv);
-    var repairs = num_(input.repairCost);
-    var holding = num_(input.holdingCost);
-    var closing = num_(input.closingCost);
-    var financing = num_(input.financingCost);
-    var selling = num_(input.sellingCost);
-    var assignment = num_(input.assignmentFee);
-    var rent = num_(input.rentMonthly);
-    var taxes = num_(input.taxesAnnual);
-    var insurance = num_(input.insuranceAnnual);
-    var hoa = num_(input.hoaMonthly);
-    var debt = num_(input.loanPaymentMonthly);
-    var maoPct = num_(input.maoPercent) || 0.70;
 
-    var mao = (arv * maoPct) - repairs - assignment;
-    var totalCost = purchase + repairs + holding + closing + financing + selling;
+    var purchase = money_(input.purchasePrice);
+    var arv = money_(input.arv);
+    var repairs = money_(input.repairCost);
+    var holding = money_(input.holdingCost);
+    var closing = money_(input.closingCost);
+    var financing = money_(input.financingCost);
+    var selling = money_(input.sellingCost);
+    var assignment = money_(input.assignmentFee);
+    var rent = money_(input.rentMonthly);
+    var taxes = money_(input.taxesAnnual);
+    var insurance = money_(input.insuranceAnnual);
+    var hoa = money_(input.hoaMonthly);
+    var debt = money_(input.loanPaymentMonthly);
+    var maoPct = percent_(input.maoPercent, 0.70);
+    var operatingExpensePct = percent_(input.operatingExpensePercent, 0.16);
+
+    validateNonNegative_({
+      purchasePrice: purchase,
+      arv: arv,
+      repairCost: repairs,
+      holdingCost: holding,
+      closingCost: closing,
+      financingCost: financing,
+      sellingCost: selling,
+      assignmentFee: assignment,
+      rentMonthly: rent,
+      taxesAnnual: taxes,
+      insuranceAnnual: insurance,
+      hoaMonthly: hoa,
+      loanPaymentMonthly: debt
+    });
+
+    var mao = Math.max(0, (arv * maoPct) - repairs - assignment);
+    var acquisitionCost = purchase + assignment;
+    var totalCost = acquisitionCost + repairs + holding + closing + financing + selling;
     var flipProfit = arv - totalCost;
-    var cashRequired = purchase + repairs + closing + holding + financing;
-    var roi = cashRequired ? (flipProfit / cashRequired) * 100 : 0;
+    var cashRequired = acquisitionCost + repairs + closing + holding + financing;
+    var roi = cashRequired > 0 ? (flipProfit / cashRequired) * 100 : 0;
 
     var grossRent = rent * 12;
-    var expenses = taxes + insurance + (hoa * 12) + (grossRent * 0.16);
+    var variableOperatingExpenses = grossRent * operatingExpensePct;
+    var expenses = taxes + insurance + (hoa * 12) + variableOperatingExpenses;
     var noi = grossRent - expenses;
-    var capRate = purchase ? (noi / purchase) * 100 : 0;
-    var dscr = debt ? noi / (debt * 12) : 0;
+    var capRateBasis = acquisitionCost + repairs;
+    var capRate = capRateBasis > 0 ? (noi / capRateBasis) * 100 : 0;
+    var annualDebtService = debt * 12;
+    var dscr = annualDebtService > 0 ? noi / annualDebtService : 0;
 
-    var risk = flipProfit < 0 || roi < 10 ? 'High' : roi < 20 ? 'Medium' : 'Low';
-    var recommendation = flipProfit > 0 && roi >= 15 && purchase <= mao ? 'Strong Review' : flipProfit > 0 ? 'Review' : 'Pass';
+    var risk = determineRisk_(flipProfit, roi, purchase, mao, dscr, rent);
+    var recommendation = determineRecommendation_(flipProfit, roi, purchase, mao);
 
     return {
+      maoPercent: round_(maoPct * 100),
+      operatingExpensePercent: round_(operatingExpensePct * 100),
       mao: round_(mao),
+      acquisitionCost: round_(acquisitionCost),
       totalCost: round_(totalCost),
       flipProfit: round_(flipProfit),
       roi: round_(roi),
       cashRequired: round_(cashRequired),
+      grossRentAnnual: round_(grossRent),
+      operatingExpensesAnnual: round_(expenses),
       noi: round_(noi),
       capRate: round_(capRate),
       dscr: round_(dscr),
@@ -90,21 +117,23 @@ REOS.DealAnalyzer = (function () {
   function analyzeDeal(dealId, input) {
     ensureSheets();
     input = input || {};
+    if (!dealId) throw new Error('Deal ID is required.');
+
     var m = calculate(input);
     var row = REOS.Database.insert(ANALYSIS, {
       'Deal ID': dealId,
-      'Purchase Price': num_(input.purchasePrice),
-      ARV: num_(input.arv),
-      'Repair Cost': num_(input.repairCost),
-      'Holding Cost': num_(input.holdingCost),
-      'Closing Cost': num_(input.closingCost),
-      'Financing Cost': num_(input.financingCost),
-      'Selling Cost': num_(input.sellingCost),
-      'Assignment Fee': num_(input.assignmentFee),
-      'Rent Monthly': num_(input.rentMonthly),
-      'Taxes Annual': num_(input.taxesAnnual),
-      'Insurance Annual': num_(input.insuranceAnnual),
-      'HOA Monthly': num_(input.hoaMonthly),
+      'Purchase Price': money_(input.purchasePrice),
+      ARV: money_(input.arv),
+      'Repair Cost': money_(input.repairCost),
+      'Holding Cost': money_(input.holdingCost),
+      'Closing Cost': money_(input.closingCost),
+      'Financing Cost': money_(input.financingCost),
+      'Selling Cost': money_(input.sellingCost),
+      'Assignment Fee': money_(input.assignmentFee),
+      'Rent Monthly': money_(input.rentMonthly),
+      'Taxes Annual': money_(input.taxesAnnual),
+      'Insurance Annual': money_(input.insuranceAnnual),
+      'HOA Monthly': money_(input.hoaMonthly),
       MAO: m.mao,
       'Flip Profit': m.flipProfit,
       'ROI %': m.roi,
@@ -124,10 +153,12 @@ REOS.DealAnalyzer = (function () {
   function createOffer(dealId, input) {
     ensureSheets();
     input = input || {};
+    if (!dealId) throw new Error('Deal ID is required.');
+
     var row = REOS.Database.insert(OFFERS, {
       'Deal ID': dealId,
       'Offer Type': input.offerType || 'Cash',
-      'Offer Amount': num_(input.offerAmount),
+      'Offer Amount': money_(input.offerAmount),
       Status: input.status || 'Draft',
       Terms: input.terms || '',
       Notes: input.notes || '',
@@ -185,6 +216,19 @@ REOS.DealAnalyzer = (function () {
     };
   }
 
+  function determineRecommendation_(flipProfit, roi, purchase, mao) {
+    if (flipProfit <= 0) return 'Pass';
+    if (purchase <= mao && roi >= 15) return 'Strong Review';
+    return 'Review';
+  }
+
+  function determineRisk_(flipProfit, roi, purchase, mao, dscr, monthlyRent) {
+    if (flipProfit < 0 || roi < 10 || purchase > mao) return 'High';
+    if (monthlyRent > 0 && dscr > 0 && dscr < 1.20) return 'High';
+    if (roi < 20) return 'Medium';
+    return 'Low';
+  }
+
   function publish_(topic, payload) {
     if (REOS.PluginEventBus && REOS.PluginEventBus.publish) {
       REOS.PluginEventBus.publish(topic, payload, 'acquisitions');
@@ -195,13 +239,36 @@ REOS.DealAnalyzer = (function () {
     try { return Session.getActiveUser().getEmail(); } catch (e) { return ''; }
   }
 
-  function num_(v) {
-    var n = Number(v || 0);
-    return isNaN(n) ? 0 : n;
+  function money_(value) {
+    if (value === null || value === undefined || value === '') return 0;
+    if (typeof value === 'number') return isFinite(value) ? value : 0;
+
+    var normalized = String(value)
+      .trim()
+      .replace(/\((.*)\)/, '-$1')
+      .replace(/[^0-9.\-]/g, '');
+
+    if (!normalized || normalized === '-' || normalized === '.') return 0;
+    var number = Number(normalized);
+    return isFinite(number) ? number : 0;
   }
 
-  function round_(v) {
-    return Math.round((Number(v || 0) + Number.EPSILON) * 100) / 100;
+  function percent_(value, fallback) {
+    if (value === null || value === undefined || value === '') return fallback;
+    var parsed = money_(value);
+    if (parsed <= 0) return fallback;
+    if (parsed > 1) parsed = parsed / 100;
+    return Math.min(parsed, 1);
+  }
+
+  function validateNonNegative_(values) {
+    Object.keys(values).forEach(function (key) {
+      if (values[key] < 0) throw new Error(key + ' cannot be negative.');
+    });
+  }
+
+  function round_(value) {
+    return Math.round((Number(value || 0) + Number.EPSILON) * 100) / 100;
   }
 
   return {
