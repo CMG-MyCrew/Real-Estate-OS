@@ -5,3 +5,7 @@ node_modules/
 .DS_Store
 coverage/
 dist/
+
+# Local OAuth credentials
+clasp-client-secret.json
+.clasprc.json
