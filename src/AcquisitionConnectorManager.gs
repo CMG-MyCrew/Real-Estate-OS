@@ -19,6 +19,9 @@ REOS.AcquisitionConnectorManager = (function () {
     if (REOS.CSVImportEngine && REOS.CSVImportEngine.ensureSheets) {
       REOS.CSVImportEngine.ensureSheets();
     }
+    if (REOS.ZillowGmailConnector && REOS.ZillowGmailConnector.ensureSheet) {
+      REOS.ZillowGmailConnector.ensureSheet();
+    }
     return { ok: true, registry: REOS.ConnectorRegistry.table, runs: RUNS };
   }
 
@@ -168,7 +171,8 @@ REOS.AcquisitionConnectorManager = (function () {
       reosConnectorHandleCodeViolations: reosConnectorHandleCodeViolations,
       reosConnectorHandleVacantProperties: reosConnectorHandleVacantProperties,
       reosConnectorHandleAbsenteeOwners: reosConnectorHandleAbsenteeOwners,
-      reosConnectorHandleZillowImport: reosConnectorHandleZillowImport
+      reosConnectorHandleZillowImport: reosConnectorHandleZillowImport,
+      reosConnectorHandleZillowGmail: reosConnectorHandleZillowGmail
     };
     var handler = handlers[handlerName];
     if (typeof handler !== 'function') throw new Error('Connector handler unavailable: ' + handlerName);
