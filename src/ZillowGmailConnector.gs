@@ -1,7 +1,7 @@
 /**
  * REOS Enterprise - Zillow Gmail Multi-Folder Leads Connector.
- * Scans configured Gmail labels, parses Zillow lead notifications, and stores
- * deduplicated records in a dedicated staging table.
+ * Scans configured Gmail labels, parses Zillow lead notifications, stages each
+ * unique Gmail message, and routes new records into CRM automation.
  */
 var REOS = REOS || {};
 
@@ -28,10 +28,13 @@ REOS.ZillowGmailConnector = (function () {
     var labels = normalizeLabels_(config.labels || config.gmailLabels || config.folders || ['Zillow']);
     var maxThreads = Math.max(1, Math.min(Number(options.maxThreads || config.maxThreads || 100), 500));
     var querySuffix = String(config.query || '').trim();
-    var existing = existingMessageIds_();
+    var existing = existingKeys_();
     var found = 0;
     var imported = 0;
     var skipped = 0;
+    var crmCreated = 0;
+    var crmUpdated = 0;
+    var tasksCreated = 0;
     var errors = [];
 
     labels.forEach(function (labelName) {
@@ -44,13 +47,15 @@ REOS.ZillowGmailConnector = (function () {
           thread.getMessages().forEach(function (message) {
             found++;
             var messageId = message.getId();
-            if (existing[messageId]) {
+            var parsed = parseMessage_(message);
+            var fingerprint = fingerprint_(parsed);
+
+            if (existing.messageIds[messageId] || (fingerprint && existing.fingerprints[fingerprint])) {
               skipped++;
               return;
             }
 
-            var parsed = parseMessage_(message);
-            REOS.Database.insert(TABLE, {
+            var staged = REOS.Database.insert(TABLE, {
               'Gmail Message ID': messageId,
               'Thread ID': thread.getId(),
               'Received At': message.getDate(),
@@ -67,7 +72,17 @@ REOS.ZillowGmailConnector = (function () {
               'Status': 'New'
             }, { idField: 'Lead ID', idPrefix: 'ZGL' });
 
-            existing[messageId] = true;
+            if (REOS.ZillowLeadAutomation && typeof REOS.ZillowLeadAutomation.process === 'function') {
+              var automation = REOS.ZillowLeadAutomation.process(staged, {
+                createFollowUpTask: config.createFollowUpTask !== false
+              });
+              if (automation.crmAction === 'created') crmCreated++;
+              if (automation.crmAction === 'updated') crmUpdated++;
+              if (automation.taskAction === 'created') tasksCreated++;
+            }
+
+            existing.messageIds[messageId] = true;
+            if (fingerprint) existing.fingerprints[fingerprint] = true;
             imported++;
           });
         });
@@ -76,13 +91,20 @@ REOS.ZillowGmailConnector = (function () {
       }
     });
 
+    var summary = 'Zillow Gmail scan completed. Imported ' + imported +
+      ', skipped ' + skipped + ', CRM created ' + crmCreated +
+      ', CRM updated ' + crmUpdated + ', tasks created ' + tasksCreated + '.';
+
     return {
       ok: errors.length === 0,
       status: errors.length ? 'Failed' : 'Complete',
-      message: errors.length ? errors.join(' | ') : 'Zillow Gmail scan completed.',
+      message: errors.length ? errors.join(' | ') : summary,
       recordsFound: found,
       recordsImported: imported,
       recordsSkipped: skipped,
+      crmCreated: crmCreated,
+      crmUpdated: crmUpdated,
+      tasksCreated: tasksCreated,
       labelsScanned: labels
     };
   }
@@ -92,22 +114,37 @@ REOS.ZillowGmailConnector = (function () {
     var html = String(message.getBody() || '');
     var text = plain || stripHtml_(html);
     return {
-      name: firstMatch_(text, [/(?:name|buyer)\s*[:\-]\s*([^\n\r]+)/i, /New inquiry from\s+([^\n\r]+)/i]),
+      name: firstMatch_(text, [/(?:name|buyer|contact)\s*[:\-]\s*([^\n\r]+)/i, /New inquiry from\s+([^\n\r]+)/i]),
       email: firstMatch_(text, [/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i]),
       phone: firstMatch_(text, [/(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}/]),
-      address: firstMatch_(text, [/(?:property|address|listing)\s*[:\-]\s*([^\n\r]+)/i]),
+      address: firstMatch_(text, [/(?:property|address|listing|home)\s*[:\-]\s*([^\n\r]+)/i]),
       url: firstMatch_(html + '\n' + text, [/https?:\/\/[^\s"'<>]+/i]),
-      message: firstMatch_(text, [/(?:message|comments?)\s*[:\-]\s*([\s\S]{1,1000})/i]),
+      message: firstMatch_(text, [/(?:message|comments?|inquiry)\s*[:\-]\s*([\s\S]{1,1000})/i]),
       snippet: text.replace(/\s+/g, ' ').trim().slice(0, 1000)
     };
   }
 
-  function existingMessageIds_() {
-    return REOS.Database.getAll(TABLE).reduce(function (map, row) {
-      var id = String(row['Gmail Message ID'] || '');
-      if (id) map[id] = true;
-      return map;
-    }, {});
+  function existingKeys_() {
+    return REOS.Database.getAll(TABLE).reduce(function (state, row) {
+      var messageId = String(row['Gmail Message ID'] || '');
+      var fp = fingerprint_({
+        email: row['Buyer Email'], phone: row['Buyer Phone'], address: row['Property Address'],
+        message: row.Message, snippet: row['Raw Snippet']
+      });
+      if (messageId) state.messageIds[messageId] = true;
+      if (fp) state.fingerprints[fp] = true;
+      return state;
+    }, { messageIds: {}, fingerprints: {} });
+  }
+
+  function fingerprint_(lead) {
+    var contact = String(lead.email || '').toLowerCase().trim() || String(lead.phone || '').replace(/\D/g, '');
+    var address = String(lead.address || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    var message = String(lead.message || lead.snippet || '').toLowerCase().replace(/\s+/g, ' ').trim().slice(0, 160);
+    if (!contact && !address && !message) return '';
+    var raw = [contact, address, message].join('|');
+    var bytes = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, raw, Utilities.Charset.UTF_8);
+    return bytes.map(function (value) { return ('0' + ((value + 256) % 256).toString(16)).slice(-2); }).join('');
   }
 
   function normalizeLabels_(value) {
@@ -134,10 +171,5 @@ REOS.ZillowGmailConnector = (function () {
     return String(value || '').replace(/"/g, '\\"');
   }
 
-  return {
-    ensureSheet: ensureSheet,
-    handle: handle,
-    run: handle,
-    scan: handle
-  };
+  return { ensureSheet: ensureSheet, handle: handle, run: handle, scan: handle };
 })();
