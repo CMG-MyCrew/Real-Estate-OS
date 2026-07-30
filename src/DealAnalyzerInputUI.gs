@@ -12,7 +12,7 @@ REOS.DealAnalyzerInputUI = (function () {
 
   function showSidebar() {
     assertDependencies_();
-    var html = HtmlService.createHtmlOutputFromFile('DealAnalyzerInputUI')
+    var html = HtmlService.createHtmlOutputFromFile('DealAnalyzerSidebar')
       .setTitle('REOS Deal Analyzer')
       .setWidth(430);
     SpreadsheetApp.getUi().showSidebar(html);
