@@ -1,12 +1,33 @@
 /** REOS Enterprise v3.2.6 - Main Application Bootstrap */
 
 function onOpen(e) {
+  var menuError = null;
+
+  try {
+    REOS.buildMenu_();
+  } catch (error) {
+    menuError = error;
+    try {
+      SpreadsheetApp.getUi()
+        .createMenu('REOS')
+        .addItem('Health Check', 'runHealthCheck')
+        .addItem('Install / Repair REOS', 'installREOS')
+        .addToUi();
+    } catch (fallbackError) {}
+  }
+
   try {
     REOS.init_();
-    REOS.buildMenu_();
-    REOS.log_('INFO', 'Application opened', { event: e ? 'onOpen' : 'manual' });
+    REOS.log_('INFO', 'Application opened', {
+      event: e ? 'onOpen' : 'manual',
+      menuRecovered: !!menuError
+    });
   } catch (error) {
-    REOS.handleError_('onOpen', error);
+    try { REOS.handleError_('onOpen.init', error); } catch (loggingError) {}
+  }
+
+  if (menuError) {
+    try { REOS.handleError_('onOpen.menu', menuError); } catch (loggingError) {}
   }
 }
 function onInstall(e) { onOpen(e); }
@@ -176,5 +197,5 @@ function showPortalFoundation() { safeShowModal_('PortalFoundation', 'REOS Porta
 function showPortalAuth() { safeShowModal_('PortalAuth', 'REOS Portal Auth', 1200, 850); }
 function showInvestorPortal() { safeShowModal_('InvestorPortal', 'REOS Investor Portal', 1200, 850); }
 function showVendorPortalUI() { safeShowModal_('VendorPortal', 'REOS Vendor Portal', 1200, 850); }
-function showClientLenderPortal() { safeShowModal_('ClientLenderPortal', 'REOS Client Lender Portal', 1200, 850); }
+function showClientLenderPortal() { safeShowModal_('ClientLenderPortal', 'REOS Client/Lender Portal', 1200, 850); }
 function showAdmin() { safeShowModal_('Admin', 'REOS Admin', 1100, 760); }
