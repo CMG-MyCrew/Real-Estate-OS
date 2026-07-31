@@ -24,11 +24,12 @@
     .checks { display:grid; gap:8px; }
     .check { display:flex; gap:8px; align-items:center; font-size:12px; }
     .check input { width:auto; }
-    .actions { display:flex; gap:8px; position:sticky; bottom:0; background:var(--bg); padding:8px 0 2px; }
-    button { flex:1; border:0; border-radius:7px; padding:10px; font-weight:700; cursor:pointer; }
-    .preview { background:#dce9f8; color:var(--navy); }
+    .actions { display:flex; gap:8px; position:sticky; bottom:0; z-index:5; background:var(--bg); padding:8px 0 2px; }
+    button { flex:1; border:0; border-radius:7px; padding:10px; font-weight:700; cursor:pointer; transition:opacity .15s ease, transform .15s ease; }
+    button:not(:disabled):active { transform:translateY(1px); }
+    .preview { background:var(--blue); color:#fff; }
     .save { background:var(--green); color:#fff; }
-    button:disabled { opacity:.55; cursor:not-allowed; }
+    button:disabled { opacity:.45; cursor:not-allowed; }
     .status { display:none; margin-bottom:10px; padding:9px; border-radius:7px; font-size:12px; white-space:pre-wrap; }
     .status.show { display:block; }
     .status.info { background:#e8f1fb; color:#173d6b; }
@@ -101,35 +102,52 @@
     </div>
 
     <div class="actions">
-      <button id="previewBtn" class="preview" onclick="previewDeal()">Preview</button>
-      <button id="saveBtn" class="save" onclick="saveDeal()">Save Analysis</button>
+      <button id="previewBtn" class="preview" type="button" onclick="previewDeal()">Preview</button>
+      <button id="saveBtn" class="save" type="button" onclick="saveDeal()">Save Analysis</button>
     </div>
   </div>
 
 <script>
   const moneyFields = ['purchasePrice','arv','repairCost','holdingCost','closingCost','financingCost','sellingCost','assignmentFee','rentMonthly','taxesAnnual','insuranceAnnual','hoaMonthly','loanPaymentMonthly'];
+  let busy = false;
 
   document.addEventListener('DOMContentLoaded', init);
 
   function init() {
+    bindInputState();
     setBusy(true);
+    showStatus('Loading deals…', 'info');
     google.script.run
       .withSuccessHandler(data => {
         const select = document.getElementById('dealId');
-        select.innerHTML = '<option value="">Select a deal…</option>' + data.deals.map(d => `<option value="${esc(d.dealId)}">${esc(d.label)}</option>`).join('');
-        applyValues(data.defaults || {});
+        const deals = Array.isArray(data && data.deals) ? data.deals : [];
+        select.innerHTML = '<option value="">Select a deal…</option>' + deals.map(d => `<option value="${esc(d.dealId)}">${esc(d.label)}</option>`).join('');
+        applyValues((data && data.defaults) || {});
         setBusy(false);
+        showStatus(deals.length ? 'Select a deal to begin.' : 'No deals found in the DEALS sheet.', deals.length ? 'info' : 'error');
+        updateActionState();
       })
       .withFailureHandler(showError)
       .reosDealAnalyzerGetInitialData();
+  }
+
+  function bindInputState() {
+    ['dealId','purchasePrice','arv','repairCost'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener(id === 'dealId' ? 'change' : 'input', updateActionState);
+    });
   }
 
   function loadDeal() {
     const dealId = value('dealId');
     if (!dealId) {
       document.getElementById('dealCard').textContent = 'Select a deal to load its property details and latest analysis.';
+      showStatus('Select a deal to begin.', 'info');
+      updateActionState();
       return;
     }
+
     setBusy(true);
     showStatus('Loading deal…', 'info');
     google.script.run
@@ -137,8 +155,12 @@
         const d = data.deal || {};
         document.getElementById('dealCard').innerHTML = `<strong>${esc(d.Address || 'Unnamed property')}</strong><br>${esc([d.City,d.State,d.Zip].filter(Boolean).join(', '))}<br>Source: ${esc(d.Source || '—')} · Status: ${esc(d['Deal Status'] || '—')}`;
         if (data.form) applyValues(data.form);
-        showStatus(data.latestAnalysis ? 'Latest saved analysis loaded.' : 'No previous analysis found. Enter assumptions below.', 'info');
         setBusy(false);
+        showStatus(
+          `${d.Address || 'Deal'} loaded successfully.\n${data.latestAnalysis ? 'Latest saved analysis loaded.' : 'No previous analysis found.'}\nReady to analyze.`,
+          'success'
+        );
+        updateActionState();
       })
       .withFailureHandler(showError)
       .reosDealAnalyzerGetDealContext(dealId);
@@ -161,27 +183,52 @@
     };
   }
 
+  function validateRequiredFields(requireDeal) {
+    if (requireDeal && !value('dealId')) {
+      showStatus('Select a deal before continuing.', 'error');
+      return false;
+    }
+    if (numberValue('purchasePrice') <= 0) {
+      showStatus('Purchase Price must be greater than zero.', 'error');
+      focusField('purchasePrice');
+      return false;
+    }
+    if (numberValue('arv') <= 0) {
+      showStatus('ARV must be greater than zero.', 'error');
+      focusField('arv');
+      return false;
+    }
+    if (numberValue('repairCost') < 0 || value('repairCost') === '') {
+      showStatus('Repair Cost is required and cannot be negative.', 'error');
+      focusField('repairCost');
+      return false;
+    }
+    return true;
+  }
+
   function previewDeal() {
+    if (!validateRequiredFields(false)) return;
     setBusy(true);
     showStatus('Calculating preview…', 'info');
     google.script.run
       .withSuccessHandler(data => {
         renderMetrics(data.metrics || {});
-        showStatus('Preview calculated. Review the metrics, then save the analysis.', 'success');
         setBusy(false);
+        showStatus('Preview calculated. Review the metrics, then save the analysis.', 'success');
+        updateActionState();
       })
       .withFailureHandler(showError)
       .reosDealAnalyzerPreview(requestPayload());
   }
 
   function saveDeal() {
-    if (!value('dealId')) return showStatus('Select a deal before saving.', 'error');
+    if (!validateRequiredFields(true)) return;
     setBusy(true);
     showStatus('Saving analysis and updating REOS…', 'info');
     google.script.run
       .withSuccessHandler(data => {
         const result = data.result || {};
-        const analysis = result.analysis || {};
+        const analysis = result.analysis || (result.result && result.result.analysis) || {};
         if (analysis.MAO !== undefined) renderMetrics({
           mao: analysis.MAO,
           flipProfit: analysis['Flip Profit'],
@@ -193,8 +240,9 @@
           recommendation: analysis.Recommendation,
           riskLevel: analysis['Risk Level']
         });
-        showStatus(data.message || 'Deal analysis saved successfully.', 'success');
         setBusy(false);
+        showStatus(data.message || 'Deal analysis saved successfully.', 'success');
+        updateActionState();
       })
       .withFailureHandler(showError)
       .reosDealAnalyzerSubmit(requestPayload());
@@ -220,18 +268,32 @@
       if (el.type === 'checkbox') el.checked = Boolean(data[key]);
       else el.value = data[key] === null || data[key] === undefined ? '' : data[key];
     });
+    updateActionState();
+  }
+
+  function updateActionState() {
+    if (busy) return;
+    document.getElementById('previewBtn').disabled = false;
+    document.getElementById('saveBtn').disabled = !value('dealId');
+  }
+
+  function setBusy(isBusy) {
+    busy = Boolean(isBusy);
+    document.getElementById('previewBtn').disabled = busy;
+    document.getElementById('saveBtn').disabled = busy;
+  }
+
+  function focusField(id) {
+    const el = document.getElementById(id);
+    if (el) el.focus();
   }
 
   function value(id) { return document.getElementById(id).value.trim(); }
+  function numberValue(id) { return Number(value(id).replace(/[^0-9.\-]/g, '')) || 0; }
   function currency(v) { const n = Number(v || 0); return n.toLocaleString('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}); }
   function percent(v) { return `${Number(v || 0).toFixed(2)}%`; }
   function num(v) { return Number(v || 0).toFixed(2); }
   function esc(v) { return String(v == null ? '' : v).replace(/[&<>'"]/g,c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
-
-  function setBusy(busy) {
-    document.getElementById('previewBtn').disabled = busy;
-    document.getElementById('saveBtn').disabled = busy;
-  }
 
   function showStatus(message, type) {
     const box = document.getElementById('status');
@@ -242,6 +304,7 @@
   function showError(error) {
     setBusy(false);
     showStatus(error && error.message ? error.message : String(error), 'error');
+    updateActionState();
   }
 </script>
 </body>
