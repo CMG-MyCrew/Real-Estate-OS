@@ -24,12 +24,11 @@
     .checks { display:grid; gap:8px; }
     .check { display:flex; gap:8px; align-items:center; font-size:12px; }
     .check input { width:auto; }
-    .actions { display:flex; gap:8px; position:sticky; bottom:0; z-index:5; background:var(--bg); padding:8px 0 2px; }
-    button { flex:1; border:0; border-radius:7px; padding:10px; font-weight:700; cursor:pointer; transition:opacity .15s ease, transform .15s ease; }
-    button:not(:disabled):active { transform:translateY(1px); }
+    .actions { display:flex; gap:8px; position:sticky; bottom:0; background:var(--bg); padding:8px 0 2px; }
+    button { flex:1; border:0; border-radius:7px; padding:10px; font-weight:700; cursor:pointer; }
     .preview { background:var(--blue); color:#fff; }
     .save { background:var(--green); color:#fff; }
-    button:disabled { opacity:.45; cursor:not-allowed; }
+    button.is-busy { opacity:.72; cursor:wait; }
     .status { display:none; margin-bottom:10px; padding:9px; border-radius:7px; font-size:12px; white-space:pre-wrap; }
     .status.show { display:block; }
     .status.info { background:#e8f1fb; color:#173d6b; }
@@ -108,72 +107,88 @@
   </div>
 
 <script>
-  const moneyFields = ['purchasePrice','arv','repairCost','holdingCost','closingCost','financingCost','sellingCost','assignmentFee','rentMonthly','taxesAnnual','insuranceAnnual','hoaMonthly','loanPaymentMonthly'];
+  const UI_VERSION = '3.4.7-preview-hotfix';
+  const moneyFields = [
+    'purchasePrice','arv','repairCost','holdingCost','closingCost',
+    'financingCost','sellingCost','assignmentFee','rentMonthly',
+    'taxesAnnual','insuranceAnnual','hoaMonthly','loanPaymentMonthly'
+  ];
   let busy = false;
 
   document.addEventListener('DOMContentLoaded', init);
 
   function init() {
-    bindInputState();
-    setBusy(true);
+    console.log('REOS Deal Analyzer UI', UI_VERSION);
     showStatus('Loading deals…', 'info');
-    google.script.run
-      .withSuccessHandler(data => {
+    runServer_(
+      'reosDealAnalyzerGetInitialData',
+      [],
+      function(data) {
         const select = document.getElementById('dealId');
         const deals = Array.isArray(data && data.deals) ? data.deals : [];
-        select.innerHTML = '<option value="">Select a deal…</option>' + deals.map(d => `<option value="${esc(d.dealId)}">${esc(d.label)}</option>`).join('');
-        applyValues((data && data.defaults) || {});
-        setBusy(false);
-        showStatus(deals.length ? 'Select a deal to begin.' : 'No deals found in the DEALS sheet.', deals.length ? 'info' : 'error');
-        updateActionState();
-      })
-      .withFailureHandler(showError)
-      .reosDealAnalyzerGetInitialData();
-  }
+        select.innerHTML =
+          '<option value="">Select a deal…</option>' +
+          deals.map(function(d) {
+            return '<option value="' + esc(d.dealId) + '">' + esc(d.label) + '</option>';
+          }).join('');
 
-  function bindInputState() {
-    ['dealId','purchasePrice','arv','repairCost'].forEach(id => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.addEventListener(id === 'dealId' ? 'change' : 'input', updateActionState);
-    });
+        applyValues((data && data.defaults) || {});
+        showStatus(
+          deals.length
+            ? 'Select a deal to begin.\nUI version: ' + UI_VERSION
+            : 'No deals found in the DEALS sheet.',
+          deals.length ? 'info' : 'error'
+        );
+      }
+    );
   }
 
   function loadDeal() {
     const dealId = value('dealId');
     if (!dealId) {
-      document.getElementById('dealCard').textContent = 'Select a deal to load its property details and latest analysis.';
+      document.getElementById('dealCard').textContent =
+        'Select a deal to load its property details and latest analysis.';
       showStatus('Select a deal to begin.', 'info');
-      updateActionState();
       return;
     }
 
-    setBusy(true);
     showStatus('Loading deal…', 'info');
-    google.script.run
-      .withSuccessHandler(data => {
-        const d = data.deal || {};
-        document.getElementById('dealCard').innerHTML = `<strong>${esc(d.Address || 'Unnamed property')}</strong><br>${esc([d.City,d.State,d.Zip].filter(Boolean).join(', '))}<br>Source: ${esc(d.Source || '—')} · Status: ${esc(d['Deal Status'] || '—')}`;
-        if (data.form) applyValues(data.form);
-        setBusy(false);
+    runServer_(
+      'reosDealAnalyzerGetDealContext',
+      [dealId],
+      function(data) {
+        const d = (data && data.deal) || {};
+        document.getElementById('dealCard').innerHTML =
+          '<strong>' + esc(d.Address || 'Unnamed property') + '</strong><br>' +
+          esc([d.City, d.State, d.Zip].filter(Boolean).join(', ')) + '<br>' +
+          'Source: ' + esc(d.Source || '—') +
+          ' · Status: ' + esc(d['Deal Status'] || '—');
+
+        if (data && data.form) applyValues(data.form);
+
         showStatus(
-          `${d.Address || 'Deal'} loaded successfully.\n${data.latestAnalysis ? 'Latest saved analysis loaded.' : 'No previous analysis found.'}\nReady to analyze.`,
+          (d.Address || 'Deal') + ' loaded successfully.\n' +
+          ((data && data.latestAnalysis)
+            ? 'Latest saved analysis loaded.'
+            : 'No previous analysis found.') +
+          '\nReady to preview or save.',
           'success'
         );
-        updateActionState();
-      })
-      .withFailureHandler(showError)
-      .reosDealAnalyzerGetDealContext(dealId);
+      }
+    );
   }
 
   function requestPayload() {
     const analysis = {};
-    moneyFields.forEach(id => analysis[id] = value(id));
+    moneyFields.forEach(function(id) {
+      analysis[id] = value(id);
+    });
     analysis.maoPercent = value('maoPercent');
     analysis.operatingExpensePercent = value('operatingExpensePercent');
+
     return {
       dealId: value('dealId'),
-      analysis,
+      analysis: analysis,
       options: {
         createDraftOffer: document.getElementById('createDraftOffer').checked,
         advancePipeline: document.getElementById('advancePipeline').checked,
@@ -186,101 +201,162 @@
   function validateRequiredFields(requireDeal) {
     if (requireDeal && !value('dealId')) {
       showStatus('Select a deal before continuing.', 'error');
+      focusField('dealId');
       return false;
     }
+
     if (numberValue('purchasePrice') <= 0) {
       showStatus('Purchase Price must be greater than zero.', 'error');
       focusField('purchasePrice');
       return false;
     }
+
     if (numberValue('arv') <= 0) {
       showStatus('ARV must be greater than zero.', 'error');
       focusField('arv');
       return false;
     }
-    if (numberValue('repairCost') < 0 || value('repairCost') === '') {
+
+    if (value('repairCost') === '' || numberValue('repairCost') < 0) {
       showStatus('Repair Cost is required and cannot be negative.', 'error');
       focusField('repairCost');
       return false;
     }
+
     return true;
   }
 
   function previewDeal() {
+    if (busy) return;
     if (!validateRequiredFields(false)) return;
-    setBusy(true);
+
     showStatus('Calculating preview…', 'info');
-    google.script.run
-      .withSuccessHandler(data => {
-        renderMetrics(data.metrics || {});
-        setBusy(false);
-        showStatus('Preview calculated. Review the metrics, then save the analysis.', 'success');
-        updateActionState();
-      })
-      .withFailureHandler(showError)
-      .reosDealAnalyzerPreview(requestPayload());
+    runServer_(
+      'reosDealAnalyzerPreview',
+      [requestPayload()],
+      function(data) {
+        renderMetrics((data && data.metrics) || {});
+        showStatus(
+          'Preview calculated. Review the metrics, then save the analysis.',
+          'success'
+        );
+      }
+    );
   }
 
   function saveDeal() {
+    if (busy) return;
     if (!validateRequiredFields(true)) return;
-    setBusy(true);
+
     showStatus('Saving analysis and updating REOS…', 'info');
-    google.script.run
-      .withSuccessHandler(data => {
-        const result = data.result || {};
-        const analysis = result.analysis || (result.result && result.result.analysis) || {};
-        if (analysis.MAO !== undefined) renderMetrics({
-          mao: analysis.MAO,
-          flipProfit: analysis['Flip Profit'],
-          roi: analysis['ROI %'],
-          cashRequired: analysis['Cash Required'],
-          noi: analysis.NOI,
-          capRate: analysis['Cap Rate %'],
-          dscr: analysis.DSCR,
-          recommendation: analysis.Recommendation,
-          riskLevel: analysis['Risk Level']
-        });
+    runServer_(
+      'reosDealAnalyzerSubmit',
+      [requestPayload()],
+      function(data) {
+        const result = (data && data.result) || {};
+        const analysis =
+          result.analysis ||
+          (result.result && result.result.analysis) ||
+          {};
+
+        if (analysis.MAO !== undefined) {
+          renderMetrics({
+            mao: analysis.MAO,
+            flipProfit: analysis['Flip Profit'],
+            roi: analysis['ROI %'],
+            cashRequired: analysis['Cash Required'],
+            noi: analysis.NOI,
+            capRate: analysis['Cap Rate %'],
+            dscr: analysis.DSCR,
+            recommendation: analysis.Recommendation,
+            riskLevel: analysis['Risk Level']
+          });
+        }
+
+        showStatus(
+          (data && data.message) || 'Deal analysis saved successfully.',
+          'success'
+        );
+      }
+    );
+  }
+
+  function runServer_(functionName, args, onSuccess) {
+    setBusy(true);
+
+    let runner = google.script.run
+      .withSuccessHandler(function(data) {
         setBusy(false);
-        showStatus(data.message || 'Deal analysis saved successfully.', 'success');
-        updateActionState();
+        try {
+          onSuccess(data);
+        } catch (error) {
+          showError(error);
+        }
       })
-      .withFailureHandler(showError)
-      .reosDealAnalyzerSubmit(requestPayload());
+      .withFailureHandler(function(error) {
+        setBusy(false);
+        showError(error);
+      });
+
+    runner[functionName].apply(runner, args || []);
   }
 
   function renderMetrics(m) {
     const items = [
-      ['MAO', currency(m.mao)], ['Flip Profit', currency(m.flipProfit)],
-      ['ROI', percent(m.roi)], ['Cash Required', currency(m.cashRequired)],
-      ['NOI', currency(m.noi)], ['Cap Rate', percent(m.capRate)],
-      ['DSCR', num(m.dscr)], ['Risk', m.riskLevel || '—'],
+      ['MAO', currency(m.mao)],
+      ['Flip Profit', currency(m.flipProfit)],
+      ['ROI', percent(m.roi)],
+      ['Cash Required', currency(m.cashRequired)],
+      ['NOI', currency(m.noi)],
+      ['Cap Rate', percent(m.capRate)],
+      ['DSCR', num(m.dscr)],
+      ['Risk', m.riskLevel || '—'],
       ['Recommendation', m.recommendation || '—']
     ];
+
     const box = document.getElementById('metrics');
-    box.innerHTML = items.map((x,i) => `<div class="metric ${i===8?'wide':''}"><span>${esc(x[0])}</span><strong>${esc(String(x[1]))}</strong></div>`).join('');
+    box.innerHTML = items.map(function(item, index) {
+      return '<div class="metric ' + (index === 8 ? 'wide' : '') + '">' +
+        '<span>' + esc(item[0]) + '</span>' +
+        '<strong>' + esc(String(item[1])) + '</strong>' +
+        '</div>';
+    }).join('');
     box.classList.add('show');
   }
 
   function applyValues(data) {
-    Object.keys(data || {}).forEach(key => {
+    Object.keys(data || {}).forEach(function(key) {
       const el = document.getElementById(key);
       if (!el) return;
-      if (el.type === 'checkbox') el.checked = Boolean(data[key]);
-      else el.value = data[key] === null || data[key] === undefined ? '' : data[key];
-    });
-    updateActionState();
-  }
 
-  function updateActionState() {
-    if (busy) return;
-    document.getElementById('previewBtn').disabled = false;
-    document.getElementById('saveBtn').disabled = !value('dealId');
+      if (el.type === 'checkbox') {
+        el.checked = Boolean(data[key]);
+      } else {
+        el.value =
+          data[key] === null || data[key] === undefined
+            ? ''
+            : data[key];
+      }
+    });
   }
 
   function setBusy(isBusy) {
     busy = Boolean(isBusy);
-    document.getElementById('previewBtn').disabled = busy;
-    document.getElementById('saveBtn').disabled = busy;
+
+    const preview = document.getElementById('previewBtn');
+    const save = document.getElementById('saveBtn');
+
+    preview.classList.toggle('is-busy', busy);
+    save.classList.toggle('is-busy', busy);
+
+    preview.setAttribute('aria-busy', String(busy));
+    save.setAttribute('aria-busy', String(busy));
+
+    preview.textContent = busy ? 'Working…' : 'Preview';
+    save.textContent = busy ? 'Working…' : 'Save Analysis';
+
+    preview.disabled = false;
+    save.disabled = false;
   }
 
   function focusField(id) {
@@ -288,23 +364,59 @@
     if (el) el.focus();
   }
 
-  function value(id) { return document.getElementById(id).value.trim(); }
-  function numberValue(id) { return Number(value(id).replace(/[^0-9.\-]/g, '')) || 0; }
-  function currency(v) { const n = Number(v || 0); return n.toLocaleString('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}); }
-  function percent(v) { return `${Number(v || 0).toFixed(2)}%`; }
-  function num(v) { return Number(v || 0).toFixed(2); }
-  function esc(v) { return String(v == null ? '' : v).replace(/[&<>'"]/g,c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+  function value(id) {
+    const el = document.getElementById(id);
+    return el ? String(el.value || '').trim() : '';
+  }
+
+  function numberValue(id) {
+    const cleaned = value(id).replace(/[^0-9.\-]/g, '');
+    const parsed = Number(cleaned);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  function currency(v) {
+    const n = Number(v || 0);
+    return n.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0
+    });
+  }
+
+  function percent(v) {
+    return Number(v || 0).toFixed(2) + '%';
+  }
+
+  function num(v) {
+    return Number(v || 0).toFixed(2);
+  }
+
+  function esc(v) {
+    return String(v == null ? '' : v).replace(/[&<>'"]/g, function(c) {
+      return {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+        '"': '&quot;'
+      }[c];
+    });
+  }
 
   function showStatus(message, type) {
     const box = document.getElementById('status');
     box.textContent = message;
-    box.className = `status show ${type || 'info'}`;
+    box.className = 'status show ' + (type || 'info');
   }
 
   function showError(error) {
-    setBusy(false);
-    showStatus(error && error.message ? error.message : String(error), 'error');
-    updateActionState();
+    const message =
+      error && error.message
+        ? error.message
+        : String(error || 'Unknown error');
+    showStatus(message, 'error');
+    console.error(error);
   }
 </script>
 </body>
