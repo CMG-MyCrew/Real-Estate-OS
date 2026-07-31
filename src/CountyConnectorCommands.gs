@@ -1,19 +1,37 @@
 /**
- * REOS Enterprise v4.5.1 - County Connector Commands
- * Public Apps Script entry points for setup, inspection, dry runs, live syncs,
- * and terminal-driven clasp execution.
+ * REOS Enterprise - County Connector Commands
+ * Public entry points for terminal-driven county connector execution.
  */
 var REOS = REOS || {};
 
+function REOS_COUNTY_REGISTER_CONNECTORS_() {
+  if (!REOS.CountyConnectorSDK) {
+    throw new Error('CountyConnectorSDK is not loaded.');
+  }
+
+  if (
+    REOS.PhiladelphiaCountyConnector &&
+    !REOS.CountyConnectorSDK.get(
+      REOS.PhiladelphiaCountyConnector.connectorId
+    )
+  ) {
+    REOS.PhiladelphiaCountyConnector.register();
+  }
+}
+
 function REOS_COUNTY_SETUP() {
+  REOS_COUNTY_REGISTER_CONNECTORS_();
   return REOS.CountyConnectorSDK.ensureInfrastructure();
 }
 
 function REOS_COUNTY_LIST() {
+  REOS_COUNTY_REGISTER_CONNECTORS_();
   return REOS.CountyConnectorSDK.list();
 }
 
 function REOS_COUNTY_DRY_RUN(connectorId, dataset, limit) {
+  REOS_COUNTY_REGISTER_CONNECTORS_();
+
   return REOS.CountyConnectorSDK.run(connectorId, {
     dataset: dataset,
     limit: Number(limit || 100),
@@ -22,6 +40,8 @@ function REOS_COUNTY_DRY_RUN(connectorId, dataset, limit) {
 }
 
 function REOS_COUNTY_SYNC(connectorId, dataset, limit, cursor) {
+  REOS_COUNTY_REGISTER_CONNECTORS_();
+
   return REOS.CountyConnectorSDK.run(connectorId, {
     dataset: dataset,
     limit: Number(limit || 500),
@@ -31,41 +51,147 @@ function REOS_COUNTY_SYNC(connectorId, dataset, limit, cursor) {
 }
 
 function REOS_COUNTY_SYNC_ALL_DRY_RUN() {
-  return REOS.CountyConnectorSDK.runAll({ dryRun: true, limit: 100 });
+  REOS_COUNTY_REGISTER_CONNECTORS_();
+  return REOS.CountyConnectorSDK.runAll({
+    dryRun: true,
+    limit: 100
+  });
 }
 
 function REOS_COUNTY_SYNC_ALL() {
-  return REOS.CountyConnectorSDK.runAll({ dryRun: false, limit: 500 });
+  REOS_COUNTY_REGISTER_CONNECTORS_();
+  return REOS.CountyConnectorSDK.runAll({
+    dryRun: false,
+    limit: 500
+  });
 }
 
-/**
- * Stable entry point used by scripts/reos-county-sync.mjs through clasp run.
- * Accepts one JSON-compatible options object and returns a JSON-compatible result.
- */
 function REOS_COUNTY_TERMINAL_SYNC(options) {
+  REOS_COUNTY_REGISTER_CONNECTORS_();
+
   options = options || {};
+
   var action = String(options.action || 'sync').toLowerCase();
   var connectorId = String(options.connectorId || '').trim();
   var dataset = String(options.dataset || '').trim();
-  var limit = Math.max(1, Math.min(Number(options.limit || 100), 5000));
+  var limit = Math.max(
+    1,
+    Math.min(Number(options.limit || 100), 5000)
+  );
   var cursor = String(options.cursor || '');
   var dryRun = options.dryRun !== false;
 
-  if (action === 'setup') return REOS_COUNTY_SETUP();
-  if (action === 'list') return REOS_COUNTY_LIST();
+  if (action === 'setup') {
+    return REOS_COUNTY_SETUP();
+  }
+
+  if (action === 'list') {
+    return REOS_COUNTY_LIST();
+  }
+
+  if (action === 'configure-endpoint') {
+    if (!connectorId) {
+      throw new Error(
+        'connectorId is required for endpoint configuration.'
+      );
+    }
+
+    if (!dataset) {
+      throw new Error(
+        'dataset is required for endpoint configuration.'
+      );
+    }
+
+    var endpoint = String(options.endpoint || '').trim();
+
+    if (!endpoint) {
+      throw new Error(
+        'endpoint is required for endpoint configuration.'
+      );
+    }
+
+    var propertyKey =
+      'REOS_COUNTY_' +
+      connectorId.replace(/-/g, '_') +
+      '_' +
+      dataset.toUpperCase() +
+      '_URL';
+
+    PropertiesService
+      .getScriptProperties()
+      .setProperty(propertyKey, endpoint);
+
+    return {
+      ok: true,
+      action: 'configure-endpoint',
+      connectorId: connectorId,
+      dataset: dataset,
+      propertyKey: propertyKey,
+      endpoint: endpoint
+    };
+  }
+
+  if (action === 'get-endpoint') {
+    if (!connectorId) {
+      throw new Error('connectorId is required.');
+    }
+
+    if (!dataset) {
+      throw new Error('dataset is required.');
+    }
+
+    var lookupKey =
+      'REOS_COUNTY_' +
+      connectorId.replace(/-/g, '_') +
+      '_' +
+      dataset.toUpperCase() +
+      '_URL';
+
+    return {
+      connectorId: connectorId,
+      dataset: dataset,
+      propertyKey: lookupKey,
+      endpoint: PropertiesService
+        .getScriptProperties()
+        .getProperty(lookupKey) || ''
+    };
+  }
 
   if (action === 'sync-all') {
     if (!dryRun && options.confirmLive !== true) {
-      throw new Error('Live terminal sync-all requires confirmLive=true.');
+      throw new Error(
+        'Live terminal sync-all requires confirmLive=true.'
+      );
     }
-    return REOS.CountyConnectorSDK.runAll({ dryRun: dryRun, limit: limit });
+
+    return REOS.CountyConnectorSDK.runAll({
+      dryRun: dryRun,
+      limit: limit
+    });
   }
 
-  if (action !== 'sync') throw new Error('Unsupported county terminal action: ' + action);
-  if (!connectorId) throw new Error('connectorId is required for terminal sync.');
-  if (!dataset) throw new Error('dataset is required for terminal sync.');
+  if (action !== 'sync') {
+    throw new Error(
+      'Unsupported county terminal action: ' + action
+    );
+  }
+
+  if (!connectorId) {
+    throw new Error(
+      'connectorId is required for terminal sync.'
+    );
+  }
+
+  if (!dataset) {
+    throw new Error(
+      'dataset is required for terminal sync.'
+    );
+  }
+
   if (!dryRun && options.confirmLive !== true) {
-    throw new Error('Live terminal sync requires confirmLive=true.');
+    throw new Error(
+      'Live terminal sync requires confirmLive=true.'
+    );
   }
 
   return REOS.CountyConnectorSDK.run(connectorId, {
@@ -78,13 +204,24 @@ function REOS_COUNTY_TERMINAL_SYNC(options) {
 
 function REOS_COUNTY_INSTALL_DAILY_TRIGGER() {
   var functionName = 'REOS_COUNTY_SYNC_ALL';
+
   ScriptApp.getProjectTriggers().forEach(function (trigger) {
-    if (trigger.getHandlerFunction() === functionName) ScriptApp.deleteTrigger(trigger);
+    if (trigger.getHandlerFunction() === functionName) {
+      ScriptApp.deleteTrigger(trigger);
+    }
   });
-  var trigger = ScriptApp.newTrigger(functionName)
+
+  var trigger = ScriptApp
+    .newTrigger(functionName)
     .timeBased()
     .everyDays(1)
     .atHour(4)
     .create();
-  return { ok: true, handler: functionName, triggerId: trigger.getUniqueId(), schedule: 'Daily at approximately 4:00 AM' };
+
+  return {
+    ok: true,
+    handler: functionName,
+    triggerId: trigger.getUniqueId(),
+    schedule: 'Daily at approximately 4:00 AM'
+  };
 }

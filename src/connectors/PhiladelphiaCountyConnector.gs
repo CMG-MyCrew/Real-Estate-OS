@@ -25,37 +25,136 @@ REOS.PhiladelphiaCountyConnector = (function () {
 
   function fetch_(context) {
     var endpoint = getEndpoint_(context.dataset, context.config);
+
     if (!endpoint) {
-      throw new Error('Missing endpoint for Philadelphia dataset: ' + context.dataset + '. Configure REOS_COUNTY_PA_PHILADELPHIA_' + context.dataset.toUpperCase() + '_URL.');
+      throw new Error(
+        'Missing endpoint for Philadelphia dataset: ' +
+        context.dataset +
+        '. Configure REOS_COUNTY_PA_PHILADELPHIA_' +
+        context.dataset.toUpperCase() +
+        '_URL.'
+      );
     }
 
-    var query = [];
-    query.push('$limit=' + encodeURIComponent(Math.min(Math.max(context.limit || 500, 1), 5000)));
-    if (context.cursor) query.push('$offset=' + encodeURIComponent(context.cursor));
-    if (context.since) query.push('$where=' + encodeURIComponent(buildSinceFilter_(context.dataset, context.since)));
+    var limit = Math.min(
+      Math.max(Number(context.limit) || 500, 1),
+      2000
+    );
 
-    var url = endpoint + (endpoint.indexOf('?') === -1 ? '?' : '&') + query.join('&');
-    var headers = { Accept: 'application/json' };
-    var apiKey = getApiKey_(context.config);
-    if (apiKey) headers['X-App-Token'] = apiKey;
+    var offset = Math.max(Number(context.cursor) || 0, 0);
+    var whereClause = '1=1';
+
+    if (context.since) {
+      var sinceFilter = buildSinceFilter_(
+        context.dataset,
+        context.since
+      );
+
+      if (sinceFilter) {
+        whereClause = sinceFilter;
+      }
+    }
+
+    var query = [
+      'where=' + encodeURIComponent(whereClause),
+      'outFields=' + encodeURIComponent('*'),
+      'returnGeometry=false',
+      'resultRecordCount=' + encodeURIComponent(limit),
+      'resultOffset=' + encodeURIComponent(offset),
+      'f=json'
+    ];
+
+    var url =
+      endpoint +
+      (endpoint.indexOf('?') === -1 ? '?' : '&') +
+      query.join('&');
 
     var response = UrlFetchApp.fetch(url, {
       method: 'get',
-      headers: headers,
+      headers: {
+        Accept: 'application/json'
+      },
       muteHttpExceptions: true,
       followRedirects: true
     });
+
     var status = response.getResponseCode();
+    var responseText = response.getContentText();
+    var headers = response.getHeaders();
+    var contentType = String(
+      headers['Content-Type'] ||
+      headers['content-type'] ||
+      ''
+    );
+
     if (status < 200 || status >= 300) {
-      throw new Error('Philadelphia endpoint returned HTTP ' + status + ': ' + response.getContentText().slice(0, 500));
+      throw new Error(
+        'Philadelphia endpoint returned HTTP ' +
+        status +
+        '. URL: ' +
+        url +
+        '. Response: ' +
+        responseText.slice(0, 500)
+      );
     }
 
-    var payload = JSON.parse(response.getContentText() || '[]');
-    var records = Array.isArray(payload) ? payload : (payload.results || payload.data || []);
+    if (
+      responseText.trim().charAt(0) === '<' ||
+      contentType.toLowerCase().indexOf('text/html') !== -1
+    ) {
+      throw new Error(
+        'Philadelphia endpoint returned HTML instead of JSON. ' +
+        'URL: ' +
+        url +
+        '. Content-Type: ' +
+        contentType +
+        '. Response: ' +
+        responseText.slice(0, 500)
+      );
+    }
+
+    var payload;
+
+    try {
+      payload = JSON.parse(responseText || '{}');
+    } catch (error) {
+      throw new Error(
+        'Philadelphia endpoint returned invalid JSON. ' +
+        'URL: ' +
+        url +
+        '. Response: ' +
+        responseText.slice(0, 500)
+      );
+    }
+
+    if (payload.error) {
+      throw new Error(
+        'Philadelphia ArcGIS API error: ' +
+        JSON.stringify(payload.error)
+      );
+    }
+
+    var features = Array.isArray(payload.features)
+      ? payload.features
+      : [];
+
+    var records = features.map(function (feature) {
+      return feature && feature.attributes
+        ? feature.attributes
+        : feature;
+    });
+
     return {
       records: records,
-      nextCursor: records.length >= context.limit ? String(Number(context.cursor || 0) + records.length) : '',
-      message: 'Fetched ' + records.length + ' records from Philadelphia ' + context.dataset
+      nextCursor:
+        records.length >= limit
+          ? String(offset + records.length)
+          : '',
+      message:
+        'Fetched ' +
+        records.length +
+        ' records from Philadelphia ' +
+        context.dataset
     };
   }
 
@@ -129,7 +228,7 @@ REOS.PhiladelphiaCountyConnector = (function () {
       tax_delinquent: 'updated_at',
       code_violations: 'violation_date',
       vacant_properties: 'updated_at',
-      property_assessment: 'updated_at'
+      property_assessment: 'assessment_date'
     };
     return (fieldMap[dataset] || 'updated_at') + ">='" + iso + "'";
   }
@@ -158,11 +257,5 @@ REOS.PhiladelphiaCountyConnector = (function () {
   };
 })();
 
-function registerPhiladelphiaCountyConnector_() {
-  if (!REOS.CountyConnectorSDK ||
-      typeof REOS.CountyConnectorSDK.register !== 'function') {
-    throw new Error('CountyConnectorSDK is not available.');
-  }
 
-  return REOS.PhiladelphiaCountyConnector.register();
-}
+
