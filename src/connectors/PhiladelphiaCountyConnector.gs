@@ -158,4 +158,11 @@ REOS.PhiladelphiaCountyConnector = (function () {
   };
 })();
 
-REOS.PhiladelphiaCountyConnector.register();
+function registerPhiladelphiaCountyConnector_() {
+  if (!REOS.CountyConnectorSDK ||
+      typeof REOS.CountyConnectorSDK.register !== 'function') {
+    throw new Error('CountyConnectorSDK is not available.');
+  }
+
+  return REOS.PhiladelphiaCountyConnector.register();
+}

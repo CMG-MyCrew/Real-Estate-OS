@@ -17,6 +17,19 @@ function onOpen(e) {
   }
 
   try {
+    if (typeof registerPhiladelphiaCountyConnector_ === 'function') {
+      registerPhiladelphiaCountyConnector_();
+    }
+  } catch (connectorError) {
+    try {
+      REOS.handleError_(
+        'onOpen.connectorRegistration',
+        connectorError
+      );
+    } catch (connectorLoggingError) {}
+  }
+
+  try {
     REOS.init_();
     REOS.log_('INFO', 'Application opened', {
       event: e ? 'onOpen' : 'manual',
