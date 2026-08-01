@@ -24,6 +24,14 @@ import {
 import {
   runStateBuildPipeline
 } from './state-build/StateBuildPipeline.mjs';
+import {
+  refreshRegistry,
+  listRegistry,
+  getRegistryEntry,
+  updateConnectorRegistry,
+  updateAllRegistry,
+  saveRegistryUpdateReport
+} from './county-registry/CountyRegistryEngine.mjs';
 
 const ROOT = process.cwd();
 const CONNECTOR_DIR = path.join(ROOT, 'src', 'connectors', 'generated');
@@ -2390,6 +2398,191 @@ async function commandStateBuild(args) {
   }
 }
 
+function printRegistryEntries(entries) {
+  if (!entries.length) {
+    console.log('No county registry entries found.');
+    return;
+  }
+
+  console.log('');
+  console.log(
+    [
+      'CONNECTOR'.padEnd(22),
+      'STATUS'.padEnd(18),
+      'TYPE'.padEnd(12),
+      'DATASETS'
+    ].join(' | ')
+  );
+
+  console.log('-'.repeat(82));
+
+  entries.forEach(entry => {
+    console.log(
+      [
+        entry.connectorId.padEnd(22),
+        String(entry.status || '').padEnd(18),
+        String(entry.implementation || '').padEnd(12),
+        String(
+          Object.keys(entry.datasets || {}).length
+        )
+      ].join(' | ')
+    );
+  });
+}
+
+function commandRegistryRefresh() {
+  const registry = refreshRegistry({
+    root: ROOT
+  });
+
+  const connectors = Object.values(
+    registry.connectors || {}
+  );
+
+  console.log('');
+  console.log('County registry refreshed.');
+  console.log(
+    `Connectors: ${connectors.length}`
+  );
+  console.log(
+    `Registry: config/county-registry/registry.json`
+  );
+
+  printRegistryEntries(
+    connectors.sort((left, right) =>
+      left.connectorId.localeCompare(
+        right.connectorId
+      )
+    )
+  );
+}
+
+function commandRegistryList(args) {
+  const entries = listRegistry({
+    root: ROOT,
+    state: args.state || ''
+  });
+
+  printRegistryEntries(entries);
+}
+
+function commandRegistryStatus(args) {
+  const connectorIdValue = String(
+    args.connector ||
+    args['connector-id'] ||
+    ''
+  )
+    .trim()
+    .toUpperCase();
+
+  if (!connectorIdValue) {
+    fail('--connector is required.');
+  }
+
+  const entry = getRegistryEntry(
+    ROOT,
+    connectorIdValue
+  );
+
+  if (!entry) {
+    fail(
+      `Registry entry not found: ${connectorIdValue}`
+    );
+  }
+
+  console.log(
+    JSON.stringify(entry, null, 2)
+  );
+}
+
+function commandRegistryUpdate(args) {
+  const updateAll =
+    args.all === true;
+
+  const commonOptions = {
+    root: ROOT,
+    health: args.health === true,
+    test: args.test === true,
+    limit: Math.max(
+      1,
+      Math.min(Number(args.limit || 10), 100)
+    ),
+    cursor: String(args.cursor || ''),
+    generatedOnly:
+      args['generated-only'] === true,
+    continueOnError:
+      args['continue-on-error'] === true
+  };
+
+  if (updateAll) {
+    const report = updateAllRegistry(
+      commonOptions
+    );
+
+    const reportPath =
+      saveRegistryUpdateReport(
+        ROOT,
+        report
+      );
+
+    console.log('');
+    console.log('County registry update complete.');
+    console.log(`Checked: ${report.count}`);
+    console.log(`Passed:  ${report.passed}`);
+    console.log(`Failed:  ${report.failed}`);
+    console.log(
+      `Report:  ${path.relative(ROOT, reportPath)}`
+    );
+
+    report.results.forEach(result => {
+      console.log(
+        [
+          result.connectorId.padEnd(22),
+          result.status.padEnd(18),
+          result.ok ? 'PASS' : 'REVIEW'
+        ].join(' | ')
+      );
+    });
+
+    if (report.failed > 0) {
+      process.exitCode = 1;
+    }
+
+    return;
+  }
+
+  const connectorIdValue = String(
+    args.connector ||
+    args['connector-id'] ||
+    ''
+  )
+    .trim()
+    .toUpperCase();
+
+  if (!connectorIdValue) {
+    fail(
+      'Use --connector PA-BUCKS or --all.'
+    );
+  }
+
+  const entry = updateConnectorRegistry({
+    ...commonOptions,
+    connectorId: connectorIdValue
+  });
+
+  console.log(
+    JSON.stringify(entry, null, 2)
+  );
+
+  if (
+    entry.status === 'ERROR' ||
+    entry.status === 'REVIEW_REQUIRED' ||
+    entry.status === 'INACCESSIBLE'
+  ) {
+    process.exitCode = 1;
+  }
+}
+
 function commandList() {
   const manifests = readManifests();
 
@@ -2552,6 +2745,44 @@ Commands:
       --state PA \
       --county Montgomery \
       --sources arcgis,socrata
+
+  county:registry-refresh
+    Rebuild the central county registry from manifests.
+
+    ./tools/reos county:registry-refresh
+
+  county:registry-list
+    List registered county connectors.
+
+    ./tools/reos county:registry-list
+
+    ./tools/reos county:registry-list \
+      --state PA
+
+  county:registry-status
+    Show one complete registry entry.
+
+    ./tools/reos county:registry-status \
+      --connector PA-BUCKS
+
+  county:registry-update
+    Run endpoint health and terminal dry-sync verification.
+
+    ./tools/reos county:registry-update \
+      --connector PA-BUCKS \
+      --health \
+      --test \
+      --limit 10
+
+    Update all generated connectors:
+
+    ./tools/reos county:registry-update \
+      --all \
+      --generated-only \
+      --health \
+      --test \
+      --limit 10 \
+      --continue-on-error
 
   state:build
     Build county connectors across an entire state.
@@ -2787,6 +3018,22 @@ switch (command) {
 
   case 'state:build':
     await commandStateBuild(args);
+    break;
+
+  case 'county:registry-refresh':
+    commandRegistryRefresh(args);
+    break;
+
+  case 'county:registry-list':
+    commandRegistryList(args);
+    break;
+
+  case 'county:registry-status':
+    commandRegistryStatus(args);
+    break;
+
+  case 'county:registry-update':
+    commandRegistryUpdate(args);
     break;
 
   case 'county:promote':

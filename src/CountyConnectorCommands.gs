@@ -239,6 +239,51 @@ function REOS_COUNTY_TERMINAL_SYNC(options) {
     );
   }
 
+  if (action === 'registry-summary') {
+    var registeredConnectors =
+      REOS.CountyConnectorSDK.list();
+
+    return {
+      ok: true,
+      action: 'registry-summary',
+      generatedAt: new Date().toISOString(),
+      connectorCount: registeredConnectors.length,
+      connectors: registeredConnectors
+    };
+  }
+
+  if (action === 'registry-status') {
+    if (!connectorId) {
+      throw new Error(
+        'connectorId is required for registry-status.'
+      );
+    }
+
+    var registryConnector =
+      REOS.CountyConnectorSDK.get(connectorId);
+
+    if (!registryConnector) {
+      return {
+        ok: false,
+        action: 'registry-status',
+        connectorId: connectorId,
+        registered: false
+      };
+    }
+
+    return {
+      ok: true,
+      action: 'registry-status',
+      connectorId: connectorId,
+      registered: true,
+      county: registryConnector.county || '',
+      state: registryConnector.state || '',
+      version: registryConnector.version || '',
+      enabled: registryConnector.enabled !== false,
+      datasets: registryConnector.datasets || []
+    };
+  }
+
   if (action === 'configure-endpoint') {
     if (!connectorId) {
       throw new Error(

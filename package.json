@@ -23,7 +23,11 @@
     "county:automap": "node tools/reos.mjs county:automap",
     "county:discover-all": "node tools/reos.mjs county:discover-all",
     "county:build": "node tools/reos.mjs county:build",
-    "state:build": "node tools/reos.mjs state:build"
+    "state:build": "node tools/reos.mjs state:build",
+    "county:registry-refresh": "node tools/reos.mjs county:registry-refresh",
+    "county:registry-list": "node tools/reos.mjs county:registry-list",
+    "county:registry-status": "node tools/reos.mjs county:registry-status",
+    "county:registry-update": "node tools/reos.mjs county:registry-update"
   },
   "devDependencies": {
     "@google/clasp": "^2.4.2"

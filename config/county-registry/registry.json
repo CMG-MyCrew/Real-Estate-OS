@@ -1,0 +1,571 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-01T15:50:21.428Z",
+  "updatedAt": "2026-08-01T15:57:46.574Z",
+  "connectors": {
+    "PA-BUCKS": {
+      "connectorId": "PA-BUCKS",
+      "state": "PA",
+      "county": "Bucks",
+      "version": "1.0.0",
+      "enabled": true,
+      "implementation": "generated",
+      "manifestPath": "config/county-connectors/PA-BUCKS.json",
+      "connectorPath": "src/connectors/generated/BucksCountyConnector.gs",
+      "connectorExists": true,
+      "manifestFingerprint": "8e6712e9bef639d670e2563437ae9b258773f3586df4be5be125ba561faf0150",
+      "datasets": {
+        "property_assessment": {
+          "dataset": "property_assessment",
+          "enabled": true,
+          "adapter": "arcgis",
+          "endpointProperty": "REOS_COUNTY_PA_BUCKS_PROPERTY_ASSESSMENT_URL",
+          "endpoint": "https://services3.arcgis.com/SP47Tddf7RK32lBU/arcgis/rest/services/Bucks_County_Parcels/FeatureServer/0/query",
+          "endpointConfigured": true,
+          "discovery": null,
+          "mapping": {
+            "requiredFieldsPresent": true,
+            "missingRequiredFields": [],
+            "confidence": 137,
+            "fingerprint": "077b305c1ae7d9fe74cfbc8b850b30ee278b722ac60d31096255333ef7259b06",
+            "autoMappedAt": "2026-08-01T13:09:56.932Z"
+          },
+          "recordFilter": {
+            "requireAny": [
+              [
+                "ADDRESS"
+              ],
+              [
+                "PARCEL_NUM"
+              ]
+            ]
+          },
+          "health": {
+            "checkedAt": "2026-08-01T15:56:30.600Z",
+            "ok": true,
+            "status": 200,
+            "count": 237871,
+            "durationMs": 223,
+            "output": "{\n  adapter: 'arcgis',\n  count: 237871,\n  ok: true,\n  durationMs: 223,\n  status: 200\n}\n"
+          },
+          "lastDrySync": {
+            "checkedAt": "2026-08-01T15:56:40.375Z",
+            "ok": true,
+            "mode": "DRY_RUN",
+            "nextCursor": "10",
+            "stats": {
+              "fetched": 10,
+              "valid": 10,
+              "inserted": 0,
+              "updated": 0,
+              "skipped": 10,
+              "failed": 0
+            },
+            "output": "{\n  nextCursor: '10',\n  mode: 'DRY_RUN',\n  completedAt: '2026-08-01T15:56:39.526Z',\n  recordErrors: [],\n  stats: {\n    valid: 10,\n    inserted: 0,\n    failed: 0,\n    updated: 0,\n    fetched: 10,\n    skipped: 10\n  },\n  connectorId: 'PA-BUCKS',\n  validationErrors: [],\n  runId: 'CCR-20260801115638-0843',\n  ok: true,\n  dataset: 'property_assessment'\n}\n"
+          },
+          "status": "GENERATED",
+          "updatedAt": "2026-08-01T15:57:46.580Z",
+          "connectorId": "PA-BUCKS"
+        },
+        "tax_delinquent": {
+          "dataset": "tax_delinquent",
+          "enabled": false,
+          "adapter": "arcgis",
+          "endpointProperty": "REOS_COUNTY_PA_BUCKS_TAX_DELINQUENT_URL",
+          "endpoint": "",
+          "endpointConfigured": false,
+          "discovery": null,
+          "mapping": {
+            "requiredFieldsPresent": true,
+            "missingRequiredFields": [],
+            "confidence": null,
+            "fingerprint": "96304216935399fc0ed9ff0737fb60b98200850533c28af4d558fcdcb22eee48",
+            "autoMappedAt": ""
+          },
+          "recordFilter": null,
+          "health": null,
+          "lastDrySync": null,
+          "status": "DISABLED",
+          "updatedAt": "2026-08-01T15:57:46.581Z",
+          "connectorId": "PA-BUCKS"
+        }
+      },
+      "status": "GENERATED",
+      "lastVerifiedAt": "2026-08-01T15:56:40.377Z",
+      "lastSuccessfulSyncAt": "2026-08-01T15:56:40.375Z",
+      "updatedAt": "2026-08-01T15:57:46.581Z",
+      "history": [
+        {
+          "at": "2026-08-01T15:51:19.525Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 237
+        },
+        {
+          "at": "2026-08-01T15:51:29.586Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T15:51:35.984Z",
+          "action": "endpoint-check",
+          "dataset": "tax_delinquent",
+          "ok": false,
+          "message": "No endpoint configured."
+        },
+        {
+          "at": "2026-08-01T15:51:35.984Z",
+          "action": "registry-update-complete",
+          "ok": false,
+          "status": "REVIEW_REQUIRED"
+        },
+        {
+          "at": "2026-08-01T15:54:45.980Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 303
+        },
+        {
+          "at": "2026-08-01T15:54:55.320Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T15:54:55.320Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T15:56:30.600Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 223
+        },
+        {
+          "at": "2026-08-01T15:56:40.377Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T15:56:40.377Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        }
+      ]
+    },
+    "PA-CHESTER": {
+      "connectorId": "PA-CHESTER",
+      "state": "PA",
+      "county": "Chester",
+      "version": "1.0.0",
+      "enabled": true,
+      "implementation": "generated",
+      "manifestPath": "config/county-connectors/PA-CHESTER.json",
+      "connectorPath": "src/connectors/generated/ChesterCountyConnector.gs",
+      "connectorExists": true,
+      "manifestFingerprint": "6f974e5fd9f1f6bb80a1b5f04296f956aa3d5d770f81db5cbc0fdd4f1064eb4c",
+      "datasets": {
+        "property_assessment": {
+          "dataset": "property_assessment",
+          "enabled": true,
+          "adapter": "arcgis",
+          "endpointProperty": "REOS_COUNTY_PA_CHESTER_PROPERTY_ASSESSMENT_URL",
+          "endpoint": "https://services1.arcgis.com/xnOV358bj0tLwxji/arcgis/rest/services/Chester_County_PA_Parcels/FeatureServer/0/query",
+          "endpointConfigured": true,
+          "discovery": {
+            "report": "reports/county-discovery/PA-CHESTER-PROMOTION-INPUT.json",
+            "candidate": 1,
+            "promotedAt": "2026-08-01T13:59:26.287Z",
+            "title": "Chester County PA Parcels — Chester_County_PA_Parcels",
+            "source": "arcgis-online",
+            "sourceItemId": "1869042d898c4424a6c37e8da67baa94",
+            "sourceLayerId": 0,
+            "compatibilityScore": 100,
+            "matchedTerms": [
+              "parcel",
+              "parcels"
+            ],
+            "endpoint": "https://services1.arcgis.com/xnOV358bj0tLwxji/arcgis/rest/services/Chester_County_PA_Parcels/FeatureServer/0/query"
+          },
+          "mapping": {
+            "requiredFieldsPresent": true,
+            "missingRequiredFields": [],
+            "confidence": 115,
+            "fingerprint": "16745786606756969b29f3e8a3546cbf9f4bfda85d52b31f77597f64cac2bf17",
+            "autoMappedAt": "2026-08-01T14:00:39.841Z"
+          },
+          "recordFilter": {
+            "requireAny": [
+              [
+                "ADDR1"
+              ],
+              [
+                "OBJECTID"
+              ]
+            ]
+          },
+          "health": {
+            "checkedAt": "2026-08-01T15:56:46.668Z",
+            "ok": true,
+            "status": 200,
+            "count": 188537,
+            "durationMs": 684,
+            "output": "{\n  adapter: 'arcgis',\n  count: 188537,\n  ok: true,\n  durationMs: 684,\n  status: 200\n}\n"
+          },
+          "lastDrySync": {
+            "checkedAt": "2026-08-01T15:56:55.877Z",
+            "ok": true,
+            "mode": "DRY_RUN",
+            "nextCursor": "10",
+            "stats": {
+              "fetched": 10,
+              "valid": 10,
+              "inserted": 0,
+              "updated": 0,
+              "skipped": 10,
+              "failed": 0
+            },
+            "output": "{\n  nextCursor: '10',\n  mode: 'DRY_RUN',\n  completedAt: '2026-08-01T15:56:55.450Z',\n  recordErrors: [],\n  stats: {\n    valid: 10,\n    inserted: 0,\n    failed: 0,\n    updated: 0,\n    skipped: 10,\n    fetched: 10\n  },\n  connectorId: 'PA-CHESTER',\n  validationErrors: [],\n  runId: 'CCR-20260801115653-4448',\n  ok: true,\n  dataset: 'property_assessment'\n}\n"
+          },
+          "status": "GENERATED",
+          "updatedAt": "2026-08-01T15:57:46.583Z",
+          "connectorId": "PA-CHESTER"
+        }
+      },
+      "status": "GENERATED",
+      "lastVerifiedAt": "2026-08-01T15:56:55.878Z",
+      "lastSuccessfulSyncAt": "2026-08-01T15:56:55.877Z",
+      "updatedAt": "2026-08-01T15:57:46.583Z",
+      "history": [
+        {
+          "at": "2026-08-01T15:56:46.669Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 684
+        },
+        {
+          "at": "2026-08-01T15:56:55.878Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T15:56:55.878Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        }
+      ]
+    },
+    "PA-DELAWARE": {
+      "connectorId": "PA-DELAWARE",
+      "state": "PA",
+      "county": "Delaware",
+      "version": "1.0.0",
+      "enabled": true,
+      "implementation": "generated",
+      "manifestPath": "config/county-connectors/PA-DELAWARE.json",
+      "connectorPath": "src/connectors/generated/DelawareCountyConnector.gs",
+      "connectorExists": true,
+      "manifestFingerprint": "a92d4b9d9773d37c36e9b6bbaa288be1235206973ba11351621a8205f5028048",
+      "datasets": {
+        "property_assessment": {
+          "dataset": "property_assessment",
+          "enabled": true,
+          "adapter": "arcgis",
+          "endpointProperty": "REOS_COUNTY_PA_DELAWARE_PROPERTY_ASSESSMENT_URL",
+          "endpoint": "https://services2.arcgis.com/Z4oonA9tfgNvnlIk/arcgis/rest/services/Delaware_County_PA_Parcel_Data/FeatureServer/26/query",
+          "endpointConfigured": true,
+          "discovery": {
+            "report": "reports/county-build/PA-DELAWARE/promotion-input.json",
+            "candidate": 1,
+            "promotedAt": "2026-08-01T14:27:51.625Z",
+            "title": "Delaware_County_PA_Parcel_Data — pa_delaware",
+            "source": "arcgis-online",
+            "sourceItemId": "71ae09ff40b94361998885027d4ec2d7",
+            "sourceLayerId": 26,
+            "compatibilityScore": 88,
+            "matchedTerms": [
+              "parcel"
+            ],
+            "endpoint": "https://services2.arcgis.com/Z4oonA9tfgNvnlIk/arcgis/rest/services/Delaware_County_PA_Parcel_Data/FeatureServer/26/query"
+          },
+          "mapping": {
+            "requiredFieldsPresent": true,
+            "missingRequiredFields": [],
+            "confidence": 119,
+            "fingerprint": "536919b551bcfda440a4fe1020e1113e5b5834205dfbbc1307903be0c2e42a7e",
+            "autoMappedAt": "2026-08-01T14:27:53.075Z"
+          },
+          "recordFilter": {
+            "requireAny": [
+              [
+                "address",
+                "address_so",
+                "address2"
+              ],
+              [
+                "parcelnumb",
+                "parcelnu_1",
+                "alt_parcel"
+              ]
+            ]
+          },
+          "health": {
+            "checkedAt": "2026-08-01T15:57:02.659Z",
+            "ok": true,
+            "status": 200,
+            "count": 207893,
+            "durationMs": 554,
+            "output": "{\n  adapter: 'arcgis',\n  count: 207893,\n  ok: true,\n  durationMs: 554,\n  status: 200\n}\n"
+          },
+          "lastDrySync": {
+            "checkedAt": "2026-08-01T15:57:12.922Z",
+            "ok": true,
+            "mode": "DRY_RUN",
+            "nextCursor": "10",
+            "stats": {
+              "fetched": 10,
+              "valid": 7,
+              "inserted": 0,
+              "updated": 0,
+              "skipped": 10,
+              "failed": 0
+            },
+            "output": "{\n  mode: 'DRY_RUN',\n  nextCursor: '10',\n  completedAt: '2026-08-01T15:57:11.676Z',\n  recordErrors: [],\n  stats: {\n    valid: 7,\n    inserted: 0,\n    failed: 0,\n    updated: 0,\n    skipped: 10,\n    fetched: 10\n  },\n  connectorId: 'PA-DELAWARE',\n  validationErrors: [],\n  runId: 'CCR-20260801115710-7728',\n  ok: true,\n  dataset: 'property_assessment'\n}\n"
+          },
+          "status": "GENERATED",
+          "updatedAt": "2026-08-01T15:57:46.583Z",
+          "connectorId": "PA-DELAWARE"
+        }
+      },
+      "status": "GENERATED",
+      "lastVerifiedAt": "2026-08-01T15:57:12.922Z",
+      "lastSuccessfulSyncAt": "2026-08-01T15:57:12.922Z",
+      "updatedAt": "2026-08-01T15:57:46.584Z",
+      "history": [
+        {
+          "at": "2026-08-01T15:57:02.659Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 554
+        },
+        {
+          "at": "2026-08-01T15:57:12.922Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 7,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T15:57:12.922Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        }
+      ]
+    },
+    "PA-MONTGOMERY": {
+      "connectorId": "PA-MONTGOMERY",
+      "state": "PA",
+      "county": "Montgomery",
+      "version": "1.0.0",
+      "enabled": true,
+      "implementation": "generated",
+      "manifestPath": "config/county-connectors/PA-MONTGOMERY.json",
+      "connectorPath": "src/connectors/generated/MontgomeryCountyConnector.gs",
+      "connectorExists": true,
+      "manifestFingerprint": "770b16e87023ba93741652aadf6f3a82b01728187389400d782558b1f9496e3e",
+      "datasets": {
+        "property_assessment": {
+          "dataset": "property_assessment",
+          "enabled": true,
+          "adapter": "arcgis",
+          "endpointProperty": "REOS_COUNTY_PA_MONTGOMERY_PROPERTY_ASSESSMENT_URL",
+          "endpoint": "https://services1.arcgis.com/kOChldNuKsox8qZD/arcgis/rest/services/Montgomery_County_Parcels/FeatureServer/6/query",
+          "endpointConfigured": true,
+          "discovery": {
+            "report": "reports/county-discovery/PA-MONTGOMERY-DISCOVERY.json",
+            "candidate": 1,
+            "promotedAt": "2026-08-01T12:26:19.678Z",
+            "title": "Montgomery County Parcels",
+            "source": "arcgis-online",
+            "sourceItemId": "125b471219874a769cdff49d2e52f950",
+            "sourceLayerId": 10,
+            "compatibilityScore": 100,
+            "matchedTerms": [
+              "parcel",
+              "parcels"
+            ],
+            "endpoint": "https://services1.arcgis.com/kOChldNuKsox8qZD/arcgis/rest/services/Montgomery_County_Parcels/FeatureServer/6/query",
+            "reviewStatus": "field_mapping_verified",
+            "rejectedEndpoint": "https://services3.arcgis.com/9nfxWATFamVUTTGb/arcgis/rest/services/Morris_Arboretum_Property_Boundary/FeatureServer/10/query",
+            "verifiedFields": [
+              "LOCATION1",
+              "Muni_Name",
+              "ZIP1_ZIP2",
+              "PARCEL",
+              "OWN1",
+              "OBJECTID",
+              "TOTAL_APPR",
+              "PROP_INFO1"
+            ]
+          },
+          "mapping": {
+            "requiredFieldsPresent": true,
+            "missingRequiredFields": [],
+            "confidence": 138,
+            "fingerprint": "8f2ec22d096c7087572770b4d61896f38bbab5fac5c3b38d0a95a4750d3fd515",
+            "autoMappedAt": "2026-08-01T13:06:37.786Z"
+          },
+          "recordFilter": {
+            "requireAny": [
+              [
+                "LOCATION1",
+                "ADDR1",
+                "LOC_ADD"
+              ],
+              [
+                "PARCEL",
+                "TAXPIN",
+                "ALT_ID"
+              ]
+            ]
+          },
+          "health": {
+            "checkedAt": "2026-08-01T15:57:18.872Z",
+            "ok": true,
+            "status": 200,
+            "count": 310068,
+            "durationMs": 353,
+            "output": "{\n  adapter: 'arcgis',\n  count: 310068,\n  ok: true,\n  durationMs: 353,\n  status: 200\n}\n"
+          },
+          "lastDrySync": {
+            "checkedAt": "2026-08-01T15:57:27.909Z",
+            "ok": true,
+            "mode": "DRY_RUN",
+            "nextCursor": "10",
+            "stats": {
+              "fetched": 10,
+              "valid": 10,
+              "inserted": 0,
+              "updated": 0,
+              "skipped": 10,
+              "failed": 0
+            },
+            "output": "{\n  nextCursor: '10',\n  mode: 'DRY_RUN',\n  completedAt: '2026-08-01T15:57:27.317Z',\n  recordErrors: [],\n  stats: {\n    valid: 10,\n    inserted: 0,\n    failed: 0,\n    updated: 0,\n    skipped: 10,\n    fetched: 10\n  },\n  connectorId: 'PA-MONTGOMERY',\n  validationErrors: [],\n  runId: 'CCR-20260801115725-1970',\n  ok: true,\n  dataset: 'property_assessment'\n}\n"
+          },
+          "status": "GENERATED",
+          "updatedAt": "2026-08-01T15:57:46.584Z",
+          "connectorId": "PA-MONTGOMERY"
+        }
+      },
+      "status": "GENERATED",
+      "lastVerifiedAt": "2026-08-01T15:57:27.909Z",
+      "lastSuccessfulSyncAt": "2026-08-01T15:57:27.909Z",
+      "updatedAt": "2026-08-01T15:57:46.584Z",
+      "history": [
+        {
+          "at": "2026-08-01T15:57:18.872Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 353
+        },
+        {
+          "at": "2026-08-01T15:57:27.909Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T15:57:27.909Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        }
+      ]
+    },
+    "PA-PHILADELPHIA": {
+      "connectorId": "PA-PHILADELPHIA",
+      "state": "PA",
+      "county": "Philadelphia",
+      "version": "1.0.0",
+      "enabled": true,
+      "implementation": "handcrafted",
+      "manifestPath": "",
+      "connectorPath": "src/connectors/PhiladelphiaCountyConnector.gs",
+      "connectorExists": true,
+      "manifestFingerprint": "",
+      "datasets": {},
+      "status": "PRODUCTION",
+      "lastVerifiedAt": "",
+      "lastSuccessfulSyncAt": "",
+      "updatedAt": "2026-08-01T15:57:46.585Z",
+      "history": []
+    }
+  }
+}

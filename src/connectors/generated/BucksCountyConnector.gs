@@ -154,7 +154,7 @@ REOS.BucksCountyConnector = (function () {
       tax_delinquent: {
         adapter: "arcgis",
         endpointProperty: "REOS_COUNTY_PA_BUCKS_TAX_DELINQUENT_URL",
-        enabled: true,
+        enabled: false,
         maxLimit: 2000,
         mapping: {
           address: [
@@ -195,10 +195,12 @@ REOS.BucksCountyConnector = (function () {
             "last_updated",
             "date_updated"
           ]
-        }
+        },
+        status: "planned",
+        notes: "Disabled pending verification of an authoritative Bucks County tax delinquency endpoint."
       }
     },
-    updatedAt: "2026-08-01T13:09:56.932Z"
+    updatedAt: "2026-08-01T15:54:09.997568+00:00"
   };
 
   function register() {
