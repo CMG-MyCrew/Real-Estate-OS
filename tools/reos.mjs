@@ -21,6 +21,9 @@ import {
 import {
   runCountyBuildPipeline
 } from './county-build/CountyBuildPipeline.mjs';
+import {
+  runStateBuildPipeline
+} from './state-build/StateBuildPipeline.mjs';
 
 const ROOT = process.cwd();
 const CONNECTOR_DIR = path.join(ROOT, 'src', 'connectors', 'generated');
@@ -2300,6 +2303,72 @@ async function commandBuild(args) {
   }
 }
 
+async function commandStateBuild(args) {
+  const state = normalizeState(
+    args.state ||
+    args._[1]
+  );
+
+  const counties = splitList(
+    args.counties,
+    []
+  );
+
+  const datasets = splitList(
+    args.datasets,
+    ['property_assessment']
+  );
+
+  const result = await runStateBuildPipeline({
+    root: ROOT,
+    state,
+    counties,
+    datasets,
+    execute: args.execute === true,
+    rebuild: args.rebuild === true,
+    push: args.push === true,
+    test: args.test === true,
+    results: Math.max(
+      10,
+      Math.min(
+        Number(args.results || 100),
+        250
+      )
+    ),
+    healthLimit: Math.max(
+      1,
+      Math.min(
+        Number(args['health-limit'] || 20),
+        50
+      )
+    ),
+    samples: Math.max(
+      5,
+      Math.min(
+        Number(args.samples || 50),
+        250
+      )
+    ),
+    testLimit: Math.max(
+      1,
+      Math.min(
+        Number(args['test-limit'] || 10),
+        100
+      )
+    ),
+    replaceMappings:
+      args['replace-mappings'] === true,
+    noFilter:
+      args['no-filter'] === true,
+    continueOnError:
+      args['continue-on-error'] === true
+  });
+
+  if (!result.ok) {
+    process.exitCode = 1;
+  }
+}
+
 function commandList() {
   const manifests = readManifests();
 
@@ -2462,6 +2531,46 @@ Commands:
       --state PA \
       --county Montgomery \
       --sources arcgis,socrata
+
+  state:build
+    Build county connectors across an entire state.
+
+    Plan only:
+
+    ./tools/reos state:build \
+      --state PA
+
+    Limit to selected counties:
+
+    ./tools/reos state:build \
+      --state PA \
+      --counties Lancaster,York
+
+    Execute local generation:
+
+    ./tools/reos state:build \
+      --state PA \
+      --counties Lancaster,York \
+      --execute
+
+    Generate, push once, and terminal dry-test:
+
+    ./tools/reos state:build \
+      --state PA \
+      --counties Lancaster,York \
+      --execute \
+      --push \
+      --test \
+      --samples 50 \
+      --test-limit 10
+
+    Rebuild existing connectors:
+
+    ./tools/reos state:build \
+      --state PA \
+      --counties Bucks,Montgomery \
+      --execute \
+      --rebuild
 
   county:build
     Run the complete county connector build pipeline.
@@ -2653,6 +2762,10 @@ switch (command) {
 
   case 'county:build':
     await commandBuild(args);
+    break;
+
+  case 'state:build':
+    await commandStateBuild(args);
     break;
 
   case 'county:promote':
