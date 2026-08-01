@@ -17,7 +17,8 @@
     "county:test": "node tools/reos.mjs county:test",
     "county:configure": "node tools/reos.mjs county:configure",
     "county:health": "node tools/reos.mjs county:health",
-    "county:regenerate": "node tools/reos.mjs county:regenerate"
+    "county:regenerate": "node tools/reos.mjs county:regenerate",
+    "county:discover": "node tools/reos.mjs county:discover"
   },
   "devDependencies": {
     "@google/clasp": "^2.4.2"

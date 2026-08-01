@@ -11,3 +11,4 @@ clasp-client-secret.json
 .clasprc.json
 recovery-conflicts/
 *.sheriff-backup
+reports/county-discovery/tmp/

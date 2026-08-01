@@ -4,6 +4,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import process from 'node:process';
+import {
+  discoverCounty,
+  saveDiscoveryReport
+} from './county-discovery/CountyDiscoveryEngine.mjs';
 
 const ROOT = process.cwd();
 const CONNECTOR_DIR = path.join(ROOT, 'src', 'connectors', 'generated');
@@ -893,6 +897,79 @@ function commandRegenerate(args) {
   }
 }
 
+async function commandDiscover(args) {
+  const state = normalizeState(args.state);
+  const county = normalizeCounty(args.county);
+
+  const report = await discoverCounty({
+    root: ROOT,
+    state,
+    county,
+    sources: args.sources || 'arcgis,socrata',
+    limit: Number(args.limit || 40),
+    results: Number(args.results || 30),
+    health: args.health === true,
+    healthLimit: Number(args['health-limit'] || 10)
+  });
+
+  const reportName = [
+    state,
+    county.toUpperCase().replace(/[^A-Z0-9]+/g, '-'),
+    'DISCOVERY.json'
+  ].join('-');
+
+  const outputPath = args.output
+    ? path.resolve(ROOT, String(args.output))
+    : path.join(
+        ROOT,
+        'reports',
+        'county-discovery',
+        reportName
+      );
+
+  saveDiscoveryReport(report, outputPath);
+
+  console.log('');
+  console.log(
+    `${county} County, ${state} discovery`
+  );
+  console.log(
+    `Candidates found: ${report.candidateCount}`
+  );
+  console.log(
+    `Report: ${path.relative(ROOT, outputPath)}`
+  );
+  console.log('');
+
+  report.results.forEach((candidate, index) => {
+    const compatibility =
+      candidate.compatibility || {};
+
+    console.log(
+      [
+        `[${index + 1}]`,
+        `score=${compatibility.score || 0}`,
+        `dataset=${compatibility.dataset || 'unknown'}`,
+        `adapter=${candidate.adapter}`,
+        compatibility.generatorReady
+          ? 'GENERATOR_READY'
+          : 'REVIEW',
+        candidate.title
+      ].join(' | ')
+    );
+
+    if (candidate.endpoint) {
+      console.log(`    ${candidate.endpoint}`);
+    }
+
+    if (candidate.health) {
+      console.log(
+        `    health=${candidate.health.ok ? 'PASS' : 'FAIL'}`
+      );
+    }
+  });
+}
+
 function commandList() {
   const manifests = readManifests();
 
@@ -1034,6 +1111,28 @@ Commands:
   county:list
     List generated connector manifests.
 
+  county:discover
+    Discover county datasets from public data catalogs.
+
+    ./tools/reos county:discover \
+      --state PA \
+      --county Montgomery
+
+    Include adapter health checks:
+
+    ./tools/reos county:discover \
+      --state PA \
+      --county Montgomery \
+      --health \
+      --health-limit 10
+
+    Limit discovery sources:
+
+    ./tools/reos county:discover \
+      --state PA \
+      --county Montgomery \
+      --sources arcgis,socrata
+
   county:regenerate
     Rebuild generated Apps Script connectors from JSON manifests.
 
@@ -1088,6 +1187,10 @@ switch (command) {
 
   case 'county:list':
     commandList();
+    break;
+
+  case 'county:discover':
+    await commandDiscover(args);
     break;
 
   case 'county:regenerate':
