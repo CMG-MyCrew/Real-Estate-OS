@@ -303,10 +303,108 @@ REOS.PhiladelphiaCountyConnector = (function () {
         'taxable_assessment'
       ]);
     } else if (context.dataset === 'code_violations') {
+      record.Address = first_(raw, [
+        'address',
+        'street_address',
+        'location'
+      ]);
+
+      record.Zip = first_(raw, [
+        'zip',
+        'zip_code',
+        'zipcode'
+      ]);
+
+      record['Parcel ID'] = first_(raw, [
+        'opa_account_num',
+        'parcel_id_num',
+        'parcel_number'
+      ]);
+
+      record['Owner Name'] = first_(raw, [
+        'opa_owner',
+        'owner_name',
+        'owner'
+      ]);
+
+      record['Source Record ID'] = first_(raw, [
+        'violationnumber',
+        'objectid',
+        'posse_jobid',
+        'casenumber'
+      ]);
+
       record['Distress Type'] = 'Code Violation';
-      record['Violation Amount'] = first_(raw, ['fine_amount', 'amount_due', 'penalty']);
-      record['Violation Type'] = first_(raw, ['violation_type', 'violation_description', 'code_description']);
-      record['Violation Status'] = first_(raw, ['status', 'case_status']);
+
+      record['Violation Number'] = first_(raw, [
+        'violationnumber',
+        'violation_number'
+      ]);
+
+      record['Case Number'] = first_(raw, [
+        'casenumber',
+        'case_number'
+      ]);
+
+      record['Violation Code'] = first_(raw, [
+        'violationcode',
+        'violation_code'
+      ]);
+
+      record['Violation Type'] = first_(raw, [
+        'violationcodetitle',
+        'violation_description',
+        'violation_type',
+        'code_description'
+      ]);
+
+      record['Violation Status'] = first_(raw, [
+        'violationstatus',
+        'casestatus',
+        'case_status',
+        'status'
+      ]);
+
+      record['Case Priority'] = first_(raw, [
+        'caseprioritydesc',
+        'case_priority'
+      ]);
+
+      record['Violation Date'] = first_(raw, [
+        'violationdate',
+        'violation_date'
+      ]);
+
+      record['Resolution Date'] = first_(raw, [
+        'violationresolutiondate',
+        'violation_resolution_date'
+      ]);
+
+      record['Resolution Code'] = first_(raw, [
+        'violationresolutioncode',
+        'violation_resolution_code'
+      ]);
+
+      record['Most Recent Investigation'] = first_(raw, [
+        'mostrecentinvestigation',
+        'most_recent_investigation'
+      ]);
+
+      record['Under Appeal'] = first_(raw, [
+        'underappeal',
+        'under_appeal'
+      ]);
+
+      record['Public Notice URL'] = first_(raw, [
+        'publicnov',
+        'public_notice_url'
+      ]);
+
+      record['Source Updated At'] = first_(raw, [
+        'mostrecentinvestigation',
+        'violationdate',
+        'casecreateddate'
+      ]);
     } else if (context.dataset === 'vacant_properties') {
       record['Distress Type'] = 'Vacant Property';
       record['Vacancy Status'] = first_(raw, ['vacancy_status', 'status', 'category']);
