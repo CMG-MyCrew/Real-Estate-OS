@@ -229,6 +229,7 @@ function rescoreCandidate(candidate, locality) {
       endpointQuality: endpointQuality(candidate),
       eligible:
         Boolean(candidate.endpoint) &&
+        candidate.inaccessible !== true &&
         localityResult.countyMatch &&
         localityResult.stateMatch &&
         !localityResult.conflictingState &&

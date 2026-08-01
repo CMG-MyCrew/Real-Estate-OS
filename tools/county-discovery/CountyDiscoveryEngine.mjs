@@ -280,11 +280,96 @@ function calculateCompatibility(candidate, locality) {
   };
 }
 
-async function expandArcGISService(item) {
-  const serviceUrl = String(item.url || '').replace(/\/+$/, '');
+async function resolveArcGISItem(item) {
+  if (!item?.id) {
+    return item || {};
+  }
+
+  const currentUrl = String(item.url || '').trim();
+
+  if (currentUrl) {
+    return item;
+  }
+
+  try {
+    const details = await requestJson(
+      `https://www.arcgis.com/sharing/rest/content/items/` +
+      `${encodeURIComponent(item.id)}?f=json`
+    );
+
+    return {
+      ...item,
+      ...details,
+      tags: details.tags || item.tags || []
+    };
+  } catch (error) {
+    var message = String(
+      error && error.message
+        ? error.message
+        : error
+    );
+
+    return {
+      ...item,
+      itemResolutionError: message,
+      inaccessible:
+        message.includes('HTTP 403') ||
+        message.includes('permissions')
+    };
+  }
+}
+
+async function expandArcGISService(searchItem) {
+  const item = await resolveArcGISItem(searchItem);
+
+  const serviceUrl = String(item.url || '')
+    .trim()
+    .replace(/\/+$/, '');
+
+  const baseCandidate = {
+    adapter: 'arcgis',
+    source: 'arcgis-online',
+    title: item.title || searchItem.title || '',
+    description:
+      item.description ||
+      searchItem.description ||
+      '',
+    snippet:
+      item.snippet ||
+      searchItem.snippet ||
+      '',
+    tags: item.tags || searchItem.tags || [],
+    owner: item.owner || searchItem.owner || '',
+    itemId: item.id || searchItem.id || '',
+    type: item.type || searchItem.type || '',
+    serviceUrl,
+    endpoint: '',
+    isPublic:
+      (item.access || searchItem.access) === 'public'
+  };
 
   if (!serviceUrl) {
-    return [];
+    return [{
+      ...baseCandidate,
+      expansionError:
+        item.itemResolutionError ||
+        'ArcGIS item did not expose a service URL.'
+    }];
+  }
+
+  /*
+   * A search result can occasionally point directly to a layer.
+   */
+  const directLayerMatch = serviceUrl.match(
+    /\/(FeatureServer|MapServer)\/(\d+)$/i
+  );
+
+  if (directLayerMatch) {
+    return [{
+      ...baseCandidate,
+      layerId: Number(directLayerMatch[2]),
+      endpoint: `${serviceUrl}/query`
+    }];
   }
 
   let metadata;
@@ -295,19 +380,17 @@ async function expandArcGISService(item) {
     );
   } catch (error) {
     return [{
-      adapter: 'arcgis',
-      source: 'arcgis-online',
-      title: item.title,
-      description: item.description,
-      snippet: item.snippet,
-      tags: item.tags || [],
-      owner: item.owner,
-      itemId: item.id,
-      type: item.type,
-      serviceUrl,
-      endpoint: '',
-      isPublic: item.access === 'public',
+      ...baseCandidate,
       expansionError: error.message
+    }];
+  }
+
+  if (metadata.error) {
+    return [{
+      ...baseCandidate,
+      expansionError:
+        `ArcGIS metadata error: ` +
+        `${JSON.stringify(metadata.error)}`
     }];
   }
 
@@ -322,40 +405,21 @@ async function expandArcGISService(item) {
 
   if (!layers.length) {
     return [{
-      adapter: 'arcgis',
-      source: 'arcgis-online',
-      title: item.title,
-      description: item.description,
-      snippet: item.snippet,
-      tags: item.tags || [],
-      owner: item.owner,
-      itemId: item.id,
-      type: item.type,
-      serviceUrl,
-      endpoint: serviceUrl.endsWith('/query')
-        ? serviceUrl
-        : '',
-      isPublic: item.access === 'public',
+      ...baseCandidate,
       expansionError:
         'ArcGIS service exposed no queryable layers.'
     }];
   }
 
   return layers.map(layer => ({
-    adapter: 'arcgis',
-    source: 'arcgis-online',
-    title: `${item.title} — ${layer.name || `Layer ${layer.id}`}`,
-    description: item.description,
-    snippet: item.snippet,
-    tags: item.tags || [],
-    owner: item.owner,
-    itemId: item.id,
+    ...baseCandidate,
+    title:
+      `${baseCandidate.title} — ` +
+      `${layer.name || `Layer ${layer.id}`}`,
     layerId: layer.id,
     layerName: layer.name || '',
-    type: item.type,
-    serviceUrl,
-    endpoint: `${serviceUrl}/${layer.id}/query`,
-    isPublic: item.access === 'public'
+    endpoint:
+      `${serviceUrl}/${layer.id}/query`
   }));
 }
 
