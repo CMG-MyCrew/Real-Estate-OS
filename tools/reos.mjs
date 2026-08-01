@@ -1,0 +1,738 @@
+#!/usr/bin/env node
+
+import fs from 'node:fs';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+import process from 'node:process';
+
+const ROOT = process.cwd();
+const CONNECTOR_DIR = path.join(ROOT, 'src', 'connectors', 'generated');
+const MANIFEST_DIR = path.join(ROOT, 'config', 'county-connectors');
+
+function fail(message, exitCode = 1) {
+  console.error(`ERROR: ${message}`);
+  process.exit(exitCode);
+}
+
+function parseArgs(argv) {
+  const result = {
+    _: []
+  };
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const token = argv[index];
+
+    if (!token.startsWith('--')) {
+      result._.push(token);
+      continue;
+    }
+
+    const equalIndex = token.indexOf('=');
+
+    if (equalIndex !== -1) {
+      result[token.slice(2, equalIndex)] = token.slice(equalIndex + 1);
+      continue;
+    }
+
+    const key = token.slice(2);
+    const next = argv[index + 1];
+
+    if (!next || next.startsWith('--')) {
+      result[key] = true;
+      continue;
+    }
+
+    result[key] = next;
+    index += 1;
+  }
+
+  return result;
+}
+
+function normalizeState(value) {
+  const state = String(value || '').trim().toUpperCase();
+
+  if (!/^[A-Z]{2}$/.test(state)) {
+    fail('--state must be a two-letter state abbreviation.');
+  }
+
+  return state;
+}
+
+function normalizeCounty(value) {
+  const county = String(value || '')
+    .trim()
+    .replace(/\s+County$/i, '')
+    .replace(/\s+/g, ' ');
+
+  if (!county) {
+    fail('--county is required.');
+  }
+
+  return county;
+}
+
+function pascalCase(value) {
+  return String(value || '')
+    .replace(/[^a-zA-Z0-9]+/g, ' ')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join('');
+}
+
+function connectorId(state, county) {
+  return `${state}-${county.toUpperCase().replace(/[^A-Z0-9]+/g, '-')}`;
+}
+
+function splitList(value, fallback = []) {
+  if (!value) {
+    return fallback;
+  }
+
+  return String(value)
+    .split(',')
+    .map(item => item.trim())
+    .filter(Boolean);
+}
+
+function ensureDirectories() {
+  fs.mkdirSync(CONNECTOR_DIR, { recursive: true });
+  fs.mkdirSync(MANIFEST_DIR, { recursive: true });
+}
+
+function propertyKey(id, dataset) {
+  return `REOS_COUNTY_${id.replace(/-/g, '_')}_${dataset.toUpperCase()}_URL`;
+}
+
+function buildManifest({
+  state,
+  county,
+  adapter,
+  datasets
+}) {
+  const id = connectorId(state, county);
+
+  const datasetDefinitions = {};
+
+  for (const dataset of datasets) {
+    datasetDefinitions[dataset] = {
+      adapter,
+      endpointProperty: propertyKey(id, dataset),
+      enabled: true,
+      maxLimit: adapter === 'arcgis' ? 2000 : 5000,
+      mapping: {
+        address: [
+          'address',
+          'street_address',
+          'property_address',
+          'location'
+        ],
+        city: [
+          'city',
+          'property_city'
+        ],
+        zip: [
+          'zip',
+          'zipcode',
+          'zip_code',
+          'postal_code'
+        ],
+        parcelId: [
+          'parcel_number',
+          'parcel_id',
+          'opa_number',
+          'account_number'
+        ],
+        ownerName: [
+          'owner_name',
+          'owner',
+          'legal_owner'
+        ],
+        sourceRecordId: [
+          'objectid',
+          'id',
+          'record_id',
+          'parcel_number'
+        ],
+        sourceUpdatedAt: [
+          'updated_at',
+          'last_updated',
+          'date_updated'
+        ]
+      }
+    };
+  }
+
+  return {
+    id,
+    state,
+    county,
+    version: '1.0.0',
+    enabled: true,
+    generatedAt: new Date().toISOString(),
+    datasets: datasetDefinitions
+  };
+}
+
+function toAppsScriptLiteral(value, indent = 0) {
+  const spacing = ' '.repeat(indent);
+  const nextSpacing = ' '.repeat(indent + 2);
+
+  if (value === null) {
+    return 'null';
+  }
+
+  if (Array.isArray(value)) {
+    if (!value.length) {
+      return '[]';
+    }
+
+    return `[\n${value
+      .map(item => `${nextSpacing}${toAppsScriptLiteral(item, indent + 2)}`)
+      .join(',\n')}\n${spacing}]`;
+  }
+
+  if (typeof value === 'object') {
+    const entries = Object.entries(value);
+
+    if (!entries.length) {
+      return '{}';
+    }
+
+    return `{\n${entries
+      .map(([key, item]) => {
+        const formattedKey = /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(key)
+          ? key
+          : JSON.stringify(key);
+
+        return `${nextSpacing}${formattedKey}: ${toAppsScriptLiteral(
+          item,
+          indent + 2
+        )}`;
+      })
+      .join(',\n')}\n${spacing}}`;
+  }
+
+  return JSON.stringify(value);
+}
+
+function buildConnectorSource(manifest) {
+  const countyClass = `${pascalCase(manifest.county)}CountyConnector`;
+  const manifestLiteral = toAppsScriptLiteral(manifest, 2);
+
+  return `/**
+ * REOS Enterprise - ${manifest.county} County Connector
+ * Generated by tools/reos.mjs.
+ *
+ * Configure dataset endpoints through REOS_COUNTY_TERMINAL_SYNC using
+ * action=configure-endpoint before running a dataset.
+ */
+var REOS = REOS || {};
+
+REOS.GeneratedCountyConnectorRegistrars =
+  REOS.GeneratedCountyConnectorRegistrars || [];
+
+REOS.${countyClass} = (function () {
+  var MANIFEST = ${manifestLiteral};
+
+  function register() {
+    return REOS.CountyConnectorSDK.register({
+      id: MANIFEST.id,
+      county: MANIFEST.county,
+      state: MANIFEST.state,
+      version: MANIFEST.version,
+      enabled: MANIFEST.enabled !== false,
+      datasets: Object.keys(MANIFEST.datasets),
+      fetch: fetch_,
+      normalize: normalize_,
+      validate: validate_
+    });
+  }
+
+  function fetch_(context) {
+    var definition = getDatasetDefinition_(context.dataset);
+    var endpoint = getEndpoint_(context.dataset, context.config);
+
+    if (!endpoint) {
+      throw new Error(
+        'Missing endpoint for ' +
+        MANIFEST.id +
+        ' dataset ' +
+        context.dataset +
+        '. Configure ' +
+        definition.endpointProperty +
+        '.'
+      );
+    }
+
+    var adapterOptions = {
+      endpoint: endpoint,
+      context: context,
+      maxLimit: definition.maxLimit || 2000
+    };
+
+    if (definition.adapter === 'arcgis') {
+      adapterOptions.where = '1=1';
+      adapterOptions.outFields = '*';
+      adapterOptions.returnGeometry = false;
+    }
+
+    return REOS.CountyAdapters.Registry.fetch(
+      definition.adapter,
+      adapterOptions
+    );
+  }
+
+  function normalize_(raw, context) {
+    raw = raw || {};
+
+    var definition = getDatasetDefinition_(context.dataset);
+    var mapping = definition.mapping || {};
+
+    return {
+      Address: first_(raw, mapping.address || []),
+      City:
+        first_(raw, mapping.city || []) ||
+        MANIFEST.county,
+      State: MANIFEST.state,
+      Zip: first_(raw, mapping.zip || []),
+      County: MANIFEST.county,
+      'Parcel ID': first_(raw, mapping.parcelId || []),
+      'Owner Name': first_(raw, mapping.ownerName || []),
+      'Source Record ID': first_(
+        raw,
+        mapping.sourceRecordId || []
+      ),
+      Source: MANIFEST.id,
+      'Source Dataset': context.dataset,
+      'Source Updated At': first_(
+        raw,
+        mapping.sourceUpdatedAt || []
+      ),
+      'Distress Type': datasetLabel_(context.dataset),
+      Notes:
+        'Generated county connector record from ' +
+        MANIFEST.id +
+        ' / ' +
+        context.dataset
+    };
+  }
+
+  function validate_(record) {
+    return REOS.CountyConnectorSDK.validateLead(record);
+  }
+
+  function getDatasetDefinition_(dataset) {
+    var definition = MANIFEST.datasets[dataset];
+
+    if (!definition) {
+      throw new Error(
+        'Dataset is not configured for ' +
+        MANIFEST.id +
+        ': ' +
+        dataset
+      );
+    }
+
+    if (definition.enabled === false) {
+      throw new Error(
+        'Dataset is disabled for ' +
+        MANIFEST.id +
+        ': ' +
+        dataset
+      );
+    }
+
+    return definition;
+  }
+
+  function getEndpoint_(dataset, config) {
+    var definition = getDatasetDefinition_(dataset);
+
+    return (
+      (config && config.endpoint) ||
+      PropertiesService
+        .getScriptProperties()
+        .getProperty(definition.endpointProperty) ||
+      ''
+    );
+  }
+
+  function first_(object, keys) {
+    for (var index = 0; index < keys.length; index += 1) {
+      var key = keys[index];
+      var value = object[key];
+
+      if (
+        value !== null &&
+        typeof value !== 'undefined' &&
+        String(value).trim() !== ''
+      ) {
+        return value;
+      }
+    }
+
+    return '';
+  }
+
+  function datasetLabel_(dataset) {
+    return String(dataset || '')
+      .replace(/_/g, ' ')
+      .replace(/\\b\\w/g, function (letter) {
+        return letter.toUpperCase();
+      });
+  }
+
+  return {
+    connectorId: MANIFEST.id,
+    manifest: MANIFEST,
+    register: register
+  };
+})();
+
+REOS.GeneratedCountyConnectorRegistrars.push(function () {
+  if (
+    !REOS.CountyConnectorSDK.get(
+      REOS.${countyClass}.connectorId
+    )
+  ) {
+    REOS.${countyClass}.register();
+  }
+});
+`;
+}
+
+function commandCreate(args) {
+  ensureDirectories();
+
+  const state = normalizeState(args.state);
+  const county = normalizeCounty(args.county);
+  const adapter = String(args.adapter || 'arcgis')
+    .trim()
+    .toLowerCase();
+
+  const allowedAdapters = [
+    'arcgis',
+    'html-table',
+    'json-api',
+    'socrata',
+    'csv'
+  ];
+
+  if (!allowedAdapters.includes(adapter)) {
+    fail(
+      `Unsupported adapter "${adapter}". ` +
+      `Use one of: ${allowedAdapters.join(', ')}`
+    );
+  }
+
+  const datasets = splitList(args.datasets, ['property_assessment']);
+
+  if (!datasets.length) {
+    fail('At least one dataset is required.');
+  }
+
+  for (const dataset of datasets) {
+    if (!/^[a-z][a-z0-9_]*$/.test(dataset)) {
+      fail(
+        `Invalid dataset "${dataset}". ` +
+        'Use lowercase snake_case.'
+      );
+    }
+  }
+
+  const manifest = buildManifest({
+    state,
+    county,
+    adapter,
+    datasets
+  });
+
+  const className = `${pascalCase(county)}CountyConnector`;
+  const connectorPath = path.join(
+    CONNECTOR_DIR,
+    `${className}.gs`
+  );
+
+  const manifestPath = path.join(
+    MANIFEST_DIR,
+    `${manifest.id}.json`
+  );
+
+  if (
+    !args.force &&
+    (fs.existsSync(connectorPath) || fs.existsSync(manifestPath))
+  ) {
+    fail(
+      `Connector ${manifest.id} already exists. ` +
+      'Use --force to overwrite.'
+    );
+  }
+
+  fs.writeFileSync(
+    connectorPath,
+    buildConnectorSource(manifest),
+    'utf8'
+  );
+
+  fs.writeFileSync(
+    manifestPath,
+    `${JSON.stringify(manifest, null, 2)}\n`,
+    'utf8'
+  );
+
+  console.log(`Created connector: ${manifest.id}`);
+  console.log(`Connector file: ${path.relative(ROOT, connectorPath)}`);
+  console.log(`Manifest file:  ${path.relative(ROOT, manifestPath)}`);
+  console.log('');
+  console.log('Configure endpoints with:');
+
+  for (const dataset of datasets) {
+    console.log(`
+npx clasp run REOS_COUNTY_TERMINAL_SYNC \\
+  --params '[{
+    "action":"configure-endpoint",
+    "connectorId":"${manifest.id}",
+    "dataset":"${dataset}",
+    "endpoint":"PASTE_ENDPOINT_HERE"
+  }]'`);
+  }
+
+  console.log(`
+Then push and test:
+
+npx clasp push
+
+./tools/reos county:test \\
+  --connector ${manifest.id} \\
+  --limit 5`);
+}
+
+function readManifests() {
+  ensureDirectories();
+
+  return fs
+    .readdirSync(MANIFEST_DIR)
+    .filter(file => file.endsWith('.json'))
+    .sort()
+    .map(file => {
+      const fullPath = path.join(MANIFEST_DIR, file);
+
+      try {
+        return JSON.parse(fs.readFileSync(fullPath, 'utf8'));
+      } catch (error) {
+        return {
+          id: file,
+          invalid: true,
+          error: error.message
+        };
+      }
+    });
+}
+
+function commandList() {
+  const manifests = readManifests();
+
+  if (!manifests.length) {
+    console.log('No generated county connectors found.');
+    return;
+  }
+
+  for (const manifest of manifests) {
+    if (manifest.invalid) {
+      console.log(`${manifest.id} INVALID: ${manifest.error}`);
+      continue;
+    }
+
+    console.log(
+      [
+        manifest.id,
+        manifest.enabled === false ? 'disabled' : 'enabled',
+        Object.keys(manifest.datasets || {}).join(',')
+      ].join(' | ')
+    );
+  }
+}
+
+function runClasp(functionName, payload) {
+  const result = spawnSync(
+    'npx',
+    [
+      'clasp',
+      'run',
+      functionName,
+      '--params',
+      JSON.stringify([payload])
+    ],
+    {
+      cwd: ROOT,
+      stdio: 'inherit',
+      shell: false
+    }
+  );
+
+  if (result.error) {
+    fail(result.error.message);
+  }
+
+  process.exitCode = result.status || 0;
+}
+
+function commandTest(args) {
+  const id = String(
+    args.connector || args['connector-id'] || ''
+  ).trim();
+
+  if (!id) {
+    fail('--connector is required.');
+  }
+
+  runClasp('REOS_COUNTY_TERMINAL_SYNC', {
+    action: 'test-county',
+    connectorId: id,
+    limit: Number(args.limit || 5)
+  });
+}
+
+function commandSync(args) {
+  const id = String(args.connector || '').trim();
+  const dataset = String(args.dataset || '').trim();
+
+  if (!id) {
+    fail('--connector is required.');
+  }
+
+  if (!dataset) {
+    fail('--dataset is required.');
+  }
+
+  const live = args.live === true;
+
+  runClasp('REOS_COUNTY_TERMINAL_SYNC', {
+    action: 'sync',
+    connectorId: id,
+    dataset,
+    limit: Number(args.limit || 10),
+    cursor: String(args.cursor || ''),
+    dryRun: !live,
+    confirmLive: live
+  });
+}
+
+function commandConfigure(args) {
+  const id = String(args.connector || '').trim();
+  const dataset = String(args.dataset || '').trim();
+  const endpoint = String(args.endpoint || '').trim();
+
+  if (!id || !dataset || !endpoint) {
+    fail(
+      '--connector, --dataset, and --endpoint are required.'
+    );
+  }
+
+  runClasp('REOS_COUNTY_TERMINAL_SYNC', {
+    action: 'configure-endpoint',
+    connectorId: id,
+    dataset,
+    endpoint
+  });
+}
+
+function commandHealth(args) {
+  const adapter = String(args.adapter || '').trim();
+  const endpoint = String(args.endpoint || '').trim();
+
+  if (!adapter || !endpoint) {
+    fail('--adapter and --endpoint are required.');
+  }
+
+  runClasp('REOS_COUNTY_TERMINAL_SYNC', {
+    action: 'adapter-health',
+    adapter,
+    endpoint
+  });
+}
+
+function showHelp() {
+  console.log(`
+REOS County Connector CLI
+
+Commands:
+
+  county:create
+    Generate a county connector and manifest.
+
+    ./tools/reos county:create \\
+      --state PA \\
+      --county Bucks \\
+      --adapter arcgis \\
+      --datasets property_assessment,tax_delinquent
+
+  county:list
+    List generated connector manifests.
+
+  county:test
+    Dry-run every registered dataset for one county.
+
+    ./tools/reos county:test \\
+      --connector PA-BUCKS \\
+      --limit 5
+
+  county:sync
+    Run one dataset in dry-run mode.
+
+    ./tools/reos county:sync \\
+      --connector PA-BUCKS \\
+      --dataset property_assessment \\
+      --limit 10
+
+    Add --live to perform a confirmed live sync.
+
+  county:configure
+    Save a dataset endpoint in Apps Script properties.
+
+  county:health
+    Run a shared-adapter endpoint health check.
+`);
+}
+
+const args = parseArgs(process.argv.slice(2));
+const command = args._[0];
+
+switch (command) {
+  case 'county:create':
+    commandCreate(args);
+    break;
+
+  case 'county:list':
+    commandList();
+    break;
+
+  case 'county:test':
+    commandTest(args);
+    break;
+
+  case 'county:sync':
+    commandSync(args);
+    break;
+
+  case 'county:configure':
+    commandConfigure(args);
+    break;
+
+  case 'county:health':
+    commandHealth(args);
+    break;
+
+  case 'help':
+  case '--help':
+  case '-h':
+  case undefined:
+    showHelp();
+    break;
+
+  default:
+    fail(`Unknown command: ${command}`);
+}

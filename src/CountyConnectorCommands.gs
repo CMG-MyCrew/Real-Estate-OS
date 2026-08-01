@@ -73,6 +73,15 @@ function REOS_COUNTY_REGISTER_CONNECTORS_() {
   ) {
     REOS.PhiladelphiaCountyConnector.register();
   }
+
+  var generatedRegistrars =
+    REOS.GeneratedCountyConnectorRegistrars || [];
+
+  generatedRegistrars.forEach(function (registrar) {
+    if (typeof registrar === 'function') {
+      registrar();
+    }
+  });
 }
 
 function REOS_COUNTY_SETUP() {

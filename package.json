@@ -11,7 +11,12 @@
     "county:list": "node scripts/reos-county-sync.mjs list",
     "county:dry": "node scripts/reos-county-sync.mjs sync",
     "county:sync": "node scripts/reos-county-sync.mjs sync",
-    "county:sync-all": "node scripts/reos-county-sync.mjs sync-all"
+    "county:sync-all": "node scripts/reos-county-sync.mjs sync-all",
+    "reos": "node tools/reos.mjs",
+    "county:create": "node tools/reos.mjs county:create",
+    "county:test": "node tools/reos.mjs county:test",
+    "county:configure": "node tools/reos.mjs county:configure",
+    "county:health": "node tools/reos.mjs county:health"
   },
   "devDependencies": {
     "@google/clasp": "^2.4.2"

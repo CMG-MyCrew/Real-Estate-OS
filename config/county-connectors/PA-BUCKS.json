@@ -1,0 +1,95 @@
+{
+  "id": "PA-BUCKS",
+  "state": "PA",
+  "county": "Bucks",
+  "version": "1.0.0",
+  "enabled": true,
+  "generatedAt": "2026-08-01T11:06:06.861Z",
+  "datasets": {
+    "property_assessment": {
+      "adapter": "arcgis",
+      "endpointProperty": "REOS_COUNTY_PA_BUCKS_PROPERTY_ASSESSMENT_URL",
+      "enabled": true,
+      "maxLimit": 2000,
+      "mapping": {
+        "address": [
+          "ADDRESS"
+        ],
+        "city": [
+          "MUNICIPALITY"
+        ],
+        "zip": [],
+        "parcelId": [
+          "PARCEL_NUM"
+        ],
+        "ownerName": [
+          "OWNER1"
+        ],
+        "sourceRecordId": [
+          "OBJECTID"
+        ],
+        "sourceUpdatedAt": [
+          "MODIFY_DATE"
+        ],
+        "coOwnerName": [
+          "OWNER2"
+        ],
+        "landValue": [
+          "LAND_VALUE"
+        ],
+        "buildingValue": [
+          "BUILDING_VALUE"
+        ],
+        "estimatedValue": [
+          "TOTAL_VALUE"
+        ]
+      }
+    },
+    "tax_delinquent": {
+      "adapter": "arcgis",
+      "endpointProperty": "REOS_COUNTY_PA_BUCKS_TAX_DELINQUENT_URL",
+      "enabled": true,
+      "maxLimit": 2000,
+      "mapping": {
+        "address": [
+          "address",
+          "street_address",
+          "property_address",
+          "location"
+        ],
+        "city": [
+          "city",
+          "property_city"
+        ],
+        "zip": [
+          "zip",
+          "zipcode",
+          "zip_code",
+          "postal_code"
+        ],
+        "parcelId": [
+          "parcel_number",
+          "parcel_id",
+          "opa_number",
+          "account_number"
+        ],
+        "ownerName": [
+          "owner_name",
+          "owner",
+          "legal_owner"
+        ],
+        "sourceRecordId": [
+          "objectid",
+          "id",
+          "record_id",
+          "parcel_number"
+        ],
+        "sourceUpdatedAt": [
+          "updated_at",
+          "last_updated",
+          "date_updated"
+        ]
+      }
+    }
+  }
+}
