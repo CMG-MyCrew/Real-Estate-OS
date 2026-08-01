@@ -1,0 +1,122 @@
+{
+  "id": "PA-MONTGOMERY",
+  "state": "PA",
+  "county": "Montgomery",
+  "version": "1.0.0",
+  "enabled": true,
+  "generatedAt": "2026-08-01T12:25:14.993Z",
+  "datasets": {
+    "property_assessment": {
+      "adapter": "arcgis",
+      "endpointProperty": "REOS_COUNTY_PA_MONTGOMERY_PROPERTY_ASSESSMENT_URL",
+      "enabled": true,
+      "maxLimit": 2000,
+      "mapping": {
+        "address": [
+          "LOCATION1",
+          "ADDR1"
+        ],
+        "city": [
+          "Muni_Name"
+        ],
+        "zip": [
+          "ZIP1_ZIP2",
+          "LOC_ZIP1_Z"
+        ],
+        "parcelId": [
+          "PARCEL",
+          "TAXPIN",
+          "ALT_ID"
+        ],
+        "ownerName": [
+          "OWN1"
+        ],
+        "coOwnerName": [
+          "OWN2"
+        ],
+        "sourceRecordId": [
+          "OBJECTID"
+        ],
+        "sourceUpdatedAt": [
+          "PROP_INFO1",
+          "ASSMT_CHGD"
+        ],
+        "landValue": [
+          "LAND_VALUE",
+          "land_value",
+          "assessed_land_value"
+        ],
+        "buildingValue": [
+          "BUILDING_VALUE",
+          "building_value",
+          "improvement_value"
+        ],
+        "estimatedValue": [
+          "TOTAL_APPR",
+          "TOTAL_ASSE",
+          "ASSESSMENT"
+        ],
+        "assessmentValue": [
+          "TOTAL_ASSE",
+          "ASSESSMENT"
+        ],
+        "yearBuilt": [
+          "YEAR_BUILT"
+        ],
+        "landAcres": [
+          "LAND_ACRES"
+        ],
+        "livingArea": [
+          "SFLA"
+        ],
+        "saleDate": [
+          "SALE_DATE_"
+        ],
+        "salePrice": [
+          "CONSIDERAT"
+        ]
+      },
+      "discovery": {
+        "report": "reports/county-discovery/PA-MONTGOMERY-DISCOVERY.json",
+        "candidate": 1,
+        "promotedAt": "2026-08-01T12:26:19.678Z",
+        "title": "Montgomery County Parcels",
+        "source": "arcgis-online",
+        "sourceItemId": "125b471219874a769cdff49d2e52f950",
+        "sourceLayerId": 10,
+        "compatibilityScore": 100,
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "endpoint": "https://services1.arcgis.com/kOChldNuKsox8qZD/arcgis/rest/services/Montgomery_County_Parcels/FeatureServer/6/query",
+        "reviewStatus": "field_mapping_verified",
+        "rejectedEndpoint": "https://services3.arcgis.com/9nfxWATFamVUTTGb/arcgis/rest/services/Morris_Arboretum_Property_Boundary/FeatureServer/10/query",
+        "verifiedFields": [
+          "LOCATION1",
+          "Muni_Name",
+          "ZIP1_ZIP2",
+          "PARCEL",
+          "OWN1",
+          "OBJECTID",
+          "TOTAL_APPR",
+          "PROP_INFO1"
+        ]
+      },
+      "recordFilter": {
+        "requireAny": [
+          [
+            "LOCATION1",
+            "ADDR1"
+          ],
+          [
+            "PARCEL",
+            "TAXPIN",
+            "ALT_ID"
+          ]
+        ]
+      }
+    }
+  },
+  "updatedAt": "2026-08-01T12:29:16.971503+00:00"
+}

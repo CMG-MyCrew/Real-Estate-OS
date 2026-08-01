@@ -123,6 +123,11 @@ REOS.CountyConnectorSDK = (function () {
         try {
           var normalized = connector.normalize(raw, context);
 
+          if (normalized && normalized.__skip === true) {
+            stats.skipped += 1;
+            return;
+          }
+
           normalized = normalizeLead_(
             normalized,
             connector,

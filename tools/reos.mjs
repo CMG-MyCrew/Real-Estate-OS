@@ -295,6 +295,13 @@ REOS.${countyClass} = (function () {
     var definition = getDatasetDefinition_(context.dataset);
     var mapping = definition.mapping || {};
 
+    if (!passesRecordFilter_(raw, definition.recordFilter)) {
+      return {
+        __skip: true,
+        __skipReason: 'Record did not satisfy dataset record filter.'
+      };
+    }
+
     return {
       Address: first_(raw, mapping.address || []),
       City:
@@ -305,9 +312,41 @@ REOS.${countyClass} = (function () {
       County: MANIFEST.county,
       'Parcel ID': first_(raw, mapping.parcelId || []),
       'Owner Name': first_(raw, mapping.ownerName || []),
+      'Co-Owner Name': first_(
+        raw,
+        mapping.coOwnerName || []
+      ),
       'Source Record ID': first_(
         raw,
         mapping.sourceRecordId || []
+      ),
+      'Estimated Value': numberFirst_(
+        raw,
+        mapping.estimatedValue || []
+      ),
+      'Assessment Value': numberFirst_(
+        raw,
+        mapping.assessmentValue || []
+      ),
+      'Year Built': numberFirst_(
+        raw,
+        mapping.yearBuilt || []
+      ),
+      'Land Acres': numberFirst_(
+        raw,
+        mapping.landAcres || []
+      ),
+      'Living Area': numberFirst_(
+        raw,
+        mapping.livingArea || []
+      ),
+      'Last Sale Date': first_(
+        raw,
+        mapping.saleDate || []
+      ),
+      'Last Sale Price': numberFirst_(
+        raw,
+        mapping.salePrice || []
       ),
       Source: MANIFEST.id,
       'Source Dataset': context.dataset,
@@ -364,6 +403,38 @@ REOS.${countyClass} = (function () {
     );
   }
 
+  function passesRecordFilter_(raw, filter) {
+    if (!filter) {
+      return true;
+    }
+
+    var requireAny = filter.requireAny || [];
+
+    for (var groupIndex = 0; groupIndex < requireAny.length; groupIndex += 1) {
+      var keys = requireAny[groupIndex] || [];
+      var matched = false;
+
+      for (var keyIndex = 0; keyIndex < keys.length; keyIndex += 1) {
+        var value = raw[keys[keyIndex]];
+
+        if (
+          value !== null &&
+          typeof value !== 'undefined' &&
+          String(value).trim() !== ''
+        ) {
+          matched = true;
+          break;
+        }
+      }
+
+      if (!matched) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   function first_(object, keys) {
     for (var index = 0; index < keys.length; index += 1) {
       var key = keys[index];
@@ -379,6 +450,22 @@ REOS.${countyClass} = (function () {
     }
 
     return '';
+  }
+
+  function numberFirst_(object, keys) {
+    var value = first_(object, keys);
+
+    if (value === '') {
+      return '';
+    }
+
+    var normalized = String(value)
+      .replace(/[$,]/g, '')
+      .trim();
+
+    var number = Number(normalized);
+
+    return isNaN(number) ? '' : number;
   }
 
   function datasetLabel_(dataset) {
@@ -970,6 +1057,639 @@ async function commandDiscover(args) {
   });
 }
 
+function readJsonFile(filePath, label) {
+  if (!fs.existsSync(filePath)) {
+    fail(`${label} not found: ${path.relative(ROOT, filePath)}`);
+  }
+
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  } catch (error) {
+    fail(
+      `Invalid ${label.toLowerCase()} ` +
+      `${path.relative(ROOT, filePath)}: ${error.message}`
+    );
+  }
+}
+
+function defaultMappingForDataset(dataset) {
+  const common = {
+    address: [
+      'ADDRESS',
+      'address',
+      'STREET_ADDRESS',
+      'street_address',
+      'property_address',
+      'location'
+    ],
+    city: [
+      'CITY',
+      'city',
+      'MUNICIPALITY',
+      'municipality',
+      'property_city'
+    ],
+    zip: [
+      'ZIP',
+      'zip',
+      'ZIP_CODE',
+      'zip_code',
+      'ZIPCODE',
+      'zipcode',
+      'postal_code'
+    ],
+    parcelId: [
+      'PARCEL_NUM',
+      'parcel_num',
+      'PARCEL_ID',
+      'parcel_id',
+      'parcel_number',
+      'OPA_NUMBER',
+      'opa_number',
+      'account_number'
+    ],
+    ownerName: [
+      'OWNER1',
+      'owner1',
+      'OWNER',
+      'owner',
+      'owner_name',
+      'legal_owner'
+    ],
+    coOwnerName: [
+      'OWNER2',
+      'owner2',
+      'CO_OWNER',
+      'co_owner'
+    ],
+    sourceRecordId: [
+      'OBJECTID',
+      'objectid',
+      'ID',
+      'id',
+      'record_id',
+      'PARCEL_NUM',
+      'parcel_number'
+    ],
+    sourceUpdatedAt: [
+      'MODIFY_DATE',
+      'modify_date',
+      'UPDATED_AT',
+      'updated_at',
+      'last_updated',
+      'date_updated'
+    ]
+  };
+
+  if (dataset === 'property_assessment') {
+    return {
+      ...common,
+      landValue: [
+        'LAND_VALUE',
+        'land_value',
+        'assessed_land_value'
+      ],
+      buildingValue: [
+        'BUILDING_VALUE',
+        'building_value',
+        'improvement_value'
+      ],
+      estimatedValue: [
+        'TOTAL_VALUE',
+        'total_value',
+        'TOTAL_ASSESSMENT',
+        'total_assessment',
+        'assessed_value'
+      ]
+    };
+  }
+
+  if (dataset === 'tax_delinquent') {
+    return {
+      ...common,
+      taxDelinquentAmount: [
+        'TOTAL_DUE',
+        'total_due',
+        'balance',
+        'amount_due',
+        'delinquent_amount'
+      ],
+      taxPrincipal: [
+        'PRINCIPAL_DUE',
+        'principal_due',
+        'principal'
+      ],
+      taxInterest: [
+        'INTEREST_DUE',
+        'interest_due',
+        'interest'
+      ],
+      taxPenalty: [
+        'PENALTY_DUE',
+        'penalty_due',
+        'penalty'
+      ]
+    };
+  }
+
+  if (dataset === 'code_violations') {
+    return {
+      ...common,
+      violationNumber: [
+        'VIOLATIONNUMBER',
+        'violationnumber',
+        'violation_number'
+      ],
+      violationType: [
+        'VIOLATIONCODETITLE',
+        'violationcodetitle',
+        'violation_description',
+        'violation_type'
+      ],
+      violationStatus: [
+        'VIOLATIONSTATUS',
+        'violationstatus',
+        'status',
+        'case_status'
+      ]
+    };
+  }
+
+  if (dataset === 'vacant_properties') {
+    return {
+      ...common,
+      vacancyStatus: [
+        'VACANT_FLAG',
+        'vacant_flag',
+        'vacancy_status',
+        'status'
+      ],
+      vacancyRank: [
+        'VACANT_RANK',
+        'vacant_rank'
+      ]
+    };
+  }
+
+  return common;
+}
+
+function normalizePromotedDataset(value) {
+  const dataset = String(value || '')
+    .trim()
+    .toLowerCase();
+
+  const aliases = {
+    sheriff_sale: 'sheriff_sales',
+    sheriff_tax_sale: 'sheriff_sales',
+    sheriff_mortgage_sale: 'sheriff_sales',
+    parcels: 'property_assessment',
+    parcel: 'property_assessment',
+    assessment: 'property_assessment',
+    violations: 'code_violations',
+    vacant: 'vacant_properties'
+  };
+
+  const normalized = aliases[dataset] || dataset;
+
+  if (!/^[a-z][a-z0-9_]*$/.test(normalized)) {
+    fail(
+      `Invalid promoted dataset "${normalized}". ` +
+      'Use lowercase snake_case.'
+    );
+  }
+
+  return normalized;
+}
+
+function loadDiscoveryCandidate(args) {
+  const reportArgument = String(args.report || '').trim();
+
+  if (!reportArgument) {
+    fail('--report is required for county:promote.');
+  }
+
+  const reportPath = path.resolve(ROOT, reportArgument);
+  const report = readJsonFile(reportPath, 'Discovery report');
+
+  if (
+    !Array.isArray(report.results) ||
+    !report.results.length
+  ) {
+    fail('Discovery report contains no candidates.');
+  }
+
+  const candidateNumber = Number(args.candidate);
+
+  if (
+    !Number.isInteger(candidateNumber) ||
+    candidateNumber < 1 ||
+    candidateNumber > report.results.length
+  ) {
+    fail(
+      `--candidate must be between 1 and ` +
+      `${report.results.length}.`
+    );
+  }
+
+  const candidate = report.results[candidateNumber - 1];
+
+  if (!candidate || typeof candidate !== 'object') {
+    fail(`Discovery candidate ${candidateNumber} is invalid.`);
+  }
+
+  return {
+    report,
+    reportPath,
+    candidate,
+    candidateNumber
+  };
+}
+
+function buildPromotedDatasetDefinition({
+  connectorIdValue,
+  dataset,
+  candidate,
+  reportPath,
+  candidateNumber
+}) {
+  const adapter = String(candidate.adapter || '')
+    .trim()
+    .toLowerCase();
+
+  const allowedAdapters = [
+    'arcgis',
+    'html-table',
+    'json-api',
+    'socrata',
+    'csv'
+  ];
+
+  if (!allowedAdapters.includes(adapter)) {
+    fail(
+      `Candidate uses unsupported adapter "${adapter}".`
+    );
+  }
+
+  const endpoint = String(candidate.endpoint || '').trim();
+
+  if (!endpoint) {
+    fail(
+      'Selected candidate has no usable endpoint. ' +
+      'Choose another candidate or use --force-endpoint.'
+    );
+  }
+
+  return {
+    adapter,
+    endpointProperty: propertyKey(connectorIdValue, dataset),
+    enabled: true,
+    maxLimit: adapter === 'arcgis' ? 2000 : 5000,
+    mapping: defaultMappingForDataset(dataset),
+    discovery: {
+      report: path.relative(ROOT, reportPath),
+      candidate: candidateNumber,
+      promotedAt: new Date().toISOString(),
+      title: candidate.title || '',
+      source: candidate.source || '',
+      sourceItemId: candidate.itemId || '',
+      sourceLayerId:
+        typeof candidate.layerId === 'undefined'
+          ? ''
+          : candidate.layerId,
+      compatibilityScore:
+        candidate.compatibility &&
+        typeof candidate.compatibility.score !== 'undefined'
+          ? candidate.compatibility.score
+          : null,
+      matchedTerms:
+        candidate.compatibility &&
+        Array.isArray(candidate.compatibility.matchedTerms)
+          ? candidate.compatibility.matchedTerms
+          : [],
+      endpoint
+    }
+  };
+}
+
+function configurePromotedEndpoint({
+  connectorIdValue,
+  dataset,
+  endpoint
+}) {
+  const result = spawnSync(
+    'npx',
+    [
+      'clasp',
+      'run',
+      'REOS_COUNTY_TERMINAL_SYNC',
+      '--params',
+      JSON.stringify([{
+        action: 'configure-endpoint',
+        connectorId: connectorIdValue,
+        dataset,
+        endpoint
+      }])
+    ],
+    {
+      cwd: ROOT,
+      stdio: 'inherit',
+      shell: false
+    }
+  );
+
+  if (result.error) {
+    fail(result.error.message);
+  }
+
+  if (result.status !== 0) {
+    fail(
+      `Endpoint configuration failed for ` +
+      `${connectorIdValue}/${dataset}.`
+    );
+  }
+}
+
+function sleepMs(milliseconds) {
+  const buffer = new SharedArrayBuffer(4);
+  const view = new Int32Array(buffer);
+  Atomics.wait(view, 0, 0, milliseconds);
+}
+
+function runPromotedDatasetTest({
+  connectorIdValue,
+  dataset,
+  limit
+}) {
+  const maxAttempts = 3;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    const result = spawnSync(
+      'npx',
+      [
+        'clasp',
+        'run',
+        'REOS_COUNTY_TERMINAL_SYNC',
+        '--params',
+        JSON.stringify([{
+          action: 'sync',
+          connectorId: connectorIdValue,
+          dataset,
+          limit,
+          dryRun: true
+        }])
+      ],
+      {
+        cwd: ROOT,
+        encoding: 'utf8',
+        shell: false
+      }
+    );
+
+    if (result.error) {
+      fail(result.error.message);
+    }
+
+    const stdout = String(result.stdout || '');
+    const stderr = String(result.stderr || '');
+    const combined = `${stdout}\n${stderr}`;
+
+    const lockTimeout =
+      combined.includes('Lock timeout') ||
+      combined.includes('holding the lock for too long');
+
+    if (result.status === 0 && !lockTimeout) {
+      process.stdout.write(stdout);
+      process.stderr.write(stderr);
+      return;
+    }
+
+    if (lockTimeout && attempt < maxAttempts) {
+      console.log(
+        `Database lock detected. Retrying dry sync ` +
+        `(${attempt + 1}/${maxAttempts})...`
+      );
+
+      sleepMs(attempt * 5000);
+      continue;
+    }
+
+    process.stdout.write(stdout);
+    process.stderr.write(stderr);
+
+    fail(
+      `Dry-run test failed for ` +
+      `${connectorIdValue}/${dataset}.`
+    );
+  }
+}
+
+function commandPromote(args) {
+  ensureDirectories();
+
+  const {
+    report,
+    reportPath,
+    candidate,
+    candidateNumber
+  } = loadDiscoveryCandidate(args);
+
+  const locality = report.locality || {};
+
+  const state = normalizeState(
+    args.state || locality.state
+  );
+
+  const county = normalizeCounty(
+    args.county || locality.county
+  );
+
+  const connectorIdValue = connectorId(state, county);
+
+  const detectedDataset =
+    candidate.compatibility &&
+    candidate.compatibility.dataset
+      ? candidate.compatibility.dataset
+      : 'unknown';
+
+  const dataset = normalizePromotedDataset(
+    args.dataset || detectedDataset
+  );
+
+  if (dataset === 'unknown') {
+    fail(
+      'The selected candidate was not classified. ' +
+      'Supply --dataset explicitly.'
+    );
+  }
+
+  const compatibilityScore =
+    candidate.compatibility &&
+    Number(candidate.compatibility.score || 0);
+
+  const generatorReady =
+    candidate.compatibility &&
+    candidate.compatibility.generatorReady === true;
+
+  if (
+    args.force !== true &&
+    !generatorReady &&
+    compatibilityScore < Number(args['min-score'] || 60)
+  ) {
+    fail(
+      `Candidate ${candidateNumber} scored ` +
+      `${compatibilityScore || 0} and is not generator-ready. ` +
+      'Use --force after manually reviewing the endpoint.'
+    );
+  }
+
+  const endpoint = String(
+    args.endpoint || candidate.endpoint || ''
+  ).trim();
+
+  if (!endpoint) {
+    fail(
+      'Candidate has no endpoint. Supply --endpoint explicitly.'
+    );
+  }
+
+  const manifestPath = path.join(
+    MANIFEST_DIR,
+    `${connectorIdValue}.json`
+  );
+
+  let manifest;
+
+  if (fs.existsSync(manifestPath)) {
+    manifest = readJsonFile(
+      manifestPath,
+      'County connector manifest'
+    );
+  } else {
+    manifest = {
+      id: connectorIdValue,
+      state,
+      county,
+      version: '1.0.0',
+      enabled: true,
+      generatedAt: new Date().toISOString(),
+      datasets: {}
+    };
+  }
+
+  manifest.id = connectorIdValue;
+  manifest.state = state;
+  manifest.county = county;
+  manifest.enabled = manifest.enabled !== false;
+  manifest.datasets = manifest.datasets || {};
+
+  if (
+    manifest.datasets[dataset] &&
+    args.replace !== true
+  ) {
+    fail(
+      `${connectorIdValue}/${dataset} already exists. ` +
+      'Use --replace to overwrite it.'
+    );
+  }
+
+  const definition = buildPromotedDatasetDefinition({
+    connectorIdValue,
+    dataset,
+    candidate: {
+      ...candidate,
+      endpoint
+    },
+    reportPath,
+    candidateNumber
+  });
+
+  manifest.datasets[dataset] = definition;
+  manifest.updatedAt = new Date().toISOString();
+
+  fs.writeFileSync(
+    manifestPath,
+    `${JSON.stringify(manifest, null, 2)}\n`,
+    'utf8'
+  );
+
+  const regeneration = regenerateManifest(manifest);
+
+  console.log('');
+  console.log('Discovery promotion complete:');
+  console.log(`Connector: ${connectorIdValue}`);
+  console.log(`Dataset:   ${dataset}`);
+  console.log(`Adapter:   ${definition.adapter}`);
+  console.log(`Endpoint:  ${endpoint}`);
+  console.log(
+    `Manifest:  ${path.relative(ROOT, manifestPath)}`
+  );
+  console.log(
+    `Generated: ${path.relative(
+      ROOT,
+      regeneration.connectorPath
+    )}`
+  );
+  console.log(
+    `Result:    ${regeneration.changed ? 'UPDATED' : 'UNCHANGED'}`
+  );
+
+  if (args.push === true) {
+    console.log('');
+    console.log('Pushing generated connector...');
+    runClaspPush();
+  }
+
+  if (args.configure === true) {
+    if (args.push !== true) {
+      console.log('');
+      console.log(
+        'WARNING: configuring before --push requires the ' +
+        'connector dataset to already exist in Apps Script.'
+      );
+    }
+
+    console.log('');
+    console.log('Configuring promoted endpoint...');
+
+    configurePromotedEndpoint({
+      connectorIdValue,
+      dataset,
+      endpoint
+    });
+  }
+
+  if (args.test === true) {
+    if (args.push !== true) {
+      console.log('');
+      console.log(
+        'WARNING: --test without --push tests the currently ' +
+        'deployed connector version.'
+      );
+    }
+
+    if (args.configure !== true) {
+      console.log('');
+      console.log(
+        'WARNING: --test without --configure requires the ' +
+        'endpoint to already exist in Script Properties.'
+      );
+    }
+
+    console.log('');
+    console.log('Running promoted dataset dry sync...');
+
+    runPromotedDatasetTest({
+      connectorIdValue,
+      dataset,
+      limit: Math.max(
+        1,
+        Math.min(Number(args.limit || 5), 100)
+      )
+    });
+  }
+}
+
 function commandList() {
   const manifests = readManifests();
 
@@ -1133,6 +1853,32 @@ Commands:
       --county Montgomery \
       --sources arcgis,socrata
 
+  county:promote
+    Promote one discovery candidate into a county manifest.
+
+    ./tools/reos county:promote \
+      --report reports/county-discovery/PA-MONTGOMERY-DISCOVERY.json \
+      --candidate 1
+
+    Promote, push, configure, and dry-test:
+
+    ./tools/reos county:promote \
+      --report reports/county-discovery/PA-MONTGOMERY-DISCOVERY.json \
+      --candidate 1 \
+      --push \
+      --configure \
+      --test \
+      --limit 5
+
+    Override classification or replace an existing dataset:
+
+    ./tools/reos county:promote \
+      --report reports/county-discovery/PA-MONTGOMERY-DISCOVERY.json \
+      --candidate 3 \
+      --dataset property_assessment \
+      --replace \
+      --force
+
   county:regenerate
     Rebuild generated Apps Script connectors from JSON manifests.
 
@@ -1191,6 +1937,10 @@ switch (command) {
 
   case 'county:discover':
     await commandDiscover(args);
+    break;
+
+  case 'county:promote':
+    commandPromote(args);
     break;
 
   case 'county:regenerate':
