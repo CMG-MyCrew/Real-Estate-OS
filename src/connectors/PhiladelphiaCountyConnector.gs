@@ -406,8 +406,109 @@ REOS.PhiladelphiaCountyConnector = (function () {
         'casecreateddate'
       ]);
     } else if (context.dataset === 'vacant_properties') {
+      record.Address = first_(raw, [
+        'address',
+        'ADDRESS',
+        'street_address',
+        'location'
+      ]);
+
+      record.Zip = first_(raw, [
+        'zipcode',
+        'ZIPCODE',
+        'zip_code',
+        'zip'
+      ]);
+
+      record['Parcel ID'] = first_(raw, [
+        'opa_id',
+        'OPA_ID',
+        'opa_number',
+        'parcel_number'
+      ]);
+
+      var owner1 = first_(raw, [
+        'owner1',
+        'OWNER1',
+        'owner_name',
+        'owner'
+      ]);
+
+      var owner2 = first_(raw, [
+        'owner2',
+        'OWNER2',
+        'co_owner'
+      ]);
+
+      record['Owner Name'] = owner1;
+
+      if (owner2) {
+        record['Co-Owner Name'] = owner2;
+      }
+
+      record['Source Record ID'] = first_(raw, [
+        'objectid',
+        'OBJECTID',
+        'lniaddresskey',
+        'opa_id'
+      ]);
+
       record['Distress Type'] = 'Vacant Property';
-      record['Vacancy Status'] = first_(raw, ['vacancy_status', 'status', 'category']);
+
+      record['Vacancy Status'] = first_(raw, [
+        'vacant_flag',
+        'VACANT_FLAG',
+        'vacancy_status',
+        'status'
+      ]);
+
+      record['Vacancy Rank'] = numberFirst_(raw, [
+        'vacant_rank',
+        'VACANT_RANK'
+      ]);
+
+      record['Land Vacancy Rank'] = numberFirst_(raw, [
+        'land_rank',
+        'LAND_RANK'
+      ]);
+
+      record['Building Vacancy Rank'] = numberFirst_(raw, [
+        'build_rank',
+        'BUILD_RANK'
+      ]);
+
+      record['Property Type'] = first_(raw, [
+        'bldg_desc',
+        'BLDG_DESC',
+        'building_description'
+      ]);
+
+      record['Council District'] = first_(raw, [
+        'councildistrict',
+        'COUNCILDISTRICT'
+      ]);
+
+      record['Zoning'] = first_(raw, [
+        'zoningbasedistrict',
+        'ZONINGBASEDISTRICT'
+      ]);
+
+      record['L&I Address Key'] = first_(raw, [
+        'lniaddresskey',
+        'LNIADDRESSKEY'
+      ]);
+
+      record['Source Updated At'] = first_(raw, [
+        'date_update',
+        'DATE_UPDATE'
+      ]);
+
+      record.Notes =
+        'Philadelphia vacancy model classification: ' +
+        String(record['Vacancy Status'] || 'Unknown') +
+        '. Vacancy rank: ' +
+        String(record['Vacancy Rank'] || '') +
+        '.';
     } else if (context.dataset === 'property_assessment') {
       record['Distress Type'] = 'Assessment Record';
       record['Estimated Value'] = first_(raw, ['market_value', 'total_market_value', 'assessed_value']);
