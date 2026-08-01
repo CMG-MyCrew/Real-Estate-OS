@@ -288,6 +288,7 @@ function createDatasetEntry(
     recordFilter: definition.recordFilter || null,
     health: null,
     lastDrySync: null,
+    schemaDrift: null,
     status: definition.enabled === false
       ? STATUS.DISABLED
       : STATUS.GENERATED,
@@ -317,6 +318,13 @@ function calculateDatasetStatus(dataset) {
 
   if (
     dataset.mapping.requiredFieldsPresent === false
+  ) {
+    return STATUS.REVIEW_REQUIRED;
+  }
+
+  if (
+    dataset.schemaDrift &&
+    dataset.schemaDrift.requiresReview === true
   ) {
     return STATUS.REVIEW_REQUIRED;
   }
@@ -427,6 +435,9 @@ function mergeOperationalState(
 
       generatedDataset.lastDrySync =
         currentDataset.lastDrySync || null;
+
+      generatedDataset.schemaDrift =
+        currentDataset.schemaDrift || null;
 
       generatedDataset.endpointConfigured =
         currentDataset.endpointConfigured === true;
@@ -574,6 +585,13 @@ export function refreshRegistry(options = {}) {
         currentRegistry.connectors?.[manifest.id],
         generatedEntry
       );
+
+    Object.values(
+      registry.connectors[manifest.id].datasets || {}
+    ).forEach(datasetEntry => {
+      datasetEntry.status =
+        calculateDatasetStatus(datasetEntry);
+    });
 
     registry.connectors[manifest.id].status =
       calculateConnectorStatus(

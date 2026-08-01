@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "generatedAt": "2026-08-01T15:50:21.428Z",
-  "updatedAt": "2026-08-01T16:21:05.766Z",
+  "updatedAt": "2026-08-01T19:02:31.211Z",
   "connectors": {
     "PA-BUCKS": {
       "connectorId": "PA-BUCKS",
@@ -41,15 +41,15 @@
             ]
           },
           "health": {
-            "checkedAt": "2026-08-01T16:20:03.553Z",
+            "checkedAt": "2026-08-01T18:58:22.208Z",
             "ok": true,
             "status": 200,
             "count": 237871,
-            "durationMs": 314,
-            "output": "{\n  adapter: 'arcgis',\n  count: 237871,\n  ok: true,\n  durationMs: 314,\n  status: 200\n}\n"
+            "durationMs": 202,
+            "output": "{\n  adapter: 'arcgis',\n  count: 237871,\n  ok: true,\n  durationMs: 202,\n  status: 200\n}\n"
           },
           "lastDrySync": {
-            "checkedAt": "2026-08-01T16:20:12.867Z",
+            "checkedAt": "2026-08-01T18:58:32.274Z",
             "ok": true,
             "mode": "DRY_RUN",
             "nextCursor": "10",
@@ -61,10 +61,21 @@
               "skipped": 10,
               "failed": 0
             },
-            "output": "{\n  nextCursor: '10',\n  mode: 'DRY_RUN',\n  completedAt: '2026-08-01T16:20:11.777Z',\n  recordErrors: [],\n  stats: {\n    valid: 10,\n    inserted: 0,\n    failed: 0,\n    updated: 0,\n    skipped: 10,\n    fetched: 10\n  },\n  connectorId: 'PA-BUCKS',\n  validationErrors: [],\n  runId: 'CCR-20260801122010-4445',\n  ok: true,\n  dataset: 'property_assessment'\n}\n"
+            "output": "{\n  mode: 'DRY_RUN',\n  nextCursor: '10',\n  completedAt: '2026-08-01T18:58:31.415Z',\n  recordErrors: [],\n  stats: {\n    valid: 10,\n    inserted: 0,\n    failed: 0,\n    updated: 0,\n    fetched: 10,\n    skipped: 10\n  },\n  connectorId: 'PA-BUCKS',\n  validationErrors: [],\n  runId: 'CCR-20260801145830-1659',\n  ok: true,\n  dataset: 'property_assessment'\n}\n"
           },
-          "status": "GENERATED",
-          "updatedAt": "2026-08-01T16:20:48.591Z",
+          "schemaDrift": {
+            "checkedAt": "2026-08-01T16:35:17.915Z",
+            "status": "BASELINE_CREATED",
+            "changed": false,
+            "severity": "BASELINE",
+            "requiresReview": false,
+            "addedFields": [],
+            "removedFields": [],
+            "changedTypes": [],
+            "report": "reports/schema-drift/PA-BUCKS/property_assessment.json"
+          },
+          "status": "READY",
+          "updatedAt": "2026-08-01T19:02:31.217Z",
           "connectorId": "PA-BUCKS"
         },
         "tax_delinquent": {
@@ -85,15 +96,26 @@
           "recordFilter": null,
           "health": null,
           "lastDrySync": null,
+          "schemaDrift": {
+            "checkedAt": "2026-08-01T16:35:17.921Z",
+            "status": "SKIPPED",
+            "changed": false,
+            "severity": "",
+            "requiresReview": false,
+            "addedFields": [],
+            "removedFields": [],
+            "changedTypes": [],
+            "report": "reports/schema-drift/PA-BUCKS/tax_delinquent.json"
+          },
           "status": "DISABLED",
-          "updatedAt": "2026-08-01T16:20:48.592Z",
+          "updatedAt": "2026-08-01T19:02:31.218Z",
           "connectorId": "PA-BUCKS"
         }
       },
-      "status": "GENERATED",
-      "lastVerifiedAt": "2026-08-01T16:20:12.868Z",
-      "lastSuccessfulSyncAt": "2026-08-01T16:20:12.867Z",
-      "updatedAt": "2026-08-01T16:20:48.592Z",
+      "status": "READY",
+      "lastVerifiedAt": "2026-08-01T18:58:32.276Z",
+      "lastSuccessfulSyncAt": "2026-08-01T18:58:32.274Z",
+      "updatedAt": "2026-08-01T19:02:31.218Z",
       "history": [
         {
           "at": "2026-08-01T15:51:19.525Z",
@@ -213,6 +235,118 @@
           "action": "registry-update-complete",
           "ok": true,
           "status": "READY"
+        },
+        {
+          "at": "2026-08-01T18:43:00.833Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 399
+        },
+        {
+          "at": "2026-08-01T18:43:21.366Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T18:43:21.368Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T18:49:09.982Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 320
+        },
+        {
+          "at": "2026-08-01T18:49:20.282Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T18:49:20.282Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T18:55:57.617Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 272
+        },
+        {
+          "at": "2026-08-01T18:56:06.879Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T18:56:06.880Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T18:58:22.208Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 202
+        },
+        {
+          "at": "2026-08-01T18:58:32.275Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T18:58:32.276Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
         }
       ]
     },
@@ -268,15 +402,15 @@
             ]
           },
           "health": {
-            "checkedAt": "2026-08-01T16:20:19.531Z",
+            "checkedAt": "2026-08-01T18:58:38.581Z",
             "ok": true,
             "status": 200,
             "count": 188537,
-            "durationMs": 636,
-            "output": "{\n  adapter: 'arcgis',\n  count: 188537,\n  ok: true,\n  durationMs: 636,\n  status: 200\n}\n"
+            "durationMs": 359,
+            "output": "{\n  adapter: 'arcgis',\n  count: 188537,\n  ok: true,\n  durationMs: 359,\n  status: 200\n}\n"
           },
           "lastDrySync": {
-            "checkedAt": "2026-08-01T16:20:28.788Z",
+            "checkedAt": "2026-08-01T18:58:49.566Z",
             "ok": true,
             "mode": "DRY_RUN",
             "nextCursor": "10",
@@ -288,17 +422,18 @@
               "skipped": 10,
               "failed": 0
             },
-            "output": "{\n  nextCursor: '10',\n  mode: 'DRY_RUN',\n  completedAt: '2026-08-01T16:20:27.631Z',\n  recordErrors: [],\n  stats: {\n    valid: 10,\n    inserted: 0,\n    failed: 0,\n    updated: 0,\n    skipped: 10,\n    fetched: 10\n  },\n  connectorId: 'PA-CHESTER',\n  validationErrors: [],\n  runId: 'CCR-20260801122026-3548',\n  ok: true,\n  dataset: 'property_assessment'\n}\n"
+            "output": "{\n  mode: 'DRY_RUN',\n  nextCursor: '10',\n  completedAt: '2026-08-01T18:58:48.009Z',\n  recordErrors: [],\n  stats: {\n    valid: 10,\n    inserted: 0,\n    failed: 0,\n    updated: 0,\n    fetched: 10,\n    skipped: 10\n  },\n  connectorId: 'PA-CHESTER',\n  validationErrors: [],\n  runId: 'CCR-20260801145846-6787',\n  ok: true,\n  dataset: 'property_assessment'\n}\n"
           },
-          "status": "GENERATED",
-          "updatedAt": "2026-08-01T16:20:48.594Z",
+          "schemaDrift": null,
+          "status": "READY",
+          "updatedAt": "2026-08-01T19:02:31.220Z",
           "connectorId": "PA-CHESTER"
         }
       },
-      "status": "GENERATED",
-      "lastVerifiedAt": "2026-08-01T16:20:28.791Z",
-      "lastSuccessfulSyncAt": "2026-08-01T16:20:28.788Z",
-      "updatedAt": "2026-08-01T16:20:48.594Z",
+      "status": "READY",
+      "lastVerifiedAt": "2026-08-01T18:58:49.567Z",
+      "lastSuccessfulSyncAt": "2026-08-01T18:58:49.566Z",
+      "updatedAt": "2026-08-01T19:02:31.220Z",
       "history": [
         {
           "at": "2026-08-01T15:56:46.669Z",
@@ -352,6 +487,118 @@
         },
         {
           "at": "2026-08-01T16:20:28.791Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T18:43:29.464Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 410
+        },
+        {
+          "at": "2026-08-01T18:43:39.995Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T18:43:39.995Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T18:49:27.219Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 284
+        },
+        {
+          "at": "2026-08-01T18:49:39.903Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T18:49:39.903Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T18:56:14.815Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 602
+        },
+        {
+          "at": "2026-08-01T18:56:24.846Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T18:56:24.846Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T18:58:38.581Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 359
+        },
+        {
+          "at": "2026-08-01T18:58:49.567Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T18:58:49.567Z",
           "action": "registry-update-complete",
           "ok": true,
           "status": "READY"
@@ -413,15 +660,15 @@
             ]
           },
           "health": {
-            "checkedAt": "2026-08-01T16:20:39.666Z",
+            "checkedAt": "2026-08-01T18:59:00.582Z",
             "ok": true,
             "status": 200,
             "count": 207893,
-            "durationMs": 397,
-            "output": "{\n  adapter: 'arcgis',\n  count: 207893,\n  ok: true,\n  durationMs: 397,\n  status: 200\n}\n"
+            "durationMs": 380,
+            "output": "{\n  adapter: 'arcgis',\n  count: 207893,\n  ok: true,\n  durationMs: 380,\n  status: 200\n}\n"
           },
           "lastDrySync": {
-            "checkedAt": "2026-08-01T16:20:48.336Z",
+            "checkedAt": "2026-08-01T18:59:13.339Z",
             "ok": true,
             "mode": "DRY_RUN",
             "nextCursor": "10",
@@ -433,17 +680,18 @@
               "skipped": 10,
               "failed": 0
             },
-            "output": "{\n  mode: 'DRY_RUN',\n  nextCursor: '10',\n  completedAt: '2026-08-01T16:20:47.661Z',\n  recordErrors: [],\n  stats: {\n    valid: 7,\n    inserted: 0,\n    failed: 0,\n    updated: 0,\n    skipped: 10,\n    fetched: 10\n  },\n  connectorId: 'PA-DELAWARE',\n  validationErrors: [],\n  runId: 'CCR-20260801122046-5427',\n  ok: true,\n  dataset: 'property_assessment'\n}\n"
+            "output": "{\n  nextCursor: '10',\n  mode: 'DRY_RUN',\n  completedAt: '2026-08-01T18:59:12.364Z',\n  recordErrors: [],\n  stats: {\n    valid: 7,\n    inserted: 0,\n    failed: 0,\n    updated: 0,\n    fetched: 10,\n    skipped: 10\n  },\n  connectorId: 'PA-DELAWARE',\n  validationErrors: [],\n  runId: 'CCR-20260801145910-0047',\n  ok: true,\n  dataset: 'property_assessment'\n}\n"
           },
-          "status": "GENERATED",
-          "updatedAt": "2026-08-01T16:20:48.594Z",
+          "schemaDrift": null,
+          "status": "READY",
+          "updatedAt": "2026-08-01T19:02:31.220Z",
           "connectorId": "PA-DELAWARE"
         }
       },
-      "status": "GENERATED",
-      "lastVerifiedAt": "2026-08-01T16:20:48.337Z",
-      "lastSuccessfulSyncAt": "2026-08-01T16:20:48.336Z",
-      "updatedAt": "2026-08-01T16:20:48.595Z",
+      "status": "READY",
+      "lastVerifiedAt": "2026-08-01T18:59:13.339Z",
+      "lastSuccessfulSyncAt": "2026-08-01T18:59:13.339Z",
+      "updatedAt": "2026-08-01T19:02:31.221Z",
       "history": [
         {
           "at": "2026-08-01T15:57:02.659Z",
@@ -497,6 +745,90 @@
         },
         {
           "at": "2026-08-01T16:20:48.337Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T18:49:48.512Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 488
+        },
+        {
+          "at": "2026-08-01T18:50:00.336Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 7,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T18:50:00.336Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T18:56:31.248Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 227
+        },
+        {
+          "at": "2026-08-01T18:56:41.646Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 7,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T18:56:41.646Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T18:59:00.584Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 380
+        },
+        {
+          "at": "2026-08-01T18:59:13.339Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 7,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T18:59:13.339Z",
           "action": "registry-update-complete",
           "ok": true,
           "status": "READY"
@@ -571,15 +903,15 @@
             ]
           },
           "health": {
-            "checkedAt": "2026-08-01T16:20:56.904Z",
+            "checkedAt": "2026-08-01T18:59:21.689Z",
             "ok": true,
             "status": 200,
             "count": 310068,
-            "durationMs": 583,
-            "output": "{\n  adapter: 'arcgis',\n  count: 310068,\n  ok: true,\n  durationMs: 583,\n  status: 200\n}\n"
+            "durationMs": 576,
+            "output": "{\n  adapter: 'arcgis',\n  count: 310068,\n  ok: true,\n  durationMs: 576,\n  status: 200\n}\n"
           },
           "lastDrySync": {
-            "checkedAt": "2026-08-01T16:21:05.764Z",
+            "checkedAt": "2026-08-01T18:59:31.872Z",
             "ok": true,
             "mode": "DRY_RUN",
             "nextCursor": "10",
@@ -591,17 +923,18 @@
               "skipped": 10,
               "failed": 0
             },
-            "output": "{\n  nextCursor: '10',\n  mode: 'DRY_RUN',\n  completedAt: '2026-08-01T16:21:04.724Z',\n  recordErrors: [],\n  stats: {\n    valid: 10,\n    inserted: 0,\n    failed: 0,\n    updated: 0,\n    fetched: 10,\n    skipped: 10\n  },\n  connectorId: 'PA-MONTGOMERY',\n  validationErrors: [],\n  runId: 'CCR-20260801122103-0048',\n  ok: true,\n  dataset: 'property_assessment'\n}\n"
+            "output": "{\n  nextCursor: '10',\n  mode: 'DRY_RUN',\n  completedAt: '2026-08-01T18:59:30.211Z',\n  recordErrors: [],\n  stats: {\n    valid: 10,\n    inserted: 0,\n    failed: 0,\n    updated: 0,\n    fetched: 10,\n    skipped: 10\n  },\n  connectorId: 'PA-MONTGOMERY',\n  validationErrors: [],\n  runId: 'CCR-20260801145929-1904',\n  ok: true,\n  dataset: 'property_assessment'\n}\n"
           },
+          "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-01T16:21:05.766Z",
+          "updatedAt": "2026-08-01T19:02:31.221Z",
           "connectorId": "PA-MONTGOMERY"
         }
       },
       "status": "READY",
-      "lastVerifiedAt": "2026-08-01T16:21:05.766Z",
-      "lastSuccessfulSyncAt": "2026-08-01T16:21:05.764Z",
-      "updatedAt": "2026-08-01T16:21:05.766Z",
+      "lastVerifiedAt": "2026-08-01T18:59:31.872Z",
+      "lastSuccessfulSyncAt": "2026-08-01T18:59:31.872Z",
+      "updatedAt": "2026-08-01T19:02:31.221Z",
       "history": [
         {
           "at": "2026-08-01T15:57:18.872Z",
@@ -658,6 +991,62 @@
           "action": "registry-update-complete",
           "ok": true,
           "status": "READY"
+        },
+        {
+          "at": "2026-08-01T18:50:09.313Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 303
+        },
+        {
+          "at": "2026-08-01T18:50:20.963Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T18:50:20.963Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T18:59:21.689Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 576
+        },
+        {
+          "at": "2026-08-01T18:59:31.872Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T18:59:31.873Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
         }
       ]
     },
@@ -676,7 +1065,7 @@
       "status": "PRODUCTION",
       "lastVerifiedAt": "",
       "lastSuccessfulSyncAt": "",
-      "updatedAt": "2026-08-01T16:20:48.596Z",
+      "updatedAt": "2026-08-01T19:02:31.222Z",
       "history": []
     }
   }
