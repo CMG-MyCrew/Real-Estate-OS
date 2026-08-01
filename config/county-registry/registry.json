@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "generatedAt": "2026-08-01T15:50:21.428Z",
-  "updatedAt": "2026-08-01T19:02:31.211Z",
+  "updatedAt": "2026-08-01T19:09:20.969Z",
   "connectors": {
     "PA-BUCKS": {
       "connectorId": "PA-BUCKS",
@@ -75,7 +75,7 @@
             "report": "reports/schema-drift/PA-BUCKS/property_assessment.json"
           },
           "status": "READY",
-          "updatedAt": "2026-08-01T19:02:31.217Z",
+          "updatedAt": "2026-08-01T19:09:20.972Z",
           "connectorId": "PA-BUCKS"
         },
         "tax_delinquent": {
@@ -108,14 +108,14 @@
             "report": "reports/schema-drift/PA-BUCKS/tax_delinquent.json"
           },
           "status": "DISABLED",
-          "updatedAt": "2026-08-01T19:02:31.218Z",
+          "updatedAt": "2026-08-01T19:09:20.972Z",
           "connectorId": "PA-BUCKS"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-01T18:58:32.276Z",
       "lastSuccessfulSyncAt": "2026-08-01T18:58:32.274Z",
-      "updatedAt": "2026-08-01T19:02:31.218Z",
+      "updatedAt": "2026-08-01T19:09:20.973Z",
       "history": [
         {
           "at": "2026-08-01T15:51:19.525Z",
@@ -426,14 +426,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-01T19:02:31.220Z",
+          "updatedAt": "2026-08-01T19:09:20.974Z",
           "connectorId": "PA-CHESTER"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-01T18:58:49.567Z",
       "lastSuccessfulSyncAt": "2026-08-01T18:58:49.566Z",
-      "updatedAt": "2026-08-01T19:02:31.220Z",
+      "updatedAt": "2026-08-01T19:09:20.974Z",
       "history": [
         {
           "at": "2026-08-01T15:56:46.669Z",
@@ -684,14 +684,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-01T19:02:31.220Z",
+          "updatedAt": "2026-08-01T19:09:20.975Z",
           "connectorId": "PA-DELAWARE"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-01T18:59:13.339Z",
       "lastSuccessfulSyncAt": "2026-08-01T18:59:13.339Z",
-      "updatedAt": "2026-08-01T19:02:31.221Z",
+      "updatedAt": "2026-08-01T19:09:20.975Z",
       "history": [
         {
           "at": "2026-08-01T15:57:02.659Z",
@@ -927,14 +927,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-01T19:02:31.221Z",
+          "updatedAt": "2026-08-01T19:09:20.975Z",
           "connectorId": "PA-MONTGOMERY"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-01T18:59:31.872Z",
       "lastSuccessfulSyncAt": "2026-08-01T18:59:31.872Z",
-      "updatedAt": "2026-08-01T19:02:31.221Z",
+      "updatedAt": "2026-08-01T19:09:20.975Z",
       "history": [
         {
           "at": "2026-08-01T15:57:18.872Z",
@@ -1065,7 +1065,7 @@
       "status": "PRODUCTION",
       "lastVerifiedAt": "",
       "lastSuccessfulSyncAt": "",
-      "updatedAt": "2026-08-01T19:02:31.222Z",
+      "updatedAt": "2026-08-01T19:09:20.976Z",
       "history": []
     }
   }
