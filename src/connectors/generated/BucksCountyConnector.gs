@@ -171,25 +171,9 @@ REOS.BucksCountyConnector = (function () {
       County: MANIFEST.county,
       'Parcel ID': first_(raw, mapping.parcelId || []),
       'Owner Name': first_(raw, mapping.ownerName || []),
-      'Co-Owner Name': first_(
-        raw,
-        mapping.coOwnerName || []
-      ),
       'Source Record ID': first_(
         raw,
         mapping.sourceRecordId || []
-      ),
-      'Land Value': numberFirst_(
-        raw,
-        mapping.landValue || []
-      ),
-      'Building Value': numberFirst_(
-        raw,
-        mapping.buildingValue || []
-      ),
-      'Estimated Value': numberFirst_(
-        raw,
-        mapping.estimatedValue || []
       ),
       Source: MANIFEST.id,
       'Source Dataset': context.dataset,
@@ -197,7 +181,7 @@ REOS.BucksCountyConnector = (function () {
         raw,
         mapping.sourceUpdatedAt || []
       ),
-      'Distress Type': 'Assessment Record',
+      'Distress Type': datasetLabel_(context.dataset),
       Notes:
         'Generated county connector record from ' +
         MANIFEST.id +
@@ -261,22 +245,6 @@ REOS.BucksCountyConnector = (function () {
     }
 
     return '';
-  }
-
-  function numberFirst_(object, keys) {
-    var value = first_(object, keys);
-
-    if (value === '') {
-      return '';
-    }
-
-    var normalized = String(value)
-      .replace(/[$,]/g, '')
-      .trim();
-
-    var number = Number(normalized);
-
-    return isNaN(number) ? '' : number;
   }
 
   function datasetLabel_(dataset) {

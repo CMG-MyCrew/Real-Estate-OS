@@ -532,6 +532,367 @@ function readManifests() {
     });
 }
 
+function findManifestById(id) {
+  const normalizedId = String(id || '')
+    .trim()
+    .toUpperCase();
+
+  if (!normalizedId) {
+    fail('--connector is required.');
+  }
+
+  const manifestPath = path.join(
+    MANIFEST_DIR,
+    `${normalizedId}.json`
+  );
+
+  if (!fs.existsSync(manifestPath)) {
+    fail(
+      `County connector manifest not found: ` +
+      `${path.relative(ROOT, manifestPath)}`
+    );
+  }
+
+  let manifest;
+
+  try {
+    manifest = JSON.parse(
+      fs.readFileSync(manifestPath, 'utf8')
+    );
+  } catch (error) {
+    fail(
+      `Invalid county connector manifest ${normalizedId}: ` +
+      error.message
+    );
+  }
+
+  if (!manifest.id) {
+    fail(
+      `Manifest ${normalizedId} is missing id.`
+    );
+  }
+
+  if (!manifest.state) {
+    fail(
+      `Manifest ${normalizedId} is missing state.`
+    );
+  }
+
+  if (!manifest.county) {
+    fail(
+      `Manifest ${normalizedId} is missing county.`
+    );
+  }
+
+  if (
+    !manifest.datasets ||
+    typeof manifest.datasets !== 'object' ||
+    Array.isArray(manifest.datasets)
+  ) {
+    fail(
+      `Manifest ${normalizedId} must contain a datasets object.`
+    );
+  }
+
+  return {
+    manifest,
+    manifestPath
+  };
+}
+
+function connectorPathForManifest(manifest) {
+  const className =
+    `${pascalCase(manifest.county)}CountyConnector`;
+
+  return path.join(
+    CONNECTOR_DIR,
+    `${className}.gs`
+  );
+}
+
+function validateManifest(manifest) {
+  const allowedAdapters = new Set([
+    'arcgis',
+    'html-table',
+    'json-api',
+    'socrata',
+    'csv'
+  ]);
+
+  const datasetNames = Object.keys(
+    manifest.datasets || {}
+  );
+
+  if (!datasetNames.length) {
+    fail(
+      `Manifest ${manifest.id} contains no datasets.`
+    );
+  }
+
+  for (const datasetName of datasetNames) {
+    if (!/^[a-z][a-z0-9_]*$/.test(datasetName)) {
+      fail(
+        `Manifest ${manifest.id} has invalid dataset ` +
+        `"${datasetName}". Use lowercase snake_case.`
+      );
+    }
+
+    const definition =
+      manifest.datasets[datasetName] || {};
+
+    const adapter = String(
+      definition.adapter || ''
+    )
+      .trim()
+      .toLowerCase();
+
+    if (!allowedAdapters.has(adapter)) {
+      fail(
+        `Manifest ${manifest.id} dataset ` +
+        `${datasetName} uses unsupported adapter ` +
+        `"${adapter}".`
+      );
+    }
+
+    if (!definition.endpointProperty) {
+      fail(
+        `Manifest ${manifest.id} dataset ` +
+        `${datasetName} is missing endpointProperty.`
+      );
+    }
+
+    if (
+      !definition.mapping ||
+      typeof definition.mapping !== 'object' ||
+      Array.isArray(definition.mapping)
+    ) {
+      fail(
+        `Manifest ${manifest.id} dataset ` +
+        `${datasetName} is missing a mapping object.`
+      );
+    }
+  }
+}
+
+function syntaxCheckGeneratedConnector(connectorPath) {
+  const tempPath = path.join(
+    '/tmp',
+    `${path.basename(connectorPath, '.gs')}-check.js`
+  );
+
+  fs.copyFileSync(connectorPath, tempPath);
+
+  const result = spawnSync(
+    process.execPath,
+    ['--check', tempPath],
+    {
+      cwd: ROOT,
+      stdio: 'inherit',
+      shell: false
+    }
+  );
+
+  try {
+    fs.unlinkSync(tempPath);
+  } catch {
+    // Temporary cleanup failure is not fatal.
+  }
+
+  if (result.error) {
+    fail(result.error.message);
+  }
+
+  if (result.status !== 0) {
+    fail(
+      `Generated connector syntax check failed: ` +
+      `${path.relative(ROOT, connectorPath)}`
+    );
+  }
+}
+
+function regenerateManifest(manifest, options = {}) {
+  validateManifest(manifest);
+
+  const connectorPath =
+    connectorPathForManifest(manifest);
+
+  fs.mkdirSync(
+    path.dirname(connectorPath),
+    { recursive: true }
+  );
+
+  const source = buildConnectorSource(manifest);
+
+  const previous = fs.existsSync(connectorPath)
+    ? fs.readFileSync(connectorPath, 'utf8')
+    : null;
+
+  const changed = previous !== source;
+
+  if (changed) {
+    fs.writeFileSync(
+      connectorPath,
+      source,
+      'utf8'
+    );
+  }
+
+  syntaxCheckGeneratedConnector(connectorPath);
+
+  return {
+    connectorId: manifest.id,
+    connectorPath,
+    changed,
+    datasets: Object.keys(manifest.datasets || {})
+  };
+}
+
+function runClaspPush() {
+  const result = spawnSync(
+    'npx',
+    ['clasp', 'push'],
+    {
+      cwd: ROOT,
+      stdio: 'inherit',
+      shell: false
+    }
+  );
+
+  if (result.error) {
+    fail(result.error.message);
+  }
+
+  if (result.status !== 0) {
+    fail(
+      `clasp push failed with exit code ` +
+      `${result.status}.`
+    );
+  }
+}
+
+function runCountyRegression(connectorId, limit) {
+  const result = spawnSync(
+    'npx',
+    [
+      'clasp',
+      'run',
+      'REOS_COUNTY_TERMINAL_SYNC',
+      '--params',
+      JSON.stringify([
+        {
+          action: 'test-county',
+          connectorId,
+          limit
+        }
+      ])
+    ],
+    {
+      cwd: ROOT,
+      stdio: 'inherit',
+      shell: false
+    }
+  );
+
+  if (result.error) {
+    fail(result.error.message);
+  }
+
+  if (result.status !== 0) {
+    fail(
+      `County regression test failed for ` +
+      `${connectorId}.`
+    );
+  }
+}
+
+function commandRegenerate(args) {
+  ensureDirectories();
+
+  const regenerateAll =
+    args.all === true;
+
+  const connectorIdValue = String(
+    args.connector ||
+    args['connector-id'] ||
+    ''
+  )
+    .trim()
+    .toUpperCase();
+
+  if (!regenerateAll && !connectorIdValue) {
+    fail(
+      'Use --connector PA-BUCKS or --all.'
+    );
+  }
+
+  const targets = regenerateAll
+    ? readManifests().filter(
+        manifest => !manifest.invalid
+      )
+    : [
+        findManifestById(
+          connectorIdValue
+        ).manifest
+      ];
+
+  if (!targets.length) {
+    fail(
+      'No valid county connector manifests found.'
+    );
+  }
+
+  const results = targets.map(manifest =>
+    regenerateManifest(manifest)
+  );
+
+  console.log('');
+  console.log('Manifest regeneration results:');
+
+  for (const result of results) {
+    console.log(
+      [
+        result.connectorId,
+        result.changed ? 'UPDATED' : 'UNCHANGED',
+        path.relative(ROOT, result.connectorPath),
+        `datasets=${result.datasets.length}`
+      ].join(' | ')
+    );
+  }
+
+  if (args.push === true) {
+    console.log('');
+    console.log('Pushing regenerated connectors...');
+    runClaspPush();
+  }
+
+  if (args.test === true) {
+    if (args.push !== true) {
+      console.log('');
+      console.log(
+        'WARNING: --test without --push tests the ' +
+        'currently deployed Apps Script version.'
+      );
+    }
+
+    const limit = Math.max(
+      1,
+      Math.min(Number(args.limit || 5), 100)
+    );
+
+    for (const result of results) {
+      console.log('');
+      console.log(
+        `Testing ${result.connectorId}...`
+      );
+
+      runCountyRegression(
+        result.connectorId,
+        limit
+      );
+    }
+  }
+}
+
 function commandList() {
   const manifests = readManifests();
 
@@ -673,6 +1034,25 @@ Commands:
   county:list
     List generated connector manifests.
 
+  county:regenerate
+    Rebuild generated Apps Script connectors from JSON manifests.
+
+    ./tools/reos county:regenerate \
+      --connector PA-BUCKS
+
+    Regenerate, push, and regression-test:
+
+    ./tools/reos county:regenerate \
+      --connector PA-BUCKS \
+      --push \
+      --test \
+      --limit 5
+
+    Regenerate every manifest:
+
+    ./tools/reos county:regenerate \
+      --all
+
   county:test
     Dry-run every registered dataset for one county.
 
@@ -708,6 +1088,10 @@ switch (command) {
 
   case 'county:list':
     commandList();
+    break;
+
+  case 'county:regenerate':
+    commandRegenerate(args);
     break;
 
   case 'county:test':
