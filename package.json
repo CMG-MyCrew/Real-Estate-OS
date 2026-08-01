@@ -27,7 +27,8 @@
     "county:registry-refresh": "node tools/reos.mjs county:registry-refresh",
     "county:registry-list": "node tools/reos.mjs county:registry-list",
     "county:registry-status": "node tools/reos.mjs county:registry-status",
-    "county:registry-update": "node tools/reos.mjs county:registry-update"
+    "county:registry-update": "node tools/reos.mjs county:registry-update",
+    "national:build": "node tools/reos.mjs national:build"
   },
   "devDependencies": {
     "@google/clasp": "^2.4.2"

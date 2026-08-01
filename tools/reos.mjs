@@ -32,6 +32,9 @@ import {
   updateAllRegistry,
   saveRegistryUpdateReport
 } from './county-registry/CountyRegistryEngine.mjs';
+import {
+  runNationalBuildPipeline
+} from './national-build/NationalBuildPipeline.mjs';
 
 const ROOT = process.cwd();
 const CONNECTOR_DIR = path.join(ROOT, 'src', 'connectors', 'generated');
@@ -2583,6 +2586,131 @@ function commandRegistryUpdate(args) {
   }
 }
 
+function parseCountyOverrides(value) {
+  const output = {};
+
+  if (!value) {
+    return output;
+  }
+
+  String(value)
+    .split(';')
+    .map(part => part.trim())
+    .filter(Boolean)
+    .forEach(part => {
+      const separator = part.indexOf(':');
+
+      if (separator === -1) {
+        return;
+      }
+
+      const state = part
+        .slice(0, separator)
+        .trim()
+        .toUpperCase();
+
+      const counties = part
+        .slice(separator + 1)
+        .split(',')
+        .map(county => county.trim())
+        .filter(Boolean);
+
+      if (
+        /^[A-Z]{2}$/.test(state) &&
+        counties.length
+      ) {
+        output[state] = counties;
+      }
+    });
+
+  return output;
+}
+
+async function commandNationalBuild(args) {
+  const states = splitList(
+    args.states ||
+    args.state,
+    []
+  )
+    .map(state =>
+      String(state).trim().toUpperCase()
+    )
+    .filter(Boolean);
+
+  if (!states.length) {
+    fail(
+      'Use --states PA,NJ,DE or --state PA.'
+    );
+  }
+
+  const datasets = splitList(
+    args.datasets,
+    ['property_assessment']
+  );
+
+  const result = await runNationalBuildPipeline({
+    root: ROOT,
+    states,
+    datasets,
+    countyOverrides:
+      parseCountyOverrides(
+        args.counties
+      ),
+    execute:
+      args.execute === true,
+    rebuild:
+      args.rebuild === true,
+    push:
+      args.push === true,
+    health:
+      args.health !== false,
+    test:
+      args.test === true,
+    results: Math.max(
+      10,
+      Math.min(
+        Number(args.results || 100),
+        250
+      )
+    ),
+    healthLimit: Math.max(
+      1,
+      Math.min(
+        Number(
+          args['health-limit'] || 20
+        ),
+        50
+      )
+    ),
+    samples: Math.max(
+      5,
+      Math.min(
+        Number(args.samples || 50),
+        250
+      )
+    ),
+    testLimit: Math.max(
+      1,
+      Math.min(
+        Number(
+          args['test-limit'] || 10
+        ),
+        100
+      )
+    ),
+    replaceMappings:
+      args['replace-mappings'] === true,
+    noFilter:
+      args['no-filter'] === true,
+    continueOnError:
+      args['continue-on-error'] === true
+  });
+
+  if (!result.ok) {
+    process.exitCode = 1;
+  }
+}
+
 function commandList() {
   const manifests = readManifests();
 
@@ -2745,6 +2873,47 @@ Commands:
       --state PA \
       --county Montgomery \
       --sources arcgis,socrata
+
+  national:build
+    Coordinate county connector builds across multiple states.
+
+    Plan only:
+
+    ./tools/reos national:build \
+      --states PA,NJ,DE
+
+    Plan selected counties only:
+
+    ./tools/reos national:build \
+      --states PA,NJ \
+      --counties "PA:Lancaster,York;NJ:Camden,Burlington"
+
+    Execute local state builds without deployment:
+
+    ./tools/reos national:build \
+      --states PA,NJ \
+      --execute \
+      --continue-on-error
+
+    Generate, push once, refresh the registry, and dry-test:
+
+    ./tools/reos national:build \
+      --states PA,NJ,DE \
+      --execute \
+      --push \
+      --test \
+      --samples 50 \
+      --test-limit 10 \
+      --continue-on-error
+
+    Rebuild existing connectors:
+
+    ./tools/reos national:build \
+      --states PA \
+      --execute \
+      --rebuild \
+      --push \
+      --test
 
   county:registry-refresh
     Rebuild the central county registry from manifests.
@@ -3034,6 +3203,10 @@ switch (command) {
 
   case 'county:registry-update':
     commandRegistryUpdate(args);
+    break;
+
+  case 'national:build':
+    await commandNationalBuild(args);
     break;
 
   case 'county:promote':
