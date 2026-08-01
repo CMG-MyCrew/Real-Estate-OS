@@ -1892,6 +1892,27 @@ async function commandAutoMap(args) {
     return;
   }
 
+  const requiredMappingFailures = [
+    'address',
+    'parcelId',
+    'sourceRecordId'
+  ].filter(target => {
+    return !Array.isArray(result.mapping[target]) ||
+      result.mapping[target].length === 0;
+  });
+
+  if (
+    requiredMappingFailures.length &&
+    args['allow-incomplete-mapping'] !== true
+  ) {
+    fail(
+      'Automatic mapping cannot be applied because required ' +
+      'fields are unmapped: ' +
+      requiredMappingFailures.join(', ') +
+      '. Review the source or use --allow-incomplete-mapping.'
+    );
+  }
+
   const preserveExisting =
     args.replace !== true;
 

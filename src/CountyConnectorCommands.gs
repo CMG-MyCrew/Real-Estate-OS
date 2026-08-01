@@ -307,6 +307,36 @@ function REOS_COUNTY_TERMINAL_SYNC(options) {
     };
   }
 
+  if (action === 'delete-endpoint') {
+    if (!connectorId) {
+      throw new Error('connectorId is required.');
+    }
+
+    if (!dataset) {
+      throw new Error('dataset is required.');
+    }
+
+    var deleteKey =
+      'REOS_COUNTY_' +
+      connectorId.replace(/-/g, '_') +
+      '_' +
+      dataset.toUpperCase() +
+      '_URL';
+
+    PropertiesService
+      .getScriptProperties()
+      .deleteProperty(deleteKey);
+
+    return {
+      ok: true,
+      action: 'delete-endpoint',
+      connectorId: connectorId,
+      dataset: dataset,
+      propertyKey: deleteKey,
+      deleted: true
+    };
+  }
+
   if (action === 'sync-all') {
     if (!dryRun && options.confirmLive !== true) {
       throw new Error(

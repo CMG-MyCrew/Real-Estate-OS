@@ -505,6 +505,17 @@ function scoreField(field, rule, records) {
     }
   }
 
+  if (
+    (
+      rule === FIELD_RULES.parcelId ||
+      rule === FIELD_RULES.sourceRecordId
+    ) &&
+    /address|street|city|zip|owner|name/i.test(field)
+  ) {
+    score -= 100;
+    reasons.push('identifier-name-conflict=-100');
+  }
+
   const values = valuesForField(records, field);
   const completeness = completenessRatio(records, field);
 

@@ -59,21 +59,81 @@ function candidateText(candidate) {
   ].join(' '));
 }
 
+const STATE_NAMES = {
+  PA: 'pennsylvania',
+  NY: 'new york',
+  NJ: 'new jersey',
+  DE: 'delaware',
+  MD: 'maryland'
+};
+
+function endpointHost(candidate) {
+  try {
+    return new URL(
+      String(candidate.endpoint || candidate.serviceUrl || '')
+    ).hostname.toLowerCase();
+  } catch {
+    return '';
+  }
+}
+
 function localityMatch(candidate, locality) {
   const text = candidateText(candidate);
   const county = normalizeText(locality.county);
-  const state = normalizeText(locality.state);
+  const stateCode = String(locality.state || '')
+    .trim()
+    .toUpperCase();
+  const stateName = STATE_NAMES[stateCode] || '';
+  const host = endpointHost(candidate);
+
+  const countyPhrases = [
+    `${county} county`,
+    `county of ${county}`
+  ];
+
+  const countyMatch = countyPhrases.some(
+    phrase => phrase && text.includes(phrase)
+  );
+
+  const explicitStateMatch =
+    Boolean(stateName) &&
+    (
+      text.includes(`${county} county ${stateName}`) ||
+      text.includes(`${county}, ${stateName}`) ||
+      text.includes(`${county} ${stateName}`) ||
+      text.includes(stateName)
+    );
+
+  const statePortalMatch =
+    stateCode === 'PA'
+      ? (
+          host.endsWith('.pa.gov') ||
+          host.includes('pennsylvania')
+        )
+      : stateCode === 'NY'
+        ? (
+            host === 'data.ny.gov' ||
+            host.endsWith('.ny.gov')
+          )
+        : stateCode === 'NJ'
+          ? host.endsWith('.nj.gov')
+          : false;
+
+  const conflictingState =
+    stateCode !== 'NY' &&
+    (
+      host === 'data.ny.gov' ||
+      host.endsWith('.ny.gov') ||
+      text.includes('new york state')
+    );
 
   return {
-    countyMatch:
-      county !== '' &&
-      (
-        text.includes(`${county} county`) ||
-        text.includes(county)
-      ),
+    countyMatch,
     stateMatch:
-      state !== '' &&
-      text.includes(state)
+      explicitStateMatch ||
+      statePortalMatch,
+    conflictingState,
+    host
   };
 }
 
@@ -130,7 +190,13 @@ function rescoreCandidate(candidate, locality) {
   }
 
   if (localityResult.stateMatch) {
-    score += 5;
+    score += 15;
+  } else {
+    score -= 20;
+  }
+
+  if (localityResult.conflictingState) {
+    score = 0;
   }
 
   score += endpointQuality(candidate);
@@ -164,6 +230,8 @@ function rescoreCandidate(candidate, locality) {
       eligible:
         Boolean(candidate.endpoint) &&
         localityResult.countyMatch &&
+        localityResult.stateMatch &&
+        !localityResult.conflictingState &&
         !negativeResult.matched.length
     }
   };
