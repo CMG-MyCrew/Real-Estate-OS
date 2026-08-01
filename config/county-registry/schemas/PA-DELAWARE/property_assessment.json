@@ -1,0 +1,1379 @@
+{
+  "schemaVersion": "1.0.0",
+  "acceptedAt": "2026-08-01T16:40:01.184Z",
+  "connectorId": "PA-DELAWARE",
+  "dataset": "property_assessment",
+  "adapter": "arcgis",
+  "endpoint": "https://services2.arcgis.com/Z4oonA9tfgNvnlIk/arcgis/rest/services/Delaware_County_PA_Parcel_Data/FeatureServer/26/query",
+  "schema": {
+    "sampleCount": 50,
+    "fields": {
+      "FID": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "Shape__Area": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          4524.234375,
+          0.00390625,
+          399.31640625,
+          1429.89453125,
+          316.76953125
+        ]
+      },
+      "Shape__Length": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          288.6103462024977,
+          0.4632630528660524,
+          104.76788372984925,
+          219.34127960676813,
+          96.83498260020855
+        ]
+      },
+      "account_nu": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "additional": {
+        "type": "string",
+        "populatedCount": 10,
+        "completeness": 0.2,
+        "uniqueCount": 4,
+        "sampleValues": [
+          "RE - REVALUATION",
+          "RE - REVALUATION",
+          "V - V",
+          "BD - BOARD DECISION",
+          "BD - BOARD DECISION"
+        ]
+      },
+      "address": {
+        "type": "string",
+        "populatedCount": 32,
+        "completeness": 0.64,
+        "uniqueCount": 25,
+        "sampleValues": [
+          "0 WEST CHESTER PK",
+          "0 3RD ST",
+          "0 ROSE TREE RD",
+          "0 FOXTRAIL RD",
+          "0 WAYLAND RD"
+        ]
+      },
+      "address2": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "address_so": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 2,
+        "sampleValues": [
+          "county",
+          "county",
+          "county",
+          "county",
+          "county"
+        ]
+      },
+      "agval": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "alt_parc_1": {
+        "type": "string",
+        "populatedCount": 32,
+        "completeness": 0.64,
+        "uniqueCount": 32,
+        "sampleValues": [
+          "30-30-017:000",
+          "35-16-397:000",
+          "35-20-055:000",
+          "30-29-008:000",
+          "30-13-001:000"
+        ]
+      },
+      "alt_parc_2": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "alt_parcel": {
+        "type": "string",
+        "populatedCount": 40,
+        "completeness": 0.8,
+        "uniqueCount": 40,
+        "sampleValues": [
+          "30-30-017:000",
+          "30-38-008:217",
+          "35-16-397:000",
+          "35-20-055:000",
+          "30-29-008:000"
+        ]
+      },
+      "altid": {
+        "type": "string",
+        "populatedCount": 32,
+        "completeness": 0.64,
+        "uniqueCount": 32,
+        "sampleValues": [
+          "30-30-017:000",
+          "35-16-397:000",
+          "35-20-055:000",
+          "30-29-008:000",
+          "30-13-001:000"
+        ]
+      },
+      "assessment": {
+        "type": "integer",
+        "populatedCount": 2,
+        "completeness": 0.04,
+        "uniqueCount": 1,
+        "sampleValues": [
+          1672531200000,
+          1672531200000
+        ]
+      },
+      "balance": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 11,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "billing_da": {
+        "type": "integer",
+        "populatedCount": 26,
+        "completeness": 0.52,
+        "uniqueCount": 2,
+        "sampleValues": [
+          1706745600000,
+          1706745600000,
+          1706745600000,
+          1706745600000,
+          1706745600000
+        ]
+      },
+      "billing_pe": {
+        "type": "string",
+        "populatedCount": 26,
+        "completeness": 0.52,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "Original",
+          "Original",
+          "Original",
+          "Original",
+          "Original"
+        ]
+      },
+      "billing_ye": {
+        "type": "string",
+        "populatedCount": 26,
+        "completeness": 0.52,
+        "uniqueCount": 2,
+        "sampleValues": [
+          "2024",
+          "2024",
+          "2024",
+          "2024",
+          "2024"
+        ]
+      },
+      "block": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "book": {
+        "type": "string",
+        "populatedCount": 24,
+        "completeness": 0.48,
+        "uniqueCount": 23,
+        "sampleValues": [
+          "2772",
+          "426",
+          "3340",
+          "5091",
+          "2775"
+        ]
+      },
+      "careof": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "census_b_1": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 20,
+        "sampleValues": [
+          "420454099022",
+          "420454099023",
+          "420454099021",
+          "420454099021",
+          "420454079031"
+        ]
+      },
+      "census_blo": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 39,
+        "sampleValues": [
+          "420454099022005",
+          "420454099023009",
+          "420454099021015",
+          "420454099021004",
+          "420454079031001"
+        ]
+      },
+      "census_tra": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 14,
+        "sampleValues": [
+          "42045409902",
+          "42045409902",
+          "42045409902",
+          "42045409902",
+          "42045407903"
+        ]
+      },
+      "census_zct": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 9,
+        "sampleValues": [
+          "19073",
+          "19073",
+          "19073",
+          "19073",
+          "19063"
+        ]
+      },
+      "city": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 8,
+        "sampleValues": [
+          "newtown",
+          "newtown",
+          "newtown",
+          "newtown",
+          "upper-providence"
+        ]
+      },
+      "comment_": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "county": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "delaware",
+          "delaware",
+          "delaware",
+          "delaware",
+          "delaware"
+        ]
+      },
+      "discount_p": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 17,
+        "sampleValues": [
+          6.93,
+          0,
+          0,
+          0,
+          0.39
+        ]
+      },
+      "geoid": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "42045",
+          "42045",
+          "42045",
+          "42045",
+          "42045"
+        ]
+      },
+      "gisacre": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 35,
+        "sampleValues": [
+          0.65,
+          0,
+          0.05,
+          0.21,
+          0.05
+        ]
+      },
+      "homestea_1": {
+        "type": "string",
+        "populatedCount": 31,
+        "completeness": 0.62,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "No",
+          "No",
+          "No",
+          "No",
+          "No"
+        ]
+      },
+      "homestea_2": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 2,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "homestead_": {
+        "type": "string",
+        "populatedCount": 31,
+        "completeness": 0.62,
+        "uniqueCount": 2,
+        "sampleValues": [
+          "No",
+          "No",
+          "No",
+          "No",
+          "No"
+        ]
+      },
+      "improvval": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "landval": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "lat": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "39.983992",
+          "39.974063",
+          "39.976026",
+          "39.977161",
+          "39.933025"
+        ]
+      },
+      "legaldesc": {
+        "type": "string",
+        "populatedCount": 31,
+        "completeness": 0.62,
+        "uniqueCount": 31,
+        "sampleValues": [
+          "GRD 115 X 280",
+          "GRD LOT 18 BLK T 20 X 100",
+          "GRD LOT 5 233 X 308 IRR",
+          "LOT 5 271 X 216 X IRR",
+          "GRD 7.879AC LOT 1"
+        ]
+      },
+      "ll_gisacre": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          0.65765,
+          0,
+          0.05806,
+          0.20789,
+          0.04611
+        ]
+      },
+      "ll_gissqft": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          28648,
+          0,
+          2529,
+          9056,
+          2009
+        ]
+      },
+      "ll_last_re": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          1715126400000,
+          1715126400000,
+          1715126400000,
+          1715126400000,
+          1715126400000
+        ]
+      },
+      "ll_stable_": {
+        "type": "string",
+        "populatedCount": 49,
+        "completeness": 0.98,
+        "uniqueCount": 3,
+        "sampleValues": [
+          "parcelnumb",
+          "geometry",
+          "geometry",
+          "parcelnumb",
+          "parcelnumb"
+        ]
+      },
+      "ll_stack_u": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "ll_updated": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 5,
+        "sampleValues": [
+          1732579200000,
+          1733443200000,
+          1733443200000,
+          1733443200000,
+          1732579200000
+        ]
+      },
+      "ll_uuid": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "27be1d4f-75ea-4c45-90cf-90e1d2767c17",
+          "c7239944-6d35-4210-a70e-01f3aaa370f2",
+          "8263a62c-0eb1-4316-8c46-7bdb6de0968a",
+          "0a339681-73ae-49d2-8bf1-fead06fe3fc9",
+          "b3d06e58-b366-43f0-9e0d-c896ec179656"
+        ]
+      },
+      "location_n": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "lon": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "-75.418413",
+          "-75.407004",
+          "-75.393771",
+          "-75.392507",
+          "-75.386122"
+        ]
+      },
+      "lot": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "mail_add_1": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "mail_add_2": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "mail_addno": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "mail_addpr": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "mail_addre": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "mail_addst": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "mail_city": {
+        "type": "string",
+        "populatedCount": 31,
+        "completeness": 0.62,
+        "uniqueCount": 11,
+        "sampleValues": [
+          "NEWTOWN SQUARE",
+          "MEDIA",
+          "MEDIA",
+          "PHILADELPHIA",
+          "BERWYN"
+        ]
+      },
+      "mail_count": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "mail_state": {
+        "type": "string",
+        "populatedCount": 31,
+        "completeness": 0.62,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "PA",
+          "PA",
+          "PA",
+          "PA",
+          "PA"
+        ]
+      },
+      "mail_unit": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "mail_urban": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "mail_zip": {
+        "type": "string",
+        "populatedCount": 31,
+        "completeness": 0.62,
+        "uniqueCount": 12,
+        "sampleValues": [
+          "19073",
+          "19063",
+          "19063",
+          "19103",
+          "19312"
+        ]
+      },
+      "mailadd": {
+        "type": "string",
+        "populatedCount": 31,
+        "completeness": 0.62,
+        "uniqueCount": 29,
+        "sampleValues": [
+          "3404 B HORTON RD",
+          "320 EVANS AVE",
+          "935 N PROVIDENCE RD",
+          "1604 WALNUT ST 4TH FL",
+          "2600 WAYLAND RD"
+        ]
+      },
+      "municipali": {
+        "type": "string",
+        "populatedCount": 31,
+        "completeness": 0.62,
+        "uniqueCount": 5,
+        "sampleValues": [
+          "30 NEWTOWN",
+          "35 UPPER PROVIDENCE",
+          "35 UPPER PROVIDENCE",
+          "30 NEWTOWN",
+          "30 NEWTOWN"
+        ]
+      },
+      "neighborho": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "numrooms": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "numstories": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "numunits": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "original_a": {
+        "type": "string",
+        "populatedCount": 32,
+        "completeness": 0.64,
+        "uniqueCount": 25,
+        "sampleValues": [
+          "{\"address\":\"0 WEST CHESTER PK\"}",
+          "{\"address\":\"0 3RD ST\"}",
+          "{\"address\":\"0 ROSE TREE RD\"}",
+          "{\"address\":\"0 FOXTRAIL RD\"}",
+          "{\"address\":\"0 WAYLAND RD\"}"
+        ]
+      },
+      "owner": {
+        "type": "string",
+        "populatedCount": 32,
+        "completeness": 0.64,
+        "uniqueCount": 29,
+        "sampleValues": [
+          "WRIGHT FAMILY PARTNERSHIP LP C/O ELIZABETH LISTER",
+          "LAING JESSE J & HELEN M",
+          "UPPER PROVIDENCE TWNSP",
+          "JOYFOR RESIDENTIAL D 1A LP C/O CONTINENTAL DEVEL LLC",
+          "MELMARK HOME INC"
+        ]
+      },
+      "owner2": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "owner3": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "owner4": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "ownfrst": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "ownlast": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "owntype": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "page": {
+        "type": "string",
+        "populatedCount": 24,
+        "completeness": 0.48,
+        "uniqueCount": 23,
+        "sampleValues": [
+          "1781",
+          "606",
+          "2267",
+          "748",
+          "544"
+        ]
+      },
+      "parcelnu_1": {
+        "type": "string",
+        "populatedCount": 32,
+        "completeness": 0.64,
+        "uniqueCount": 32,
+        "sampleValues": [
+          "30000289200",
+          "35000229200",
+          "35000183300",
+          "30000104206",
+          "30000291401"
+        ]
+      },
+      "parcelnumb": {
+        "type": "string",
+        "populatedCount": 32,
+        "completeness": 0.64,
+        "uniqueCount": 32,
+        "sampleValues": [
+          "30000289200",
+          "35000229200",
+          "35000183300",
+          "30000104206",
+          "30000291401"
+        ]
+      },
+      "parval": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 32,
+        "sampleValues": [
+          110000,
+          0,
+          0,
+          0,
+          6120
+        ]
+      },
+      "parvaltype": {
+        "type": "string",
+        "populatedCount": 32,
+        "completeness": 0.64,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "ASSESSED",
+          "ASSESSED",
+          "ASSESSED",
+          "ASSESSED",
+          "ASSESSED"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "/us/pa/delaware/newtown/125548",
+          "/us/pa/delaware/newtown/298051",
+          "/us/pa/delaware/newtown/296631",
+          "/us/pa/delaware/newtown/280929",
+          "/us/pa/delaware/upper-providence/140120"
+        ]
+      },
+      "pay_date": {
+        "type": "integer",
+        "populatedCount": 16,
+        "completeness": 0.32,
+        "uniqueCount": 11,
+        "sampleValues": [
+          1709251200000,
+          1711065600000,
+          1712016000000,
+          1710115200000,
+          1709251200000
+        ]
+      },
+      "payment_po": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 17,
+        "sampleValues": [
+          339.46,
+          0,
+          0,
+          0,
+          18.88
+        ]
+      },
+      "penalty_po": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "pin": {
+        "type": "string",
+        "populatedCount": 40,
+        "completeness": 0.8,
+        "uniqueCount": 40,
+        "sampleValues": [
+          "30-30-017:000",
+          "30-38-008:217",
+          "35-16-397:000",
+          "35-20-055:000",
+          "30-29-008:000"
+        ]
+      },
+      "plat": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "plss_range": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "plss_secti": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "plss_towns": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "previous_o": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "qoz": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "No",
+          "No",
+          "No",
+          "No",
+          "No"
+        ]
+      },
+      "qoz_tract": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "reason_for": {
+        "type": "string",
+        "populatedCount": 10,
+        "completeness": 0.2,
+        "uniqueCount": 4,
+        "sampleValues": [
+          "RE-REVALUATION",
+          "RE-REVALUATION",
+          "V-V",
+          "BD-BOARD DECISION",
+          "BD-BOARD DECISION"
+        ]
+      },
+      "recrdarean": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "recrdareat": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "reviseddat": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "saddno": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "saddpref": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "saddstr": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "saddstsuf": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "saddsttyp": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "saledate": {
+        "type": "integer",
+        "populatedCount": 31,
+        "completeness": 0.62,
+        "uniqueCount": 30,
+        "sampleValues": [
+          1052870400000,
+          538790400000,
+          1100217600000,
+          1333065600000,
+          352425600000
+        ]
+      },
+      "saleprice": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 15,
+        "sampleValues": [
+          1,
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "school_dis": {
+        "type": "string",
+        "populatedCount": 31,
+        "completeness": 0.62,
+        "uniqueCount": 5,
+        "sampleValues": [
+          "S06 - Marple Newtown",
+          "S10 - Rosetree Media",
+          "S10 - Rosetree Media",
+          "S06 - Marple Newtown",
+          "S06 - Marple Newtown"
+        ]
+      },
+      "scity": {
+        "type": "string",
+        "populatedCount": 32,
+        "completeness": 0.64,
+        "uniqueCount": 6,
+        "sampleValues": [
+          "NEWTOWN SQUARE",
+          "MEDIA",
+          "MEDIA",
+          "NEWTOWN SQUARE",
+          "NEWTOWN SQUARE"
+        ]
+      },
+      "sourceurl": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "sqft": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "state2": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "PA",
+          "PA",
+          "PA",
+          "PA",
+          "PA"
+        ]
+      },
+      "state_parc": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "struct": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "structno": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "structstyl": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "subdivisio": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "sunit": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "szip": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 9,
+        "sampleValues": [
+          "19073",
+          "19073",
+          "19073",
+          "19073",
+          "19063"
+        ]
+      },
+      "szip5": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 9,
+        "sampleValues": [
+          "19073",
+          "19073",
+          "19073",
+          "19073",
+          "19063"
+        ]
+      },
+      "tax_id": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "tax_mod_ty": {
+        "type": "string",
+        "populatedCount": 16,
+        "completeness": 0.32,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "Discount",
+          "Discount",
+          "Discount",
+          "Discount",
+          "Discount"
+        ]
+      },
+      "taxamt": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 27,
+        "sampleValues": [
+          346.39,
+          0,
+          0,
+          0,
+          19.27
+        ]
+      },
+      "taxyear": {
+        "type": "string",
+        "populatedCount": 26,
+        "completeness": 0.52,
+        "uniqueCount": 2,
+        "sampleValues": [
+          "2024",
+          "2024",
+          "2024",
+          "2024",
+          "2024"
+        ]
+      },
+      "type_of_as": {
+        "type": "string",
+        "populatedCount": 31,
+        "completeness": 0.62,
+        "uniqueCount": 5,
+        "sampleValues": [
+          "01-Taxable Residential",
+          "06-Ground",
+          "03-Exempt",
+          "06-Ground",
+          "03-Exempt"
+        ]
+      },
+      "urbanizati": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "usecode": {
+        "type": "string",
+        "populatedCount": 31,
+        "completeness": 0.62,
+        "uniqueCount": 5,
+        "sampleValues": [
+          "01",
+          "06",
+          "03",
+          "06",
+          "03"
+        ]
+      },
+      "usedesc": {
+        "type": "string",
+        "populatedCount": 31,
+        "completeness": 0.62,
+        "uniqueCount": 5,
+        "sampleValues": [
+          "Taxable Residential",
+          "Ground",
+          "Exempt",
+          "Ground",
+          "Exempt"
+        ]
+      },
+      "yearbuilt": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "zoning": {
+        "type": "string",
+        "populatedCount": 7,
+        "completeness": 0.14,
+        "uniqueCount": 5,
+        "sampleValues": [
+          "R-3",
+          "R-3",
+          "R-1",
+          "PRD",
+          "R-3"
+        ]
+      },
+      "zoning_des": {
+        "type": "string",
+        "populatedCount": 7,
+        "completeness": 0.14,
+        "uniqueCount": 4,
+        "sampleValues": [
+          "Residential",
+          "Residential",
+          "Residential District",
+          "Planned Residential Development District",
+          "Residential"
+        ]
+      }
+    },
+    "fingerprint": "41b4ef7c1962e2892a9432fdb88439a74fff3b1c397625cd0f7b3c917e00423f"
+  }
+}

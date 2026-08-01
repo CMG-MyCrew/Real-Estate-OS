@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "generatedAt": "2026-08-01T15:50:21.428Z",
-  "updatedAt": "2026-08-01T19:09:20.969Z",
+  "updatedAt": "2026-08-01T20:13:42.965Z",
   "connectors": {
     "PA-BUCKS": {
       "connectorId": "PA-BUCKS",
@@ -13,7 +13,7 @@
       "manifestPath": "config/county-connectors/PA-BUCKS.json",
       "connectorPath": "src/connectors/generated/BucksCountyConnector.gs",
       "connectorExists": true,
-      "manifestFingerprint": "8e6712e9bef639d670e2563437ae9b258773f3586df4be5be125ba561faf0150",
+      "manifestFingerprint": "b411d244702d7908094a89847fa8ccf9e3594f9c33051c498732befea8abf828",
       "datasets": {
         "property_assessment": {
           "dataset": "property_assessment",
@@ -27,8 +27,8 @@
             "requiredFieldsPresent": true,
             "missingRequiredFields": [],
             "confidence": 137,
-            "fingerprint": "077b305c1ae7d9fe74cfbc8b850b30ee278b722ac60d31096255333ef7259b06",
-            "autoMappedAt": "2026-08-01T13:09:56.932Z"
+            "fingerprint": "6e1e59e6e153257cb8a7ec86f2cf1830b5300b78dcf82a0382f730c22251832c",
+            "autoMappedAt": "2026-08-01T19:28:03.318Z"
           },
           "recordFilter": {
             "requireAny": [
@@ -41,15 +41,15 @@
             ]
           },
           "health": {
-            "checkedAt": "2026-08-01T18:58:22.208Z",
+            "checkedAt": "2026-08-01T20:12:46.685Z",
             "ok": true,
             "status": 200,
             "count": 237871,
-            "durationMs": 202,
-            "output": "{\n  adapter: 'arcgis',\n  count: 237871,\n  ok: true,\n  durationMs: 202,\n  status: 200\n}\n"
+            "durationMs": 484,
+            "output": "{\n  adapter: 'arcgis',\n  count: 237871,\n  ok: true,\n  durationMs: 484,\n  status: 200\n}\n"
           },
           "lastDrySync": {
-            "checkedAt": "2026-08-01T18:58:32.274Z",
+            "checkedAt": "2026-08-01T20:12:54.945Z",
             "ok": true,
             "mode": "DRY_RUN",
             "nextCursor": "10",
@@ -61,13 +61,13 @@
               "skipped": 10,
               "failed": 0
             },
-            "output": "{\n  mode: 'DRY_RUN',\n  nextCursor: '10',\n  completedAt: '2026-08-01T18:58:31.415Z',\n  recordErrors: [],\n  stats: {\n    valid: 10,\n    inserted: 0,\n    failed: 0,\n    updated: 0,\n    fetched: 10,\n    skipped: 10\n  },\n  connectorId: 'PA-BUCKS',\n  validationErrors: [],\n  runId: 'CCR-20260801145830-1659',\n  ok: true,\n  dataset: 'property_assessment'\n}\n"
+            "output": "{\n  nextCursor: '10',\n  mode: 'DRY_RUN',\n  completedAt: '2026-08-01T20:12:54.754Z',\n  recordErrors: [],\n  stats: {\n    valid: 10,\n    inserted: 0,\n    failed: 0,\n    updated: 0,\n    skipped: 10,\n    fetched: 10\n  },\n  connectorId: 'PA-BUCKS',\n  validationErrors: [],\n  runId: 'CCR-20260801161253-0395',\n  ok: true,\n  dataset: 'property_assessment'\n}\n"
           },
           "schemaDrift": {
-            "checkedAt": "2026-08-01T16:35:17.915Z",
-            "status": "BASELINE_CREATED",
+            "checkedAt": "2026-08-01T20:12:33.790Z",
+            "status": "UNCHANGED",
             "changed": false,
-            "severity": "BASELINE",
+            "severity": "NONE",
             "requiresReview": false,
             "addedFields": [],
             "removedFields": [],
@@ -75,7 +75,7 @@
             "report": "reports/schema-drift/PA-BUCKS/property_assessment.json"
           },
           "status": "READY",
-          "updatedAt": "2026-08-01T19:09:20.972Z",
+          "updatedAt": "2026-08-01T20:13:26.590Z",
           "connectorId": "PA-BUCKS"
         },
         "tax_delinquent": {
@@ -97,7 +97,7 @@
           "health": null,
           "lastDrySync": null,
           "schemaDrift": {
-            "checkedAt": "2026-08-01T16:35:17.921Z",
+            "checkedAt": "2026-08-01T20:12:33.799Z",
             "status": "SKIPPED",
             "changed": false,
             "severity": "",
@@ -108,170 +108,15 @@
             "report": "reports/schema-drift/PA-BUCKS/tax_delinquent.json"
           },
           "status": "DISABLED",
-          "updatedAt": "2026-08-01T19:09:20.972Z",
+          "updatedAt": "2026-08-01T20:13:26.591Z",
           "connectorId": "PA-BUCKS"
         }
       },
       "status": "READY",
-      "lastVerifiedAt": "2026-08-01T18:58:32.276Z",
-      "lastSuccessfulSyncAt": "2026-08-01T18:58:32.274Z",
-      "updatedAt": "2026-08-01T19:09:20.973Z",
+      "lastVerifiedAt": "2026-08-01T20:12:54.946Z",
+      "lastSuccessfulSyncAt": "2026-08-01T20:12:54.945Z",
+      "updatedAt": "2026-08-01T20:13:26.591Z",
       "history": [
-        {
-          "at": "2026-08-01T15:51:19.525Z",
-          "action": "health-check",
-          "dataset": "property_assessment",
-          "ok": true,
-          "status": 200,
-          "durationMs": 237
-        },
-        {
-          "at": "2026-08-01T15:51:29.586Z",
-          "action": "dry-sync",
-          "dataset": "property_assessment",
-          "ok": true,
-          "stats": {
-            "fetched": 10,
-            "valid": 10,
-            "inserted": 0,
-            "updated": 0,
-            "skipped": 10,
-            "failed": 0
-          }
-        },
-        {
-          "at": "2026-08-01T15:51:35.984Z",
-          "action": "endpoint-check",
-          "dataset": "tax_delinquent",
-          "ok": false,
-          "message": "No endpoint configured."
-        },
-        {
-          "at": "2026-08-01T15:51:35.984Z",
-          "action": "registry-update-complete",
-          "ok": false,
-          "status": "REVIEW_REQUIRED"
-        },
-        {
-          "at": "2026-08-01T15:54:45.980Z",
-          "action": "health-check",
-          "dataset": "property_assessment",
-          "ok": true,
-          "status": 200,
-          "durationMs": 303
-        },
-        {
-          "at": "2026-08-01T15:54:55.320Z",
-          "action": "dry-sync",
-          "dataset": "property_assessment",
-          "ok": true,
-          "stats": {
-            "fetched": 10,
-            "valid": 10,
-            "inserted": 0,
-            "updated": 0,
-            "skipped": 10,
-            "failed": 0
-          }
-        },
-        {
-          "at": "2026-08-01T15:54:55.320Z",
-          "action": "registry-update-complete",
-          "ok": true,
-          "status": "READY"
-        },
-        {
-          "at": "2026-08-01T15:56:30.600Z",
-          "action": "health-check",
-          "dataset": "property_assessment",
-          "ok": true,
-          "status": 200,
-          "durationMs": 223
-        },
-        {
-          "at": "2026-08-01T15:56:40.377Z",
-          "action": "dry-sync",
-          "dataset": "property_assessment",
-          "ok": true,
-          "stats": {
-            "fetched": 10,
-            "valid": 10,
-            "inserted": 0,
-            "updated": 0,
-            "skipped": 10,
-            "failed": 0
-          }
-        },
-        {
-          "at": "2026-08-01T15:56:40.377Z",
-          "action": "registry-update-complete",
-          "ok": true,
-          "status": "READY"
-        },
-        {
-          "at": "2026-08-01T16:20:03.554Z",
-          "action": "health-check",
-          "dataset": "property_assessment",
-          "ok": true,
-          "status": 200,
-          "durationMs": 314
-        },
-        {
-          "at": "2026-08-01T16:20:12.867Z",
-          "action": "dry-sync",
-          "dataset": "property_assessment",
-          "ok": true,
-          "stats": {
-            "fetched": 10,
-            "valid": 10,
-            "inserted": 0,
-            "updated": 0,
-            "skipped": 10,
-            "failed": 0
-          }
-        },
-        {
-          "at": "2026-08-01T16:20:12.868Z",
-          "action": "registry-update-complete",
-          "ok": true,
-          "status": "READY"
-        },
-        {
-          "at": "2026-08-01T18:43:00.833Z",
-          "action": "health-check",
-          "dataset": "property_assessment",
-          "ok": true,
-          "status": 200,
-          "durationMs": 399
-        },
-        {
-          "at": "2026-08-01T18:43:21.366Z",
-          "action": "dry-sync",
-          "dataset": "property_assessment",
-          "ok": true,
-          "stats": {
-            "fetched": 10,
-            "valid": 10,
-            "inserted": 0,
-            "updated": 0,
-            "skipped": 10,
-            "failed": 0
-          }
-        },
-        {
-          "at": "2026-08-01T18:43:21.368Z",
-          "action": "registry-update-complete",
-          "ok": true,
-          "status": "READY"
-        },
-        {
-          "at": "2026-08-01T18:49:09.982Z",
-          "action": "health-check",
-          "dataset": "property_assessment",
-          "ok": true,
-          "status": 200,
-          "durationMs": 320
-        },
         {
           "at": "2026-08-01T18:49:20.282Z",
           "action": "dry-sync",
@@ -347,6 +192,398 @@
           "action": "registry-update-complete",
           "ok": true,
           "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:21:29.580Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 344
+        },
+        {
+          "at": "2026-08-01T19:21:38.229Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:21:38.229Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:28:28.525Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 260
+        },
+        {
+          "at": "2026-08-01T19:28:36.843Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:28:36.843Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:42:46.953Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 258
+        },
+        {
+          "at": "2026-08-01T19:43:02.221Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:43:02.221Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:44:51.690Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 441
+        },
+        {
+          "at": "2026-08-01T19:45:03.246Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:45:03.246Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:46:00.069Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 230
+        },
+        {
+          "at": "2026-08-01T19:46:09.613Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:46:09.613Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:47:53.365Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 267
+        },
+        {
+          "at": "2026-08-01T19:48:04.584Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:48:04.584Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:49:02.886Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 341
+        },
+        {
+          "at": "2026-08-01T19:49:11.017Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:49:11.017Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:50:25.286Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 129
+        },
+        {
+          "at": "2026-08-01T19:50:33.702Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:50:33.702Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:51:34.222Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 696
+        },
+        {
+          "at": "2026-08-01T19:51:43.299Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:51:43.299Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T20:00:20.020Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 199
+        },
+        {
+          "at": "2026-08-01T20:00:29.413Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T20:00:29.413Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T20:02:40.026Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 250
+        },
+        {
+          "at": "2026-08-01T20:02:50.607Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T20:02:50.608Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T20:03:48.940Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 264
+        },
+        {
+          "at": "2026-08-01T20:03:56.419Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T20:03:56.419Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T20:11:37.002Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 223
+        },
+        {
+          "at": "2026-08-01T20:11:46.614Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T20:11:46.614Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T20:12:46.686Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 484
+        },
+        {
+          "at": "2026-08-01T20:12:54.946Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T20:12:54.946Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
         }
       ]
     },
@@ -402,15 +639,15 @@
             ]
           },
           "health": {
-            "checkedAt": "2026-08-01T18:58:38.581Z",
+            "checkedAt": "2026-08-01T20:13:01.287Z",
             "ok": true,
             "status": 200,
             "count": 188537,
-            "durationMs": 359,
-            "output": "{\n  adapter: 'arcgis',\n  count: 188537,\n  ok: true,\n  durationMs: 359,\n  status: 200\n}\n"
+            "durationMs": 481,
+            "output": "{\n  adapter: 'arcgis',\n  count: 188537,\n  ok: true,\n  durationMs: 481,\n  status: 200\n}\n"
           },
           "lastDrySync": {
-            "checkedAt": "2026-08-01T18:58:49.566Z",
+            "checkedAt": "2026-08-01T20:13:11.925Z",
             "ok": true,
             "mode": "DRY_RUN",
             "nextCursor": "10",
@@ -422,55 +659,29 @@
               "skipped": 10,
               "failed": 0
             },
-            "output": "{\n  mode: 'DRY_RUN',\n  nextCursor: '10',\n  completedAt: '2026-08-01T18:58:48.009Z',\n  recordErrors: [],\n  stats: {\n    valid: 10,\n    inserted: 0,\n    failed: 0,\n    updated: 0,\n    fetched: 10,\n    skipped: 10\n  },\n  connectorId: 'PA-CHESTER',\n  validationErrors: [],\n  runId: 'CCR-20260801145846-6787',\n  ok: true,\n  dataset: 'property_assessment'\n}\n"
+            "output": "{\n  nextCursor: '10',\n  mode: 'DRY_RUN',\n  completedAt: '2026-08-01T20:13:11.519Z',\n  recordErrors: [],\n  stats: {\n    valid: 10,\n    inserted: 0,\n    failed: 0,\n    updated: 0,\n    skipped: 10,\n    fetched: 10\n  },\n  connectorId: 'PA-CHESTER',\n  validationErrors: [],\n  runId: 'CCR-20260801161309-2516',\n  ok: true,\n  dataset: 'property_assessment'\n}\n"
           },
-          "schemaDrift": null,
+          "schemaDrift": {
+            "checkedAt": "2026-08-01T20:12:35.007Z",
+            "status": "UNCHANGED",
+            "changed": false,
+            "severity": "NONE",
+            "requiresReview": false,
+            "addedFields": [],
+            "removedFields": [],
+            "changedTypes": [],
+            "report": "reports/schema-drift/PA-CHESTER/property_assessment.json"
+          },
           "status": "READY",
-          "updatedAt": "2026-08-01T19:09:20.974Z",
+          "updatedAt": "2026-08-01T20:13:26.591Z",
           "connectorId": "PA-CHESTER"
         }
       },
       "status": "READY",
-      "lastVerifiedAt": "2026-08-01T18:58:49.567Z",
-      "lastSuccessfulSyncAt": "2026-08-01T18:58:49.566Z",
-      "updatedAt": "2026-08-01T19:09:20.974Z",
+      "lastVerifiedAt": "2026-08-01T20:13:11.926Z",
+      "lastSuccessfulSyncAt": "2026-08-01T20:13:11.925Z",
+      "updatedAt": "2026-08-01T20:13:26.592Z",
       "history": [
-        {
-          "at": "2026-08-01T15:56:46.669Z",
-          "action": "health-check",
-          "dataset": "property_assessment",
-          "ok": true,
-          "status": 200,
-          "durationMs": 684
-        },
-        {
-          "at": "2026-08-01T15:56:55.878Z",
-          "action": "dry-sync",
-          "dataset": "property_assessment",
-          "ok": true,
-          "stats": {
-            "fetched": 10,
-            "valid": 10,
-            "inserted": 0,
-            "updated": 0,
-            "skipped": 10,
-            "failed": 0
-          }
-        },
-        {
-          "at": "2026-08-01T15:56:55.878Z",
-          "action": "registry-update-complete",
-          "ok": true,
-          "status": "READY"
-        },
-        {
-          "at": "2026-08-01T16:20:19.532Z",
-          "action": "health-check",
-          "dataset": "property_assessment",
-          "ok": true,
-          "status": 200,
-          "durationMs": 636
-        },
         {
           "at": "2026-08-01T16:20:28.790Z",
           "action": "dry-sync",
@@ -602,6 +813,342 @@
           "action": "registry-update-complete",
           "ok": true,
           "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:43:08.740Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 311
+        },
+        {
+          "at": "2026-08-01T19:43:17.578Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:43:17.578Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:45:09.271Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 203
+        },
+        {
+          "at": "2026-08-01T19:45:18.826Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:45:18.826Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:46:15.343Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 199
+        },
+        {
+          "at": "2026-08-01T19:46:24.312Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:46:24.312Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:48:10.971Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 492
+        },
+        {
+          "at": "2026-08-01T19:48:19.883Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:48:19.883Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:49:18.232Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 215
+        },
+        {
+          "at": "2026-08-01T19:49:28.472Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:49:28.472Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:50:39.646Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 340
+        },
+        {
+          "at": "2026-08-01T19:50:49.073Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:50:49.073Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:51:49.553Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 630
+        },
+        {
+          "at": "2026-08-01T19:51:58.046Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:51:58.046Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T20:00:36.084Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 393
+        },
+        {
+          "at": "2026-08-01T20:00:45.621Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T20:00:45.622Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T20:02:58.810Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 425
+        },
+        {
+          "at": "2026-08-01T20:03:07.351Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T20:03:07.351Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T20:04:02.545Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 391
+        },
+        {
+          "at": "2026-08-01T20:04:11.649Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T20:04:11.649Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T20:11:52.973Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 467
+        },
+        {
+          "at": "2026-08-01T20:12:02.838Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T20:12:02.838Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T20:13:01.288Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 481
+        },
+        {
+          "at": "2026-08-01T20:13:11.926Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T20:13:11.926Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
         }
       ]
     },
@@ -660,15 +1207,15 @@
             ]
           },
           "health": {
-            "checkedAt": "2026-08-01T18:59:00.582Z",
+            "checkedAt": "2026-08-01T20:13:17.968Z",
             "ok": true,
             "status": 200,
             "count": 207893,
-            "durationMs": 380,
-            "output": "{\n  adapter: 'arcgis',\n  count: 207893,\n  ok: true,\n  durationMs: 380,\n  status: 200\n}\n"
+            "durationMs": 251,
+            "output": "{\n  adapter: 'arcgis',\n  count: 207893,\n  ok: true,\n  durationMs: 251,\n  status: 200\n}\n"
           },
           "lastDrySync": {
-            "checkedAt": "2026-08-01T18:59:13.339Z",
+            "checkedAt": "2026-08-01T20:13:26.583Z",
             "ok": true,
             "mode": "DRY_RUN",
             "nextCursor": "10",
@@ -680,27 +1227,29 @@
               "skipped": 10,
               "failed": 0
             },
-            "output": "{\n  nextCursor: '10',\n  mode: 'DRY_RUN',\n  completedAt: '2026-08-01T18:59:12.364Z',\n  recordErrors: [],\n  stats: {\n    valid: 7,\n    inserted: 0,\n    failed: 0,\n    updated: 0,\n    fetched: 10,\n    skipped: 10\n  },\n  connectorId: 'PA-DELAWARE',\n  validationErrors: [],\n  runId: 'CCR-20260801145910-0047',\n  ok: true,\n  dataset: 'property_assessment'\n}\n"
+            "output": "{\n  nextCursor: '10',\n  mode: 'DRY_RUN',\n  completedAt: '2026-08-01T20:13:26.871Z',\n  recordErrors: [],\n  stats: {\n    valid: 7,\n    inserted: 0,\n    failed: 0,\n    updated: 0,\n    fetched: 10,\n    skipped: 10\n  },\n  connectorId: 'PA-DELAWARE',\n  validationErrors: [],\n  runId: 'CCR-20260801161325-0420',\n  ok: true,\n  dataset: 'property_assessment'\n}\n"
           },
-          "schemaDrift": null,
+          "schemaDrift": {
+            "checkedAt": "2026-08-01T20:12:35.938Z",
+            "status": "UNCHANGED",
+            "changed": false,
+            "severity": "NONE",
+            "requiresReview": false,
+            "addedFields": [],
+            "removedFields": [],
+            "changedTypes": [],
+            "report": "reports/schema-drift/PA-DELAWARE/property_assessment.json"
+          },
           "status": "READY",
-          "updatedAt": "2026-08-01T19:09:20.975Z",
+          "updatedAt": "2026-08-01T20:13:26.592Z",
           "connectorId": "PA-DELAWARE"
         }
       },
       "status": "READY",
-      "lastVerifiedAt": "2026-08-01T18:59:13.339Z",
-      "lastSuccessfulSyncAt": "2026-08-01T18:59:13.339Z",
-      "updatedAt": "2026-08-01T19:09:20.975Z",
+      "lastVerifiedAt": "2026-08-01T20:13:26.583Z",
+      "lastSuccessfulSyncAt": "2026-08-01T20:13:26.583Z",
+      "updatedAt": "2026-08-01T20:13:26.593Z",
       "history": [
-        {
-          "at": "2026-08-01T15:57:02.659Z",
-          "action": "health-check",
-          "dataset": "property_assessment",
-          "ok": true,
-          "status": 200,
-          "durationMs": 554
-        },
         {
           "at": "2026-08-01T15:57:12.922Z",
           "action": "dry-sync",
@@ -832,6 +1381,342 @@
           "action": "registry-update-complete",
           "ok": true,
           "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:43:23.893Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 620
+        },
+        {
+          "at": "2026-08-01T19:43:31.902Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 7,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:43:31.902Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:45:25.256Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 484
+        },
+        {
+          "at": "2026-08-01T19:45:34.588Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 7,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:45:34.588Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:46:31.654Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 553
+        },
+        {
+          "at": "2026-08-01T19:46:40.944Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 7,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:46:40.944Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:48:28.543Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 456
+        },
+        {
+          "at": "2026-08-01T19:48:37.252Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 7,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:48:37.252Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:49:36.537Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 404
+        },
+        {
+          "at": "2026-08-01T19:49:45.055Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 7,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:49:45.055Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:50:55.393Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 324
+        },
+        {
+          "at": "2026-08-01T19:51:04.998Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 7,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:51:04.998Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:52:04.499Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 292
+        },
+        {
+          "at": "2026-08-01T19:52:13.639Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 7,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:52:13.639Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T20:00:51.820Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 457
+        },
+        {
+          "at": "2026-08-01T20:00:59.577Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 7,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T20:00:59.577Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T20:03:13.388Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 316
+        },
+        {
+          "at": "2026-08-01T20:03:22.002Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 7,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T20:03:22.002Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T20:04:18.511Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 215
+        },
+        {
+          "at": "2026-08-01T20:04:29.617Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 7,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T20:04:29.617Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T20:12:10.003Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 571
+        },
+        {
+          "at": "2026-08-01T20:12:18.567Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 7,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T20:12:18.567Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T20:13:17.968Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 251
+        },
+        {
+          "at": "2026-08-01T20:13:26.583Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 7,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T20:13:26.583Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
         }
       ]
     },
@@ -903,15 +1788,15 @@
             ]
           },
           "health": {
-            "checkedAt": "2026-08-01T18:59:21.689Z",
+            "checkedAt": "2026-08-01T20:13:34.618Z",
             "ok": true,
             "status": 200,
             "count": 310068,
-            "durationMs": 576,
-            "output": "{\n  adapter: 'arcgis',\n  count: 310068,\n  ok: true,\n  durationMs: 576,\n  status: 200\n}\n"
+            "durationMs": 445,
+            "output": "{\n  adapter: 'arcgis',\n  count: 310068,\n  ok: true,\n  durationMs: 445,\n  status: 200\n}\n"
           },
           "lastDrySync": {
-            "checkedAt": "2026-08-01T18:59:31.872Z",
+            "checkedAt": "2026-08-01T20:13:42.965Z",
             "ok": true,
             "mode": "DRY_RUN",
             "nextCursor": "10",
@@ -923,18 +1808,28 @@
               "skipped": 10,
               "failed": 0
             },
-            "output": "{\n  nextCursor: '10',\n  mode: 'DRY_RUN',\n  completedAt: '2026-08-01T18:59:30.211Z',\n  recordErrors: [],\n  stats: {\n    valid: 10,\n    inserted: 0,\n    failed: 0,\n    updated: 0,\n    fetched: 10,\n    skipped: 10\n  },\n  connectorId: 'PA-MONTGOMERY',\n  validationErrors: [],\n  runId: 'CCR-20260801145929-1904',\n  ok: true,\n  dataset: 'property_assessment'\n}\n"
+            "output": "{\n  mode: 'DRY_RUN',\n  nextCursor: '10',\n  completedAt: '2026-08-01T20:13:43.009Z',\n  recordErrors: [],\n  stats: {\n    valid: 10,\n    inserted: 0,\n    failed: 0,\n    updated: 0,\n    skipped: 10,\n    fetched: 10\n  },\n  connectorId: 'PA-MONTGOMERY',\n  validationErrors: [],\n  runId: 'CCR-20260801161341-3992',\n  ok: true,\n  dataset: 'property_assessment'\n}\n"
           },
-          "schemaDrift": null,
+          "schemaDrift": {
+            "checkedAt": "2026-08-01T20:12:38.996Z",
+            "status": "UNCHANGED",
+            "changed": false,
+            "severity": "NONE",
+            "requiresReview": false,
+            "addedFields": [],
+            "removedFields": [],
+            "changedTypes": [],
+            "report": "reports/schema-drift/PA-MONTGOMERY/property_assessment.json"
+          },
           "status": "READY",
-          "updatedAt": "2026-08-01T19:09:20.975Z",
+          "updatedAt": "2026-08-01T20:13:42.965Z",
           "connectorId": "PA-MONTGOMERY"
         }
       },
       "status": "READY",
-      "lastVerifiedAt": "2026-08-01T18:59:31.872Z",
-      "lastSuccessfulSyncAt": "2026-08-01T18:59:31.872Z",
-      "updatedAt": "2026-08-01T19:09:20.975Z",
+      "lastVerifiedAt": "2026-08-01T20:13:42.965Z",
+      "lastSuccessfulSyncAt": "2026-08-01T20:13:42.965Z",
+      "updatedAt": "2026-08-01T20:13:42.965Z",
       "history": [
         {
           "at": "2026-08-01T15:57:18.872Z",
@@ -1047,6 +1942,342 @@
           "action": "registry-update-complete",
           "ok": true,
           "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:43:37.930Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 392
+        },
+        {
+          "at": "2026-08-01T19:43:46.989Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:43:46.989Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:45:40.838Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 523
+        },
+        {
+          "at": "2026-08-01T19:45:50.683Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:45:50.683Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:46:50.625Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 361
+        },
+        {
+          "at": "2026-08-01T19:47:01.042Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:47:01.042Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:48:43.619Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 353
+        },
+        {
+          "at": "2026-08-01T19:48:51.553Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:48:51.553Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:49:51.715Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 636
+        },
+        {
+          "at": "2026-08-01T19:50:03.603Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:50:03.603Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:51:11.584Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 437
+        },
+        {
+          "at": "2026-08-01T19:51:21.929Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:51:21.929Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T19:52:20.300Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 523
+        },
+        {
+          "at": "2026-08-01T19:52:29.623Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T19:52:29.623Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T20:01:06.215Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 584
+        },
+        {
+          "at": "2026-08-01T20:01:15.625Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T20:01:15.625Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T20:03:29.072Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 300
+        },
+        {
+          "at": "2026-08-01T20:03:38.903Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T20:03:38.903Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T20:04:38.575Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 539
+        },
+        {
+          "at": "2026-08-01T20:04:47.921Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T20:04:47.921Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T20:12:24.216Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 361
+        },
+        {
+          "at": "2026-08-01T20:12:32.821Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T20:12:32.821Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        },
+        {
+          "at": "2026-08-01T20:13:34.619Z",
+          "action": "health-check",
+          "dataset": "property_assessment",
+          "ok": true,
+          "status": 200,
+          "durationMs": 445
+        },
+        {
+          "at": "2026-08-01T20:13:42.965Z",
+          "action": "dry-sync",
+          "dataset": "property_assessment",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-01T20:13:42.965Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
         }
       ]
     },
@@ -1065,7 +2296,7 @@
       "status": "PRODUCTION",
       "lastVerifiedAt": "",
       "lastSuccessfulSyncAt": "",
-      "updatedAt": "2026-08-01T19:09:20.976Z",
+      "updatedAt": "2026-08-01T20:13:26.595Z",
       "history": []
     }
   }

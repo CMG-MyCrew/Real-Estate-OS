@@ -1,0 +1,197 @@
+{
+  "schemaVersion": "1.0.0",
+  "acceptedAt": "2026-08-01T16:40:00.267Z",
+  "connectorId": "PA-BUCKS",
+  "dataset": "property_assessment",
+  "adapter": "arcgis",
+  "endpoint": "https://services3.arcgis.com/SP47Tddf7RK32lBU/arcgis/rest/services/Bucks_County_Parcels/FeatureServer/0/query",
+  "schema": {
+    "sampleCount": 50,
+    "fields": {
+      "ADDRESS": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "914 YARDLEY COMMONS",
+          "913 YARDLEY COMMONS",
+          "912 YARDLEY COMMONS",
+          "911 YARDLEY COMMONS",
+          "910 YARDLEY COMMONS"
+        ]
+      },
+      "BUILDING_VALUE": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 11,
+        "sampleValues": [
+          15200,
+          15520,
+          15520,
+          15200,
+          13400
+        ]
+      },
+      "CARE_OF": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "DEED_AREA": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "LAND_USE_CODE": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "1013",
+          "1013",
+          "1013",
+          "1013",
+          "1013"
+        ]
+      },
+      "LAND_VALUE": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "MODIFY_DATE": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 2,
+        "sampleValues": [
+          1753879136000,
+          1753879136000,
+          1753879136000,
+          1753879136000,
+          1753879136000
+        ]
+      },
+      "MUNICIPALITY": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "Yardley Borough",
+          "Yardley Borough",
+          "Yardley Borough",
+          "Yardley Borough",
+          "Yardley Borough"
+        ]
+      },
+      "OBJECTID": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "OWNER1": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "MARQUETTE, JENNIFER",
+          "KEENAN, MEAGHAN E",
+          "AYRES, CARL F & DEBRA L",
+          "MCALLISTER, JAMES",
+          "FINKELSTEIN, STEVEN & MICHELE E"
+        ]
+      },
+      "OWNER2": {
+        "type": "string",
+        "populatedCount": 12,
+        "completeness": 0.24,
+        "uniqueCount": 12,
+        "sampleValues": [
+          "RAFFA, KEITH",
+          "PANT, DHRUV",
+          "MCCARTHY, TIMOTHY DENNIS",
+          "ROMAN-QUINONES, CARMEN M",
+          "HENRY, RITA N"
+        ]
+      },
+      "PARCEL_NUM": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "54-010-001-914",
+          "54-010-001-913",
+          "54-010-001-912",
+          "54-010-001-911",
+          "54-010-001-910"
+        ]
+      },
+      "Shape__Area": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          104.09765625,
+          85.05078125,
+          83.5390625,
+          121.77734375,
+          172.06640625
+        ]
+      },
+      "Shape__Length": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          48.22236698738584,
+          39.86884045724004,
+          39.42992426625557,
+          49.882191834436256,
+          52.248309478960905
+        ]
+      },
+      "TOTAL_VALUE": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 11,
+        "sampleValues": [
+          15200,
+          15520,
+          15520,
+          15200,
+          13400
+        ]
+      }
+    },
+    "fingerprint": "508dd95ea8daf04f6fa03bb27382200cb517a60310fb5523ebf456af5bd8ed51"
+  }
+}
