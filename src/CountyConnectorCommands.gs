@@ -4,7 +4,63 @@
  */
 var REOS = REOS || {};
 
+function REOS_COUNTY_REGISTER_ADAPTERS_() {
+  if (
+    !REOS.CountyAdapters ||
+    !REOS.CountyAdapters.Registry
+  ) {
+    throw new Error(
+      'CountyAdapterRegistry is not loaded.'
+    );
+  }
+
+  var registry = REOS.CountyAdapters.Registry;
+
+  var adapters = [
+    {
+      name: 'arcgis',
+      adapter: REOS.CountyAdapters.ArcGIS
+    },
+    {
+      name: 'html-table',
+      adapter: REOS.CountyAdapters.HTMLTable
+    },
+    {
+      name: 'json-api',
+      adapter: REOS.CountyAdapters.JSONAPI
+    },
+    {
+      name: 'socrata',
+      adapter: REOS.CountyAdapters.Socrata
+    },
+    {
+      name: 'csv',
+      adapter: REOS.CountyAdapters.CSV
+    }
+  ];
+
+  adapters.forEach(function (item) {
+    if (!item.adapter) {
+      throw new Error(
+        'County adapter implementation is not loaded: ' +
+        item.name
+      );
+    }
+
+    if (!registry.get(item.name)) {
+      registry.register(
+        item.name,
+        item.adapter
+      );
+    }
+  });
+
+  return registry.list();
+}
+
 function REOS_COUNTY_REGISTER_CONNECTORS_() {
+  REOS_COUNTY_REGISTER_ADAPTERS_();
+
   if (!REOS.CountyConnectorSDK) {
     throw new Error('CountyConnectorSDK is not loaded.');
   }
@@ -87,6 +143,42 @@ function REOS_COUNTY_TERMINAL_SYNC(options) {
 
   if (action === 'list') {
     return REOS_COUNTY_LIST();
+  }
+
+  if (action === 'adapter-list') {
+    return {
+      ok: true,
+      adapters: REOS.CountyAdapters.Registry.list()
+    };
+  }
+
+  if (action === 'adapter-health') {
+    var adapterName = String(
+      options.adapter || ''
+    ).trim();
+
+    var healthEndpoint = String(
+      options.endpoint || ''
+    ).trim();
+
+    if (!adapterName) {
+      throw new Error(
+        'adapter is required for adapter-health.'
+      );
+    }
+
+    if (!healthEndpoint) {
+      throw new Error(
+        'endpoint is required for adapter-health.'
+      );
+    }
+
+    return REOS.CountyAdapters.Registry.health(
+      adapterName,
+      {
+        endpoint: healthEndpoint
+      }
+    );
   }
 
   if (action === 'configure-endpoint') {

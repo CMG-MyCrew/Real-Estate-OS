@@ -38,7 +38,10 @@ REOS.PhiladelphiaCountyConnector = (function () {
       return fetchSheriffSales_(context);
     }
 
-    var endpoint = getEndpoint_(context.dataset, context.config);
+    var endpoint = getEndpoint_(
+      context.dataset,
+      context.config
+    );
 
     if (!endpoint) {
       throw new Error(
@@ -50,12 +53,6 @@ REOS.PhiladelphiaCountyConnector = (function () {
       );
     }
 
-    var limit = Math.min(
-      Math.max(Number(context.limit) || 500, 1),
-      2000
-    );
-
-    var offset = Math.max(Number(context.cursor) || 0, 0);
     var whereClause = '1=1';
 
     if (context.since) {
@@ -69,107 +66,17 @@ REOS.PhiladelphiaCountyConnector = (function () {
       }
     }
 
-    var query = [
-      'where=' + encodeURIComponent(whereClause),
-      'outFields=' + encodeURIComponent('*'),
-      'returnGeometry=false',
-      'resultRecordCount=' + encodeURIComponent(limit),
-      'resultOffset=' + encodeURIComponent(offset),
-      'f=json'
-    ];
-
-    var url =
-      endpoint +
-      (endpoint.indexOf('?') === -1 ? '?' : '&') +
-      query.join('&');
-
-    var response = UrlFetchApp.fetch(url, {
-      method: 'get',
-      headers: {
-        Accept: 'application/json'
-      },
-      muteHttpExceptions: true,
-      followRedirects: true
-    });
-
-    var status = response.getResponseCode();
-    var responseText = response.getContentText();
-    var headers = response.getHeaders();
-    var contentType = String(
-      headers['Content-Type'] ||
-      headers['content-type'] ||
-      ''
+    return REOS.CountyAdapters.Registry.fetch(
+      'arcgis',
+      {
+        endpoint: endpoint,
+        context: context,
+        where: whereClause,
+        outFields: '*',
+        returnGeometry: false,
+        maxLimit: 2000
+      }
     );
-
-    if (status < 200 || status >= 300) {
-      throw new Error(
-        'Philadelphia endpoint returned HTTP ' +
-        status +
-        '. URL: ' +
-        url +
-        '. Response: ' +
-        responseText.slice(0, 500)
-      );
-    }
-
-    if (
-      responseText.trim().charAt(0) === '<' ||
-      contentType.toLowerCase().indexOf('text/html') !== -1
-    ) {
-      throw new Error(
-        'Philadelphia endpoint returned HTML instead of JSON. ' +
-        'URL: ' +
-        url +
-        '. Content-Type: ' +
-        contentType +
-        '. Response: ' +
-        responseText.slice(0, 500)
-      );
-    }
-
-    var payload;
-
-    try {
-      payload = JSON.parse(responseText || '{}');
-    } catch (error) {
-      throw new Error(
-        'Philadelphia endpoint returned invalid JSON. ' +
-        'URL: ' +
-        url +
-        '. Response: ' +
-        responseText.slice(0, 500)
-      );
-    }
-
-    if (payload.error) {
-      throw new Error(
-        'Philadelphia ArcGIS API error: ' +
-        JSON.stringify(payload.error)
-      );
-    }
-
-    var features = Array.isArray(payload.features)
-      ? payload.features
-      : [];
-
-    var records = features.map(function (feature) {
-      return feature && feature.attributes
-        ? feature.attributes
-        : feature;
-    });
-
-    return {
-      records: records,
-      nextCursor:
-        records.length >= limit
-          ? String(offset + records.length)
-          : '',
-      message:
-        'Fetched ' +
-        records.length +
-        ' records from Philadelphia ' +
-        context.dataset
-    };
   }
 
   function fetchSheriffSales_(context) {
@@ -188,72 +95,20 @@ REOS.PhiladelphiaCountyConnector = (function () {
       );
     }
 
-    var response = UrlFetchApp.fetch(endpoint, {
-      method: 'get',
-      headers: {
-        Accept: 'text/html,application/xhtml+xml'
-      },
-      muteHttpExceptions: true,
-      followRedirects: true
-    });
-
-    var status = response.getResponseCode();
-    var html = response.getContentText();
-
-    if (status < 200 || status >= 300) {
-      throw new Error(
-        'Philadelphia Sheriff endpoint returned HTTP ' +
-        status +
-        '. Endpoint: ' +
-        endpoint +
-        '. Response: ' +
-        html.slice(0, 500)
-      );
-    }
-
-    if (!html || html.toLowerCase().indexOf('<html') === -1) {
-      throw new Error(
-        'Philadelphia Sheriff endpoint did not return HTML. ' +
-        'Endpoint: ' +
-        endpoint +
-        '. Response: ' +
-        String(html || '').slice(0, 500)
-      );
-    }
-
-    var allRecords = parseSheriffRows_(
-      html,
-      context.dataset
+    return REOS.CountyAdapters.Registry.fetch(
+      'html-table',
+      {
+        endpoint: endpoint,
+        context: context,
+        maxLimit: 2000,
+        parser: function (html) {
+          return parseSheriffRows_(
+            html,
+            context.dataset
+          );
+        }
+      }
     );
-
-    var offset = Math.max(
-      Number(context.cursor) || 0,
-      0
-    );
-
-    var limit = Math.min(
-      Math.max(Number(context.limit) || 100, 1),
-      2000
-    );
-
-    var records = allRecords.slice(
-      offset,
-      offset + limit
-    );
-
-    return {
-      records: records,
-      nextCursor:
-        offset + records.length < allRecords.length
-          ? String(offset + records.length)
-          : '',
-      message:
-        'Fetched ' +
-        records.length +
-        ' of ' +
-        allRecords.length +
-        ' Philadelphia Sheriff Sale records.'
-    };
   }
 
   function parseSheriffRows_(html, dataset) {
