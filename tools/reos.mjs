@@ -8,6 +8,11 @@ import {
   discoverCounty,
   saveDiscoveryReport
 } from './county-discovery/CountyDiscoveryEngine.mjs';
+import {
+  fetchSampleRecords,
+  inferFieldMapping,
+  saveMappingReport
+} from './county-mapping/AutomaticFieldMapper.mjs';
 
 const ROOT = process.cwd();
 const CONNECTOR_DIR = path.join(ROOT, 'src', 'connectors', 'generated');
@@ -1690,6 +1695,304 @@ function commandPromote(args) {
   }
 }
 
+function getConfiguredEndpoint(
+  connectorIdValue,
+  dataset
+) {
+  const result = spawnSync(
+    'npx',
+    [
+      'clasp',
+      'run',
+      'REOS_COUNTY_TERMINAL_SYNC',
+      '--params',
+      JSON.stringify([{
+        action: 'get-endpoint',
+        connectorId: connectorIdValue,
+        dataset
+      }])
+    ],
+    {
+      cwd: ROOT,
+      encoding: 'utf8',
+      shell: false
+    }
+  );
+
+  if (result.error || result.status !== 0) {
+    return '';
+  }
+
+  const output = String(result.stdout || '').trim();
+
+  const match = output.match(
+    /endpoint:\s*'([^']+)'/
+  );
+
+  return match ? match[1] : '';
+}
+
+async function commandAutoMap(args) {
+  ensureDirectories();
+
+  const connectorIdValue = String(
+    args.connector ||
+    args['connector-id'] ||
+    ''
+  )
+    .trim()
+    .toUpperCase();
+
+  const dataset = String(args.dataset || '')
+    .trim()
+    .toLowerCase();
+
+  if (!connectorIdValue) {
+    fail('--connector is required for county:automap.');
+  }
+
+  if (!dataset) {
+    fail('--dataset is required for county:automap.');
+  }
+
+  const {
+    manifest,
+    manifestPath
+  } = findManifestById(connectorIdValue);
+
+  const definition = manifest.datasets?.[dataset];
+
+  if (!definition) {
+    fail(
+      `${connectorIdValue}/${dataset} is not present in the manifest.`
+    );
+  }
+
+  const endpoint =
+    String(args.endpoint || '').trim() ||
+    String(definition.endpoint || '').trim() ||
+    String(definition.discovery?.endpoint || '').trim() ||
+    getConfiguredEndpoint(
+      connectorIdValue,
+      dataset
+    );
+
+  if (!endpoint) {
+    fail(
+      'No endpoint was found in the manifest. ' +
+      'Supply --endpoint explicitly.'
+    );
+  }
+
+  const adapter = String(definition.adapter || '')
+    .trim()
+    .toLowerCase();
+
+  const sampleCount = Math.max(
+    5,
+    Math.min(Number(args.samples || 25), 250)
+  );
+
+  console.log(
+    `Fetching ${sampleCount} sample records from ${adapter}...`
+  );
+
+  const records = await fetchSampleRecords({
+    adapter,
+    endpoint,
+    sampleCount
+  });
+
+  if (!records.length) {
+    fail('The source returned no sample records.');
+  }
+
+  const result = inferFieldMapping(
+    records,
+    dataset,
+    {
+      minimumScore: Number(args['minimum-score'] || 65),
+      maxFields: Number(args['max-fields'] || 3)
+    }
+  );
+
+  const reportPath = args.output
+    ? path.resolve(ROOT, String(args.output))
+    : path.join(
+        ROOT,
+        'reports',
+        'county-mapping',
+        `${connectorIdValue}-${dataset.toUpperCase()}-MAPPING.json`
+      );
+
+  const report = {
+    ...result,
+    connectorId: connectorIdValue,
+    endpoint,
+    adapter,
+    manifest: path.relative(ROOT, manifestPath)
+  };
+
+  saveMappingReport(report, reportPath);
+
+  console.log('');
+  console.log('Automatic field mapping results:');
+  console.log(`Connector: ${connectorIdValue}`);
+  console.log(`Dataset:   ${dataset}`);
+  console.log(`Adapter:   ${adapter}`);
+  console.log(`Samples:   ${records.length}`);
+  console.log(
+    `Report:    ${path.relative(ROOT, reportPath)}`
+  );
+  console.log('');
+
+  Object.entries(result.mapping).forEach(
+    ([target, fields]) => {
+      const confidence = result.confidence[target];
+
+      console.log(
+        [
+          target.padEnd(22),
+          fields.length ? fields.join(', ') : 'UNMAPPED',
+          confidence
+            ? `score=${confidence.score}`
+            : ''
+        ]
+          .filter(Boolean)
+          .join(' | ')
+      );
+    }
+  );
+
+  if (result.warnings.length) {
+    console.log('');
+    console.log('Warnings:');
+
+    result.warnings.forEach(warning => {
+      console.log(`- ${warning}`);
+    });
+  }
+
+  if (args.apply !== true) {
+    console.log('');
+    console.log(
+      'Review the report, then rerun with --apply.'
+    );
+    return;
+  }
+
+  const preserveExisting =
+    args.replace !== true;
+
+  const existingMapping =
+    definition.mapping || {};
+
+  definition.mapping = preserveExisting
+    ? mergeMappings(existingMapping, result.mapping)
+    : result.mapping;
+
+  if (
+    result.recordFilter &&
+    args['no-filter'] !== true
+  ) {
+    definition.recordFilter = result.recordFilter;
+  }
+
+  definition.autoMapping = {
+    appliedAt: new Date().toISOString(),
+    sampleCount: records.length,
+    report: path.relative(ROOT, reportPath),
+    minimumScore: Number(
+      args['minimum-score'] || 65
+    ),
+    confidence: result.confidence,
+    warnings: result.warnings
+  };
+
+  manifest.updatedAt = new Date().toISOString();
+
+  fs.writeFileSync(
+    manifestPath,
+    `${JSON.stringify(manifest, null, 2)}\n`,
+    'utf8'
+  );
+
+  const regeneration = regenerateManifest(manifest);
+
+  console.log('');
+  console.log('Manifest mapping applied.');
+  console.log(
+    `Generated connector: ${path.relative(
+      ROOT,
+      regeneration.connectorPath
+    )}`
+  );
+
+  if (args.push === true) {
+    console.log('');
+    console.log('Pushing regenerated connector...');
+    runClaspPush();
+  }
+
+  if (args.configure === true) {
+    console.log('');
+    console.log('Configuring endpoint...');
+
+    configurePromotedEndpoint({
+      connectorIdValue,
+      dataset,
+      endpoint
+    });
+  }
+
+  if (args.test === true) {
+    if (args.push !== true) {
+      console.log(
+        'WARNING: --test without --push tests the deployed version.'
+      );
+    }
+
+    console.log('');
+    console.log('Running automatic-mapping dry sync...');
+
+    runPromotedDatasetTest({
+      connectorIdValue,
+      dataset,
+      limit: Math.max(
+        1,
+        Math.min(Number(args.limit || 10), 100)
+      )
+    });
+  }
+}
+
+function mergeMappings(existing, inferred) {
+  const output = {
+    ...(existing || {})
+  };
+
+  Object.entries(inferred || {}).forEach(
+    ([target, fields]) => {
+      const existingFields = Array.isArray(output[target])
+        ? output[target]
+        : [];
+
+      const inferredFields = Array.isArray(fields)
+        ? fields
+        : [];
+
+      output[target] = [
+        ...new Set([
+          ...existingFields,
+          ...inferredFields
+        ])
+      ];
+    }
+  );
+
+  return output;
+}
+
 function commandList() {
   const manifests = readManifests();
 
@@ -1879,6 +2182,35 @@ Commands:
       --replace \
       --force
 
+  county:automap
+    Infer manifest field mappings from live source records.
+
+    Review-only mapping:
+
+    ./tools/reos county:automap \
+      --connector PA-MONTGOMERY \
+      --dataset property_assessment \
+      --samples 25
+
+    Apply, regenerate, push, and dry-test:
+
+    ./tools/reos county:automap \
+      --connector PA-MONTGOMERY \
+      --dataset property_assessment \
+      --samples 25 \
+      --apply \
+      --push \
+      --test \
+      --limit 10
+
+    Replace existing mappings instead of merging:
+
+    ./tools/reos county:automap \
+      --connector PA-MONTGOMERY \
+      --dataset property_assessment \
+      --apply \
+      --replace
+
   county:regenerate
     Rebuild generated Apps Script connectors from JSON manifests.
 
@@ -1941,6 +2273,10 @@ switch (command) {
 
   case 'county:promote':
     commandPromote(args);
+    break;
+
+  case 'county:automap':
+    await commandAutoMap(args);
     break;
 
   case 'county:regenerate':

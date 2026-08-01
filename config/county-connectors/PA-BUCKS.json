@@ -42,7 +42,100 @@
         ],
         "estimatedValue": [
           "TOTAL_VALUE"
+        ],
+        "assessmentValue": [],
+        "yearBuilt": [],
+        "landAcres": [],
+        "livingArea": [],
+        "saleDate": [],
+        "salePrice": []
+      },
+      "endpoint": "https://services3.arcgis.com/SP47Tddf7RK32lBU/arcgis/rest/services/Bucks_County_Parcels/FeatureServer/0/query",
+      "source": {
+        "title": "Bucks County Parcels",
+        "verificationStatus": "manually_verified",
+        "verifiedAt": "2026-08-01T13:09:03.891426+00:00"
+      },
+      "recordFilter": {
+        "requireAny": [
+          [
+            "ADDRESS"
+          ],
+          [
+            "PARCEL_NUM"
+          ]
         ]
+      },
+      "autoMapping": {
+        "appliedAt": "2026-08-01T13:09:56.932Z",
+        "sampleCount": 50,
+        "report": "reports/county-mapping/PA-BUCKS-PROPERTY_ASSESSMENT-MAPPING.json",
+        "minimumScore": 65,
+        "confidence": {
+          "address": {
+            "score": 145,
+            "primaryField": "ADDRESS",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "city": {
+            "score": 124,
+            "primaryField": "MUNICIPALITY",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "parcelId": {
+            "score": 144,
+            "primaryField": "PARCEL_NUM",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "ownerName": {
+            "score": 131,
+            "primaryField": "OWNER1",
+            "completeness": 1,
+            "alternatives": [
+              "OWNER2"
+            ]
+          },
+          "coOwnerName": {
+            "score": 110,
+            "primaryField": "OWNER2",
+            "completeness": 0.24,
+            "alternatives": []
+          },
+          "sourceRecordId": {
+            "score": 155,
+            "primaryField": "OBJECTID",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "sourceUpdatedAt": {
+            "score": 150,
+            "primaryField": "MODIFY_DATE",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "estimatedValue": {
+            "score": 139,
+            "primaryField": "TOTAL_VALUE",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "landValue": {
+            "score": 138,
+            "primaryField": "LAND_VALUE",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "buildingValue": {
+            "score": 138,
+            "primaryField": "BUILDING_VALUE",
+            "completeness": 1,
+            "alternatives": []
+          }
+        },
+        "warnings": []
       }
     },
     "tax_delinquent": {
@@ -91,5 +184,6 @@
         ]
       }
     }
-  }
+  },
+  "updatedAt": "2026-08-01T13:09:56.932Z"
 }

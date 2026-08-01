@@ -55,7 +55,100 @@ REOS.BucksCountyConnector = (function () {
           ],
           estimatedValue: [
             "TOTAL_VALUE"
+          ],
+          assessmentValue: [],
+          yearBuilt: [],
+          landAcres: [],
+          livingArea: [],
+          saleDate: [],
+          salePrice: []
+        },
+        endpoint: "https://services3.arcgis.com/SP47Tddf7RK32lBU/arcgis/rest/services/Bucks_County_Parcels/FeatureServer/0/query",
+        source: {
+          title: "Bucks County Parcels",
+          verificationStatus: "manually_verified",
+          verifiedAt: "2026-08-01T13:09:03.891426+00:00"
+        },
+        recordFilter: {
+          requireAny: [
+            [
+              "ADDRESS"
+            ],
+            [
+              "PARCEL_NUM"
+            ]
           ]
+        },
+        autoMapping: {
+          appliedAt: "2026-08-01T13:09:56.932Z",
+          sampleCount: 50,
+          report: "reports/county-mapping/PA-BUCKS-PROPERTY_ASSESSMENT-MAPPING.json",
+          minimumScore: 65,
+          confidence: {
+            address: {
+              score: 145,
+              primaryField: "ADDRESS",
+              completeness: 1,
+              alternatives: []
+            },
+            city: {
+              score: 124,
+              primaryField: "MUNICIPALITY",
+              completeness: 1,
+              alternatives: []
+            },
+            parcelId: {
+              score: 144,
+              primaryField: "PARCEL_NUM",
+              completeness: 1,
+              alternatives: []
+            },
+            ownerName: {
+              score: 131,
+              primaryField: "OWNER1",
+              completeness: 1,
+              alternatives: [
+                "OWNER2"
+              ]
+            },
+            coOwnerName: {
+              score: 110,
+              primaryField: "OWNER2",
+              completeness: 0.24,
+              alternatives: []
+            },
+            sourceRecordId: {
+              score: 155,
+              primaryField: "OBJECTID",
+              completeness: 1,
+              alternatives: []
+            },
+            sourceUpdatedAt: {
+              score: 150,
+              primaryField: "MODIFY_DATE",
+              completeness: 1,
+              alternatives: []
+            },
+            estimatedValue: {
+              score: 139,
+              primaryField: "TOTAL_VALUE",
+              completeness: 1,
+              alternatives: []
+            },
+            landValue: {
+              score: 138,
+              primaryField: "LAND_VALUE",
+              completeness: 1,
+              alternatives: []
+            },
+            buildingValue: {
+              score: 138,
+              primaryField: "BUILDING_VALUE",
+              completeness: 1,
+              alternatives: []
+            }
+          },
+          warnings: []
         }
       },
       tax_delinquent: {
@@ -104,7 +197,8 @@ REOS.BucksCountyConnector = (function () {
           ]
         }
       }
-    }
+    },
+    updatedAt: "2026-08-01T13:09:56.932Z"
   };
 
   function register() {
@@ -161,6 +255,13 @@ REOS.BucksCountyConnector = (function () {
     var definition = getDatasetDefinition_(context.dataset);
     var mapping = definition.mapping || {};
 
+    if (!passesRecordFilter_(raw, definition.recordFilter)) {
+      return {
+        __skip: true,
+        __skipReason: 'Record did not satisfy dataset record filter.'
+      };
+    }
+
     return {
       Address: first_(raw, mapping.address || []),
       City:
@@ -171,9 +272,41 @@ REOS.BucksCountyConnector = (function () {
       County: MANIFEST.county,
       'Parcel ID': first_(raw, mapping.parcelId || []),
       'Owner Name': first_(raw, mapping.ownerName || []),
+      'Co-Owner Name': first_(
+        raw,
+        mapping.coOwnerName || []
+      ),
       'Source Record ID': first_(
         raw,
         mapping.sourceRecordId || []
+      ),
+      'Estimated Value': numberFirst_(
+        raw,
+        mapping.estimatedValue || []
+      ),
+      'Assessment Value': numberFirst_(
+        raw,
+        mapping.assessmentValue || []
+      ),
+      'Year Built': numberFirst_(
+        raw,
+        mapping.yearBuilt || []
+      ),
+      'Land Acres': numberFirst_(
+        raw,
+        mapping.landAcres || []
+      ),
+      'Living Area': numberFirst_(
+        raw,
+        mapping.livingArea || []
+      ),
+      'Last Sale Date': first_(
+        raw,
+        mapping.saleDate || []
+      ),
+      'Last Sale Price': numberFirst_(
+        raw,
+        mapping.salePrice || []
       ),
       Source: MANIFEST.id,
       'Source Dataset': context.dataset,
@@ -230,6 +363,38 @@ REOS.BucksCountyConnector = (function () {
     );
   }
 
+  function passesRecordFilter_(raw, filter) {
+    if (!filter) {
+      return true;
+    }
+
+    var requireAny = filter.requireAny || [];
+
+    for (var groupIndex = 0; groupIndex < requireAny.length; groupIndex += 1) {
+      var keys = requireAny[groupIndex] || [];
+      var matched = false;
+
+      for (var keyIndex = 0; keyIndex < keys.length; keyIndex += 1) {
+        var value = raw[keys[keyIndex]];
+
+        if (
+          value !== null &&
+          typeof value !== 'undefined' &&
+          String(value).trim() !== ''
+        ) {
+          matched = true;
+          break;
+        }
+      }
+
+      if (!matched) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   function first_(object, keys) {
     for (var index = 0; index < keys.length; index += 1) {
       var key = keys[index];
@@ -245,6 +410,22 @@ REOS.BucksCountyConnector = (function () {
     }
 
     return '';
+  }
+
+  function numberFirst_(object, keys) {
+    var value = first_(object, keys);
+
+    if (value === '') {
+      return '';
+    }
+
+    var normalized = String(value)
+      .replace(/[$,]/g, '')
+      .trim();
+
+    var number = Number(normalized);
+
+    return isNaN(number) ? '' : number;
   }
 
   function datasetLabel_(dataset) {
