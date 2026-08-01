@@ -1,0 +1,206 @@
+{
+  "id": "PA-CHESTER",
+  "state": "PA",
+  "county": "Chester",
+  "version": "1.0.0",
+  "enabled": true,
+  "generatedAt": "2026-08-01T13:45:13.739Z",
+  "datasets": {
+    "property_assessment": {
+      "adapter": "arcgis",
+      "endpointProperty": "REOS_COUNTY_PA_CHESTER_PROPERTY_ASSESSMENT_URL",
+      "enabled": true,
+      "maxLimit": 2000,
+      "mapping": {
+        "address": [
+          "ADDRESS",
+          "address",
+          "STREET_ADDRESS",
+          "street_address",
+          "property_address",
+          "location",
+          "ADDR1"
+        ],
+        "city": [
+          "CITY",
+          "city",
+          "MUNICIPALITY",
+          "municipality",
+          "property_city"
+        ],
+        "zip": [
+          "ZIP",
+          "zip",
+          "ZIP_CODE",
+          "zip_code",
+          "ZIPCODE",
+          "zipcode",
+          "postal_code",
+          "ZIP1"
+        ],
+        "parcelId": [
+          "PARCEL_NUM",
+          "parcel_num",
+          "PARCEL_ID",
+          "parcel_id",
+          "parcel_number",
+          "OPA_NUMBER",
+          "opa_number",
+          "account_number"
+        ],
+        "ownerName": [
+          "OWNER1",
+          "owner1",
+          "OWNER",
+          "owner",
+          "owner_name",
+          "legal_owner",
+          "OWN1",
+          "OWN2"
+        ],
+        "coOwnerName": [
+          "OWNER2",
+          "owner2",
+          "CO_OWNER",
+          "co_owner",
+          "OWN2"
+        ],
+        "sourceRecordId": [
+          "OBJECTID",
+          "objectid",
+          "ID",
+          "id",
+          "record_id",
+          "PARCEL_NUM",
+          "parcel_number"
+        ],
+        "sourceUpdatedAt": [
+          "MODIFY_DATE",
+          "modify_date",
+          "UPDATED_AT",
+          "updated_at",
+          "last_updated",
+          "date_updated",
+          "MODIFY_DAT"
+        ],
+        "landValue": [
+          "LAND_VALUE",
+          "land_value",
+          "assessed_land_value"
+        ],
+        "buildingValue": [
+          "BUILDING_VALUE",
+          "building_value",
+          "improvement_value"
+        ],
+        "estimatedValue": [
+          "TOTAL_VALUE",
+          "total_value",
+          "TOTAL_ASSESSMENT",
+          "total_assessment",
+          "assessed_value"
+        ],
+        "assessmentValue": [],
+        "yearBuilt": [],
+        "landAcres": [
+          "ACRE_PLAN_",
+          "ACRE_PLA_1"
+        ],
+        "livingArea": [
+          "SQFT_PLAN_"
+        ],
+        "saleDate": [],
+        "salePrice": []
+      },
+      "discovery": {
+        "report": "reports/county-discovery/PA-CHESTER-PROMOTION-INPUT.json",
+        "candidate": 1,
+        "promotedAt": "2026-08-01T13:59:26.287Z",
+        "title": "Chester County PA Parcels — Chester_County_PA_Parcels",
+        "source": "arcgis-online",
+        "sourceItemId": "1869042d898c4424a6c37e8da67baa94",
+        "sourceLayerId": 0,
+        "compatibilityScore": 100,
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "endpoint": "https://services1.arcgis.com/xnOV358bj0tLwxji/arcgis/rest/services/Chester_County_PA_Parcels/FeatureServer/0/query"
+      },
+      "recordFilter": {
+        "requireAny": [
+          [
+            "ADDR1"
+          ],
+          [
+            "OBJECTID"
+          ]
+        ]
+      },
+      "autoMapping": {
+        "appliedAt": "2026-08-01T14:00:39.841Z",
+        "sampleCount": 50,
+        "report": "reports/county-mapping/PA-CHESTER-PROPERTY_ASSESSMENT-MAPPING.json",
+        "minimumScore": 65,
+        "confidence": {
+          "address": {
+            "score": 133,
+            "primaryField": "ADDR1",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "zip": {
+            "score": 115,
+            "primaryField": "ZIP1",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "ownerName": {
+            "score": 130,
+            "primaryField": "OWN1",
+            "completeness": 1,
+            "alternatives": [
+              "OWN2"
+            ]
+          },
+          "coOwnerName": {
+            "score": 109,
+            "primaryField": "OWN2",
+            "completeness": 0.44,
+            "alternatives": []
+          },
+          "sourceRecordId": {
+            "score": 155,
+            "primaryField": "OBJECTID",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "sourceUpdatedAt": {
+            "score": 65,
+            "primaryField": "MODIFY_DAT",
+            "completeness": 0,
+            "alternatives": []
+          },
+          "landAcres": {
+            "score": 105,
+            "primaryField": "ACRE_PLAN_",
+            "completeness": 1,
+            "alternatives": [
+              "ACRE_PLA_1"
+            ]
+          },
+          "livingArea": {
+            "score": 108,
+            "primaryField": "SQFT_PLAN_",
+            "completeness": 1,
+            "alternatives": []
+          }
+        },
+        "warnings": [
+          "No confident mapping found for required field parcelId."
+        ]
+      }
+    }
+  },
+  "updatedAt": "2026-08-01T14:00:39.841Z"
+}
