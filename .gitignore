@@ -9,3 +9,4 @@ dist/
 # Local OAuth credentials
 clasp-client-secret.json
 .clasprc.json
+recovery-conflicts/
