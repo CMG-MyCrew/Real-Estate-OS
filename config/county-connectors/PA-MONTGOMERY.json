@@ -14,7 +14,8 @@
       "mapping": {
         "address": [
           "LOCATION1",
-          "ADDR1"
+          "ADDR1",
+          "LOC_ADD"
         ],
         "city": [
           "Muni_Name"
@@ -29,13 +30,16 @@
           "ALT_ID"
         ],
         "ownerName": [
-          "OWN1"
+          "OWN1",
+          "OWN_INFO_C",
+          "OWN_INFO_1"
         ],
         "coOwnerName": [
           "OWN2"
         ],
         "sourceRecordId": [
-          "OBJECTID"
+          "OBJECTID",
+          "OBJECTID_1"
         ],
         "sourceUpdatedAt": [
           "PROP_INFO1",
@@ -70,7 +74,8 @@
           "SFLA"
         ],
         "saleDate": [
-          "SALE_DATE_"
+          "SALE_DATE_",
+          "SALE_DATE"
         ],
         "salePrice": [
           "CONSIDERAT"
@@ -107,7 +112,8 @@
         "requireAny": [
           [
             "LOCATION1",
-            "ADDR1"
+            "ADDR1",
+            "LOC_ADD"
           ],
           [
             "PARCEL",
@@ -115,8 +121,129 @@
             "ALT_ID"
           ]
         ]
+      },
+      "autoMapping": {
+        "appliedAt": "2026-08-01T13:06:37.786Z",
+        "sampleCount": 50,
+        "report": "reports/county-mapping/PA-MONTGOMERY-PROPERTY_ASSESSMENT-MAPPING.json",
+        "minimumScore": 65,
+        "confidence": {
+          "address": {
+            "score": 139,
+            "primaryField": "LOCATION1",
+            "completeness": 1,
+            "alternatives": [
+              "ADDR1",
+              "LOC_ADD"
+            ]
+          },
+          "city": {
+            "score": 123,
+            "primaryField": "Muni_Name",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "zip": {
+            "score": 145,
+            "primaryField": "ZIP1_ZIP2",
+            "completeness": 1,
+            "alternatives": [
+              "LOC_ZIP1_Z"
+            ]
+          },
+          "parcelId": {
+            "score": 145,
+            "primaryField": "PARCEL",
+            "completeness": 1,
+            "alternatives": [
+              "TAXPIN",
+              "ALT_ID"
+            ]
+          },
+          "ownerName": {
+            "score": 130,
+            "primaryField": "OWN1",
+            "completeness": 1,
+            "alternatives": [
+              "OWN_INFO_C",
+              "OWN_INFO_1"
+            ]
+          },
+          "coOwnerName": {
+            "score": 109,
+            "primaryField": "OWN2",
+            "completeness": 0.04,
+            "alternatives": []
+          },
+          "sourceRecordId": {
+            "score": 155,
+            "primaryField": "OBJECTID",
+            "completeness": 1,
+            "alternatives": [
+              "OBJECTID_1"
+            ]
+          },
+          "sourceUpdatedAt": {
+            "score": 140,
+            "primaryField": "PROP_INFO1",
+            "completeness": 1,
+            "alternatives": [
+              "ASSMT_CHGD"
+            ]
+          },
+          "estimatedValue": {
+            "score": 140,
+            "primaryField": "TOTAL_APPR",
+            "completeness": 1,
+            "alternatives": [
+              "TOTAL_ASSE",
+              "ASSESSMENT"
+            ]
+          },
+          "assessmentValue": {
+            "score": 138,
+            "primaryField": "TOTAL_ASSE",
+            "completeness": 1,
+            "alternatives": [
+              "ASSESSMENT"
+            ]
+          },
+          "yearBuilt": {
+            "score": 148,
+            "primaryField": "YEAR_BUILT",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "landAcres": {
+            "score": 135,
+            "primaryField": "LAND_ACRES",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "livingArea": {
+            "score": 136,
+            "primaryField": "SFLA",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "saleDate": {
+            "score": 148,
+            "primaryField": "SALE_DATE",
+            "completeness": 1,
+            "alternatives": [
+              "SALE_DATE_"
+            ]
+          },
+          "salePrice": {
+            "score": 136,
+            "primaryField": "CONSIDERAT",
+            "completeness": 1,
+            "alternatives": []
+          }
+        },
+        "warnings": []
       }
     }
   },
-  "updatedAt": "2026-08-01T12:29:16.971503+00:00"
+  "updatedAt": "2026-08-01T13:06:37.786Z"
 }
