@@ -35,6 +35,15 @@ import {
 import {
   runNationalBuildPipeline
 } from './national-build/NationalBuildPipeline.mjs';
+import {
+  inspectConnectorSchemas,
+  saveDriftSummary
+} from './schema-drift/SchemaDriftEngine.mjs';
+import {
+  planConnectorRepair,
+  healConnector,
+  healAllConnectors
+} from './self-healing/SelfHealingEngine.mjs';
 
 const ROOT = process.cwd();
 const CONNECTOR_DIR = path.join(ROOT, 'src', 'connectors', 'generated');
@@ -2711,6 +2720,413 @@ async function commandNationalBuild(args) {
   }
 }
 
+async function commandSchemaDrift(args) {
+  const connectorIdValue = String(
+    args.connector ||
+    args['connector-id'] ||
+    ''
+  )
+    .trim()
+    .toUpperCase();
+
+  if (!connectorIdValue) {
+    fail('--connector is required.');
+  }
+
+  const entry = getRegistryEntry(
+    ROOT,
+    connectorIdValue
+  );
+
+  if (!entry) {
+    fail(
+      `Registry entry not found: ${connectorIdValue}`
+    );
+  }
+
+  const requestedDataset = String(
+    args.dataset || ''
+  )
+    .trim()
+    .toLowerCase();
+
+  const datasets = Object.values(
+    entry.datasets || {}
+  ).filter(dataset => {
+    return (
+      !requestedDataset ||
+      dataset.dataset === requestedDataset
+    );
+  });
+
+  const results =
+    await inspectConnectorSchemas({
+      root: ROOT,
+      connectorId: connectorIdValue,
+      datasets,
+      sampleCount: Math.max(
+        5,
+        Math.min(
+          Number(args.samples || 50),
+          250
+        )
+      ),
+      accept: args.accept === true,
+      continueOnError:
+        args['continue-on-error'] === true
+    });
+
+  const registry = refreshRegistry({
+    root: ROOT
+  });
+
+  const registryEntry =
+    registry.connectors?.[
+      connectorIdValue
+    ];
+
+  results.forEach(result => {
+    const registryDataset =
+      registryEntry?.datasets?.[
+        result.dataset
+      ];
+
+    if (!registryDataset) {
+      return;
+    }
+
+    registryDataset.schemaDrift = {
+      checkedAt:
+        result.checkedAt || new Date().toISOString(),
+      status: result.status,
+      changed:
+        result.comparison?.changed === true,
+      severity:
+        result.comparison?.severity || '',
+      requiresReview:
+        result.comparison?.requiresReview === true,
+      addedFields:
+        result.comparison?.addedFields || [],
+      removedFields:
+        result.comparison?.removedFields || [],
+      changedTypes:
+        result.comparison?.changedTypes || [],
+      report:
+        `reports/schema-drift/` +
+        `${connectorIdValue}/` +
+        `${result.dataset}.json`
+    };
+
+    if (
+      registryDataset.schemaDrift.requiresReview
+    ) {
+      registryDataset.status =
+        'REVIEW_REQUIRED';
+    }
+  });
+
+  const registryPath = path.join(
+    ROOT,
+    'config',
+    'county-registry',
+    'registry.json'
+  );
+
+  fs.writeFileSync(
+    registryPath,
+    `${JSON.stringify(registry, null, 2)}\n`
+  );
+
+  console.log('');
+  console.log(
+    `Schema drift results for ${connectorIdValue}`
+  );
+
+  results.forEach(result => {
+    console.log(
+      [
+        result.dataset.padEnd(24),
+        String(result.status).padEnd(20),
+        result.ok ? 'PASS' : 'REVIEW'
+      ].join(' | ')
+    );
+  });
+
+  if (results.some(result => !result.ok)) {
+    process.exitCode = 1;
+  }
+}
+
+async function commandSchemaDriftAll(args) {
+  const entries = listRegistry({
+    root: ROOT,
+    state: args.state || ''
+  }).filter(entry => {
+    return entry.implementation === 'generated';
+  });
+
+  const results = [];
+
+  for (const entry of entries) {
+    const connectorResults =
+      await inspectConnectorSchemas({
+        root: ROOT,
+        connectorId: entry.connectorId,
+        datasets: Object.values(
+          entry.datasets || {}
+        ),
+        sampleCount: Math.max(
+          5,
+          Math.min(
+            Number(args.samples || 50),
+            250
+          )
+        ),
+        accept: args.accept === true,
+        continueOnError:
+          args['continue-on-error'] === true
+      });
+
+    results.push(
+      ...connectorResults
+    );
+
+    if (
+      connectorResults.some(result => !result.ok) &&
+      args['continue-on-error'] !== true
+    ) {
+      break;
+    }
+  }
+
+  const summary = {
+    checkedAt: new Date().toISOString(),
+    connectorCount:
+      new Set(
+        results.map(
+          result => result.connectorId
+        )
+      ).size,
+    datasetCount: results.length,
+    passed:
+      results.filter(result => result.ok).length,
+    reviewRequired:
+      results.filter(result => !result.ok).length,
+    results
+  };
+
+  const outputPath =
+    saveDriftSummary(
+      ROOT,
+      summary
+    );
+
+  console.log('');
+  console.log('Schema drift scan complete.');
+  console.log(
+    `Datasets: ${summary.datasetCount}`
+  );
+  console.log(
+    `Passed:   ${summary.passed}`
+  );
+  console.log(
+    `Review:   ${summary.reviewRequired}`
+  );
+  console.log(
+    `Report:   ${path.relative(ROOT, outputPath)}`
+  );
+
+  if (summary.reviewRequired > 0) {
+    process.exitCode = 1;
+  }
+}
+
+async function commandSelfHeal(args) {
+  const connectorIdValue = String(
+    args.connector ||
+    args['connector-id'] ||
+    ''
+  )
+    .trim()
+    .toUpperCase();
+
+  if (!connectorIdValue) {
+    fail('--connector is required.');
+  }
+
+  const options = {
+    root: ROOT,
+    connectorId:
+      connectorIdValue,
+    dataset: String(
+      args.dataset || ''
+    )
+      .trim()
+      .toLowerCase(),
+    execute:
+      args.execute === true,
+    forceRemap:
+      args['force-remap'] === true,
+    allowEndpointReplacement:
+      args[
+        'allow-endpoint-replacement'
+      ] === true,
+    replaceMappings:
+      args['replace-mappings'] === true,
+    push:
+      args.push === true,
+    configure:
+      args.configure !== false,
+    test:
+      args.test !== false,
+    samples: Math.max(
+      5,
+      Math.min(
+        Number(args.samples || 50),
+        250
+      )
+    ),
+    results: Math.max(
+      10,
+      Math.min(
+        Number(args.results || 150),
+        250
+      )
+    ),
+    healthLimit: Math.max(
+      1,
+      Math.min(
+        Number(
+          args['health-limit'] || 25
+        ),
+        50
+      )
+    ),
+    testLimit: Math.max(
+      1,
+      Math.min(
+        Number(
+          args['test-limit'] || 10
+        ),
+        100
+      )
+    ),
+    continueOnError:
+      args['continue-on-error'] === true
+  };
+
+  if (!options.execute) {
+    const plan =
+      planConnectorRepair(options);
+
+    console.log(
+      JSON.stringify(plan, null, 2)
+    );
+
+    return;
+  }
+
+  const result =
+    await healConnector(options);
+
+  console.log('');
+  console.log('Self-healing result');
+  console.log('-------------------');
+  console.log(
+    `Connector: ${result.connectorId}`
+  );
+  console.log(
+    `Status:    ${result.finalStatus || 'UNKNOWN'}`
+  );
+  console.log(
+    `Result:    ${result.ok ? 'PASS' : 'REVIEW_REQUIRED'}`
+  );
+  console.log(
+    `Report:    ${path.relative(ROOT, result.reportPath)}`
+  );
+
+  if (!result.ok) {
+    process.exitCode = 1;
+  }
+}
+
+async function commandSelfHealAll(args) {
+  const result =
+    await healAllConnectors({
+      root: ROOT,
+      state: args.state || '',
+      execute:
+        args.execute === true,
+      forceRemap:
+        args['force-remap'] === true,
+      allowEndpointReplacement:
+        args[
+          'allow-endpoint-replacement'
+        ] === true,
+      replaceMappings:
+        args['replace-mappings'] === true,
+      push:
+        args.push === true,
+      configure:
+        args.configure !== false,
+      test:
+        args.test !== false,
+      samples: Math.max(
+        5,
+        Math.min(
+          Number(args.samples || 50),
+          250
+        )
+      ),
+      results: Math.max(
+        10,
+        Math.min(
+          Number(args.results || 150),
+          250
+        )
+      ),
+      healthLimit: Math.max(
+        1,
+        Math.min(
+          Number(
+            args['health-limit'] || 25
+          ),
+          50
+        )
+      ),
+      testLimit: Math.max(
+        1,
+        Math.min(
+          Number(
+            args['test-limit'] || 10
+          ),
+          100
+        )
+      ),
+      continueOnError:
+        args['continue-on-error'] === true
+    });
+
+  console.log('');
+  console.log('Self-healing scan complete.');
+  console.log(
+    `Connectors: ${result.connectorCount}`
+  );
+  console.log(
+    `Passed:     ${result.passed}`
+  );
+  console.log(
+    `Failed:     ${result.failed}`
+  );
+  console.log(
+    `Report:     ${path.relative(ROOT, result.reportPath)}`
+  );
+
+  if (result.failed > 0) {
+    process.exitCode = 1;
+  }
+}
+
 function commandList() {
   const manifests = readManifests();
 
@@ -3207,6 +3623,22 @@ switch (command) {
 
   case 'national:build':
     await commandNationalBuild(args);
+    break;
+
+  case 'county:schema-drift':
+    await commandSchemaDrift(args);
+    break;
+
+  case 'county:schema-drift-all':
+    await commandSchemaDriftAll(args);
+    break;
+
+  case 'county:self-heal':
+    await commandSelfHeal(args);
+    break;
+
+  case 'county:self-heal-all':
+    await commandSelfHealAll(args);
     break;
 
   case 'county:promote':

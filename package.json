@@ -28,7 +28,11 @@
     "county:registry-list": "node tools/reos.mjs county:registry-list",
     "county:registry-status": "node tools/reos.mjs county:registry-status",
     "county:registry-update": "node tools/reos.mjs county:registry-update",
-    "national:build": "node tools/reos.mjs national:build"
+    "national:build": "node tools/reos.mjs national:build",
+    "county:schema-drift": "node tools/reos.mjs county:schema-drift",
+    "county:schema-drift-all": "node tools/reos.mjs county:schema-drift-all",
+    "county:self-heal": "node tools/reos.mjs county:self-heal",
+    "county:self-heal-all": "node tools/reos.mjs county:self-heal-all"
   },
   "devDependencies": {
     "@google/clasp": "^2.4.2"
