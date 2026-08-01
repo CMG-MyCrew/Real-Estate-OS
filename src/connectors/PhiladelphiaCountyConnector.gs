@@ -7,7 +7,14 @@ var REOS = REOS || {};
 
 REOS.PhiladelphiaCountyConnector = (function () {
   var CONNECTOR_ID = 'PA-PHILADELPHIA';
-  var DATASETS = ['tax_delinquent', 'code_violations', 'vacant_properties', 'property_assessment'];
+  var DATASETS = [
+    'tax_delinquent',
+    'code_violations',
+    'vacant_properties',
+    'property_assessment',
+    'sheriff_tax_sales',
+    'sheriff_mortgage_sales'
+  ];
 
   function register() {
     return REOS.CountyConnectorSDK.register({
@@ -24,6 +31,13 @@ REOS.PhiladelphiaCountyConnector = (function () {
   }
 
   function fetch_(context) {
+    if (
+      context.dataset === 'sheriff_tax_sales' ||
+      context.dataset === 'sheriff_mortgage_sales'
+    ) {
+      return fetchSheriffSales_(context);
+    }
+
     var endpoint = getEndpoint_(context.dataset, context.config);
 
     if (!endpoint) {
@@ -156,6 +170,178 @@ REOS.PhiladelphiaCountyConnector = (function () {
         ' records from Philadelphia ' +
         context.dataset
     };
+  }
+
+  function fetchSheriffSales_(context) {
+    var endpoint = getEndpoint_(
+      context.dataset,
+      context.config
+    );
+
+    if (!endpoint) {
+      throw new Error(
+        'Missing endpoint for Philadelphia dataset: ' +
+        context.dataset +
+        '. Configure REOS_COUNTY_PA_PHILADELPHIA_' +
+        context.dataset.toUpperCase() +
+        '_URL.'
+      );
+    }
+
+    var response = UrlFetchApp.fetch(endpoint, {
+      method: 'get',
+      headers: {
+        Accept: 'text/html,application/xhtml+xml'
+      },
+      muteHttpExceptions: true,
+      followRedirects: true
+    });
+
+    var status = response.getResponseCode();
+    var html = response.getContentText();
+
+    if (status < 200 || status >= 300) {
+      throw new Error(
+        'Philadelphia Sheriff endpoint returned HTTP ' +
+        status +
+        '. Endpoint: ' +
+        endpoint +
+        '. Response: ' +
+        html.slice(0, 500)
+      );
+    }
+
+    if (!html || html.toLowerCase().indexOf('<html') === -1) {
+      throw new Error(
+        'Philadelphia Sheriff endpoint did not return HTML. ' +
+        'Endpoint: ' +
+        endpoint +
+        '. Response: ' +
+        String(html || '').slice(0, 500)
+      );
+    }
+
+    var allRecords = parseSheriffRows_(
+      html,
+      context.dataset
+    );
+
+    var offset = Math.max(
+      Number(context.cursor) || 0,
+      0
+    );
+
+    var limit = Math.min(
+      Math.max(Number(context.limit) || 100, 1),
+      2000
+    );
+
+    var records = allRecords.slice(
+      offset,
+      offset + limit
+    );
+
+    return {
+      records: records,
+      nextCursor:
+        offset + records.length < allRecords.length
+          ? String(offset + records.length)
+          : '',
+      message:
+        'Fetched ' +
+        records.length +
+        ' of ' +
+        allRecords.length +
+        ' Philadelphia Sheriff Sale records.'
+    };
+  }
+
+  function parseSheriffRows_(html, dataset) {
+    var records = [];
+    var rowPattern = /<tr\b[^>]*>([\s\S]*?)<\/tr>/gi;
+    var rowMatch;
+
+    while ((rowMatch = rowPattern.exec(html)) !== null) {
+      var cells = [];
+      var cellPattern = /<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi;
+      var cellMatch;
+
+      while (
+        (cellMatch = cellPattern.exec(rowMatch[1])) !== null
+      ) {
+        cells.push(
+          cleanSheriffCell_(cellMatch[1])
+        );
+      }
+
+      if (cells.length < 7) {
+        continue;
+      }
+
+      var auctionId = cells[0];
+      var bookWrit = cells[1];
+      var opaNumber = cells[2];
+      var address = cells[3];
+      var saleType = cells[4];
+      var saleStatus = cells[5];
+      var saleDate = cells[6];
+
+      if (
+        !auctionId ||
+        !opaNumber ||
+        !address ||
+        !/^\d+$/.test(String(opaNumber).replace(/\s/g, ''))
+      ) {
+        continue;
+      }
+
+      if (
+        String(auctionId).toLowerCase() === 'id' ||
+        String(address).toLowerCase() === 'street'
+      ) {
+        continue;
+      }
+
+      records.push({
+        AUCTION_ID: auctionId,
+        BOOK_WRIT: bookWrit,
+        OPA_NUMBER: opaNumber,
+        STREET_ADDRESS: address,
+        SALE_TYPE: saleType ||
+          (
+            dataset === 'sheriff_tax_sales'
+              ? 'TAX DELINQUENT'
+              : 'MORTGAGE FORECLOSURE'
+          ),
+        SALE_STATUS: saleStatus,
+        SALE_DATE: saleDate,
+        SOURCE_URL: ''
+      });
+    }
+
+    return records;
+  }
+
+  function cleanSheriffCell_(value) {
+    return decodeSheriffEntities_(
+      String(value || '')
+        .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+        .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+    );
+  }
+
+  function decodeSheriffEntities_(value) {
+    return String(value || '')
+      .replace(/&nbsp;/gi, ' ')
+      .replace(/&amp;/gi, '&')
+      .replace(/&quot;/gi, '"')
+      .replace(/&#39;/gi, "'")
+      .replace(/&lt;/gi, '<')
+      .replace(/&gt;/gi, '>');
   }
 
   function normalize_(raw, context) {
@@ -509,6 +695,80 @@ REOS.PhiladelphiaCountyConnector = (function () {
         '. Vacancy rank: ' +
         String(record['Vacancy Rank'] || '') +
         '.';
+    } else if (
+      context.dataset === 'sheriff_tax_sales' ||
+      context.dataset === 'sheriff_mortgage_sales'
+    ) {
+      record.Address = first_(raw, [
+        'STREET_ADDRESS',
+        'street_address',
+        'address'
+      ]);
+
+      record.Zip = extractZip_(
+        record.Address ||
+        first_(raw, ['ZIP_CODE', 'zip_code'])
+      );
+
+      record['Parcel ID'] = first_(raw, [
+        'OPA_NUMBER',
+        'opa_number',
+        'assessment_id'
+      ]);
+
+      record['Source Record ID'] = first_(raw, [
+        'AUCTION_ID',
+        'auction_id',
+        'BOOK_WRIT',
+        'book_writ'
+      ]);
+
+      record['Distress Type'] =
+        context.dataset === 'sheriff_tax_sales'
+          ? 'Sheriff Tax Sale'
+          : 'Sheriff Mortgage Sale';
+
+      record['Sheriff Auction ID'] = first_(raw, [
+        'AUCTION_ID',
+        'auction_id'
+      ]);
+
+      record['Book/Writ'] = first_(raw, [
+        'BOOK_WRIT',
+        'book_writ',
+        'booknwrit'
+      ]);
+
+      record['Sale Type'] = first_(raw, [
+        'SALE_TYPE',
+        'sale_type'
+      ]);
+
+      record['Sale Status'] = first_(raw, [
+        'SALE_STATUS',
+        'sale_status',
+        'status'
+      ]);
+
+      record['Sale Date'] = parseSheriffDate_(
+        first_(raw, [
+          'SALE_DATE',
+          'sale_date'
+        ])
+      );
+
+      record['Source Updated At'] =
+        record['Sale Date'];
+
+      record.Notes =
+        'Philadelphia Sheriff Sale. ' +
+        'Auction ID: ' +
+        String(record['Sheriff Auction ID'] || '') +
+        '. Book/Writ: ' +
+        String(record['Book/Writ'] || '') +
+        '. Status: ' +
+        String(record['Sale Status'] || '') +
+        '.';
     } else if (context.dataset === 'property_assessment') {
       record['Distress Type'] = 'Assessment Record';
       record['Estimated Value'] = first_(raw, ['market_value', 'total_market_value', 'assessed_value']);
@@ -568,6 +828,24 @@ REOS.PhiladelphiaCountyConnector = (function () {
     var number = Number(normalized);
 
     return isNaN(number) ? '' : number;
+  }
+
+  function extractZip_(value) {
+    var match = String(value || '').match(
+      /\b\d{5}(?:-\d{4})?\b/
+    );
+
+    return match ? match[0] : '';
+  }
+
+  function parseSheriffDate_(value) {
+    if (!value) return '';
+
+    var date = value instanceof Date
+      ? value
+      : new Date(value);
+
+    return isNaN(date.getTime()) ? value : date;
   }
 
   function buildNotes_(raw, dataset) {

@@ -94,6 +94,7 @@ REOS.CountyConnectorSDK = (function () {
     };
 
     var validationErrors = [];
+    var recordErrors = [];
 
     insertRun_(runId, connector, dataset, mode, started, cursor);
 
@@ -166,6 +167,29 @@ REOS.CountyConnectorSDK = (function () {
         } catch (recordError) {
           stats.failed += 1;
 
+          if (recordErrors.length < 5) {
+            recordErrors.push({
+              index: index,
+              error: String(recordError),
+              message:
+                recordError && recordError.message
+                  ? recordError.message
+                  : String(recordError),
+              address:
+                normalized && normalized.Address
+                  ? normalized.Address
+                  : '',
+              parcelId:
+                normalized && normalized['Parcel ID']
+                  ? normalized['Parcel ID']
+                  : '',
+              sourceRecordId:
+                normalized && normalized['Source Record ID']
+                  ? normalized['Source Record ID']
+                  : ''
+            });
+          }
+
           if (REOS.Logger && REOS.Logger.error) {
             REOS.Logger.error('County connector record failed', {
               connectorId: connector.id,
@@ -197,6 +221,7 @@ REOS.CountyConnectorSDK = (function () {
         mode: mode,
         stats: stats,
         validationErrors: validationErrors,
+        recordErrors: recordErrors,
         nextCursor: cursor,
         completedAt: completed.toISOString()
       };
