@@ -311,9 +311,14 @@ async function expandArcGISService(item) {
     }];
   }
 
-  const layers = Array.isArray(metadata.layers)
-    ? metadata.layers
-    : [];
+  const layers = [
+    ...(Array.isArray(metadata.layers)
+      ? metadata.layers
+      : []),
+    ...(Array.isArray(metadata.tables)
+      ? metadata.tables
+      : [])
+  ];
 
   if (!layers.length) {
     return [{
@@ -329,8 +334,10 @@ async function expandArcGISService(item) {
       serviceUrl,
       endpoint: serviceUrl.endsWith('/query')
         ? serviceUrl
-        : `${serviceUrl}/query`,
-      isPublic: item.access === 'public'
+        : '',
+      isPublic: item.access === 'public',
+      expansionError:
+        'ArcGIS service exposed no queryable layers.'
     }];
   }
 

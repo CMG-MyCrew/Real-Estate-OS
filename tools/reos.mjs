@@ -9,6 +9,11 @@ import {
   saveDiscoveryReport
 } from './county-discovery/CountyDiscoveryEngine.mjs';
 import {
+  discoverAllDatasets,
+  saveAutomaticDiscoveryPlan,
+  saveUnderlyingDiscoveryReport
+} from './county-discovery/AutomaticDatasetDiscovery.mjs';
+import {
   fetchSampleRecords,
   inferFieldMapping,
   saveMappingReport
@@ -1993,6 +1998,259 @@ function mergeMappings(existing, inferred) {
   return output;
 }
 
+function writeAutomaticPromotionReport(
+  results,
+  outputPath
+) {
+  fs.mkdirSync(
+    path.dirname(outputPath),
+    { recursive: true }
+  );
+
+  fs.writeFileSync(
+    outputPath,
+    `${JSON.stringify({
+      schemaVersion: '1.0.0',
+      generatedAt: new Date().toISOString(),
+      results
+    }, null, 2)}\n`,
+    'utf8'
+  );
+}
+
+function runAutomaticPromotion({
+  planPath,
+  dataset,
+  candidateNumber,
+  push,
+  configure,
+  test,
+  limit
+}) {
+  const args = [
+    process.execPath,
+    path.join(ROOT, 'tools', 'reos.mjs'),
+    'county:promote',
+    '--report',
+    planPath,
+    '--candidate',
+    String(candidateNumber),
+    '--dataset',
+    dataset,
+    '--replace',
+    '--force'
+  ];
+
+  if (push) {
+    args.push('--push');
+  }
+
+  if (configure) {
+    args.push('--configure');
+  }
+
+  if (test) {
+    args.push('--test');
+    args.push('--limit', String(limit));
+  }
+
+  const result = spawnSync(
+    args[0],
+    args.slice(1),
+    {
+      cwd: ROOT,
+      encoding: 'utf8',
+      shell: false
+    }
+  );
+
+  process.stdout.write(
+    String(result.stdout || '')
+  );
+
+  process.stderr.write(
+    String(result.stderr || '')
+  );
+
+  return {
+    dataset,
+    candidateNumber,
+    ok: result.status === 0,
+    exitCode: result.status
+  };
+}
+
+async function commandDiscoverAll(args) {
+  const state = normalizeState(args.state);
+  const county = normalizeCounty(args.county);
+
+  const datasets = splitList(
+    args.datasets,
+    [
+      'property_assessment',
+      'tax_delinquent',
+      'code_violations',
+      'vacant_properties',
+      'sheriff_sales',
+      'building_permits'
+    ]
+  );
+
+  const plan = await discoverAllDatasets({
+    root: ROOT,
+    state,
+    county,
+    datasets,
+    sources: args.sources || 'arcgis,socrata',
+    limit: Number(args.limit || 50),
+    results: Number(args.results || 100),
+    health: args.health === true,
+    healthLimit: Number(
+      args['health-limit'] || 20
+    )
+  });
+
+  const countySlug = county
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, '-');
+
+  const planPath = args.output
+    ? path.resolve(ROOT, String(args.output))
+    : path.join(
+        ROOT,
+        'reports',
+        'county-discovery',
+        `${state}-${countySlug}-AUTOMATIC-DISCOVERY.json`
+      );
+
+  const rawReportPath = path.join(
+    ROOT,
+    'reports',
+    'county-discovery',
+    `${state}-${countySlug}-AUTOMATIC-CANDIDATES.json`
+  );
+
+  saveAutomaticDiscoveryPlan(
+    plan,
+    planPath
+  );
+
+  saveUnderlyingDiscoveryReport(
+    plan,
+    rawReportPath
+  );
+
+  console.log('');
+  console.log(
+    `Automatic discovery plan: ` +
+    `${path.relative(ROOT, planPath)}`
+  );
+
+  if (args.promote !== true) {
+    console.log('');
+    console.log(
+      'Review selections, then rerun with --promote.'
+    );
+
+    return;
+  }
+
+  const promotionReport = [];
+  const promotionInput = {
+    ...plan,
+    results: []
+  };
+
+  const candidateIndexes = {};
+
+  for (
+    const [dataset, selection]
+    of Object.entries(plan.selections)
+  ) {
+    if (!selection.selected) {
+      continue;
+    }
+
+    promotionInput.results.push(
+      selection.selected
+    );
+
+    candidateIndexes[dataset] =
+      promotionInput.results.length;
+  }
+
+  const promotionInputPath = path.join(
+    ROOT,
+    'reports',
+    'county-discovery',
+    `${state}-${countySlug}-PROMOTION-INPUT.json`
+  );
+
+  fs.writeFileSync(
+    promotionInputPath,
+    `${JSON.stringify(
+      promotionInput,
+      null,
+      2
+    )}\n`,
+    'utf8'
+  );
+
+  for (
+    const [dataset, candidateNumber]
+    of Object.entries(candidateIndexes)
+  ) {
+    console.log('');
+    console.log(
+      `Promoting ${dataset}...`
+    );
+
+    const result = runAutomaticPromotion({
+      planPath:
+        path.relative(
+          ROOT,
+          promotionInputPath
+        ),
+      dataset,
+      candidateNumber,
+      push: args.push === true,
+      configure: args.configure !== false,
+      test: args.test === true,
+      limit: Math.max(
+        1,
+        Math.min(Number(args['test-limit'] || 5), 100)
+      )
+    });
+
+    promotionReport.push(result);
+
+    if (
+      !result.ok &&
+      args['continue-on-error'] !== true
+    ) {
+      break;
+    }
+  }
+
+  const promotionReportPath = path.join(
+    ROOT,
+    'reports',
+    'county-discovery',
+    `${state}-${countySlug}-PROMOTION-RESULTS.json`
+  );
+
+  writeAutomaticPromotionReport(
+    promotionReport,
+    promotionReportPath
+  );
+
+  console.log('');
+  console.log(
+    `Promotion results: ` +
+    `${path.relative(ROOT, promotionReportPath)}`
+  );
+}
+
 function commandList() {
   const manifests = readManifests();
 
@@ -2156,6 +2414,34 @@ Commands:
       --county Montgomery \
       --sources arcgis,socrata
 
+  county:discover-all
+    Automatically discover and select datasets for a county.
+
+    Review-only discovery:
+
+    ./tools/reos county:discover-all \
+      --state PA \
+      --county Chester \
+      --health
+
+    Discover, promote, configure, push, and dry-test:
+
+    ./tools/reos county:discover-all \
+      --state PA \
+      --county Chester \
+      --health \
+      --promote \
+      --push \
+      --test \
+      --test-limit 5
+
+    Restrict dataset types:
+
+    ./tools/reos county:discover-all \
+      --state PA \
+      --county Chester \
+      --datasets property_assessment,tax_delinquent
+
   county:promote
     Promote one discovery candidate into a county manifest.
 
@@ -2269,6 +2555,10 @@ switch (command) {
 
   case 'county:discover':
     await commandDiscover(args);
+    break;
+
+  case 'county:discover-all':
+    await commandDiscoverAll(args);
     break;
 
   case 'county:promote':

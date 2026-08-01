@@ -20,7 +20,8 @@
     "county:regenerate": "node tools/reos.mjs county:regenerate",
     "county:discover": "node tools/reos.mjs county:discover",
     "county:promote": "node tools/reos.mjs county:promote",
-    "county:automap": "node tools/reos.mjs county:automap"
+    "county:automap": "node tools/reos.mjs county:automap",
+    "county:discover-all": "node tools/reos.mjs county:discover-all"
   },
   "devDependencies": {
     "@google/clasp": "^2.4.2"
