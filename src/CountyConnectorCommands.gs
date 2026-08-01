@@ -152,6 +152,55 @@ function REOS_COUNTY_TERMINAL_SYNC(options) {
     };
   }
 
+  if (action === 'test-county') {
+    if (!connectorId) {
+      throw new Error(
+        'connectorId is required for test-county.'
+      );
+    }
+
+    var connector = REOS.CountyConnectorSDK.get(connectorId);
+
+    if (!connector) {
+      throw new Error(
+        'County connector not registered: ' + connectorId
+      );
+    }
+
+    var testLimit = Math.max(
+      1,
+      Math.min(Number(options.limit || 10), 100)
+    );
+
+    return {
+      ok: true,
+      connectorId: connectorId,
+      mode: 'DRY_RUN',
+      results: connector.datasets.map(function (datasetName) {
+        try {
+          return REOS.CountyConnectorSDK.run(
+            connectorId,
+            {
+              dataset: datasetName,
+              limit: testLimit,
+              dryRun: true
+            }
+          );
+        } catch (error) {
+          return {
+            ok: false,
+            connectorId: connectorId,
+            dataset: datasetName,
+            error:
+              error && error.message
+                ? error.message
+                : String(error)
+          };
+        }
+      })
+    };
+  }
+
   if (action === 'adapter-health') {
     var adapterName = String(
       options.adapter || ''
