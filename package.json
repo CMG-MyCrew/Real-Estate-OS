@@ -32,7 +32,8 @@
     "county:schema-drift": "node tools/reos.mjs county:schema-drift",
     "county:schema-drift-all": "node tools/reos.mjs county:schema-drift-all",
     "county:self-heal": "node tools/reos.mjs county:self-heal",
-    "county:self-heal-all": "node tools/reos.mjs county:self-heal-all"
+    "county:self-heal-all": "node tools/reos.mjs county:self-heal-all",
+    "maintenance:run": "node tools/reos.mjs maintenance:run"
   },
   "devDependencies": {
     "@google/clasp": "^2.4.2"

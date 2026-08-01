@@ -44,6 +44,9 @@ import {
   healConnector,
   healAllConnectors
 } from './self-healing/SelfHealingEngine.mjs';
+import {
+  runAutonomousMaintenance
+} from './autonomous-maintenance/AutonomousMaintenanceEngine.mjs';
 
 const ROOT = process.cwd();
 const CONNECTOR_DIR = path.join(ROOT, 'src', 'connectors', 'generated');
@@ -3127,6 +3130,83 @@ async function commandSelfHealAll(args) {
   }
 }
 
+async function commandAutonomousMaintenance(args) {
+  const result =
+    await runAutonomousMaintenance({
+      root: ROOT,
+      state: String(
+        args.state || ''
+      )
+        .trim()
+        .toUpperCase(),
+      execute:
+        args.execute === true,
+      push:
+        args.push === true,
+      allowEndpointReplacement:
+        args[
+          'allow-endpoint-replacement'
+        ] === true,
+      replaceMappings:
+        args['replace-mappings'] === true,
+      acceptBaseline:
+        args['accept-baseline'] === true,
+      continueOnError:
+        args['continue-on-error'] === true,
+      schemaSamples: Math.max(
+        5,
+        Math.min(
+          Number(
+            args['schema-samples'] ||
+            args.samples ||
+            50
+          ),
+          250
+        )
+      ),
+      mappingSamples: Math.max(
+        5,
+        Math.min(
+          Number(
+            args['mapping-samples'] ||
+            args.samples ||
+            50
+          ),
+          250
+        )
+      ),
+      discoveryResults: Math.max(
+        10,
+        Math.min(
+          Number(args.results || 150),
+          250
+        )
+      ),
+      healthLimit: Math.max(
+        1,
+        Math.min(
+          Number(
+            args['health-limit'] || 25
+          ),
+          50
+        )
+      ),
+      testLimit: Math.max(
+        1,
+        Math.min(
+          Number(
+            args['test-limit'] || 10
+          ),
+          100
+        )
+      )
+    });
+
+  if (!result.ok) {
+    process.exitCode = 1;
+  }
+}
+
 function commandList() {
   const manifests = readManifests();
 
@@ -3639,6 +3719,10 @@ switch (command) {
 
   case 'county:self-heal-all':
     await commandSelfHealAll(args);
+    break;
+
+  case 'maintenance:run':
+    await commandAutonomousMaintenance(args);
     break;
 
   case 'county:promote':

@@ -239,6 +239,32 @@ function REOS_COUNTY_TERMINAL_SYNC(options) {
     );
   }
 
+  if (action === 'maintenance-status') {
+    return REOS_COUNTY_GET_MAINTENANCE_STATUS();
+  }
+
+  if (action === 'set-maintenance-status') {
+    return REOS_COUNTY_SET_MAINTENANCE_STATUS(
+      options.status || {}
+    );
+  }
+
+  if (action === 'clear-maintenance-status') {
+    return REOS_COUNTY_CLEAR_MAINTENANCE_STATUS();
+  }
+
+  if (action === 'scheduled-verify') {
+    return REOS_COUNTY_SCHEDULED_VERIFY();
+  }
+
+  if (action === 'scheduled-verify-status') {
+    return REOS_COUNTY_GET_SCHEDULED_VERIFY_STATUS();
+  }
+
+  if (action === 'install-verify-trigger') {
+    return REOS_COUNTY_INSTALL_VERIFY_TRIGGER();
+  }
+
   if (action === 'registry-summary') {
     var registeredConnectors =
       REOS.CountyConnectorSDK.list();
