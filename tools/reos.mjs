@@ -18,6 +18,9 @@ import {
   inferFieldMapping,
   saveMappingReport
 } from './county-mapping/AutomaticFieldMapper.mjs';
+import {
+  runCountyBuildPipeline
+} from './county-build/CountyBuildPipeline.mjs';
 
 const ROOT = process.cwd();
 const CONNECTOR_DIR = path.join(ROOT, 'src', 'connectors', 'generated');
@@ -2251,6 +2254,52 @@ async function commandDiscoverAll(args) {
   );
 }
 
+async function commandBuild(args) {
+  const state = normalizeState(args.state);
+  const county = normalizeCounty(args.county);
+
+  const datasets = splitList(
+    args.datasets,
+    ['property_assessment']
+  );
+
+  const result = await runCountyBuildPipeline({
+    root: ROOT,
+    state,
+    county,
+    datasets,
+    execute: args.execute === true,
+    health: args.health !== false,
+    healthLimit: Math.max(
+      1,
+      Math.min(Number(args['health-limit'] || 20), 50)
+    ),
+    results: Math.max(
+      10,
+      Math.min(Number(args.results || 100), 250)
+    ),
+    samples: Math.max(
+      5,
+      Math.min(Number(args.samples || 50), 250)
+    ),
+    push: args.push === true,
+    configure: args.configure !== false,
+    test: args.test === true,
+    testLimit: Math.max(
+      1,
+      Math.min(Number(args['test-limit'] || 10), 100)
+    ),
+    replaceMappings: args['replace-mappings'] === true,
+    noFilter: args['no-filter'] === true,
+    continueOnError:
+      args['continue-on-error'] === true
+  });
+
+  if (!result.ok) {
+    process.exitCode = 1;
+  }
+}
+
 function commandList() {
   const manifests = readManifests();
 
@@ -2414,6 +2463,47 @@ Commands:
       --county Montgomery \
       --sources arcgis,socrata
 
+  county:build
+    Run the complete county connector build pipeline.
+
+    Plan and review only:
+
+    ./tools/reos county:build \
+      --state PA \
+      --county Delaware \
+      --datasets property_assessment
+
+    Execute local generation without deployment:
+
+    ./tools/reos county:build \
+      --state PA \
+      --county Delaware \
+      --datasets property_assessment \
+      --execute
+
+    Full generation, deployment, and terminal dry sync:
+
+    ./tools/reos county:build \
+      --state PA \
+      --county Delaware \
+      --datasets property_assessment \
+      --execute \
+      --push \
+      --test \
+      --samples 50 \
+      --test-limit 10
+
+    Continue through independently failing datasets:
+
+    ./tools/reos county:build \
+      --state PA \
+      --county Delaware \
+      --datasets property_assessment,code_violations \
+      --execute \
+      --push \
+      --test \
+      --continue-on-error
+
   county:discover-all
     Automatically discover and select datasets for a county.
 
@@ -2559,6 +2649,10 @@ switch (command) {
 
   case 'county:discover-all':
     await commandDiscoverAll(args);
+    break;
+
+  case 'county:build':
+    await commandBuild(args);
     break;
 
   case 'county:promote':

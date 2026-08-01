@@ -21,7 +21,8 @@
     "county:discover": "node tools/reos.mjs county:discover",
     "county:promote": "node tools/reos.mjs county:promote",
     "county:automap": "node tools/reos.mjs county:automap",
-    "county:discover-all": "node tools/reos.mjs county:discover-all"
+    "county:discover-all": "node tools/reos.mjs county:discover-all",
+    "county:build": "node tools/reos.mjs county:build"
   },
   "devDependencies": {
     "@google/clasp": "^2.4.2"
