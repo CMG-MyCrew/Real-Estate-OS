@@ -194,12 +194,21 @@ function REOS_COUNTY_TERMINAL_SYNC(options) {
     );
   }
 
-  return REOS.CountyConnectorSDK.run(connectorId, {
-    dataset: dataset,
-    limit: limit,
-    cursor: cursor,
-    dryRun: dryRun
-  });
+  try {
+    return REOS.CountyConnectorSDK.run(connectorId, {
+      dataset: dataset,
+      limit: limit,
+      cursor: cursor,
+      dryRun: dryRun
+    });
+  } catch (e) {
+    return {
+      ok: false,
+      error: String(e),
+      message: e && e.message ? e.message : String(e),
+      stack: e && e.stack ? e.stack : ''
+    };
+  }
 }
 
 function REOS_COUNTY_INSTALL_DAILY_TRIGGER() {

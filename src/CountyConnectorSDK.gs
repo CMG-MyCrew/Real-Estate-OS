@@ -93,6 +93,8 @@ REOS.CountyConnectorSDK = (function () {
       failed: 0
     };
 
+    var validationErrors = [];
+
     insertRun_(runId, connector, dataset, mode, started, cursor);
 
     try {
@@ -142,6 +144,18 @@ REOS.CountyConnectorSDK = (function () {
 
           if (!validation.ok) {
             stats.failed += 1;
+
+            if (validationErrors.length < 5) {
+              validationErrors.push({
+                index: index,
+                errors: validation.errors || [],
+                address: normalized.Address || '',
+                parcelId: normalized['Parcel ID'] || '',
+                sourceRecordId:
+                  normalized['Source Record ID'] || ''
+              });
+            }
+
             return;
           }
 
@@ -182,6 +196,7 @@ REOS.CountyConnectorSDK = (function () {
         dataset: dataset,
         mode: mode,
         stats: stats,
+        validationErrors: validationErrors,
         nextCursor: cursor,
         completedAt: completed.toISOString()
       };

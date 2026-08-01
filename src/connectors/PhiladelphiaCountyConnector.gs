@@ -183,9 +183,125 @@ REOS.PhiladelphiaCountyConnector = (function () {
     };
 
     if (context.dataset === 'tax_delinquent') {
+      record.Address = first_(raw, [
+        'STREET_ADDRESS',
+        'street_address',
+        'address',
+        'property_address'
+      ]);
+
+      record.Zip = first_(raw, [
+        'ZIP_CODE',
+        'zip_code',
+        'zip',
+        'zipcode'
+      ]);
+
+      record['Parcel ID'] = first_(raw, [
+        'OPA_NUMBER',
+        'opa_number',
+        'parcel_number',
+        'parcel_id'
+      ]);
+
+      record['Owner Name'] = first_(raw, [
+        'OWNER',
+        'owner',
+        'owner_name'
+      ]);
+
+      record['Source Record ID'] = first_(raw, [
+        'OBJECTID',
+        'objectid',
+        'record_id',
+        'id'
+      ]);
+
       record['Distress Type'] = 'Tax Delinquent';
-      record['Tax Delinquent Amount'] = first_(raw, ['amount_due', 'balance', 'delinquent_amount', 'total_due']);
-      record['Tax Year'] = first_(raw, ['tax_year', 'year']);
+      record['Tax Delinquent Amount'] = numberFirst_(raw, [
+        'TOTAL_DUE',
+        'total_due',
+        'amount_due',
+        'balance',
+        'delinquent_amount'
+      ]);
+      record['Tax Principal'] = numberFirst_(raw, [
+        'PRINCIPAL_DUE',
+        'principal_due',
+        'principal'
+      ]);
+      record['Tax Interest'] = numberFirst_(raw, [
+        'INTEREST_DUE',
+        'interest_due',
+        'interest'
+      ]);
+      record['Tax Penalty'] = numberFirst_(raw, [
+        'PENALTY_DUE',
+        'penalty_due',
+        'penalty'
+      ]);
+      record['Tax Other Charges'] = numberFirst_(raw, [
+        'OTHER_CHARGES_DUE',
+        'other_charges_due',
+        'other_due',
+        'fees'
+      ]);
+      record['Tax Year'] = first_(raw, [
+        'MOST_RECENT_YEAR_OWED',
+        'most_recent_year_owed',
+        'tax_year',
+        'year'
+      ]);
+      record['Earliest Delinquent Year'] = first_(raw, [
+        'OLDEST_YEAR_OWED',
+        'oldest_year_owed'
+      ]);
+      record['Latest Delinquent Year'] = first_(raw, [
+        'MOST_RECENT_YEAR_OWED',
+        'most_recent_year_owed'
+      ]);
+      record['Years Delinquent'] = first_(raw, [
+        'NUM_YEARS_OWED',
+        'num_years_owed'
+      ]);
+      record['Payment Agreement Status'] = first_(raw, [
+        'PAYMENT_AGREEMENT',
+        'payment_agreement'
+      ]);
+      record['Actionable'] = first_(raw, [
+        'IS_ACTIONABLE',
+        'is_actionable'
+      ]);
+      record['Bankruptcy'] = first_(raw, [
+        'BANKRUPTCY',
+        'bankruptcy'
+      ]);
+      record['Sheriff Sale'] = first_(raw, [
+        'SHERIFF_SALE',
+        'sheriff_sale'
+      ]);
+      record['Mailing Address'] = first_(raw, [
+        'MAILING_ADDRESS',
+        'mailing_address'
+      ]);
+      record['Mailing City'] = first_(raw, [
+        'MAILING_CITY',
+        'mailing_city'
+      ]);
+      record['Mailing State'] = first_(raw, [
+        'MAILING_STATE',
+        'mailing_state'
+      ]);
+      record['Mailing Zip'] = first_(raw, [
+        'MAILING_ZIP',
+        'mailing_zip'
+      ]);
+      record['Estimated Value'] = numberFirst_(raw, [
+        'TOTAL_ASSESSMENT',
+        'total_assessment',
+        'TAXABLE_ASSESSMENT',
+        'taxable_assessment'
+      ]);
     } else if (context.dataset === 'code_violations') {
       record['Distress Type'] = 'Code Violation';
       record['Violation Amount'] = first_(raw, ['fine_amount', 'amount_due', 'penalty']);
@@ -239,6 +355,20 @@ REOS.PhiladelphiaCountyConnector = (function () {
       if (value !== null && typeof value !== 'undefined' && String(value).trim() !== '') return value;
     }
     return '';
+  }
+
+  function numberFirst_(object, keys) {
+    var value = first_(object, keys);
+
+    if (value === '') return '';
+
+    var normalized = String(value)
+      .replace(/[$,]/g, '')
+      .trim();
+
+    var number = Number(normalized);
+
+    return isNaN(number) ? '' : number;
   }
 
   function buildNotes_(raw, dataset) {
