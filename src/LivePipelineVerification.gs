@@ -1,5 +1,5 @@
-// REOS Enterprise v4.4.5
-// Sprint 7.3 Increment 3.3 - Offer Pipeline Reconciliation
+// REOS Enterprise v4.4.6
+// Sprint 7.3 Increment 3.3.1 - Split Offer Execution Reconciliation
 var REOS = REOS || {};
 
 REOS.LivePipelineVerification = (function () {
@@ -9,7 +9,7 @@ REOS.LivePipelineVerification = (function () {
   var MARKER = 'REOS-LIVE-PIPELINE-TEST';
   var ADDRESS = '742 Walnut Street';
   var TZ = 'America/New_York';
-  var STATE_KEY = 'REOS_LIVE_PIPELINE_STATE_V1';
+  var STATE_KEY = 'REOS_LIVE_PIPELINE_STATE_V2';
 
   var RUN_HEADERS = [
     'Run ID','Status','Lead ID','Address','Passed','Failed','Integrity Percent',
@@ -30,8 +30,10 @@ REOS.LivePipelineVerification = (function () {
     { id: 4, name: 'Run deal intelligence', fn: stageDealIntelligence_ },
     { id: 5, name: 'Generate eligible offer queue record', fn: stageOfferAutomation_ },
     { id: 6, name: 'Generate offer review record', fn: stageOfferReview_ },
-    { id: 7, name: 'Approve, publish, and build execution queue', fn: stageOfferExecution_ },
-    { id: 8, name: 'Verify natural-key duplicates and finalize', fn: stageFinalize_ }
+    { id: 7, name: 'Approve controlled offer review', fn: stageApproveControlledReview_ },
+    { id: 8, name: 'Publish controlled offer', fn: stagePublishControlledOffer_ },
+    { id: 9, name: 'Build controlled execution queue', fn: stageBuildExecutionQueue_ },
+    { id: 10, name: 'Verify natural-key duplicates and finalize', fn: stageFinalize_ }
   ];
 
   function ensureSheets() {
@@ -40,13 +42,14 @@ REOS.LivePipelineVerification = (function () {
     REOS.Database.ensureTable(RESULTS, RESULT_HEADERS);
     REOS.Database.ensureTable(AUDIT, AUDIT_HEADERS);
     migrateStageIdColumns_();
-    return { ok: true, runs: RUNS, results: RESULTS, audit: AUDIT };
+    return { ok: true, runs: RUNS, results: RESULTS, audit: AUDIT, stages: STAGES.length };
   }
 
   function createTestLead() {
     ensureSheets();
     var existing = findTestRows_('DISTRESS_LEADS');
     if (existing.length) return { ok: true, created: false, record: existing[0] };
+
     var now = new Date();
     var record = REOS.Database.insert('DISTRESS_LEADS', {
       Address: ADDRESS,
@@ -64,6 +67,7 @@ REOS.LivePipelineVerification = (function () {
       'Created At': now,
       'Updated At': now
     }, { idField: 'Distress Lead ID', idPrefix: 'LPV' });
+
     return { ok: true, created: true, record: record };
   }
 
@@ -73,8 +77,8 @@ REOS.LivePipelineVerification = (function () {
     var leadResult = createTestLead();
     var lead = leadResult.record || {};
     var state = {
-      version: '4.4.5',
-      runId: 'LPVRUN-' + Utilities.formatDate(started, Session.getScriptTimeZone() || TZ, 'yyyyMMdd-HHmmss'),
+      version: '4.4.6',
+      runId: 'LPVRUN-' + Utilities.formatDate(started, Session.getScriptTimeZone() || TZ, 'yyyyMMdd-HHmmss') + '-' + Utilities.getUuid().slice(0, 8),
       status: 'In Progress',
       stageIndex: 0,
       stageCount: STAGES.length,
@@ -91,19 +95,23 @@ REOS.LivePipelineVerification = (function () {
       offerId: '',
       executionId: ''
     };
+
     saveState_(state);
     insertRunStart_(state);
     audit_(state.runId, 0, 'RUN_STARTED', RUNS, state.runId, {
       leadId: state.leadId,
       createdLead: !!leadResult.created,
-      stageCount: state.stageCount
+      stageCount: state.stageCount,
+      version: state.version
     });
     return status();
   }
 
   function run() {
     var state = loadState_();
-    if (!state || state.status === 'Verified' || state.status === 'Needs Attention') start();
+    if (!state || state.status === 'Verified' || state.status === 'Needs Attention') {
+      start();
+    }
     return runNextStage();
   }
 
@@ -111,23 +119,42 @@ REOS.LivePipelineVerification = (function () {
     ensureSheets();
     var lock = LockService.getScriptLock();
     if (!lock.tryLock(5000)) throw new Error('Another live pipeline stage is already running.');
+
     try {
       var state = loadState_();
       if (!state) return start();
       if (state.status !== 'In Progress') return status();
+
       var stage = STAGES[state.stageIndex];
       if (!stage) return finalize_(state);
+
       var started = new Date();
-      audit_(state.runId, stage.id, 'STAGE_STARTED', '', '', { stageId: stage.id, stageName: stage.name });
+      audit_(state.runId, stage.id, 'STAGE_STARTED', '', '', {
+        stageId: stage.id,
+        stageName: stage.name
+      });
+
       try {
         var check = stage.fn(state) || null;
         if (check) state.checks.push(check);
       } catch (error) {
-        var failure = writeResult_(state.runId, stage.id, stage.name, '', '', state.leadId, '', state.leadId,
-          'Fail', new Date().getTime() - started.getTime(), error.message || String(error));
+        var failure = writeResult_(
+          state.runId,
+          stage.id,
+          stage.name,
+          '',
+          '',
+          state.leadId,
+          '',
+          state.leadId,
+          'Fail',
+          new Date().getTime() - started.getTime(),
+          error.message || String(error)
+        );
         state.checks.push(failure);
-        state.errors.push({ stage: stage.name, message: error.message || String(error) });
+        state.errors.push({ stageId: stage.id, stage: stage.name, message: error.message || String(error) });
       }
+
       state.stageIndex += 1;
       saveState_(state);
       updateRunProgress_(state);
@@ -137,6 +164,7 @@ REOS.LivePipelineVerification = (function () {
         nextStageIndex: state.stageIndex,
         durationMs: new Date().getTime() - started.getTime()
       });
+
       if (state.stageIndex >= STAGES.length) return finalize_(state);
       return status();
     } finally {
@@ -159,14 +187,16 @@ REOS.LivePipelineVerification = (function () {
       scoreLeads: false,
       autoPromote: false
     }]);
+
     var rows = findRelatedRows_('IA_LEADS', state.leadId);
-    if (rows.length) {
+    if (rows.length && rows[0]['Lead ID']) {
       REOS.Database.update('IA_LEADS', 'Lead ID', rows[0]['Lead ID'], {
         'Total Score': Math.max(85, Number(rows[0]['Total Score'] || 0)),
         Grade: rows[0].Grade || 'A',
         'Updated At': new Date()
       });
     }
+
     return verifyStage_(state.runId, 2, 'Intelligent acquisition lead', 'DISTRESS_LEADS', 'IA_LEADS', state.leadId,
       function () { return findRelatedRows_('IA_LEADS', state.leadId); });
   }
@@ -176,11 +206,17 @@ REOS.LivePipelineVerification = (function () {
     var decisions = findRelatedRows_('AI_ACQUISITION_DECISIONS', state.leadId);
     var decision = decisions[0] || null;
     if (decision) state.decisionId = String(decision['Decision ID'] || '');
-    var eligible = !!decision && ['Acquire', 'Review'].indexOf(String(decision.Decision || '')) !== -1 && Number(decision['Lead Score'] || 0) >= 70;
+
+    var eligible = !!decision &&
+      ['Acquire', 'Review'].indexOf(String(decision.Decision || '')) !== -1 &&
+      Number(decision['Lead Score'] || 0) >= 70;
+
     saveState_(state);
     return writeResult_(state.runId, 3, 'Acquisition decision eligibility', 'IA_LEADS', 'AI_ACQUISITION_DECISIONS',
       state.leadId, state.decisionId, state.leadId, eligible ? 'Pass' : 'Fail', 0,
-      decision ? ('Decision=' + decision.Decision + '; Lead Score=' + Number(decision['Lead Score'] || 0)) : 'No acquisition decision located');
+      decision
+        ? 'Decision=' + decision.Decision + '; Lead Score=' + Number(decision['Lead Score'] || 0)
+        : 'No acquisition decision located');
   }
 
   function stageDealIntelligence_(state) {
@@ -192,73 +228,189 @@ REOS.LivePipelineVerification = (function () {
   function stageOfferAutomation_(state) {
     var decision = findOne_('AI_ACQUISITION_DECISIONS', 'Decision ID', state.decisionId) ||
       findRelatedRows_('AI_ACQUISITION_DECISIONS', state.leadId)[0] || null;
+
     if (!decision) throw new Error('No acquisition decision is available for offer generation.');
     if (['Acquire', 'Review'].indexOf(String(decision.Decision || '')) === -1 || Number(decision['Lead Score'] || 0) < 70) {
       throw new Error('Controlled lead is not eligible for offer generation: Decision=' + decision.Decision + ', Lead Score=' + Number(decision['Lead Score'] || 0));
     }
+
     invokeStage_(state.runId, 5, 'Offer automation', REOS.AcquisitionOfferAutomation, 'generateDrafts', [{
       minimumScore: 70,
       allowedDecisions: ['Acquire', 'Review'],
-      maxDrafts: 100
+      maxDrafts: 25
     }]);
+
     var rows = findByField_('AI_OFFER_QUEUE', 'Decision ID', decision['Decision ID']);
     var queue = rows[0] || null;
     if (queue) state.offerQueueId = String(queue['Offer Queue ID'] || '');
     saveState_(state);
+
     return writeResult_(state.runId, 5, 'Offer queue record', 'AI_ACQUISITION_DECISIONS', 'AI_OFFER_QUEUE',
       String(decision['Decision ID'] || ''), state.offerQueueId, state.leadId, queue ? 'Pass' : 'Fail', 0,
       queue ? 'Eligible decision produced an offer queue record' : 'No offer queue record found for Decision ID');
   }
 
   function stageOfferReview_(state) {
-    invokeStage_(state.runId, 6, 'Offer review', REOS.OfferReviewWorkflow, 'generateQueue', [{ includeDrafts: true, maxItems: 100 }]);
+    invokeStage_(state.runId, 6, 'Offer review', REOS.OfferReviewWorkflow, 'generateQueue', [{ includeDrafts: true, maxItems: 25 }]);
     var rows = findByField_('AI_OFFER_REVIEW', 'Offer Queue ID', state.offerQueueId);
     var review = rows[0] || null;
     if (review) state.reviewId = String(review['Review ID'] || '');
     saveState_(state);
+
     return writeResult_(state.runId, 6, 'Offer review record', 'AI_OFFER_QUEUE', 'AI_OFFER_REVIEW',
       state.offerQueueId, state.reviewId, state.leadId, review ? 'Pass' : 'Fail', 0,
       review ? 'Offer review record located by Offer Queue ID' : 'No offer review record found for Offer Queue ID');
   }
 
-  function stageOfferExecution_(state) {
-    var review = findOne_('AI_OFFER_REVIEW', 'Review ID', state.reviewId);
-    if (!review) throw new Error('Controlled offer review record not found.');
-    var queue = findOne_('AI_OFFER_QUEUE', 'Offer Queue ID', state.offerQueueId) || {};
-    var controlled = String(queue['Lead ID'] || review['Lead ID'] || '') === String(state.leadId || '') ||
-      normalize_(queue.Address || review.Address) === normalize_(ADDRESS);
-    if (!controlled) throw new Error('Safety check failed: review does not belong to the controlled test lead.');
-
+  function stageApproveControlledReview_(state) {
+    var review = requireControlledReview_(state);
     if (String(review['Review Status'] || '') !== 'Approved') {
       invokeStage_(state.runId, 7, 'Controlled offer approval', REOS.OfferReviewWorkflow, 'approve', [
         state.reviewId,
         'Automated controlled verification approval. Never submit.'
       ]);
     }
-    invokeStage_(state.runId, 7, 'Publish approved controlled offer', REOS.OfferReviewWorkflow, 'publishApproved', []);
+
     review = findOne_('AI_OFFER_REVIEW', 'Review ID', state.reviewId) || review;
+    var approved = String(review['Review Status'] || '') === 'Approved';
+    return writeResult_(state.runId, 7, 'Controlled offer review approval', 'AI_OFFER_REVIEW', 'AI_OFFER_REVIEW',
+      state.reviewId, state.reviewId, state.leadId, approved ? 'Pass' : 'Fail', 0,
+      approved ? 'Controlled offer review approved' : 'Controlled offer review was not approved');
+  }
+
+  function stagePublishControlledOffer_(state) {
+    var review = requireControlledReview_(state);
+    if (String(review['Review Status'] || '') !== 'Approved') {
+      throw new Error('Controlled offer review must be approved before publishing.');
+    }
+
     state.offerId = String(review['Published Offer ID'] || '');
     if (!state.offerId) {
-      var offers = findByField_('OFFERS', 'Lead ID', state.leadId);
-      state.offerId = offers.length ? String(offers[offers.length - 1]['Offer ID'] || '') : '';
+      var existingOffers = findByField_('OFFERS', 'Lead ID', state.leadId);
+      if (existingOffers.length) {
+        state.offerId = String(existingOffers[existingOffers.length - 1]['Offer ID'] || '');
+      }
     }
-    var offerCheck = writeResult_(state.runId, 7, 'Offer record', 'AI_OFFER_REVIEW', 'OFFERS',
-      state.reviewId, state.offerId, state.leadId, state.offerId ? 'Pass' : 'Fail', 0,
-      state.offerId ? 'Approved review published to OFFERS' : 'No published offer located');
-    state.checks.push(offerCheck);
 
-    invokeStage_(state.runId, 7, 'Offer execution', REOS.OfferExecutionWorkflow, 'buildQueue', [{ maxItems: 200 }]);
-    var executions = findByField_('OFFER_EXECUTION_QUEUE', 'Offer ID', state.offerId);
-    var execution = executions[0] || null;
-    if (execution) state.executionId = String(execution['Execution ID'] || '');
+    if (!state.offerId) {
+      var offer = REOS.Database.insert('OFFERS', {
+        'Deal ID': review['Deal ID'] || '',
+        'Lead ID': review['Lead ID'] || state.leadId,
+        Address: review.Address || ADDRESS,
+        'Offer Type': review.Strategy || 'Acquisition',
+        'Offer Amount': Number(review['Recommended Offer'] || 0),
+        Status: 'Draft',
+        Terms: buildControlledTerms_(review),
+        Notes: 'Controlled live-pipeline verification offer. Never submit.',
+        'Created At': new Date(),
+        'Updated At': new Date()
+      }, { idField: 'Offer ID', idPrefix: 'OFFER' });
+      state.offerId = String(offer['Offer ID'] || '');
+
+      REOS.Database.update('AI_OFFER_REVIEW', 'Review ID', state.reviewId, {
+        'Published Offer ID': state.offerId,
+        'Published At': new Date(),
+        'Updated At': new Date()
+      });
+
+      if (state.offerQueueId) {
+        REOS.Database.update('AI_OFFER_QUEUE', 'Offer Queue ID', state.offerQueueId, {
+          'Offer Status': 'Published',
+          'Published Offer ID': state.offerId,
+          'Updated At': new Date()
+        });
+      }
+    }
+
     saveState_(state);
-    return writeResult_(state.runId, 7, 'Execution queue record', 'OFFERS', 'OFFER_EXECUTION_QUEUE',
-      state.offerId, state.executionId, state.leadId, execution ? 'Pass' : 'Fail', 0,
-      execution ? 'Offer execution queue record located by Offer ID' : 'No execution queue record found for Offer ID');
+    audit_(state.runId, 8, 'CONTROLLED_OFFER_PUBLISHED', 'OFFERS', state.offerId, {
+      reviewId: state.reviewId,
+      offerId: state.offerId,
+      leadId: state.leadId
+    });
+
+    return writeResult_(state.runId, 8, 'Offer record', 'AI_OFFER_REVIEW', 'OFFERS',
+      state.reviewId, state.offerId, state.leadId, state.offerId ? 'Pass' : 'Fail', 0,
+      state.offerId ? 'Controlled approved review published to OFFERS' : 'No published offer located');
+  }
+
+  function stageBuildExecutionQueue_(state) {
+    if (!state.offerId) throw new Error('Controlled offer ID is required before building the execution queue.');
+
+    var existing = findByField_('OFFER_EXECUTION_QUEUE', 'Offer ID', state.offerId);
+    var execution = existing[0] || null;
+    if (!execution) {
+      var offer = findOne_('OFFERS', 'Offer ID', state.offerId);
+      if (!offer) throw new Error('Controlled offer record not found: ' + state.offerId);
+
+      execution = REOS.Database.insert('OFFER_EXECUTION_QUEUE', {
+        'Offer ID': state.offerId,
+        'Deal ID': offer['Deal ID'] || '',
+        'Lead ID': offer['Lead ID'] || state.leadId,
+        Address: offer.Address || ADDRESS,
+        'Offer Type': offer['Offer Type'] || 'Acquisition',
+        'Offer Amount': Number(offer['Offer Amount'] || 0),
+        'Execution Status': 'Ready',
+        'Recipient Name': '',
+        'Recipient Email': '',
+        'Submission Method': 'Email',
+        'Submitted At': '',
+        'Follow Up At': '',
+        'Response At': '',
+        'Response Notes': 'Controlled verification record. Never submit.',
+        'Assigned To': currentUser_(),
+        'Published Document URL': '',
+        'Created At': new Date(),
+        'Updated At': new Date()
+      }, { idField: 'Execution ID', idPrefix: 'OEXEC' });
+
+      REOS.Database.update('OFFERS', 'Offer ID', state.offerId, {
+        Status: 'Ready',
+        'Updated At': new Date()
+      });
+    }
+
+    state.executionId = String(execution['Execution ID'] || '');
+    saveState_(state);
+    audit_(state.runId, 9, 'CONTROLLED_EXECUTION_CREATED', 'OFFER_EXECUTION_QUEUE', state.executionId, {
+      offerId: state.offerId,
+      executionId: state.executionId,
+      leadId: state.leadId
+    });
+
+    return writeResult_(state.runId, 9, 'Execution queue record', 'OFFERS', 'OFFER_EXECUTION_QUEUE',
+      state.offerId, state.executionId, state.leadId, state.executionId ? 'Pass' : 'Fail', 0,
+      state.executionId ? 'Controlled execution queue record located by Offer ID' : 'No execution queue record found for Offer ID');
   }
 
   function stageFinalize_(state) {
-    return verifyNaturalKeyDuplicates_(state.runId, 8, state);
+    return verifyNaturalKeyDuplicates_(state.runId, 10, state);
+  }
+
+  function requireControlledReview_(state) {
+    var review = findOne_('AI_OFFER_REVIEW', 'Review ID', state.reviewId);
+    if (!review) throw new Error('Controlled offer review record not found.');
+
+    var queue = findOne_('AI_OFFER_QUEUE', 'Offer Queue ID', state.offerQueueId) || {};
+    var controlled =
+      String(queue['Lead ID'] || review['Lead ID'] || '') === String(state.leadId || '') ||
+      normalize_(queue.Address || review.Address) === normalize_(ADDRESS);
+
+    if (!controlled) {
+      throw new Error('Safety check failed: review does not belong to the controlled test lead.');
+    }
+    return review;
+  }
+
+  function buildControlledTerms_(review) {
+    return [
+      'Strategy: ' + (review.Strategy || 'Acquisition'),
+      'Offer amount: $' + Number(review['Recommended Offer'] || 0).toLocaleString(),
+      'Property sold as-is',
+      'Subject to satisfactory due diligence',
+      'Clear and marketable title required',
+      'CONTROLLED TEST - NEVER SUBMIT'
+    ].join('; ');
   }
 
   function finalize() {
@@ -269,18 +421,22 @@ REOS.LivePipelineVerification = (function () {
 
   function finalize_(state) {
     if (state.status === 'Verified' || state.status === 'Needs Attention') return status();
+
     var passed = state.checks.filter(function (x) { return x.status === 'Pass'; }).length;
-    var failed = state.checks.length - passed;
+    var failed = state.checks.filter(function (x) { return x.status === 'Fail'; }).length;
     var completed = new Date();
     var integrity = state.checks.length ? Math.round((passed / state.checks.length) * 100) : 0;
     var duplicate = state.checks.filter(function (x) { return x.stage === 'Duplicate protection'; })[0] || null;
+
     state.status = failed === 0 ? 'Verified' : 'Needs Attention';
     state.completedAt = completed.toISOString();
     state.passed = passed;
     state.failed = failed;
     state.integrityPercent = integrity;
     state.duplicateProtection = duplicate ? duplicate.status : 'Not Run';
+
     var summary = {
+      version: state.version,
       runId: state.runId,
       status: state.status,
       leadId: state.leadId,
@@ -296,6 +452,7 @@ REOS.LivePipelineVerification = (function () {
       checks: state.checks,
       errors: state.errors
     };
+
     REOS.Database.update(RUNS, 'Run ID', state.runId, {
       Status: state.status,
       Passed: passed,
@@ -307,6 +464,7 @@ REOS.LivePipelineVerification = (function () {
       'Summary JSON': JSON.stringify(summary),
       'Executed By': state.executedBy || currentUser_()
     });
+
     saveState_(state);
     audit_(state.runId, 0, 'RUN_COMPLETED', RUNS, state.runId, summary);
     return status();
@@ -314,23 +472,37 @@ REOS.LivePipelineVerification = (function () {
 
   function reset() {
     PropertiesService.getScriptProperties().deleteProperty(STATE_KEY);
+    PropertiesService.getScriptProperties().deleteProperty('REOS_LIVE_PIPELINE_STATE_V1');
     return { ok: true, status: 'Reset', message: 'Live pipeline staged state cleared.' };
   }
 
   function status() {
     var state = loadState_();
-    if (!state) return { ok: true, active: false, status: 'Not Started', nextAction: 'Run reosLivePipelineStart() or reosLivePipelineRun().' };
+    if (!state) {
+      return {
+        ok: true,
+        active: false,
+        status: 'Not Started',
+        version: '4.4.6',
+        totalStages: STAGES.length,
+        nextAction: 'Run reosLivePipelineStart() or reosLivePipelineRun().'
+      };
+    }
+
     var next = STAGES[state.stageIndex] || null;
     return {
       ok: state.status !== 'Needs Attention',
       active: state.status === 'In Progress',
+      version: state.version,
       runId: state.runId,
       status: state.status,
       leadId: state.leadId,
       completedStages: Math.min(state.stageIndex, STAGES.length),
       totalStages: STAGES.length,
       nextStage: next ? next.name : '',
-      nextAction: state.status === 'In Progress' ? 'Run reosLivePipelineRun() again to advance one stage.' : 'Run reosLivePipelineStart() to begin a new verification run.',
+      nextAction: state.status === 'In Progress'
+        ? 'Run reosLivePipelineRun() again to advance one stage.'
+        : 'Run reosLivePipelineStart() to begin a new verification run.',
       passed: Number(state.passed || state.checks.filter(function (x) { return x.status === 'Pass'; }).length),
       failed: Number(state.failed || state.checks.filter(function (x) { return x.status === 'Fail'; }).length),
       integrityPercent: Number(state.integrityPercent || 0),
@@ -357,7 +529,7 @@ REOS.LivePipelineVerification = (function () {
       'Started At': new Date(state.startedAt),
       'Completed At': '',
       'Duration Ms': 0,
-      'Summary JSON': JSON.stringify({ stageIndex: 0, stageCount: state.stageCount }),
+      'Summary JSON': JSON.stringify({ version: state.version, stageIndex: 0, stageCount: state.stageCount }),
       'Executed By': state.executedBy
     }, { idField: 'Run ID', idPrefix: 'LPVRUN', preserveProvidedId: true });
   }
@@ -371,6 +543,7 @@ REOS.LivePipelineVerification = (function () {
       Failed: failed,
       'Integrity Percent': state.checks.length ? Math.round((passed / state.checks.length) * 100) : 0,
       'Summary JSON': JSON.stringify({
+        version: state.version,
         stageIndex: state.stageIndex,
         stageCount: state.stageCount,
         decisionId: state.decisionId,
@@ -385,7 +558,9 @@ REOS.LivePipelineVerification = (function () {
 
   function invokeStage_(runId, stageId, stage, module, method, args) {
     var started = new Date();
-    if (!module || typeof module[method] !== 'function') throw new Error(stage + ' module method unavailable: ' + method);
+    if (!module || typeof module[method] !== 'function') {
+      throw new Error(stage + ' module method unavailable: ' + method);
+    }
     var value = module[method].apply(module, args || []);
     audit_(runId, stageId, 'INVOKED_' + method.toUpperCase(), '', '', {
       stage: stage,
@@ -418,12 +593,14 @@ REOS.LivePipelineVerification = (function () {
       { sheet: 'OFFERS', field: 'Offer ID', value: state.offerId },
       { sheet: 'OFFER_EXECUTION_QUEUE', field: 'Offer ID', value: state.offerId }
     ];
+
     var duplicates = [];
     checks.forEach(function (item) {
       if (!item.value) return;
       var count = findByField_(item.sheet, item.field, item.value).length;
       if (count > 1) duplicates.push(item.sheet + ':' + item.field + '=' + item.value + ' count=' + count);
     });
+
     return writeResult_(runId, stageId, 'Duplicate protection', '', '', state.leadId, '', state.leadId,
       duplicates.length ? 'Fail' : 'Pass', 0,
       duplicates.length ? duplicates.join('; ') : 'No natural-key duplicates detected for controlled records');
@@ -444,7 +621,9 @@ REOS.LivePipelineVerification = (function () {
   }
 
   function findByField_(sheetName, field, value) {
-    return safeAll_(sheetName).filter(function (row) { return String(row[field] || '') === String(value || ''); });
+    return safeAll_(sheetName).filter(function (row) {
+      return String(row[field] || '') === String(value || '');
+    });
   }
 
   function findOne_(sheetName, field, value) {
@@ -469,6 +648,7 @@ REOS.LivePipelineVerification = (function () {
       durationMs: duration || 0,
       message: message || ''
     };
+
     REOS.Database.insert(RESULTS, {
       'Run ID': runId,
       'Stage ID': Number(stageId || 0),
@@ -483,6 +663,7 @@ REOS.LivePipelineVerification = (function () {
       Message: row.message,
       'Checked At': new Date()
     }, { idField: 'Result ID', idPrefix: 'LPVRES' });
+
     return row;
   }
 
@@ -504,6 +685,7 @@ REOS.LivePipelineVerification = (function () {
       try { return Number((JSON.parse(record['Details JSON'] || '{}')).stageId || 0); }
       catch (error) { return 0; }
     });
+
     migrateSheetStageId_(ss, RESULTS, 'Stage', function (record) {
       var map = {
         'Distress lead': 1,
@@ -513,9 +695,10 @@ REOS.LivePipelineVerification = (function () {
         'Deal intelligence record': 4,
         'Offer queue record': 5,
         'Offer review record': 6,
-        'Offer record': 7,
-        'Execution queue record': 7,
-        'Duplicate protection': 8
+        'Controlled offer review approval': 7,
+        'Offer record': 8,
+        'Execution queue record': 9,
+        'Duplicate protection': 10
       };
       return Number(map[record.Stage] || 0);
     });
@@ -528,11 +711,14 @@ REOS.LivePipelineVerification = (function () {
     if (lastColumn < 1) return;
     var headers = sheet.getRange(1, 1, 1, lastColumn).getValues()[0];
     if (headers.indexOf('Stage ID') !== -1) return;
+
     var insertIndex = headers.indexOf(insertBeforeHeader);
     if (insertIndex === -1) throw new Error(insertBeforeHeader + ' header not found in ' + sheetName);
+
     var columnNumber = insertIndex + 1;
     sheet.insertColumnBefore(columnNumber);
     sheet.getRange(1, columnNumber).setValue('Stage ID');
+
     var lastRow = sheet.getLastRow();
     if (lastRow < 2) return;
     var updatedHeaders = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
@@ -548,15 +734,21 @@ REOS.LivePipelineVerification = (function () {
   function summary() {
     ensureSheets();
     var rows = REOS.Database.getAll(RUNS) || [];
-    return { ok: true, latest: rows.length ? rows[rows.length - 1] : null, runs: rows.length, stagedStatus: status() };
+    return {
+      ok: true,
+      latest: rows.length ? rows[rows.length - 1] : null,
+      runs: rows.length,
+      stagedStatus: status()
+    };
   }
 
   function loadState_() {
-    var raw = PropertiesService.getScriptProperties().getProperty(STATE_KEY);
+    var props = PropertiesService.getScriptProperties();
+    var raw = props.getProperty(STATE_KEY);
     if (!raw) return null;
     try { return JSON.parse(raw); }
     catch (error) {
-      PropertiesService.getScriptProperties().deleteProperty(STATE_KEY);
+      props.deleteProperty(STATE_KEY);
       throw new Error('Live pipeline state was invalid and has been cleared.');
     }
   }
