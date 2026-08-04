@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785868382380-5710",
+  "startedAt": "2026-08-04T18:33:02.380Z",
+  "completedAt": "2026-08-04T18:33:27.772Z",
+  "state": "PA",
+  "county": "Schuylkill",
+  "connectorId": "PA-SCHUYLKILL",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "parcel_inventory"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T18:33:02.383Z",
+      "completedAt": "2026-08-04T18:33:15.108Z",
+      "ok": true,
+      "candidateCount": 15,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/PA-SCHUYLKILL-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T18:33:21.304Z",
+      "completedAt": "2026-08-04T18:33:21.469Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "parcel_inventory": {
+      "dataset": "parcel_inventory",
+      "adapter": "arcgis",
+      "endpoint": "https://gis.dep.pa.gov/depgisprd/rest/services/Parcels/PA_Parcels/MapServer/0/query",
+      "title": "Pennsylvania DEP Parcel Layer",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T18:33:15.111Z",
+          "completedAt": "2026-08-04T18:33:15.290Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T18:33:15.290Z",
+          "completedAt": "2026-08-04T18:33:21.303Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T18:33:21.469Z",
+          "completedAt": "2026-08-04T18:33:27.772Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

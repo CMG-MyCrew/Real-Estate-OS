@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785845909578-9910",
+  "startedAt": "2026-08-04T12:18:29.578Z",
+  "completedAt": "2026-08-04T12:18:51.354Z",
+  "state": "NJ",
+  "county": "Morris",
+  "connectorId": "NJ-MORRIS",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "property_assessment"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T12:18:29.587Z",
+      "completedAt": "2026-08-04T12:18:41.141Z",
+      "ok": true,
+      "candidateCount": 14,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/NJ-MORRIS-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T12:18:43.110Z",
+      "completedAt": "2026-08-04T12:18:43.343Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "property_assessment": {
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://maps.nj.gov/arcgis/rest/services/Framework/Cadastral/MapServer/0/query",
+      "title": "Parcels and MOD-IV Composite of New Jersey",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T12:18:41.144Z",
+          "completedAt": "2026-08-04T12:18:41.387Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T12:18:41.388Z",
+          "completedAt": "2026-08-04T12:18:43.110Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T12:18:43.344Z",
+          "completedAt": "2026-08-04T12:18:51.354Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

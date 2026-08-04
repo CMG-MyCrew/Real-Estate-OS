@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785859050769-3435",
+  "startedAt": "2026-08-04T15:57:30.769Z",
+  "completedAt": "2026-08-04T15:58:00.265Z",
+  "state": "MD",
+  "county": "Garrett",
+  "connectorId": "MD-GARRETT",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "property_assessment"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T15:57:30.774Z",
+      "completedAt": "2026-08-04T15:57:51.601Z",
+      "ok": true,
+      "candidateCount": 31,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/MD-GARRETT-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T15:57:53.194Z",
+      "completedAt": "2026-08-04T15:57:53.375Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "property_assessment": {
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+      "title": "Maryland Statewide Property Data",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T15:57:51.603Z",
+          "completedAt": "2026-08-04T15:57:51.855Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T15:57:51.855Z",
+          "completedAt": "2026-08-04T15:57:53.194Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T15:57:53.375Z",
+          "completedAt": "2026-08-04T15:58:00.265Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

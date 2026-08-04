@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "1.0.0",
+  "maintenanceId": "AME-1785842528236-1588",
+  "startedAt": "2026-08-04T11:22:08.236Z",
+  "completedAt": "2026-08-04T11:24:18.313Z",
+  "mode": "PLAN_ONLY",
+  "state": "DE",
+  "stages": [
+    {
+      "name": "initial-registry-refresh",
+      "startedAt": "2026-08-04T11:22:08.241Z",
+      "completedAt": "2026-08-04T11:22:08.417Z",
+      "ok": true,
+      "exitCode": 0
+    },
+    {
+      "name": "initial-registry-verification",
+      "startedAt": "2026-08-04T11:22:08.417Z",
+      "completedAt": "2026-08-04T11:24:12.814Z",
+      "ok": true,
+      "commandExitCode": 0
+    }
+  ],
+  "connectors": {
+    "DE-KENT": {
+      "connectorId": "DE-KENT",
+      "initialStatus": "READY",
+      "finalStatus": "READY",
+      "drift": {
+        "attempted": true,
+        "ok": true
+      },
+      "repair": {
+        "needed": false,
+        "attempted": false,
+        "ok": null
+      },
+      "stages": [
+        {
+          "name": "schema-drift-scan",
+          "startedAt": "2026-08-04T11:24:12.855Z",
+          "completedAt": "2026-08-04T11:24:14.912Z",
+          "ok": true,
+          "commandExitCode": 0,
+          "reviewDetected": false
+        }
+      ],
+      "ok": true
+    },
+    "DE-NEW-CASTLE": {
+      "connectorId": "DE-NEW-CASTLE",
+      "initialStatus": "READY",
+      "finalStatus": "READY",
+      "drift": {
+        "attempted": true,
+        "ok": true
+      },
+      "repair": {
+        "needed": false,
+        "attempted": false,
+        "ok": null
+      },
+      "stages": [
+        {
+          "name": "schema-drift-scan",
+          "startedAt": "2026-08-04T11:24:14.912Z",
+          "completedAt": "2026-08-04T11:24:16.599Z",
+          "ok": true,
+          "commandExitCode": 0,
+          "reviewDetected": false
+        }
+      ],
+      "ok": true
+    },
+    "DE-SUSSEX": {
+      "connectorId": "DE-SUSSEX",
+      "initialStatus": "READY",
+      "finalStatus": "READY",
+      "drift": {
+        "attempted": true,
+        "ok": true
+      },
+      "repair": {
+        "needed": false,
+        "attempted": false,
+        "ok": null
+      },
+      "stages": [
+        {
+          "name": "schema-drift-scan",
+          "startedAt": "2026-08-04T11:24:16.599Z",
+          "completedAt": "2026-08-04T11:24:18.156Z",
+          "ok": true,
+          "commandExitCode": 0,
+          "reviewDetected": false
+        }
+      ],
+      "ok": true
+    }
+  },
+  "counts": {
+    "discovered": 3,
+    "verifiedInitially": 3,
+    "driftScanned": 3,
+    "repairPlanned": 0,
+    "repairAttempted": 0,
+    "repaired": 0,
+    "finalReady": 0,
+    "reviewRequired": 0,
+    "failed": 0
+  },
+  "finalStatus": "HEALTHY",
+  "ok": true
+}

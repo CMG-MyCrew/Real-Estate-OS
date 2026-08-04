@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-04T18:33:41.242Z",
+  "locality": {
+    "state": "PA",
+    "county": "Snyder"
+  },
+  "sources": [
+    "arcgis",
+    "socrata"
+  ],
+  "candidateCount": 1,
+  "results": [
+    {
+      "id": "PA-DEP-STATE-PARCELS",
+      "title": "Pennsylvania DEP Parcel Layer",
+      "description": "Official Pennsylvania DEP partial statewide parcel inventory dataset.",
+      "owner": "",
+      "tags": [
+        "authoritative",
+        "PA",
+        "Snyder",
+        "parcel_inventory"
+      ],
+      "adapter": "arcgis",
+      "endpoint": "https://gis.dep.pa.gov/depgisprd/rest/services/Parcels/PA_Parcels/MapServer/0/query",
+      "serviceUrl": "",
+      "authoritative": true,
+      "sourceScope": "statewide",
+      "sourceQuery": {
+        "where": "COUNTY_NAME='SNYDER'"
+      },
+      "compatibility": {
+        "dataset": "parcel_inventory",
+        "score": 100
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": true,
+        "seeded": true
+      },
+      "health": {
+        "ok": true,
+        "exitCode": 0,
+        "stdout": "{\n  adapter: 'arcgis',\n  count: 4685585,\n  ok: true,\n  durationMs: 1578,\n  status: 200\n}",
+        "stderr": ""
+      }
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.0.0",
+  "state": "NJ",
+  "sources": [
+    {
+      "id": "NJ-STATE-PARCELS-MOD4",
+      "title": "Parcels and MOD-IV Composite of New Jersey",
+      "description": "Official statewide NJ parcel and MOD-IV assessment composite.",
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://maps.nj.gov/arcgis/rest/services/Framework/Cadastral/MapServer/0/query",
+      "scope": "statewide",
+      "authoritative": true,
+      "countyField": "COUNTY",
+      "countyValues": {
+        "Atlantic": "ATLANTIC",
+        "Bergen": "BERGEN",
+        "Burlington": "BURLINGTON",
+        "Camden": "CAMDEN",
+        "Cape May": "CAPE MAY",
+        "Cumberland": "CUMBERLAND",
+        "Essex": "ESSEX",
+        "Gloucester": "GLOUCESTER",
+        "Hudson": "HUDSON",
+        "Hunterdon": "HUNTERDON",
+        "Mercer": "MERCER",
+        "Middlesex": "MIDDLESEX",
+        "Monmouth": "MONMOUTH",
+        "Morris": "MORRIS",
+        "Ocean": "OCEAN",
+        "Passaic": "PASSAIC",
+        "Salem": "SALEM",
+        "Somerset": "SOMERSET",
+        "Sussex": "SUSSEX",
+        "Union": "UNION",
+        "Warren": "WARREN"
+      },
+      "minimumScore": 100
+    }
+  ]
+}

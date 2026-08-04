@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785858905127-1280",
+  "startedAt": "2026-08-04T15:55:05.127Z",
+  "completedAt": "2026-08-04T15:55:36.188Z",
+  "state": "MD",
+  "county": "Cecil",
+  "connectorId": "MD-CECIL",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "property_assessment"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T15:55:05.132Z",
+      "completedAt": "2026-08-04T15:55:26.295Z",
+      "ok": true,
+      "candidateCount": 16,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/MD-CECIL-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T15:55:28.191Z",
+      "completedAt": "2026-08-04T15:55:28.405Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "property_assessment": {
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+      "title": "Maryland Statewide Property Data",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T15:55:26.297Z",
+          "completedAt": "2026-08-04T15:55:26.539Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T15:55:26.539Z",
+          "completedAt": "2026-08-04T15:55:28.190Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T15:55:28.405Z",
+          "completedAt": "2026-08-04T15:55:36.188Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

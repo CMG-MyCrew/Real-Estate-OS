@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785859080407-8952",
+  "startedAt": "2026-08-04T15:58:00.407Z",
+  "completedAt": "2026-08-04T15:58:32.646Z",
+  "state": "MD",
+  "county": "Harford",
+  "connectorId": "MD-HARFORD",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "property_assessment"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T15:58:00.411Z",
+      "completedAt": "2026-08-04T15:58:21.689Z",
+      "ok": true,
+      "candidateCount": 16,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/MD-HARFORD-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T15:58:23.597Z",
+      "completedAt": "2026-08-04T15:58:24.016Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "property_assessment": {
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+      "title": "Maryland Statewide Property Data",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T15:58:21.698Z",
+          "completedAt": "2026-08-04T15:58:21.974Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T15:58:21.974Z",
+          "completedAt": "2026-08-04T15:58:23.596Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T15:58:24.017Z",
+          "completedAt": "2026-08-04T15:58:32.646Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785867832906-2335",
+  "startedAt": "2026-08-04T18:23:52.906Z",
+  "completedAt": "2026-08-04T18:24:20.862Z",
+  "state": "PA",
+  "county": "Centre",
+  "connectorId": "PA-CENTRE",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "parcel_inventory"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T18:23:52.910Z",
+      "completedAt": "2026-08-04T18:24:06.960Z",
+      "ok": true,
+      "candidateCount": 15,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/PA-CENTRE-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T18:24:13.564Z",
+      "completedAt": "2026-08-04T18:24:13.809Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "parcel_inventory": {
+      "dataset": "parcel_inventory",
+      "adapter": "arcgis",
+      "endpoint": "https://gis.dep.pa.gov/depgisprd/rest/services/Parcels/PA_Parcels/MapServer/0/query",
+      "title": "Pennsylvania DEP Parcel Layer",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T18:24:06.962Z",
+          "completedAt": "2026-08-04T18:24:07.192Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T18:24:07.192Z",
+          "completedAt": "2026-08-04T18:24:13.563Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T18:24:13.809Z",
+          "completedAt": "2026-08-04T18:24:20.862Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

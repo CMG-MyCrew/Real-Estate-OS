@@ -1,0 +1,1431 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-04T18:23:45.339Z",
+  "dataset": "parcel_inventory",
+  "sampleCount": 50,
+  "sourceFields": [
+    "OBJECTID",
+    "PARCEL_ID",
+    "OWNER_LAST_NAME",
+    "OWNER_FIRST_NAME",
+    "NAME_EXT",
+    "PROPERTY_ADDRESS_1",
+    "PROPERTY_ADDRESS_2",
+    "CITY",
+    "STATE",
+    "ZIP",
+    "COUNTY_NAME",
+    "COUNTY_CODE",
+    "DISTRICT",
+    "ACREAGE",
+    "ACCOUNT",
+    "OWNER_NAME",
+    "ACRES",
+    "SHAPE.AREA",
+    "SHAPE.LEN",
+    "GLOBALID"
+  ],
+  "mapping": {
+    "address": [
+      "PROPERTY_ADDRESS_1",
+      "PROPERTY_ADDRESS_2"
+    ],
+    "city": [
+      "CITY"
+    ],
+    "zip": [
+      "ZIP"
+    ],
+    "parcelId": [
+      "PARCEL_ID"
+    ],
+    "ownerName": [
+      "OWNER_NAME",
+      "OWNER_LAST_NAME",
+      "OWNER_FIRST_NAME"
+    ],
+    "coOwnerName": [],
+    "sourceRecordId": [
+      "OBJECTID",
+      "GLOBALID"
+    ],
+    "sourceUpdatedAt": [],
+    "estimatedValue": [],
+    "assessmentValue": [],
+    "landValue": [],
+    "buildingValue": [],
+    "yearBuilt": [],
+    "landAcres": [
+      "ACRES",
+      "ACREAGE"
+    ],
+    "livingArea": [],
+    "saleDate": [],
+    "salePrice": []
+  },
+  "confidence": {
+    "address": {
+      "score": 115,
+      "primaryField": "PROPERTY_ADDRESS_1",
+      "completeness": 1,
+      "alternatives": [
+        "PROPERTY_ADDRESS_2"
+      ]
+    },
+    "city": {
+      "score": 130,
+      "primaryField": "CITY",
+      "completeness": 1,
+      "alternatives": []
+    },
+    "zip": {
+      "score": 150,
+      "primaryField": "ZIP",
+      "completeness": 1,
+      "alternatives": []
+    },
+    "parcelId": {
+      "score": 165,
+      "primaryField": "PARCEL_ID",
+      "completeness": 1,
+      "alternatives": []
+    },
+    "ownerName": {
+      "score": 152,
+      "primaryField": "OWNER_NAME",
+      "completeness": 1,
+      "alternatives": [
+        "OWNER_LAST_NAME",
+        "OWNER_FIRST_NAME"
+      ]
+    },
+    "sourceRecordId": {
+      "score": 155,
+      "primaryField": "OBJECTID",
+      "completeness": 1,
+      "alternatives": [
+        "GLOBALID"
+      ]
+    },
+    "landAcres": {
+      "score": 133,
+      "primaryField": "ACRES",
+      "completeness": 1,
+      "alternatives": [
+        "ACREAGE"
+      ]
+    }
+  },
+  "rankedCandidates": {
+    "address": [
+      {
+        "field": "PROPERTY_ADDRESS_1",
+        "score": 115,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1281 MOUNTAIN RD",
+          "150 HILL TOP RD",
+          "419 MEALS RD"
+        ],
+        "reasons": [
+          "name:/address/i=70",
+          "complete>=95%=20",
+          "addressLike>=80%=25"
+        ]
+      },
+      {
+        "field": "PROPERTY_ADDRESS_2",
+        "score": 70,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/address/i=70"
+        ]
+      },
+      {
+        "field": "PARCEL_ID",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "23I02-0010---000",
+          "23H02-0008A--000",
+          "22H02-0010---000"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "addressLike>=80%=25"
+        ]
+      },
+      {
+        "field": "GLOBALID",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "{1BA5B789-CF2D-42EF-8397-73D70200F14B}",
+          "{CE025507-3002-42EB-B879-5202B999F7A7}",
+          "{898D6C8F-52DE-4A4A-AC70-8D526A568B99}"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "addressLike>=80%=25"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "city": [
+      {
+        "field": "CITY",
+        "score": 130,
+        "completeness": 1,
+        "uniqueRatio": 0.26,
+        "sampleValues": [
+          "YORK SPRINGS",
+          "GARDNERS",
+          "ARENDTSVILLE"
+        ],
+        "reasons": [
+          "name:/^city$/i=100",
+          "complete>=95%=20",
+          "mostlyText>=80%=10"
+        ]
+      },
+      {
+        "field": "PARCEL_ID",
+        "score": 30,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "23I02-0010---000",
+          "23H02-0008A--000",
+          "22H02-0010---000"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=10"
+        ]
+      },
+      {
+        "field": "OWNER_LAST_NAME",
+        "score": 30,
+        "completeness": 1,
+        "uniqueRatio": 0.98,
+        "sampleValues": [
+          "MICHELMAN",
+          "MILNER",
+          "KNOUSE FRUITLANDS INC"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=10"
+        ]
+      },
+      {
+        "field": "PROPERTY_ADDRESS_1",
+        "score": 30,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1281 MOUNTAIN RD",
+          "150 HILL TOP RD",
+          "419 MEALS RD"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=10"
+        ]
+      },
+      {
+        "field": "STATE",
+        "score": 30,
+        "completeness": 1,
+        "uniqueRatio": 0.04,
+        "sampleValues": [
+          "PA",
+          "PA",
+          "PA"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=10"
+        ]
+      }
+    ],
+    "zip": [
+      {
+        "field": "ZIP",
+        "score": 150,
+        "completeness": 1,
+        "uniqueRatio": 0.28,
+        "sampleValues": [
+          "17372",
+          "17324",
+          "17303"
+        ],
+        "reasons": [
+          "name:/^zip$/i=100",
+          "complete>=95%=20",
+          "zipLike>=80%=30"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "PARCEL_ID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "23I02-0010---000",
+          "23H02-0008A--000",
+          "22H02-0010---000"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "OWNER_LAST_NAME",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.98,
+        "sampleValues": [
+          "MICHELMAN",
+          "MILNER",
+          "KNOUSE FRUITLANDS INC"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "PROPERTY_ADDRESS_1",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1281 MOUNTAIN RD",
+          "150 HILL TOP RD",
+          "419 MEALS RD"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "parcelId": [
+      {
+        "field": "PARCEL_ID",
+        "score": 165,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "23I02-0010---000",
+          "23H02-0008A--000",
+          "22H02-0010---000"
+        ],
+        "reasons": [
+          "name:/^parcel_?id$/i=120",
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "ACCOUNT",
+        "score": 55,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/account/i=55"
+        ]
+      },
+      {
+        "field": "OWNER_LAST_NAME",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 0.98,
+        "sampleValues": [
+          "MICHELMAN",
+          "MILNER",
+          "KNOUSE FRUITLANDS INC"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "PROPERTY_ADDRESS_1",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1281 MOUNTAIN RD",
+          "150 HILL TOP RD",
+          "419 MEALS RD"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "CITY",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 0.26,
+        "sampleValues": [
+          "YORK SPRINGS",
+          "GARDNERS",
+          "ARENDTSVILLE"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      }
+    ],
+    "ownerName": [
+      {
+        "field": "OWNER_NAME",
+        "score": 152,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "MICHELMAN FREDRIC & KAREN M  ",
+          "MILNER LINCOLN T  ",
+          "KNOUSE FRUITLANDS INC    "
+        ],
+        "reasons": [
+          "name:/^owner_?name$/i=120",
+          "complete>=95%=20",
+          "mostlyText>=80%=12"
+        ]
+      },
+      {
+        "field": "OWNER_LAST_NAME",
+        "score": 102,
+        "completeness": 1,
+        "uniqueRatio": 0.98,
+        "sampleValues": [
+          "MICHELMAN",
+          "MILNER",
+          "KNOUSE FRUITLANDS INC"
+        ],
+        "reasons": [
+          "name:/owner/i=70",
+          "complete>=95%=20",
+          "mostlyText>=80%=12"
+        ]
+      },
+      {
+        "field": "OWNER_FIRST_NAME",
+        "score": 96,
+        "completeness": 0.94,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "FREDRIC & KAREN M",
+          "LINCOLN T",
+          "MICHAEL W & ANDREA J"
+        ],
+        "reasons": [
+          "name:/owner/i=70",
+          "complete>=75%=14",
+          "mostlyText>=80%=12"
+        ]
+      },
+      {
+        "field": "PARCEL_ID",
+        "score": 32,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "23I02-0010---000",
+          "23H02-0008A--000",
+          "22H02-0010---000"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=12"
+        ]
+      },
+      {
+        "field": "PROPERTY_ADDRESS_1",
+        "score": 32,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1281 MOUNTAIN RD",
+          "150 HILL TOP RD",
+          "419 MEALS RD"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=12"
+        ]
+      }
+    ],
+    "coOwnerName": [
+      {
+        "field": "PARCEL_ID",
+        "score": 28,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "23I02-0010---000",
+          "23H02-0008A--000",
+          "22H02-0010---000"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=8"
+        ]
+      },
+      {
+        "field": "OWNER_LAST_NAME",
+        "score": 28,
+        "completeness": 1,
+        "uniqueRatio": 0.98,
+        "sampleValues": [
+          "MICHELMAN",
+          "MILNER",
+          "KNOUSE FRUITLANDS INC"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=8"
+        ]
+      },
+      {
+        "field": "PROPERTY_ADDRESS_1",
+        "score": 28,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1281 MOUNTAIN RD",
+          "150 HILL TOP RD",
+          "419 MEALS RD"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=8"
+        ]
+      },
+      {
+        "field": "CITY",
+        "score": 28,
+        "completeness": 1,
+        "uniqueRatio": 0.26,
+        "sampleValues": [
+          "YORK SPRINGS",
+          "GARDNERS",
+          "ARENDTSVILLE"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=8"
+        ]
+      },
+      {
+        "field": "STATE",
+        "score": 28,
+        "completeness": 1,
+        "uniqueRatio": 0.04,
+        "sampleValues": [
+          "PA",
+          "PA",
+          "PA"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=8"
+        ]
+      }
+    ],
+    "sourceRecordId": [
+      {
+        "field": "OBJECTID",
+        "score": 155,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "name:/^objectid$/i=100",
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "GLOBALID",
+        "score": 149,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "{1BA5B789-CF2D-42EF-8397-73D70200F14B}",
+          "{CE025507-3002-42EB-B879-5202B999F7A7}",
+          "{898D6C8F-52DE-4A4A-AC70-8D526A568B99}"
+        ],
+        "reasons": [
+          "name:/^globalid$/i=94",
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "PARCEL_ID",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "23I02-0010---000",
+          "23H02-0008A--000",
+          "22H02-0010---000"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "OWNER_LAST_NAME",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 0.98,
+        "sampleValues": [
+          "MICHELMAN",
+          "MILNER",
+          "KNOUSE FRUITLANDS INC"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "PROPERTY_ADDRESS_1",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1281 MOUNTAIN RD",
+          "150 HILL TOP RD",
+          "419 MEALS RD"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      }
+    ],
+    "sourceUpdatedAt": [
+      {
+        "field": "ZIP",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 0.28,
+        "sampleValues": [
+          "17372",
+          "17324",
+          "17303"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 37,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=50%"
+        ]
+      },
+      {
+        "field": "PARCEL_ID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "23I02-0010---000",
+          "23H02-0008A--000",
+          "22H02-0010---000"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "OWNER_LAST_NAME",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.98,
+        "sampleValues": [
+          "MICHELMAN",
+          "MILNER",
+          "KNOUSE FRUITLANDS INC"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "PROPERTY_ADDRESS_1",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1281 MOUNTAIN RD",
+          "150 HILL TOP RD",
+          "419 MEALS RD"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "estimatedValue": [
+      {
+        "field": "OBJECTID",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "ZIP",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 0.28,
+        "sampleValues": [
+          "17372",
+          "17324",
+          "17303"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "ACREAGE",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          49.25,
+          23.5,
+          32.21
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "49.25",
+          "23.5",
+          "32.21"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "SHAPE.AREA",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          331849.57559069,
+          157335.7178303,
+          216941.469178105
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      }
+    ],
+    "assessmentValue": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "ZIP",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.28,
+        "sampleValues": [
+          "17372",
+          "17324",
+          "17303"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "ACREAGE",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          49.25,
+          23.5,
+          32.21
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "49.25",
+          "23.5",
+          "32.21"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "SHAPE.AREA",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          331849.57559069,
+          157335.7178303,
+          216941.469178105
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ],
+    "landValue": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "ZIP",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.28,
+        "sampleValues": [
+          "17372",
+          "17324",
+          "17303"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "ACREAGE",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          49.25,
+          23.5,
+          32.21
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "49.25",
+          "23.5",
+          "32.21"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "SHAPE.AREA",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          331849.57559069,
+          157335.7178303,
+          216941.469178105
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ],
+    "buildingValue": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "ZIP",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.28,
+        "sampleValues": [
+          "17372",
+          "17324",
+          "17303"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "ACREAGE",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          49.25,
+          23.5,
+          32.21
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "49.25",
+          "23.5",
+          "32.21"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "SHAPE.AREA",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          331849.57559069,
+          157335.7178303,
+          216941.469178105
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ],
+    "yearBuilt": [
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "PARCEL_ID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "23I02-0010---000",
+          "23H02-0008A--000",
+          "22H02-0010---000"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "OWNER_LAST_NAME",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.98,
+        "sampleValues": [
+          "MICHELMAN",
+          "MILNER",
+          "KNOUSE FRUITLANDS INC"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "PROPERTY_ADDRESS_1",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1281 MOUNTAIN RD",
+          "150 HILL TOP RD",
+          "419 MEALS RD"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "CITY",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.26,
+        "sampleValues": [
+          "YORK SPRINGS",
+          "GARDNERS",
+          "ARENDTSVILLE"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "landAcres": [
+      {
+        "field": "ACRES",
+        "score": 133,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "49.25",
+          "23.5",
+          "32.21"
+        ],
+        "reasons": [
+          "name:/^acres$/i=98",
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "ACREAGE",
+        "score": 131,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          49.25,
+          23.5,
+          32.21
+        ],
+        "reasons": [
+          "name:/^acreage$/i=96",
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "ZIP",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 0.28,
+        "sampleValues": [
+          "17372",
+          "17324",
+          "17303"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "SHAPE.AREA",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          331849.57559069,
+          157335.7178303,
+          216941.469178105
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      }
+    ],
+    "livingArea": [
+      {
+        "field": "OBJECTID",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "ZIP",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 0.28,
+        "sampleValues": [
+          "17372",
+          "17324",
+          "17303"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "ACREAGE",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          49.25,
+          23.5,
+          32.21
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "49.25",
+          "23.5",
+          "32.21"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "SHAPE.AREA",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          331849.57559069,
+          157335.7178303,
+          216941.469178105
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      }
+    ],
+    "saleDate": [
+      {
+        "field": "ZIP",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.28,
+        "sampleValues": [
+          "17372",
+          "17324",
+          "17303"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=50%"
+        ]
+      },
+      {
+        "field": "PARCEL_ID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "23I02-0010---000",
+          "23H02-0008A--000",
+          "22H02-0010---000"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "OWNER_LAST_NAME",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.98,
+        "sampleValues": [
+          "MICHELMAN",
+          "MILNER",
+          "KNOUSE FRUITLANDS INC"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "PROPERTY_ADDRESS_1",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1281 MOUNTAIN RD",
+          "150 HILL TOP RD",
+          "419 MEALS RD"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "salePrice": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "ZIP",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.28,
+        "sampleValues": [
+          "17372",
+          "17324",
+          "17303"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "ACREAGE",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          49.25,
+          23.5,
+          32.21
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "49.25",
+          "23.5",
+          "32.21"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "SHAPE.AREA",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          331849.57559069,
+          157335.7178303,
+          216941.469178105
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ]
+  },
+  "recordFilter": {
+    "requireAny": [
+      [
+        "PROPERTY_ADDRESS_1",
+        "PROPERTY_ADDRESS_2"
+      ],
+      [
+        "PARCEL_ID"
+      ]
+    ]
+  },
+  "warnings": [],
+  "connectorId": "PA-CAMBRIA",
+  "endpoint": "https://gis.dep.pa.gov/depgisprd/rest/services/Parcels/PA_Parcels/MapServer/0/query",
+  "adapter": "arcgis",
+  "manifest": "config/county-connectors/PA-CAMBRIA.json"
+}

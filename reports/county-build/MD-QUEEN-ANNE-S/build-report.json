@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785859237579-3531",
+  "startedAt": "2026-08-04T16:00:37.579Z",
+  "completedAt": "2026-08-04T16:01:08.294Z",
+  "state": "MD",
+  "county": "Queen Anne's",
+  "connectorId": "MD-QUEEN-ANNE-S",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "property_assessment"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T16:00:37.584Z",
+      "completedAt": "2026-08-04T16:00:58.067Z",
+      "ok": true,
+      "candidateCount": 3,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/MD-QUEEN-ANNE-S-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T16:00:59.485Z",
+      "completedAt": "2026-08-04T16:00:59.804Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "property_assessment": {
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+      "title": "Maryland Statewide Property Data",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T16:00:58.070Z",
+          "completedAt": "2026-08-04T16:00:58.451Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T16:00:58.451Z",
+          "completedAt": "2026-08-04T16:00:59.485Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T16:00:59.804Z",
+          "completedAt": "2026-08-04T16:01:08.294Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785845849343-9849",
+  "startedAt": "2026-08-04T12:17:29.343Z",
+  "completedAt": "2026-08-04T12:18:10.261Z",
+  "state": "NJ",
+  "county": "Middlesex",
+  "connectorId": "NJ-MIDDLESEX",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "property_assessment"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T12:17:29.346Z",
+      "completedAt": "2026-08-04T12:18:01.127Z",
+      "ok": true,
+      "candidateCount": 16,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/NJ-MIDDLESEX-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T12:18:02.922Z",
+      "completedAt": "2026-08-04T12:18:03.158Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "property_assessment": {
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://maps.nj.gov/arcgis/rest/services/Framework/Cadastral/MapServer/0/query",
+      "title": "Parcels and MOD-IV Composite of New Jersey",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T12:18:01.134Z",
+          "completedAt": "2026-08-04T12:18:01.385Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T12:18:01.385Z",
+          "completedAt": "2026-08-04T12:18:02.922Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T12:18:03.159Z",
+          "completedAt": "2026-08-04T12:18:10.261Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

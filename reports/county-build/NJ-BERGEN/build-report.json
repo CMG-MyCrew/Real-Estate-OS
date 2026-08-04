@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785844912852-6521",
+  "startedAt": "2026-08-04T12:01:52.852Z",
+  "completedAt": "2026-08-04T12:02:18.738Z",
+  "state": "NJ",
+  "county": "Bergen",
+  "connectorId": "NJ-BERGEN",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "property_assessment"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T12:01:52.860Z",
+      "completedAt": "2026-08-04T12:02:08.456Z",
+      "ok": true,
+      "candidateCount": 13,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/NJ-BERGEN-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T12:02:10.461Z",
+      "completedAt": "2026-08-04T12:02:10.705Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "property_assessment": {
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://maps.nj.gov/arcgis/rest/services/Framework/Cadastral/MapServer/0/query",
+      "title": "Parcels and MOD-IV Composite of New Jersey",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T12:02:08.458Z",
+          "completedAt": "2026-08-04T12:02:09.002Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T12:02:09.002Z",
+          "completedAt": "2026-08-04T12:02:10.460Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T12:02:10.705Z",
+          "completedAt": "2026-08-04T12:02:18.738Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

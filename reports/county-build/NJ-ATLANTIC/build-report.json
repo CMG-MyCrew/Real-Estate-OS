@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785844050307-917",
+  "startedAt": "2026-08-04T11:47:30.307Z",
+  "completedAt": "2026-08-04T11:47:47.139Z",
+  "state": "NJ",
+  "county": "Atlantic",
+  "connectorId": "NJ-ATLANTIC",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "property_assessment"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T11:47:30.316Z",
+      "completedAt": "2026-08-04T11:47:45.559Z",
+      "ok": true,
+      "candidateCount": 14,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/NJ-ATLANTIC-AUTOMATIC-DISCOVERY.json"
+    }
+  ],
+  "datasets": {
+    "property_assessment": {
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://maps.nj.gov/arcgis/rest/services/Framework/Cadastral/MapServer/0/query",
+      "title": "Parcels and MOD-IV Composite of New Jersey",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T11:47:45.565Z",
+          "completedAt": "2026-08-04T11:47:45.880Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T11:47:45.880Z",
+          "completedAt": "2026-08-04T11:47:47.139Z",
+          "ok": false,
+          "exitCode": 1
+        }
+      ],
+      "ok": false
+    }
+  },
+  "ok": false
+}

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785868460748-4868",
+  "startedAt": "2026-08-04T18:34:20.748Z",
+  "completedAt": "2026-08-04T18:34:51.505Z",
+  "state": "PA",
+  "county": "Sullivan",
+  "connectorId": "PA-SULLIVAN",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "parcel_inventory"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T18:34:20.751Z",
+      "completedAt": "2026-08-04T18:34:38.225Z",
+      "ok": true,
+      "candidateCount": 15,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/PA-SULLIVAN-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T18:34:45.006Z",
+      "completedAt": "2026-08-04T18:34:45.174Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "parcel_inventory": {
+      "dataset": "parcel_inventory",
+      "adapter": "arcgis",
+      "endpoint": "https://gis.dep.pa.gov/depgisprd/rest/services/Parcels/PA_Parcels/MapServer/0/query",
+      "title": "Pennsylvania DEP Parcel Layer",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T18:34:38.227Z",
+          "completedAt": "2026-08-04T18:34:38.405Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T18:34:38.405Z",
+          "completedAt": "2026-08-04T18:34:45.006Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T18:34:45.175Z",
+          "completedAt": "2026-08-04T18:34:51.505Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

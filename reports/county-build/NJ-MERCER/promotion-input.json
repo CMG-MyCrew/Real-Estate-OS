@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-04T12:17:21.154Z",
+  "locality": {
+    "state": "NJ",
+    "county": "Mercer"
+  },
+  "sources": [
+    "arcgis",
+    "socrata"
+  ],
+  "candidateCount": 1,
+  "results": [
+    {
+      "id": "NJ-STATE-PARCELS-MOD4",
+      "title": "Parcels and MOD-IV Composite of New Jersey",
+      "description": "Official statewide NJ parcel and MOD-IV assessment composite.",
+      "owner": "",
+      "tags": [
+        "authoritative",
+        "NJ",
+        "Mercer",
+        "property_assessment"
+      ],
+      "adapter": "arcgis",
+      "endpoint": "https://maps.nj.gov/arcgis/rest/services/Framework/Cadastral/MapServer/0/query",
+      "serviceUrl": "",
+      "authoritative": true,
+      "sourceScope": "statewide",
+      "sourceQuery": {
+        "where": "COUNTY='MERCER'"
+      },
+      "compatibility": {
+        "dataset": "property_assessment",
+        "score": 100
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": true,
+        "seeded": true
+      },
+      "health": {
+        "ok": false,
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": "Exception: Exception: Address unavailable: https://maps.nj.gov/arcgis/rest/services/Framework/Cadastral/MapServer/0/query?where=1%3D1&returnCountOnly=true&f=json [\n  { function: 'request', lineNumber: 20 },\n  { function: 'health', lineNumber: 119 },\n  { function: 'health', lineNumber: 70 },\n  { function: 'REOS_COUNTY_TERMINAL_SYNC', lineNumber: 234 }\n]"
+      }
+    }
+  ]
+}

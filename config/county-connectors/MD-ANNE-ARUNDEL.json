@@ -1,0 +1,148 @@
+{
+  "id": "MD-ANNE-ARUNDEL",
+  "state": "MD",
+  "county": "Anne Arundel",
+  "version": "1.0.0",
+  "enabled": true,
+  "generatedAt": "2026-08-04T15:06:56.826Z",
+  "datasets": {
+    "property_assessment": {
+      "adapter": "arcgis",
+      "endpointProperty": "REOS_COUNTY_MD_ANNE_ARUNDEL_PROPERTY_ASSESSMENT_URL",
+      "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+      "enabled": true,
+      "maxLimit": 2000,
+      "mapping": {
+        "address": [
+          "ADDRESS"
+        ],
+        "city": [
+          "CITY",
+          "OWNCITY",
+          "PREMCITY"
+        ],
+        "zip": [
+          "ZIPCODE",
+          "OWNERZIP",
+          "PREMZIP"
+        ],
+        "parcelId": [
+          "PARCEL"
+        ],
+        "ownerName": [],
+        "coOwnerName": [],
+        "sourceRecordId": [
+          "OBJECTID"
+        ],
+        "sourceUpdatedAt": [],
+        "estimatedValue": [],
+        "assessmentValue": [],
+        "landValue": [],
+        "buildingValue": [],
+        "yearBuilt": [],
+        "landAcres": [
+          "ACRES"
+        ],
+        "livingArea": [
+          "SQFTSTRC"
+        ],
+        "saleDate": [],
+        "salePrice": []
+      },
+      "sourceQuery": {
+        "where": "JURSCODE='ANNE'"
+      },
+      "discovery": {
+        "report": "reports/county-build/MD-ANNE-ARUNDEL/promotion-input.json",
+        "candidate": 1,
+        "promotedAt": "2026-08-04T15:06:56.828Z",
+        "title": "Maryland Statewide Property Data",
+        "source": "",
+        "sourceScope": "statewide",
+        "authoritative": true,
+        "sourceItemId": "",
+        "sourceLayerId": "",
+        "compatibilityScore": 100,
+        "matchedTerms": [],
+        "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query"
+      },
+      "recordFilter": {
+        "requireAny": [
+          [
+            "ADDRESS"
+          ],
+          [
+            "PARCEL"
+          ]
+        ]
+      },
+      "autoMapping": {
+        "appliedAt": "2026-08-04T15:10:13.588Z",
+        "sampleCount": 50,
+        "report": "reports/county-mapping/MD-ANNE-ARUNDEL-PROPERTY_ASSESSMENT-MAPPING.json",
+        "minimumScore": 65,
+        "confidence": {
+          "address": {
+            "score": 139,
+            "primaryField": "ADDRESS",
+            "completeness": 0.8,
+            "alternatives": []
+          },
+          "city": {
+            "score": 130,
+            "primaryField": "CITY",
+            "completeness": 1,
+            "alternatives": [
+              "OWNCITY",
+              "PREMCITY"
+            ]
+          },
+          "zip": {
+            "score": 148,
+            "primaryField": "ZIPCODE",
+            "completeness": 1,
+            "alternatives": [
+              "OWNERZIP",
+              "PREMZIP"
+            ]
+          },
+          "parcelId": {
+            "score": 145,
+            "primaryField": "PARCEL",
+            "completeness": 0.98,
+            "alternatives": []
+          },
+          "ownerName": {
+            "score": 97,
+            "primaryField": "OWNADD1",
+            "completeness": 1,
+            "alternatives": [
+              "OWNCITY",
+              "OWNSTATE"
+            ]
+          },
+          "sourceRecordId": {
+            "score": 155,
+            "primaryField": "OBJECTID",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "landAcres": {
+            "score": 133,
+            "primaryField": "ACRES",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "livingArea": {
+            "score": 96,
+            "primaryField": "SQFTSTRC",
+            "completeness": 0.66,
+            "alternatives": []
+          }
+        },
+        "warnings": []
+      }
+    }
+  },
+  "updatedAt": "2026-08-04T15:10:13.588Z"
+}

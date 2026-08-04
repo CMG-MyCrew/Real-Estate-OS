@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785868434223-3679",
+  "startedAt": "2026-08-04T18:33:54.223Z",
+  "completedAt": "2026-08-04T18:34:20.610Z",
+  "state": "PA",
+  "county": "Somerset",
+  "connectorId": "PA-SOMERSET",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "parcel_inventory"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T18:33:54.227Z",
+      "completedAt": "2026-08-04T18:34:06.290Z",
+      "ok": true,
+      "candidateCount": 30,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/PA-SOMERSET-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T18:34:13.925Z",
+      "completedAt": "2026-08-04T18:34:14.095Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "parcel_inventory": {
+      "dataset": "parcel_inventory",
+      "adapter": "arcgis",
+      "endpoint": "https://gis.dep.pa.gov/depgisprd/rest/services/Parcels/PA_Parcels/MapServer/0/query",
+      "title": "Pennsylvania DEP Parcel Layer",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T18:34:06.291Z",
+          "completedAt": "2026-08-04T18:34:06.474Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T18:34:06.474Z",
+          "completedAt": "2026-08-04T18:34:13.925Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T18:34:14.095Z",
+          "completedAt": "2026-08-04T18:34:20.610Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

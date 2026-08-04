@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785835632697-4066",
+  "startedAt": "2026-08-04T09:27:12.697Z",
+  "completedAt": "2026-08-04T09:27:33.263Z",
+  "state": "DE",
+  "county": "Kent",
+  "connectorId": "DE-KENT",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "parcel_inventory"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T09:27:12.705Z",
+      "completedAt": "2026-08-04T09:27:24.693Z",
+      "ok": true,
+      "candidateCount": 14,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/DE-KENT-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T09:27:26.704Z",
+      "completedAt": "2026-08-04T09:27:26.880Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "parcel_inventory": {
+      "dataset": "parcel_inventory",
+      "adapter": "arcgis",
+      "endpoint": "https://enterprise.firstmaptest.delaware.gov/arcgis/rest/services/PlanningCadastre/DE_StateParcels/FeatureServer/0/query",
+      "title": "Delaware State Parcels",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T09:27:24.700Z",
+          "completedAt": "2026-08-04T09:27:25.059Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T09:27:25.059Z",
+          "completedAt": "2026-08-04T09:27:26.704Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T09:27:26.880Z",
+          "completedAt": "2026-08-04T09:27:33.263Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785845727397-8250",
+  "startedAt": "2026-08-04T12:15:27.397Z",
+  "completedAt": "2026-08-04T12:15:51.085Z",
+  "state": "NJ",
+  "county": "Cumberland",
+  "connectorId": "NJ-CUMBERLAND",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "property_assessment"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T12:15:27.405Z",
+      "completedAt": "2026-08-04T12:15:40.817Z",
+      "ok": true,
+      "candidateCount": 14,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/NJ-CUMBERLAND-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T12:15:43.575Z",
+      "completedAt": "2026-08-04T12:15:44.088Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "property_assessment": {
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://maps.nj.gov/arcgis/rest/services/Framework/Cadastral/MapServer/0/query",
+      "title": "Parcels and MOD-IV Composite of New Jersey",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T12:15:40.834Z",
+          "completedAt": "2026-08-04T12:15:41.486Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T12:15:41.486Z",
+          "completedAt": "2026-08-04T12:15:43.574Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T12:15:44.088Z",
+          "completedAt": "2026-08-04T12:15:51.085Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785859161991-9640",
+  "startedAt": "2026-08-04T15:59:21.991Z",
+  "completedAt": "2026-08-04T15:59:59.553Z",
+  "state": "MD",
+  "county": "Montgomery",
+  "connectorId": "MD-MONTGOMERY",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "property_assessment"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T15:59:21.995Z",
+      "completedAt": "2026-08-04T15:59:48.521Z",
+      "ok": true,
+      "candidateCount": 19,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/MD-MONTGOMERY-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T15:59:50.835Z",
+      "completedAt": "2026-08-04T15:59:51.215Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "property_assessment": {
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+      "title": "Maryland Statewide Property Data",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T15:59:48.529Z",
+          "completedAt": "2026-08-04T15:59:48.769Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T15:59:48.770Z",
+          "completedAt": "2026-08-04T15:59:50.835Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T15:59:51.215Z",
+          "completedAt": "2026-08-04T15:59:59.553Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

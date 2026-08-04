@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-04T09:27:24.695Z",
+  "locality": {
+    "state": "DE",
+    "county": "Kent"
+  },
+  "sources": [
+    "arcgis",
+    "socrata"
+  ],
+  "candidateCount": 1,
+  "results": [
+    {
+      "id": "DE-STATE-PARCELS",
+      "title": "Delaware State Parcels",
+      "description": "Authoritative statewide parcel inventory published by Delaware FirstMap.",
+      "owner": "",
+      "tags": [
+        "authoritative",
+        "DE",
+        "Kent",
+        "parcel_inventory"
+      ],
+      "adapter": "arcgis",
+      "endpoint": "https://enterprise.firstmaptest.delaware.gov/arcgis/rest/services/PlanningCadastre/DE_StateParcels/FeatureServer/0/query",
+      "serviceUrl": "",
+      "authoritative": true,
+      "sourceScope": "statewide",
+      "sourceQuery": {
+        "where": "COUNTY='KENT'"
+      },
+      "compatibility": {
+        "dataset": "parcel_inventory",
+        "score": 100
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": true,
+        "seeded": true
+      },
+      "health": {
+        "ok": true,
+        "exitCode": 0,
+        "stdout": "{\n  adapter: 'arcgis',\n  count: 451074,\n  ok: true,\n  durationMs: 322,\n  status: 200\n}",
+        "stderr": ""
+      }
+    }
+  ]
+}

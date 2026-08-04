@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-04T11:47:45.562Z",
+  "locality": {
+    "state": "NJ",
+    "county": "Atlantic"
+  },
+  "sources": [
+    "arcgis",
+    "socrata"
+  ],
+  "candidateCount": 1,
+  "results": [
+    {
+      "id": "NJ-STATE-PARCELS-MOD4",
+      "title": "Parcels and MOD-IV Composite of New Jersey",
+      "description": "Official statewide NJ parcel and MOD-IV assessment composite.",
+      "owner": "",
+      "tags": [
+        "authoritative",
+        "NJ",
+        "Atlantic",
+        "property_assessment"
+      ],
+      "adapter": "arcgis",
+      "endpoint": "https://maps.nj.gov/arcgis/rest/services/Framework/Cadastral/MapServer/0/query",
+      "serviceUrl": "",
+      "authoritative": true,
+      "sourceScope": "statewide",
+      "sourceQuery": {
+        "where": "COUNTY='ATLANTIC'"
+      },
+      "compatibility": {
+        "dataset": "property_assessment",
+        "score": 100
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": true,
+        "seeded": true
+      },
+      "health": {
+        "ok": true,
+        "exitCode": 0,
+        "stdout": "{\n  adapter: 'arcgis',\n  count: 3478727,\n  ok: true,\n  durationMs: 386,\n  status: 200\n}",
+        "stderr": ""
+      }
+    }
+  ]
+}

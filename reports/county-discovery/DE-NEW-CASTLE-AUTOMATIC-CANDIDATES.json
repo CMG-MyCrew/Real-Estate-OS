@@ -1,0 +1,221 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-04T09:57:45.858Z",
+  "locality": {
+    "state": "DE",
+    "county": "New Castle"
+  },
+  "sources": [
+    "arcgis",
+    "socrata"
+  ],
+  "candidateCount": 6,
+  "results": [
+    {
+      "id": "DE-STATE-PARCELS",
+      "title": "Delaware State Parcels",
+      "description": "Authoritative statewide parcel inventory published by Delaware FirstMap.",
+      "owner": "",
+      "tags": [
+        "authoritative",
+        "DE",
+        "New Castle",
+        "parcel_inventory"
+      ],
+      "adapter": "arcgis",
+      "endpoint": "https://enterprise.firstmaptest.delaware.gov/arcgis/rest/services/PlanningCadastre/DE_StateParcels/FeatureServer/0/query",
+      "serviceUrl": "",
+      "authoritative": true,
+      "sourceScope": "statewide",
+      "sourceQuery": {
+        "where": "COUNTY='New Castle'"
+      },
+      "compatibility": {
+        "dataset": "parcel_inventory",
+        "score": 100
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": true,
+        "seeded": true
+      },
+      "health": {
+        "ok": true,
+        "exitCode": 0,
+        "stdout": "{\n  adapter: 'arcgis',\n  count: 451074,\n  ok: true,\n  durationMs: 288,\n  status: 200\n}",
+        "stderr": ""
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Assessor - Parcel Proximity",
+      "description": "Cook County 10-digit parcels with attached distances to various spatial features.\n\nWhen working with 10-digit Parcel Index Numbers (PINs) make sure to zero-pad them to 10 digits. Some datasets may lose leading zeros for PINs when downloaded. 10-digit PINs do not identify individual condominium units.\n\nAdditional notes:<ul><li>Centroids are based on <a href=\"https://datacatalog.cookcountyil.gov/Property-Taxation/ccgisdata-Parcel-2021/77tz-riq7\">Cook County parcel shapefiles</a>.</li>\n<li>Older properties may be missing coordinates and thus also missing attached spatial data (usually they are missing a parcel boundary in the shapefile).</li>\n<li>Attached spatial data does NOT all go back to 2000. It is only available for more recent years, primarily those after 2012.</li>\n<li>This dataset contains data for the current tax year, which may not yet be complete or final. Assessed values for any given year are subject to change until <a href=\"https://www.cookcountyassessor.com/assessment-calendar-and-deadlines\">review and certification of values by the Cook County Board of Review</a>, though there are a few rare circumstances where values may change for the current or past years after that.</li>\n<li>Rowcount for a given year is final once the Assessor <a href=\"https://www.cookcountyassessor.com/assessment-calendar-and-deadlines\">has certified the assessment roll</a> all townships.</li>\n<li>Data will be updated annually as new parcel shapefiles are made available.</li></ul>For more information on the sourcing of attached data and the preparation of this dataset, see the <a href=\"https://github.com/ccao-data/wiki/blob/master/SOPs/Open-Data.md\">Assessor's Standard Operating Procedures for Open Data</a> on GitHub.\n\n<a href=\"https://datacatalog.cookcountyil.gov/stories/s/gzdr-q7c4\">Read about the Assessor's 2025 Open Data Refresh.</a>",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "ydue-e5u3",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/ydue-e5u3.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/ydue-e5u3",
+      "compatibility": {
+        "score": 100,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels",
+          "assessment",
+          "assessor"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 77,
+        "originalScore": 100,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "New Castle County DE Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "New Castle County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "28beaddb9c0c421987801b803fa0f04e",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/new_castle_county_de_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 90,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 90,
+        "originalScore": 90,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Parcel Counts By Type By Municipality: Beginning Roll Year 2000",
+      "description": "The Department of Taxation and Finance annually produces a report pertaining to the distribution of parcels by property class.  The data analysis involves a breakdown of property classes to nine segments of broad use, namely Agricultural, Residential, Vacant Land/Farm, Commercial, Recreation, Community Service, Industrial, Public Service, and Forest/Conservation. For more information please go to:  http://www.tax.ny.gov/research/property/default.htm",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.ny.gov",
+      "resourceId": "tnwc-mx3q",
+      "type": "dataset",
+      "endpoint": "https://data.ny.gov/resource/tnwc-mx3q.json",
+      "isPublic": true,
+      "permalink": "https://data.ny.gov/d/tnwc-mx3q",
+      "compatibility": {
+        "score": 73,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 15,
+        "originalScore": 73,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Special Programs",
+      "description": "This dataset provides data from the City of Norfolk’s special programs tracking system. Special program issues originate from inspections conducted by the Department of Neighborhood Services and the Department of City Planning. The goal of pursuing compliance with special programs is to strengthen neighborhood standards and improve property health and safety. Types of special programs may include property issues such emergency demolitions, fire department red tags, vacant building registration, Virginia Natural Gas red tags, short-term rentals, new auto establishments, and others.  This dataset will contain a rolling three years of data and will be updated daily.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.norfolk.gov",
+      "resourceId": "7fk7-nqxm",
+      "type": "dataset",
+      "endpoint": "https://data.norfolk.gov/resource/7fk7-nqxm.json",
+      "isPublic": true,
+      "permalink": "https://data.norfolk.gov/d/7fk7-nqxm",
+      "compatibility": {
+        "score": 53,
+        "dataset": "vacant_properties",
+        "matchedTerms": [
+          "vacant building"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 30,
+        "originalScore": 53,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Market Value Analysis (MVA) 2020",
+      "description": "The Market Value Analysis uses local data sources to help describe and categorize local housing markets in Kansas City at the block group level. For more information on the MVA methodology and use, see here: https://www.kcmo.gov/city-hall/departments/city-planning-development/market-value-analysis-kansas-city-missouri",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.kcmo.org",
+      "resourceId": "qhqc-4mi2",
+      "type": "dataset",
+      "endpoint": "https://data.kcmo.org/resource/qhqc-4mi2.json",
+      "isPublic": true,
+      "permalink": "https://data.kcmo.org/d/qhqc-4mi2",
+      "compatibility": {
+        "score": 33,
+        "dataset": "unknown",
+        "matchedTerms": [],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 10,
+        "originalScore": 33,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785846015320-9112",
+  "startedAt": "2026-08-04T12:20:15.320Z",
+  "completedAt": "2026-08-04T12:20:36.626Z",
+  "state": "NJ",
+  "county": "Sussex",
+  "connectorId": "NJ-SUSSEX",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "property_assessment"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T12:20:15.324Z",
+      "completedAt": "2026-08-04T12:20:25.847Z",
+      "ok": true,
+      "candidateCount": 13,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/NJ-SUSSEX-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T12:20:28.135Z",
+      "completedAt": "2026-08-04T12:20:28.314Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "property_assessment": {
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://maps.nj.gov/arcgis/rest/services/Framework/Cadastral/MapServer/0/query",
+      "title": "Parcels and MOD-IV Composite of New Jersey",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T12:20:25.853Z",
+          "completedAt": "2026-08-04T12:20:26.309Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T12:20:26.309Z",
+          "completedAt": "2026-08-04T12:20:28.134Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T12:20:28.314Z",
+          "completedAt": "2026-08-04T12:20:36.626Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

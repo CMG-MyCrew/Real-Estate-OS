@@ -1,0 +1,302 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-04T16:02:01.711Z",
+  "locality": {
+    "state": "MD",
+    "county": "St. Mary's"
+  },
+  "sources": [
+    "arcgis",
+    "socrata"
+  ],
+  "datasets": [
+    "property_assessment"
+  ],
+  "candidateCount": 3,
+  "selections": {
+    "property_assessment": {
+      "threshold": 60,
+      "status": "SELECTED",
+      "selected": {
+        "id": "MD-STATE-PROPERTY-DATA",
+        "title": "Maryland Statewide Property Data",
+        "description": "Official Maryland statewide property and assessment point data.",
+        "owner": "",
+        "tags": [
+          "authoritative",
+          "MD",
+          "St. Mary's",
+          "property_assessment"
+        ],
+        "adapter": "arcgis",
+        "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+        "serviceUrl": "",
+        "authoritative": true,
+        "sourceScope": "statewide",
+        "sourceQuery": {
+          "where": "JURSCODE='STMA'"
+        },
+        "compatibility": {
+          "dataset": "property_assessment",
+          "score": 100
+        },
+        "automaticDiscovery": {
+          "score": 100,
+          "originalScore": 100,
+          "countyMatch": true,
+          "stateMatch": true,
+          "negativeTerms": [],
+          "endpointQuality": 0,
+          "eligible": true,
+          "seeded": true
+        },
+        "health": {
+          "ok": true,
+          "exitCode": 0,
+          "stdout": "{\n  adapter: 'arcgis',\n  count: 2396022,\n  ok: true,\n  durationMs: 308,\n  status: 200\n}",
+          "stderr": ""
+        }
+      },
+      "reviewedCandidates": [
+        {
+          "id": "MD-STATE-PROPERTY-DATA",
+          "title": "Maryland Statewide Property Data",
+          "description": "Official Maryland statewide property and assessment point data.",
+          "owner": "",
+          "tags": [
+            "authoritative",
+            "MD",
+            "St. Mary's",
+            "property_assessment"
+          ],
+          "adapter": "arcgis",
+          "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+          "serviceUrl": "",
+          "authoritative": true,
+          "sourceScope": "statewide",
+          "sourceQuery": {
+            "where": "JURSCODE='STMA'"
+          },
+          "compatibility": {
+            "dataset": "property_assessment",
+            "score": 100
+          },
+          "automaticDiscovery": {
+            "score": 100,
+            "originalScore": 100,
+            "countyMatch": true,
+            "stateMatch": true,
+            "negativeTerms": [],
+            "endpointQuality": 0,
+            "eligible": true,
+            "seeded": true
+          },
+          "health": {
+            "ok": true,
+            "exitCode": 0,
+            "stdout": "{\n  adapter: 'arcgis',\n  count: 2396022,\n  ok: true,\n  durationMs: 308,\n  status: 200\n}",
+            "stderr": ""
+          }
+        },
+        {
+          "adapter": "socrata",
+          "source": "socrata-catalog",
+          "title": "St. Mary's County Real Property Assessments: Hidden Property Owner Names",
+          "description": "Please read all metadata before accessing the dataset. Note that records shown here are updated at different frequencies from data in products from MDP and SDAT. Please see the full documentation at https://opendata.maryland.gov/api/views/ed4q-f8tm/files/WtRzMltUzm25OasOCYtu7PgOGUfrplWsZTalSH4Iukg?download=true&filename=Real%20Property%20Records%20Documentation.pdf and review the dedicated metadata site (https://opendata.maryland.gov/dataset/Beta-Maryland-Statewide-Real-Property-Assessments-/ed4q-f8tm/about).",
+          "snippet": "",
+          "tags": [],
+          "owner": "",
+          "domain": "opendata.maryland.gov",
+          "resourceId": "h5s8-t6nx",
+          "type": "filter",
+          "endpoint": "https://opendata.maryland.gov/resource/h5s8-t6nx.json",
+          "isPublic": true,
+          "permalink": "https://opendata.maryland.gov/d/h5s8-t6nx",
+          "compatibility": {
+            "score": 100,
+            "dataset": "property_assessment",
+            "matchedTerms": [
+              "property assessment",
+              "property assessments",
+              "assessment",
+              "real property"
+            ],
+            "generatorReady": true
+          },
+          "automaticDiscovery": {
+            "score": 100,
+            "originalScore": 100,
+            "countyMatch": true,
+            "stateMatch": true,
+            "negativeTerms": [],
+            "endpointQuality": 15,
+            "eligible": true
+          },
+          "health": {
+            "ok": true,
+            "exitCode": 0,
+            "stdout": "{ adapter: 'socrata', ok: true, durationMs: 591, status: 200 }",
+            "stderr": ""
+          }
+        },
+        {
+          "adapter": "arcgis",
+          "source": "arcgis-online",
+          "title": "St. Mary's County MD Parcels",
+          "description": "",
+          "snippet": "",
+          "tags": [
+            "Maryland",
+            "Parcels",
+            "St. Mary's County"
+          ],
+          "owner": "wharcgisdeveloper",
+          "itemId": "425274a0da09499eaa435a1ee39789ed",
+          "type": "Feature Service",
+          "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/st_marys_county_md_parcels/FeatureServer",
+          "endpoint": "",
+          "isPublic": true,
+          "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+          "compatibility": {
+            "score": 90,
+            "dataset": "property_assessment",
+            "matchedTerms": [
+              "parcel",
+              "parcels"
+            ],
+            "generatorReady": false
+          },
+          "automaticDiscovery": {
+            "score": 100,
+            "originalScore": 90,
+            "countyMatch": true,
+            "stateMatch": true,
+            "negativeTerms": [],
+            "endpointQuality": 0,
+            "eligible": false
+          }
+        }
+      ]
+    }
+  },
+  "candidates": [
+    {
+      "id": "MD-STATE-PROPERTY-DATA",
+      "title": "Maryland Statewide Property Data",
+      "description": "Official Maryland statewide property and assessment point data.",
+      "owner": "",
+      "tags": [
+        "authoritative",
+        "MD",
+        "St. Mary's",
+        "property_assessment"
+      ],
+      "adapter": "arcgis",
+      "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+      "serviceUrl": "",
+      "authoritative": true,
+      "sourceScope": "statewide",
+      "sourceQuery": {
+        "where": "JURSCODE='STMA'"
+      },
+      "compatibility": {
+        "dataset": "property_assessment",
+        "score": 100
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": true,
+        "seeded": true
+      },
+      "health": {
+        "ok": true,
+        "exitCode": 0,
+        "stdout": "{\n  adapter: 'arcgis',\n  count: 2396022,\n  ok: true,\n  durationMs: 308,\n  status: 200\n}",
+        "stderr": ""
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "St. Mary's County Real Property Assessments: Hidden Property Owner Names",
+      "description": "Please read all metadata before accessing the dataset. Note that records shown here are updated at different frequencies from data in products from MDP and SDAT. Please see the full documentation at https://opendata.maryland.gov/api/views/ed4q-f8tm/files/WtRzMltUzm25OasOCYtu7PgOGUfrplWsZTalSH4Iukg?download=true&filename=Real%20Property%20Records%20Documentation.pdf and review the dedicated metadata site (https://opendata.maryland.gov/dataset/Beta-Maryland-Statewide-Real-Property-Assessments-/ed4q-f8tm/about).",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "opendata.maryland.gov",
+      "resourceId": "h5s8-t6nx",
+      "type": "filter",
+      "endpoint": "https://opendata.maryland.gov/resource/h5s8-t6nx.json",
+      "isPublic": true,
+      "permalink": "https://opendata.maryland.gov/d/h5s8-t6nx",
+      "compatibility": {
+        "score": 100,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "property assessment",
+          "property assessments",
+          "assessment",
+          "real property"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": true
+      },
+      "health": {
+        "ok": true,
+        "exitCode": 0,
+        "stdout": "{ adapter: 'socrata', ok: true, durationMs: 591, status: 200 }",
+        "stderr": ""
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "St. Mary's County MD Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Maryland",
+        "Parcels",
+        "St. Mary's County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "425274a0da09499eaa435a1ee39789ed",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/st_marys_county_md_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 90,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 90,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    }
+  ]
+}

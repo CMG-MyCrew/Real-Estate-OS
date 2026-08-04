@@ -1,0 +1,511 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-04T15:07:17.353Z",
+  "locality": {
+    "state": "MD",
+    "county": "Baltimore City"
+  },
+  "sources": [
+    "arcgis",
+    "socrata"
+  ],
+  "datasets": [
+    "property_assessment"
+  ],
+  "candidateCount": 9,
+  "selections": {
+    "property_assessment": {
+      "threshold": 60,
+      "status": "SELECTED",
+      "selected": {
+        "id": "MD-STATE-PROPERTY-DATA",
+        "title": "Maryland Statewide Property Data",
+        "description": "Official Maryland statewide property and assessment point data.",
+        "owner": "",
+        "tags": [
+          "authoritative",
+          "MD",
+          "Baltimore City",
+          "property_assessment"
+        ],
+        "adapter": "arcgis",
+        "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+        "serviceUrl": "",
+        "authoritative": true,
+        "sourceScope": "statewide",
+        "sourceQuery": {
+          "where": "JURSCODE='BACI'"
+        },
+        "compatibility": {
+          "dataset": "property_assessment",
+          "score": 100
+        },
+        "automaticDiscovery": {
+          "score": 100,
+          "originalScore": 100,
+          "countyMatch": true,
+          "stateMatch": true,
+          "negativeTerms": [],
+          "endpointQuality": 0,
+          "eligible": true,
+          "seeded": true
+        },
+        "health": {
+          "ok": true,
+          "exitCode": 0,
+          "stdout": "{\n  adapter: 'arcgis',\n  count: 2396022,\n  ok: true,\n  durationMs: 540,\n  status: 200\n}",
+          "stderr": ""
+        }
+      },
+      "reviewedCandidates": [
+        {
+          "id": "MD-STATE-PROPERTY-DATA",
+          "title": "Maryland Statewide Property Data",
+          "description": "Official Maryland statewide property and assessment point data.",
+          "owner": "",
+          "tags": [
+            "authoritative",
+            "MD",
+            "Baltimore City",
+            "property_assessment"
+          ],
+          "adapter": "arcgis",
+          "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+          "serviceUrl": "",
+          "authoritative": true,
+          "sourceScope": "statewide",
+          "sourceQuery": {
+            "where": "JURSCODE='BACI'"
+          },
+          "compatibility": {
+            "dataset": "property_assessment",
+            "score": 100
+          },
+          "automaticDiscovery": {
+            "score": 100,
+            "originalScore": 100,
+            "countyMatch": true,
+            "stateMatch": true,
+            "negativeTerms": [],
+            "endpointQuality": 0,
+            "eligible": true,
+            "seeded": true
+          },
+          "health": {
+            "ok": true,
+            "exitCode": 0,
+            "stdout": "{\n  adapter: 'arcgis',\n  count: 2396022,\n  ok: true,\n  durationMs: 540,\n  status: 200\n}",
+            "stderr": ""
+          }
+        },
+        {
+          "adapter": "socrata",
+          "source": "socrata-catalog",
+          "title": "Baltimore City Real Property Assessments: Hidden Property Owner Names",
+          "description": "Please read all metadata before accessing the dataset. Note that records shown here are updated at different frequencies from data in products from MDP and SDAT. Please see the full documentation at https://opendata.maryland.gov/api/views/ed4q-f8tm/files/WtRzMltUzm25OasOCYtu7PgOGUfrplWsZTalSH4Iukg?download=true&filename=Real%20Property%20Records%20Documentation.pdf and review the dedicated metadata site (https://opendata.maryland.gov/dataset/Beta-Maryland-Statewide-Real-Property-Assessments-/ed4q-f8tm/about).",
+          "snippet": "",
+          "tags": [],
+          "owner": "",
+          "domain": "opendata.maryland.gov",
+          "resourceId": "3x3p-xk2v",
+          "type": "filter",
+          "endpoint": "https://opendata.maryland.gov/resource/3x3p-xk2v.json",
+          "isPublic": true,
+          "permalink": "https://opendata.maryland.gov/d/3x3p-xk2v",
+          "compatibility": {
+            "score": 100,
+            "dataset": "property_assessment",
+            "matchedTerms": [
+              "property assessment",
+              "property assessments",
+              "assessment",
+              "real property"
+            ],
+            "generatorReady": true
+          },
+          "automaticDiscovery": {
+            "score": 100,
+            "originalScore": 100,
+            "countyMatch": false,
+            "stateMatch": true,
+            "negativeTerms": [],
+            "endpointQuality": 15,
+            "eligible": false
+          }
+        },
+        {
+          "adapter": "socrata",
+          "source": "socrata-catalog",
+          "title": "Baltimore County Real Property Assessments: Hidden Property Owner Names",
+          "description": "Please read all metadata before accessing the dataset. Note that records shown here are updated at different frequencies from data in products from MDP and SDAT. Please see the full documentation at https://opendata.maryland.gov/api/views/ed4q-f8tm/files/WtRzMltUzm25OasOCYtu7PgOGUfrplWsZTalSH4Iukg?download=true&filename=Real%20Property%20Records%20Documentation.pdf and review the dedicated metadata site (https://opendata.maryland.gov/dataset/Beta-Maryland-Statewide-Real-Property-Assessments-/ed4q-f8tm/about).",
+          "snippet": "",
+          "tags": [],
+          "owner": "",
+          "domain": "opendata.maryland.gov",
+          "resourceId": "jpfc-qkxp",
+          "type": "filter",
+          "endpoint": "https://opendata.maryland.gov/resource/jpfc-qkxp.json",
+          "isPublic": true,
+          "permalink": "https://opendata.maryland.gov/d/jpfc-qkxp",
+          "compatibility": {
+            "score": 97,
+            "dataset": "property_assessment",
+            "matchedTerms": [
+              "property assessment",
+              "property assessments",
+              "assessment",
+              "real property"
+            ],
+            "generatorReady": true
+          },
+          "automaticDiscovery": {
+            "score": 100,
+            "originalScore": 97,
+            "countyMatch": false,
+            "stateMatch": true,
+            "negativeTerms": [],
+            "endpointQuality": 15,
+            "eligible": false
+          }
+        },
+        {
+          "adapter": "socrata",
+          "source": "socrata-catalog",
+          "title": "Assessor [Archived 05-11-2022] - Residential Modeling Characteristics (Chicago)",
+          "description": "This data set contains characteristic data points used by the Cook County Assessor in the 2021 Chicago reassessment to produce initial estimates of the current market value of most Chicago homes (single-family homes, small multi-family homes, and condo units). You can use the \"Filter\" option to search for a property's PIN or address, and see what data the Assessor’s Office had about a home’s characteristics at the time of modeling*. To learn more about how the 2021 model used this data, read about our public <a href=\"https://gitlab.com/ccao-data-science---modeling/models/ccao_res_avm\" target=_new>Residential Automated Valuation Model here</a>. Chicago properties not listed here are reassessed using different modeling procedures.\n\n<br> <br>\n\n<b>*Important Note:</b> This dataset is, at the time of publication, an early snapshot of data. Data about a home might change later in the assessment process this year as Assessor’s Office staff and analysts review these properties. After this review, updated characteristics and market values are mailed to homeowners. If the data listed on the assessment notice is incorrect, an appeal can be filed to provide the correct characteristics.",
+          "snippet": "",
+          "tags": [],
+          "owner": "",
+          "domain": "datacatalog.cookcountyil.gov",
+          "resourceId": "8f9d-wy2d",
+          "type": "dataset",
+          "endpoint": "https://datacatalog.cookcountyil.gov/resource/8f9d-wy2d.json",
+          "isPublic": true,
+          "permalink": "https://datacatalog.cookcountyil.gov/d/8f9d-wy2d",
+          "compatibility": {
+            "score": 73,
+            "dataset": "property_assessment",
+            "matchedTerms": [
+              "assessment",
+              "assessor"
+            ],
+            "generatorReady": true
+          },
+          "automaticDiscovery": {
+            "score": 50,
+            "originalScore": 73,
+            "countyMatch": false,
+            "stateMatch": false,
+            "negativeTerms": [],
+            "endpointQuality": 15,
+            "eligible": false
+          }
+        }
+      ]
+    }
+  },
+  "candidates": [
+    {
+      "id": "MD-STATE-PROPERTY-DATA",
+      "title": "Maryland Statewide Property Data",
+      "description": "Official Maryland statewide property and assessment point data.",
+      "owner": "",
+      "tags": [
+        "authoritative",
+        "MD",
+        "Baltimore City",
+        "property_assessment"
+      ],
+      "adapter": "arcgis",
+      "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+      "serviceUrl": "",
+      "authoritative": true,
+      "sourceScope": "statewide",
+      "sourceQuery": {
+        "where": "JURSCODE='BACI'"
+      },
+      "compatibility": {
+        "dataset": "property_assessment",
+        "score": 100
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": true,
+        "seeded": true
+      },
+      "health": {
+        "ok": true,
+        "exitCode": 0,
+        "stdout": "{\n  adapter: 'arcgis',\n  count: 2396022,\n  ok: true,\n  durationMs: 540,\n  status: 200\n}",
+        "stderr": ""
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Baltimore City Real Property Assessments: Hidden Property Owner Names",
+      "description": "Please read all metadata before accessing the dataset. Note that records shown here are updated at different frequencies from data in products from MDP and SDAT. Please see the full documentation at https://opendata.maryland.gov/api/views/ed4q-f8tm/files/WtRzMltUzm25OasOCYtu7PgOGUfrplWsZTalSH4Iukg?download=true&filename=Real%20Property%20Records%20Documentation.pdf and review the dedicated metadata site (https://opendata.maryland.gov/dataset/Beta-Maryland-Statewide-Real-Property-Assessments-/ed4q-f8tm/about).",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "opendata.maryland.gov",
+      "resourceId": "3x3p-xk2v",
+      "type": "filter",
+      "endpoint": "https://opendata.maryland.gov/resource/3x3p-xk2v.json",
+      "isPublic": true,
+      "permalink": "https://opendata.maryland.gov/d/3x3p-xk2v",
+      "compatibility": {
+        "score": 100,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "property assessment",
+          "property assessments",
+          "assessment",
+          "real property"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": false,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Baltimore County Real Property Assessments: Hidden Property Owner Names",
+      "description": "Please read all metadata before accessing the dataset. Note that records shown here are updated at different frequencies from data in products from MDP and SDAT. Please see the full documentation at https://opendata.maryland.gov/api/views/ed4q-f8tm/files/WtRzMltUzm25OasOCYtu7PgOGUfrplWsZTalSH4Iukg?download=true&filename=Real%20Property%20Records%20Documentation.pdf and review the dedicated metadata site (https://opendata.maryland.gov/dataset/Beta-Maryland-Statewide-Real-Property-Assessments-/ed4q-f8tm/about).",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "opendata.maryland.gov",
+      "resourceId": "jpfc-qkxp",
+      "type": "filter",
+      "endpoint": "https://opendata.maryland.gov/resource/jpfc-qkxp.json",
+      "isPublic": true,
+      "permalink": "https://opendata.maryland.gov/d/jpfc-qkxp",
+      "compatibility": {
+        "score": 97,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "property assessment",
+          "property assessments",
+          "assessment",
+          "real property"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 97,
+        "countyMatch": false,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Assessor [Archived 05-11-2022] - Residential Modeling Characteristics (Chicago)",
+      "description": "This data set contains characteristic data points used by the Cook County Assessor in the 2021 Chicago reassessment to produce initial estimates of the current market value of most Chicago homes (single-family homes, small multi-family homes, and condo units). You can use the \"Filter\" option to search for a property's PIN or address, and see what data the Assessor’s Office had about a home’s characteristics at the time of modeling*. To learn more about how the 2021 model used this data, read about our public <a href=\"https://gitlab.com/ccao-data-science---modeling/models/ccao_res_avm\" target=_new>Residential Automated Valuation Model here</a>. Chicago properties not listed here are reassessed using different modeling procedures.\n\n<br> <br>\n\n<b>*Important Note:</b> This dataset is, at the time of publication, an early snapshot of data. Data about a home might change later in the assessment process this year as Assessor’s Office staff and analysts review these properties. After this review, updated characteristics and market values are mailed to homeowners. If the data listed on the assessment notice is incorrect, an appeal can be filed to provide the correct characteristics.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "8f9d-wy2d",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/8f9d-wy2d.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/8f9d-wy2d",
+      "compatibility": {
+        "score": 73,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "assessment",
+          "assessor"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 50,
+        "originalScore": 73,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "City of Albany Vacant Building Inventory: 2013",
+      "description": "Since January 2012, the Division of Buildings & Regulatory Compliance has created a living database documenting vacant buildings in the City of Albany. To create this database, the Division reconciled the Division of Building and Codes Vacant Building Registry with the Department of Fire and Emergency Services Vacant Building Database. This first reconciliation yielded a list of approximately 750 vacant buildings. The Division then reconciled that list with lists from neighborhood associations and lists from the Department of Assessment and Taxation.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.ny.gov",
+      "resourceId": "nv2j-hmda",
+      "type": "dataset",
+      "endpoint": "https://data.ny.gov/resource/nv2j-hmda.json",
+      "isPublic": true,
+      "permalink": "https://data.ny.gov/d/nv2j-hmda",
+      "compatibility": {
+        "score": 57,
+        "dataset": "vacant_properties",
+        "matchedTerms": [
+          "vacant building",
+          "vacant buildings"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 15,
+        "originalScore": 57,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Defaulted Tax Data",
+      "description": "County of Sonoma Auditor-Controller-Treasurer-Tax Collector listing of defaulted tax data. The data provided indicates prior year delinquent tax information as of July 1st in this current fiscal tax year.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.sonomacounty.ca.gov",
+      "resourceId": "bp8v-uax7",
+      "type": "dataset",
+      "endpoint": "https://data.sonomacounty.ca.gov/resource/bp8v-uax7.json",
+      "isPublic": true,
+      "permalink": "https://data.sonomacounty.ca.gov/d/bp8v-uax7",
+      "compatibility": {
+        "score": 45,
+        "dataset": "tax_delinquent",
+        "matchedTerms": [
+          "delinquent tax"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 22,
+        "originalScore": 45,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Special Programs",
+      "description": "This dataset provides data from the City of Norfolk’s special programs tracking system. Special program issues originate from inspections conducted by the Department of Neighborhood Services and the Department of City Planning. The goal of pursuing compliance with special programs is to strengthen neighborhood standards and improve property health and safety. Types of special programs may include property issues such emergency demolitions, fire department red tags, vacant building registration, Virginia Natural Gas red tags, short-term rentals, new auto establishments, and others.  This dataset will contain a rolling three years of data and will be updated daily.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.norfolk.gov",
+      "resourceId": "7fk7-nqxm",
+      "type": "dataset",
+      "endpoint": "https://data.norfolk.gov/resource/7fk7-nqxm.json",
+      "isPublic": true,
+      "permalink": "https://data.norfolk.gov/d/7fk7-nqxm",
+      "compatibility": {
+        "score": 45,
+        "dataset": "vacant_properties",
+        "matchedTerms": [
+          "vacant building"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 22,
+        "originalScore": 45,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Bodega Tax Default as of July 1 2017",
+      "description": "County of Sonoma Auditor-Controller-Treasurer-Tax Collector listing of defaulted tax data. The data provided indicates prior year delinquent tax information as of July 1st in this current fiscal tax year.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.sonomacounty.ca.gov",
+      "resourceId": "y42d-aiqs",
+      "type": "filter",
+      "endpoint": "https://data.sonomacounty.ca.gov/resource/y42d-aiqs.json",
+      "isPublic": true,
+      "permalink": "https://data.sonomacounty.ca.gov/d/y42d-aiqs",
+      "compatibility": {
+        "score": 45,
+        "dataset": "tax_delinquent",
+        "matchedTerms": [
+          "delinquent tax"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 22,
+        "originalScore": 45,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Market Value Analysis (MVA) 2020",
+      "description": "The Market Value Analysis uses local data sources to help describe and categorize local housing markets in Kansas City at the block group level. For more information on the MVA methodology and use, see here: https://www.kcmo.gov/city-hall/departments/city-planning-development/market-value-analysis-kansas-city-missouri",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.kcmo.org",
+      "resourceId": "qhqc-4mi2",
+      "type": "dataset",
+      "endpoint": "https://data.kcmo.org/resource/qhqc-4mi2.json",
+      "isPublic": true,
+      "permalink": "https://data.kcmo.org/d/qhqc-4mi2",
+      "compatibility": {
+        "score": 25,
+        "dataset": "unknown",
+        "matchedTerms": [],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 2,
+        "originalScore": 25,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    }
+  ]
+}

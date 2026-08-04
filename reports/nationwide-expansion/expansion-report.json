@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.0.0",
+  "expansionId": "NWE-1785813703574-2121",
+  "startedAt": "2026-08-04T03:21:43.575Z",
+  "completedAt": "2026-08-04T03:23:14.487Z",
+  "mode": "EXECUTE",
+  "datasets": [
+    "property_assessment"
+  ],
+  "statesRequested": [
+    "DE",
+    "NJ"
+  ],
+  "states": {
+    "DE": {
+      "state": "DE",
+      "status": "REVIEW_REQUIRED",
+      "countyCount": 2,
+      "counties": [
+        "Kent",
+        "New Castle"
+      ],
+      "ok": false,
+      "exitCode": 1
+    },
+    "NJ": {
+      "state": "NJ",
+      "status": "REVIEW_REQUIRED",
+      "countyCount": 2,
+      "counties": [
+        "Atlantic",
+        "Bergen"
+      ],
+      "ok": false,
+      "exitCode": 1
+    }
+  },
+  "counts": {
+    "statesPlanned": 2,
+    "statesExecuted": 0,
+    "statesSkipped": 0,
+    "statesFailed": 2,
+    "countiesPlanned": 4,
+    "countiesAttempted": 4
+  },
+  "ok": false,
+  "coverage": {
+    "states": 2,
+    "counties": 24,
+    "connectors": 0,
+    "ready": 0,
+    "production": 0,
+    "reviewRequired": 0,
+    "failed": 0,
+    "missing": 24
+  }
+}

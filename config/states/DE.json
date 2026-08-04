@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "1.0.0",
+  "state": "DE",
+  "name": "Delaware",
+  "fips": "10",
+  "catalogYear": "2025",
+  "generatedAt": "2026-08-04T03:20:42.161Z",
+  "source": "U.S. Census Bureau Gazetteer county files",
+  "sourceUrl": "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_gaz_counties_10.txt",
+  "counties": [
+    "Kent",
+    "New Castle",
+    "Sussex"
+  ],
+  "countyMetadata": {
+    "Kent": {
+      "name": "Kent",
+      "legalName": "Kent County",
+      "geoid": "10001",
+      "stateFips": "10",
+      "countyFips": "001",
+      "ansiCode": "00217271",
+      "landSquareMiles": 586.061,
+      "waterSquareMiles": 212.27,
+      "latitude": 39.097088,
+      "longitude": -75.502982
+    },
+    "New Castle": {
+      "name": "New Castle",
+      "legalName": "New Castle County",
+      "geoid": "10003",
+      "stateFips": "10",
+      "countyFips": "003",
+      "ansiCode": "00217270",
+      "landSquareMiles": 426.338,
+      "waterSquareMiles": 67.689,
+      "latitude": 39.575915,
+      "longitude": -75.644132
+    },
+    "Sussex": {
+      "name": "Sussex",
+      "legalName": "Sussex County",
+      "geoid": "10005",
+      "stateFips": "10",
+      "countyFips": "005",
+      "ansiCode": "00217269",
+      "landSquareMiles": 936.146,
+      "waterSquareMiles": 260.277,
+      "latitude": 38.673227,
+      "longitude": -75.337024
+    }
+  }
+}

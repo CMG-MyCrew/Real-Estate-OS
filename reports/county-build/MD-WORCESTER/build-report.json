@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785859481736-2071",
+  "startedAt": "2026-08-04T16:04:41.736Z",
+  "completedAt": "2026-08-04T16:05:20.290Z",
+  "state": "MD",
+  "county": "Worcester",
+  "connectorId": "MD-WORCESTER",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "property_assessment"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T16:04:41.745Z",
+      "completedAt": "2026-08-04T16:05:03.453Z",
+      "ok": true,
+      "candidateCount": 16,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/MD-WORCESTER-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T16:05:05.115Z",
+      "completedAt": "2026-08-04T16:05:05.397Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "property_assessment": {
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+      "title": "Maryland Statewide Property Data",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T16:05:03.461Z",
+          "completedAt": "2026-08-04T16:05:03.921Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T16:05:03.921Z",
+          "completedAt": "2026-08-04T16:05:05.115Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T16:05:05.397Z",
+          "completedAt": "2026-08-04T16:05:20.288Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

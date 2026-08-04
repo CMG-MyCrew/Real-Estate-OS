@@ -1,0 +1,163 @@
+{
+  "id": "DE-NEW-CASTLE",
+  "state": "DE",
+  "county": "New Castle",
+  "version": "1.0.0",
+  "enabled": true,
+  "generatedAt": "2026-08-04T09:57:46.030Z",
+  "datasets": {
+    "parcel_inventory": {
+      "adapter": "arcgis",
+      "endpointProperty": "REOS_COUNTY_DE_NEW_CASTLE_PARCEL_INVENTORY_URL",
+      "endpoint": "https://enterprise.firstmaptest.delaware.gov/arcgis/rest/services/PlanningCadastre/DE_StateParcels/FeatureServer/0/query",
+      "enabled": true,
+      "maxLimit": 2000,
+      "mapping": {
+        "address": [
+          "ADDRESS",
+          "address",
+          "STREET_ADDRESS",
+          "street_address",
+          "property_address",
+          "location"
+        ],
+        "city": [
+          "CITY",
+          "city",
+          "MUNICIPALITY",
+          "municipality",
+          "property_city"
+        ],
+        "zip": [
+          "ZIP",
+          "zip",
+          "ZIP_CODE",
+          "zip_code",
+          "ZIPCODE",
+          "zipcode",
+          "postal_code"
+        ],
+        "parcelId": [
+          "PIN",
+          "pin",
+          "TAXPIN",
+          "taxpin",
+          "PARCEL_NUM",
+          "parcel_num",
+          "PARCEL_ID",
+          "parcel_id",
+          "parcel_number",
+          "OPA_NUMBER",
+          "opa_number",
+          "account_number"
+        ],
+        "ownerName": [
+          "OWNER1",
+          "owner1",
+          "OWNER",
+          "owner",
+          "owner_name",
+          "legal_owner"
+        ],
+        "coOwnerName": [
+          "OWNER2",
+          "owner2",
+          "CO_OWNER",
+          "co_owner"
+        ],
+        "sourceRecordId": [
+          "OBJECTID",
+          "objectid",
+          "ID",
+          "id",
+          "record_id",
+          "PARCEL_NUM",
+          "parcel_number"
+        ],
+        "sourceUpdatedAt": [
+          "UPDATED",
+          "updated",
+          "MODIFY_DATE",
+          "modify_date",
+          "UPDATED_AT",
+          "updated_at",
+          "last_updated",
+          "date_updated"
+        ],
+        "landAcres": [
+          "ACRES",
+          "acres",
+          "ACREAGE",
+          "acreage",
+          "land_acres"
+        ],
+        "estimatedValue": [],
+        "assessmentValue": [],
+        "landValue": [],
+        "buildingValue": [],
+        "yearBuilt": [],
+        "livingArea": [],
+        "saleDate": [],
+        "salePrice": []
+      },
+      "sourceQuery": {
+        "where": "COUNTY='New Castle'"
+      },
+      "discovery": {
+        "report": "reports/county-build/DE-NEW-CASTLE/promotion-input.json",
+        "candidate": 1,
+        "promotedAt": "2026-08-04T09:57:46.031Z",
+        "title": "Delaware State Parcels",
+        "source": "",
+        "sourceScope": "statewide",
+        "authoritative": true,
+        "sourceItemId": "",
+        "sourceLayerId": "",
+        "compatibilityScore": 100,
+        "matchedTerms": [],
+        "endpoint": "https://enterprise.firstmaptest.delaware.gov/arcgis/rest/services/PlanningCadastre/DE_StateParcels/FeatureServer/0/query"
+      },
+      "recordFilter": {
+        "requireAny": [
+          [
+            "PIN"
+          ]
+        ]
+      },
+      "autoMapping": {
+        "appliedAt": "2026-08-04T09:57:47.517Z",
+        "sampleCount": 50,
+        "report": "reports/county-mapping/DE-NEW-CASTLE-PARCEL_INVENTORY-MAPPING.json",
+        "minimumScore": 65,
+        "confidence": {
+          "parcelId": {
+            "score": 145,
+            "primaryField": "PIN",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "sourceRecordId": {
+            "score": 155,
+            "primaryField": "OBJECTID",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "sourceUpdatedAt": {
+            "score": 118,
+            "primaryField": "UPDATED",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "landAcres": {
+            "score": 133,
+            "primaryField": "ACRES",
+            "completeness": 1,
+            "alternatives": []
+          }
+        },
+        "warnings": []
+      }
+    }
+  },
+  "updatedAt": "2026-08-04T09:57:47.517Z"
+}

@@ -1,0 +1,246 @@
+{
+  "id": "MD-WICOMICO",
+  "state": "MD",
+  "county": "Wicomico",
+  "version": "1.0.0",
+  "enabled": true,
+  "generatedAt": "2026-08-04T16:04:19.907Z",
+  "datasets": {
+    "property_assessment": {
+      "adapter": "arcgis",
+      "endpointProperty": "REOS_COUNTY_MD_WICOMICO_PROPERTY_ASSESSMENT_URL",
+      "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+      "enabled": true,
+      "maxLimit": 2000,
+      "mapping": {
+        "address": [
+          "ST_ADDRESS",
+          "st_address",
+          "PROP_LOC",
+          "prop_loc",
+          "ADDRESS",
+          "address",
+          "STREET_ADDRESS",
+          "street_address",
+          "property_address",
+          "location"
+        ],
+        "city": [
+          "CITY_STATE",
+          "city_state",
+          "MUN_NAME",
+          "mun_name",
+          "CITY",
+          "city",
+          "MUNICIPALITY",
+          "municipality",
+          "property_city",
+          "OWNCITY",
+          "PREMCITY"
+        ],
+        "zip": [
+          "ZIP",
+          "zip",
+          "ZIP_CODE",
+          "zip_code",
+          "ZIPCODE",
+          "zipcode",
+          "postal_code",
+          "OWNERZIP",
+          "PREMZIP"
+        ],
+        "parcelId": [
+          "PAMS_PIN",
+          "pams_pin",
+          "PIN_NODUP",
+          "pin_nodup",
+          "GIS_PIN",
+          "gis_pin",
+          "PCL_PIN",
+          "pcl_pin",
+          "PIN",
+          "pin",
+          "TAXPIN",
+          "taxpin",
+          "PARCEL_NUM",
+          "parcel_num",
+          "PARCEL_ID",
+          "parcel_id",
+          "parcel_number",
+          "OPA_NUMBER",
+          "opa_number",
+          "account_number",
+          "PARCEL"
+        ],
+        "ownerName": [
+          "OWNER_NAME",
+          "owner_name",
+          "OWNER1",
+          "owner1",
+          "OWNER",
+          "owner",
+          "legal_owner",
+          "OWNADD1",
+          "OWNCITY",
+          "OWNSTATE"
+        ],
+        "coOwnerName": [
+          "OWNER2",
+          "owner2",
+          "CO_OWNER",
+          "co_owner"
+        ],
+        "sourceRecordId": [
+          "OBJECTID",
+          "objectid",
+          "ID",
+          "id",
+          "record_id",
+          "PARCEL_NUM",
+          "parcel_number"
+        ],
+        "sourceUpdatedAt": [
+          "PCLLASTUPD",
+          "pcllastupd",
+          "PCL_PBDATE",
+          "pcl_pbdate",
+          "UPDATED",
+          "updated",
+          "MODIFY_DATE",
+          "modify_date",
+          "UPDATED_AT",
+          "updated_at",
+          "last_updated",
+          "date_updated"
+        ],
+        "landValue": [
+          "LAND_VAL",
+          "land_val",
+          "LAND_VALUE",
+          "land_value",
+          "assessed_land_value"
+        ],
+        "buildingValue": [
+          "IMPRVT_VAL",
+          "imprvt_val",
+          "BUILDING_VALUE",
+          "building_value",
+          "improvement_value"
+        ],
+        "estimatedValue": [
+          "NET_VALUE",
+          "net_value",
+          "TOTAL_VALUE",
+          "total_value",
+          "TOTAL_ASSESSMENT",
+          "total_assessment",
+          "assessed_value"
+        ],
+        "assessmentValue": [],
+        "yearBuilt": [],
+        "landAcres": [
+          "ACRES"
+        ],
+        "livingArea": [
+          "SQFTSTRC"
+        ],
+        "saleDate": [],
+        "salePrice": []
+      },
+      "sourceQuery": {
+        "where": "JURSCODE='WICO'"
+      },
+      "discovery": {
+        "report": "reports/county-build/MD-WICOMICO/promotion-input.json",
+        "candidate": 1,
+        "promotedAt": "2026-08-04T16:04:19.910Z",
+        "title": "Maryland Statewide Property Data",
+        "source": "",
+        "sourceScope": "statewide",
+        "authoritative": true,
+        "sourceItemId": "",
+        "sourceLayerId": "",
+        "compatibilityScore": 100,
+        "matchedTerms": [],
+        "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query"
+      },
+      "recordFilter": {
+        "requireAny": [
+          [
+            "ADDRESS"
+          ],
+          [
+            "PARCEL"
+          ]
+        ]
+      },
+      "autoMapping": {
+        "appliedAt": "2026-08-04T16:04:21.496Z",
+        "sampleCount": 50,
+        "report": "reports/county-mapping/MD-WICOMICO-PROPERTY_ASSESSMENT-MAPPING.json",
+        "minimumScore": 65,
+        "confidence": {
+          "address": {
+            "score": 139,
+            "primaryField": "ADDRESS",
+            "completeness": 0.8,
+            "alternatives": []
+          },
+          "city": {
+            "score": 130,
+            "primaryField": "CITY",
+            "completeness": 1,
+            "alternatives": [
+              "OWNCITY",
+              "PREMCITY"
+            ]
+          },
+          "zip": {
+            "score": 148,
+            "primaryField": "ZIPCODE",
+            "completeness": 1,
+            "alternatives": [
+              "OWNERZIP",
+              "PREMZIP"
+            ]
+          },
+          "parcelId": {
+            "score": 145,
+            "primaryField": "PARCEL",
+            "completeness": 0.98,
+            "alternatives": []
+          },
+          "ownerName": {
+            "score": 97,
+            "primaryField": "OWNADD1",
+            "completeness": 1,
+            "alternatives": [
+              "OWNCITY",
+              "OWNSTATE"
+            ]
+          },
+          "sourceRecordId": {
+            "score": 155,
+            "primaryField": "OBJECTID",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "landAcres": {
+            "score": 133,
+            "primaryField": "ACRES",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "livingArea": {
+            "score": 96,
+            "primaryField": "SQFTSTRC",
+            "completeness": 0.66,
+            "alternatives": []
+          }
+        },
+        "warnings": []
+      }
+    }
+  },
+  "updatedAt": "2026-08-04T16:04:21.496Z"
+}

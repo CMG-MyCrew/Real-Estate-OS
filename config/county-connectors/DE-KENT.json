@@ -64,8 +64,8 @@
         ]
       },
       "autoMapping": {
-        "appliedAt": "2026-08-04T09:28:09.226Z",
-        "sampleCount": 25,
+        "appliedAt": "2026-08-04T10:42:39.734Z",
+        "sampleCount": 50,
         "report": "reports/county-mapping/DE-KENT-PARCEL_INVENTORY-MAPPING.json",
         "minimumScore": 65,
         "confidence": {
@@ -98,5 +98,5 @@
       }
     }
   },
-  "updatedAt": "2026-08-04T09:28:09.226Z"
+  "updatedAt": "2026-08-04T10:42:39.734Z"
 }

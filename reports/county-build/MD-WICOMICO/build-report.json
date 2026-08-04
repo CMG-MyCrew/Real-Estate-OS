@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785859425424-8291",
+  "startedAt": "2026-08-04T16:03:45.424Z",
+  "completedAt": "2026-08-04T16:04:41.403Z",
+  "state": "MD",
+  "county": "Wicomico",
+  "connectorId": "MD-WICOMICO",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "property_assessment"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T16:03:45.428Z",
+      "completedAt": "2026-08-04T16:04:19.345Z",
+      "ok": true,
+      "candidateCount": 17,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/MD-WICOMICO-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T16:04:21.622Z",
+      "completedAt": "2026-08-04T16:04:21.870Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "property_assessment": {
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+      "title": "Maryland Statewide Property Data",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T16:04:19.361Z",
+          "completedAt": "2026-08-04T16:04:20.018Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T16:04:20.018Z",
+          "completedAt": "2026-08-04T16:04:21.621Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T16:04:21.870Z",
+          "completedAt": "2026-08-04T16:04:41.402Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

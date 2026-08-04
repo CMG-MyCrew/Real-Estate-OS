@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785868576352-2768",
+  "startedAt": "2026-08-04T18:36:16.352Z",
+  "completedAt": "2026-08-04T18:36:47.966Z",
+  "state": "PA",
+  "county": "Wayne",
+  "connectorId": "PA-WAYNE",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "parcel_inventory"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T18:36:16.355Z",
+      "completedAt": "2026-08-04T18:36:31.832Z",
+      "ok": true,
+      "candidateCount": 15,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/PA-WAYNE-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T18:36:39.704Z",
+      "completedAt": "2026-08-04T18:36:39.928Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "parcel_inventory": {
+      "dataset": "parcel_inventory",
+      "adapter": "arcgis",
+      "endpoint": "https://gis.dep.pa.gov/depgisprd/rest/services/Parcels/PA_Parcels/MapServer/0/query",
+      "title": "Pennsylvania DEP Parcel Layer",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T18:36:31.835Z",
+          "completedAt": "2026-08-04T18:36:32.029Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T18:36:32.029Z",
+          "completedAt": "2026-08-04T18:36:39.703Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T18:36:39.928Z",
+          "completedAt": "2026-08-04T18:36:47.966Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

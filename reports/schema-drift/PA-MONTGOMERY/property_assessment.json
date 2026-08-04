@@ -1,0 +1,1442 @@
+{
+  "schemaVersion": "1.0.0",
+  "checkedAt": "2026-08-04T02:37:12.781Z",
+  "connectorId": "PA-MONTGOMERY",
+  "dataset": "property_assessment",
+  "adapter": "arcgis",
+  "endpoint": "https://services1.arcgis.com/kOChldNuKsox8qZD/arcgis/rest/services/Montgomery_County_Parcels/FeatureServer/6/query",
+  "baselineExists": true,
+  "schema": {
+    "sampleCount": 50,
+    "fields": {
+      "ADDR1": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "1183 JERICHO RD",
+          "1816 WOODLAND RD",
+          "539 GARFIELD AVE",
+          "708 MONROE AVE",
+          "1140 WHEATSHEAF LN"
+        ]
+      },
+      "ADDR2": {
+        "type": "string",
+        "populatedCount": 1,
+        "completeness": 0.02,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "BLDG 25  APT 168"
+        ]
+      },
+      "ADDR3": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 10,
+        "sampleValues": [
+          "ABINGTON PA 19001",
+          "ABINGTON PA 19001",
+          "GLENSIDE PA 19038",
+          "GLENSIDE PA 19038",
+          "ABINGTON PA 19001"
+        ]
+      },
+      "ALTERNATEI": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "30280 015",
+          "30276 032",
+          "30168 044",
+          "30239 049",
+          "30271 026"
+        ]
+      },
+      "ALT_ID": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "30280 015",
+          "30276 032",
+          "30168 044",
+          "30239 049",
+          "30271 026"
+        ]
+      },
+      "ASMT_CHGDA": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "12/17/2025",
+          "12/17/2025",
+          "12/17/2025",
+          "12/17/2025",
+          "12/17/2025"
+        ]
+      },
+      "ASSESSMENT": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          161870,
+          121640,
+          115460,
+          115690,
+          163640
+        ]
+      },
+      "ASSMT_CHGD": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          1765929600000,
+          1765929600000,
+          1765929600000,
+          1765929600000,
+          1765929600000
+        ]
+      },
+      "BASEMENT": {
+        "type": "string",
+        "populatedCount": 48,
+        "completeness": 0.96,
+        "uniqueCount": 3,
+        "sampleValues": [
+          "4",
+          "4",
+          "4",
+          "4",
+          "4"
+        ]
+      },
+      "BATHS": {
+        "type": "string",
+        "populatedCount": 48,
+        "completeness": 0.96,
+        "uniqueCount": 4,
+        "sampleValues": [
+          "         2",
+          "         1",
+          "         1",
+          "         1",
+          "         2"
+        ]
+      },
+      "BEDROOMS": {
+        "type": "string",
+        "populatedCount": 48,
+        "completeness": 0.96,
+        "uniqueCount": 5,
+        "sampleValues": [
+          "         5",
+          "         3",
+          "         3",
+          "         3",
+          "         4"
+        ]
+      },
+      "BLOCK": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 24,
+        "sampleValues": [
+          "280",
+          "276",
+          "168",
+          "239",
+          "271"
+        ]
+      },
+      "BSMT_CAR": {
+        "type": "string",
+        "populatedCount": 9,
+        "completeness": 0.18,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "         1",
+          "         1",
+          "         1",
+          "         1",
+          "         1"
+        ]
+      },
+      "CAREOF": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "CLASS": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 2,
+        "sampleValues": [
+          "R",
+          "R",
+          "R",
+          "R",
+          "R"
+        ]
+      },
+      "COMM_AIR": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "COMM_AREA": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "COMM_BSMT": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "COMM_CHGDA": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "COMM_CHG_1": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          -2208988800000,
+          -2208988800000,
+          -2208988800000,
+          -2208988800000,
+          -2208988800000
+        ]
+      },
+      "COMM_HEAT": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "COMM_IDENT": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "COMM_NLA": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "COMM_UNITS": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "COMM_YR_BL": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "CONDITION": {
+        "type": "string",
+        "populatedCount": 48,
+        "completeness": 0.96,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "3",
+          "3",
+          "3",
+          "3",
+          "3"
+        ]
+      },
+      "CONSIDERAT": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 35,
+        "sampleValues": [
+          575000,
+          412500,
+          445000,
+          436000,
+          170000
+        ]
+      },
+      "DEED_BOOK": {
+        "type": "string",
+        "populatedCount": 49,
+        "completeness": 0.98,
+        "uniqueCount": 49,
+        "sampleValues": [
+          "6433",
+          "6371",
+          "6437",
+          "6416",
+          "5104"
+        ]
+      },
+      "DEED_PAGE": {
+        "type": "string",
+        "populatedCount": 49,
+        "completeness": 0.98,
+        "uniqueCount": 48,
+        "sampleValues": [
+          "02954",
+          "00419",
+          "00276",
+          "00892",
+          "0309"
+        ]
+      },
+      "DEGREE_REM": {
+        "type": "string",
+        "populatedCount": 10,
+        "completeness": 0.2,
+        "uniqueCount": 4,
+        "sampleValues": [
+          "5",
+          "5",
+          "7",
+          "1",
+          "5"
+        ]
+      },
+      "DWEL_CHGDA": {
+        "type": "string",
+        "populatedCount": 48,
+        "completeness": 0.96,
+        "uniqueCount": 2,
+        "sampleValues": [
+          "12/17/2025",
+          "12/17/2025",
+          "12/17/2025",
+          "12/17/2025",
+          "12/17/2025"
+        ]
+      },
+      "DWEL_CHG_1": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 3,
+        "sampleValues": [
+          1765929600000,
+          1765929600000,
+          1765929600000,
+          1765929600000,
+          1765929600000
+        ]
+      },
+      "ELEV": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "EST_CO_TAX": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 47,
+        "sampleValues": [
+          884,
+          664,
+          631,
+          632,
+          894
+        ]
+      },
+      "EST_MCCC_T": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 34,
+        "sampleValues": [
+          79,
+          60,
+          57,
+          57,
+          80
+        ]
+      },
+      "EST_MUNI_T": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 46,
+        "sampleValues": [
+          999,
+          751,
+          713,
+          714,
+          1010
+        ]
+      },
+      "EST_SCH_TA": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 49,
+        "sampleValues": [
+          6458,
+          4853,
+          4607,
+          4616,
+          6529
+        ]
+      },
+      "EXTWALL": {
+        "type": "string",
+        "populatedCount": 48,
+        "completeness": 0.96,
+        "uniqueCount": 7,
+        "sampleValues": [
+          "5",
+          "2",
+          "5",
+          "6",
+          "7"
+        ]
+      },
+      "FARMLAND": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "         0",
+          "         0",
+          "         0",
+          "         0",
+          "         0"
+        ]
+      },
+      "FINBSMT_SF": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 4,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "FRONTFT": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 27,
+        "sampleValues": [
+          50,
+          89,
+          61,
+          50,
+          75
+        ]
+      },
+      "FRPL_OPEN": {
+        "type": "string",
+        "populatedCount": 24,
+        "completeness": 0.48,
+        "uniqueCount": 2,
+        "sampleValues": [
+          "         1",
+          "         1",
+          "         1",
+          "         1",
+          "         1"
+        ]
+      },
+      "FRPL_STACK": {
+        "type": "string",
+        "populatedCount": 24,
+        "completeness": 0.48,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "         1",
+          "         1",
+          "         1",
+          "         1",
+          "         1"
+        ]
+      },
+      "FUEL": {
+        "type": "string",
+        "populatedCount": 48,
+        "completeness": 0.96,
+        "uniqueCount": 2,
+        "sampleValues": [
+          "2",
+          "4",
+          "2",
+          "2",
+          "2"
+        ]
+      },
+      "HALF_BATHS": {
+        "type": "string",
+        "populatedCount": 37,
+        "completeness": 0.74,
+        "uniqueCount": 3,
+        "sampleValues": [
+          "         1",
+          "         1",
+          "         1",
+          "         0",
+          "         1"
+        ]
+      },
+      "HEAT": {
+        "type": "string",
+        "populatedCount": 48,
+        "completeness": 0.96,
+        "uniqueCount": 2,
+        "sampleValues": [
+          "4",
+          "3",
+          "3",
+          "3",
+          "3"
+        ]
+      },
+      "LANDSF": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "LAND_ACRES": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 43,
+        "sampleValues": [
+          0.1837,
+          0.361,
+          0.1703,
+          0.1377,
+          0.2755
+        ]
+      },
+      "LAND_CHDAT": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 2,
+        "sampleValues": [
+          1765929600000,
+          1765929600000,
+          1765929600000,
+          1765929600000,
+          1765929600000
+        ]
+      },
+      "LAND_CHGDA": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 2,
+        "sampleValues": [
+          "12/17/2025",
+          "12/17/2025",
+          "12/17/2025",
+          "12/17/2025",
+          "12/17/2025"
+        ]
+      },
+      "LAND_SF": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 43,
+        "sampleValues": [
+          8000,
+          15725,
+          7417,
+          6000,
+          12000
+        ]
+      },
+      "LAND_USE": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 4,
+        "sampleValues": [
+          "1101",
+          "1101",
+          "1101",
+          "1101",
+          "1101"
+        ]
+      },
+      "LEGAL1": {
+        "type": "string",
+        "populatedCount": 36,
+        "completeness": 0.72,
+        "uniqueCount": 36,
+        "sampleValues": [
+          "L 2142-2144 INC",
+          "L 315 PT 317 INC",
+          "L 505 PT OF L 506",
+          "L 376 PT 375-377",
+          "274 X IRR    44126 SF"
+        ]
+      },
+      "LEGAL2": {
+        "type": "string",
+        "populatedCount": 1,
+        "completeness": 0.02,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "75 X 160    12000 SF"
+        ]
+      },
+      "LEGAL3": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "LEGAL_CHGD": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "12/17/2025",
+          "12/17/2025",
+          "12/17/2025",
+          "12/17/2025",
+          "12/17/2025"
+        ]
+      },
+      "LEGAL_CH_1": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          1765929600000,
+          1765929600000,
+          1765929600000,
+          1765929600000,
+          1765929600000
+        ]
+      },
+      "LIV_UNITS": {
+        "type": "string",
+        "populatedCount": 49,
+        "completeness": 0.98,
+        "uniqueCount": 2,
+        "sampleValues": [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      },
+      "LOCATION1": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "1183 JERICHO RD",
+          "1816 WOODLAND RD",
+          "539 GARFIELD AVE",
+          "708 MONROE AVE",
+          "1140 WHEATSHEAF LN"
+        ]
+      },
+      "LOCATION2": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "LOCATION_C": {
+        "type": "string",
+        "populatedCount": 1,
+        "completeness": 0.02,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "6"
+        ]
+      },
+      "LOC_ADD": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "LOC_DIR": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "LOC_NO": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 49,
+        "sampleValues": [
+          1183,
+          1816,
+          539,
+          708,
+          1140
+        ]
+      },
+      "LOC_STR": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 26,
+        "sampleValues": [
+          "JERICHO",
+          "WOODLAND",
+          "GARFIELD",
+          "MONROE",
+          "WHEATSHEAF"
+        ]
+      },
+      "LOC_SUF": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 3,
+        "sampleValues": [
+          "RD",
+          "RD",
+          "AVE",
+          "AVE",
+          "LN"
+        ]
+      },
+      "LOC_SUF2": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "LOC_UNITDE": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "LOC_UNITNO": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "LOC_ZIP1_Z": {
+        "type": "string",
+        "populatedCount": 40,
+        "completeness": 0.8,
+        "uniqueCount": 4,
+        "sampleValues": [
+          "19001",
+          "19001",
+          "19038",
+          "19001",
+          "19001"
+        ]
+      },
+      "LOT_NO": {
+        "type": "string",
+        "populatedCount": 14,
+        "completeness": 0.28,
+        "uniqueCount": 11,
+        "sampleValues": [
+          "408",
+          "4",
+          "4",
+          "3",
+          "7"
+        ]
+      },
+      "MUNI_CODE": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "30",
+          "30",
+          "30",
+          "30",
+          "30"
+        ]
+      },
+      "Muni_Name": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "Abington Township",
+          "Abington Township",
+          "Abington Township",
+          "Abington Township",
+          "Abington Township"
+        ]
+      },
+      "NBHD": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 8,
+        "sampleValues": [
+          "30390000",
+          "30390000",
+          "30180000",
+          "30180000",
+          "30390000"
+        ]
+      },
+      "OBJECTID": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "OBJECTID_1": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "OBYVAL": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 24,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          790,
+          0
+        ]
+      },
+      "OBY_CHGDAT": {
+        "type": "string",
+        "populatedCount": 4,
+        "completeness": 0.08,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "12/17/2025",
+          "12/17/2025",
+          "12/17/2025",
+          "12/17/2025"
+        ]
+      },
+      "OBY_CHGD_1": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "OWN1": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "CURLEY JACQUELINE & SEARLE STEPHEN",
+          "LAKURIQI GRIGOR",
+          "LAMAY ROGER & LAMAY RROSE",
+          "MARTIN ALEXANDER &",
+          "CRINITI FRANK D & LISA M"
+        ]
+      },
+      "OWN2": {
+        "type": "string",
+        "populatedCount": 2,
+        "completeness": 0.04,
+        "uniqueCount": 2,
+        "sampleValues": [
+          "WISKEMANN LEANNE",
+          "ZHELYAZKOVA MACY"
+        ]
+      },
+      "OWN_INFO_1": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 5,
+        "sampleValues": [
+          1776038400000,
+          1765929600000,
+          1779235200000,
+          1765929600000,
+          1765929600000
+        ]
+      },
+      "OWN_INFO_C": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 5,
+        "sampleValues": [
+          "04/13/2026",
+          "12/17/2025",
+          "05/20/2026",
+          "12/17/2025",
+          "12/17/2025"
+        ]
+      },
+      "PARCEL": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "300034228005",
+          "300073604004",
+          "300023336007",
+          "300044176002",
+          "300072160008"
+        ]
+      },
+      "PARCELTYPE": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "BASE PARCEL",
+          "BASE PARCEL",
+          "BASE PARCEL",
+          "BASE PARCEL",
+          "BASE PARCEL"
+        ]
+      },
+      "PARK_COV": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "PARK_UNCOV": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "PARTITION": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "POOL": {
+        "type": "string",
+        "populatedCount": 4,
+        "completeness": 0.08,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "RP3",
+          "RP3",
+          "RP3",
+          "RP3"
+        ]
+      },
+      "PREFAB_FRP": {
+        "type": "string",
+        "populatedCount": 1,
+        "completeness": 0.02,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "         1"
+        ]
+      },
+      "PROP_INFO1": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 5,
+        "sampleValues": [
+          1776038400000,
+          1765929600000,
+          1779235200000,
+          1765929600000,
+          1765929600000
+        ]
+      },
+      "PROP_INFO_": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 5,
+        "sampleValues": [
+          "04/13/2026",
+          "12/17/2025",
+          "05/20/2026",
+          "12/17/2025",
+          "12/17/2025"
+        ]
+      },
+      "RESIDUAL": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "NO",
+          "NO",
+          "NO",
+          "NO",
+          "NO"
+        ]
+      },
+      "RESTRICTIO": {
+        "type": "string",
+        "populatedCount": 1,
+        "completeness": 0.02,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "E"
+        ]
+      },
+      "RM_TOT": {
+        "type": "string",
+        "populatedCount": 48,
+        "completeness": 0.96,
+        "uniqueCount": 7,
+        "sampleValues": [
+          "         8",
+          "         5",
+          "         6",
+          "         6",
+          "         7"
+        ]
+      },
+      "ROADS1": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      },
+      "ROADS2": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "SALE_DATE": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "04/01/2026",
+          "07/18/2024",
+          "05/01/2026",
+          "09/18/2025",
+          "01/03/1995"
+        ]
+      },
+      "SALE_DATE_": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          1775001600000,
+          1721260800000,
+          1777593600000,
+          1758153600000,
+          789091200000
+        ]
+      },
+      "SCH_DIST": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "030",
+          "030",
+          "030",
+          "030",
+          "030"
+        ]
+      },
+      "SFLA": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 47,
+        "sampleValues": [
+          1890,
+          1124,
+          1815,
+          1575,
+          2414
+        ]
+      },
+      "STATE_TAX_": {
+        "type": "string",
+        "populatedCount": 48,
+        "completeness": 0.96,
+        "uniqueCount": 34,
+        "sampleValues": [
+          "5750",
+          "4125",
+          "4450",
+          "4360",
+          "1700"
+        ]
+      },
+      "STEB": {
+        "type": "string",
+        "populatedCount": 26,
+        "completeness": 0.52,
+        "uniqueCount": 6,
+        "sampleValues": [
+          "66",
+          "00",
+          "00",
+          "52",
+          "00"
+        ]
+      },
+      "STORIES": {
+        "type": "string",
+        "populatedCount": 48,
+        "completeness": 0.96,
+        "uniqueCount": 3,
+        "sampleValues": [
+          "         2",
+          "         1",
+          "       1.5",
+          "       1.5",
+          "         2"
+        ]
+      },
+      "STRUCTURE": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "STYLE": {
+        "type": "string",
+        "populatedCount": 48,
+        "completeness": 0.96,
+        "uniqueCount": 8,
+        "sampleValues": [
+          "05",
+          "08",
+          "08",
+          "08",
+          "05"
+        ]
+      },
+      "SUBDIVISIO": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "Shape_Leng": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          422.147389616,
+          557.224350913,
+          360.761135243,
+          344.12506397,
+          469.13067706
+        ]
+      },
+      "Shape__Area": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          1290.1875,
+          2442.703125,
+          1167.58203125,
+          987.109375,
+          1864.7578125
+        ]
+      },
+      "Shape__Length": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          168.30865917653858,
+          222.26588863289626,
+          143.85568661474423,
+          137.21592426997685,
+          187.05119406477746
+        ]
+      },
+      "TAXPIN": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "300034228005",
+          "300073604004",
+          "300023336007",
+          "300044176002",
+          "300072160008"
+        ]
+      },
+      "TOTAL_APPR": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          161870,
+          121640,
+          115460,
+          115690,
+          163640
+        ]
+      },
+      "TOTAL_ASSE": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          161870,
+          121640,
+          115460,
+          115690,
+          163640
+        ]
+      },
+      "TRAFFIC": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 2,
+        "sampleValues": [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      },
+      "UNIT": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 40,
+        "sampleValues": [
+          "015",
+          "032",
+          "044",
+          "049",
+          "026"
+        ]
+      },
+      "USE_TYPE": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "UTIL1": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 2,
+        "sampleValues": [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      },
+      "UTIL2": {
+        "type": "string",
+        "populatedCount": 3,
+        "completeness": 0.06,
+        "uniqueCount": 2,
+        "sampleValues": [
+          "6",
+          "4",
+          "6"
+        ]
+      },
+      "UTIL3": {
+        "type": "string",
+        "populatedCount": 1,
+        "completeness": 0.02,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "6"
+        ]
+      },
+      "YEAR_BUILT": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 28,
+        "sampleValues": [
+          1924,
+          1945,
+          1953,
+          1951,
+          1940
+        ]
+      },
+      "YR_REM": {
+        "type": "string",
+        "populatedCount": 11,
+        "completeness": 0.22,
+        "uniqueCount": 11,
+        "sampleValues": [
+          "      2011",
+          "      2019",
+          "      2021",
+          "      2000",
+          "      2022"
+        ]
+      },
+      "ZIP1_ZIP2": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 5,
+        "sampleValues": [
+          "19001",
+          "19001",
+          "19038",
+          "19038",
+          "19001"
+        ]
+      }
+    },
+    "fingerprint": "dcdeece1687dc0393255f9438585478840aae9fe45639243d4e599d768621f34"
+  },
+  "comparison": {
+    "severity": "NONE",
+    "changed": false,
+    "addedFields": [],
+    "removedFields": [],
+    "changedTypes": [],
+    "completenessChanges": [],
+    "requiresReview": false
+  },
+  "status": "UNCHANGED"
+}

@@ -1,0 +1,1362 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-04T09:58:21.035Z",
+  "dataset": "parcel_inventory",
+  "sampleCount": 50,
+  "sourceFields": [
+    "OBJECTID",
+    "PIN",
+    "ACRES",
+    "COUNTY",
+    "UPDATED",
+    "Shape__Area",
+    "Shape__Length"
+  ],
+  "mapping": {
+    "address": [],
+    "city": [],
+    "zip": [],
+    "parcelId": [
+      "PIN"
+    ],
+    "ownerName": [],
+    "coOwnerName": [],
+    "sourceRecordId": [
+      "OBJECTID"
+    ],
+    "sourceUpdatedAt": [
+      "UPDATED"
+    ],
+    "estimatedValue": [],
+    "assessmentValue": [],
+    "landValue": [],
+    "buildingValue": [],
+    "yearBuilt": [],
+    "landAcres": [
+      "ACRES"
+    ],
+    "livingArea": [],
+    "saleDate": [],
+    "salePrice": []
+  },
+  "confidence": {
+    "parcelId": {
+      "score": 145,
+      "primaryField": "PIN",
+      "completeness": 1,
+      "alternatives": []
+    },
+    "sourceRecordId": {
+      "score": 155,
+      "primaryField": "OBJECTID",
+      "completeness": 1,
+      "alternatives": []
+    },
+    "sourceUpdatedAt": {
+      "score": 118,
+      "primaryField": "UPDATED",
+      "completeness": 1,
+      "alternatives": []
+    },
+    "landAcres": {
+      "score": 133,
+      "primaryField": "ACRES",
+      "completeness": 1,
+      "alternatives": []
+    }
+  },
+  "rankedCandidates": {
+    "address": [
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          47704511,
+          47704512,
+          47704513
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "PIN",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0600400025",
+          "0600500001",
+          "0600500002"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          17.21062991,
+          41.90577538,
+          0.48755303
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "COUNTY",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "New Castle",
+          "New Castle",
+          "New Castle"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "UPDATED",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          1785542400000,
+          1785542400000,
+          1785542400000
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "city": [
+      {
+        "field": "COUNTY",
+        "score": 30,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "New Castle",
+          "New Castle",
+          "New Castle"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=10"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          47704511,
+          47704512,
+          47704513
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "PIN",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0600400025",
+          "0600500001",
+          "0600500002"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          17.21062991,
+          41.90577538,
+          0.48755303
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "UPDATED",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          1785542400000,
+          1785542400000,
+          1785542400000
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "zip": [
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          47704511,
+          47704512,
+          47704513
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "PIN",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0600400025",
+          "0600500001",
+          "0600500002"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          17.21062991,
+          41.90577538,
+          0.48755303
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "COUNTY",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "New Castle",
+          "New Castle",
+          "New Castle"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "UPDATED",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          1785542400000,
+          1785542400000,
+          1785542400000
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "parcelId": [
+      {
+        "field": "PIN",
+        "score": 145,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0600400025",
+          "0600500001",
+          "0600500002"
+        ],
+        "reasons": [
+          "name:/^pin$/i=100",
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          47704511,
+          47704512,
+          47704513
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          17.21062991,
+          41.90577538,
+          0.48755303
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "COUNTY",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "New Castle",
+          "New Castle",
+          "New Castle"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "UPDATED",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          1785542400000,
+          1785542400000,
+          1785542400000
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      }
+    ],
+    "ownerName": [
+      {
+        "field": "COUNTY",
+        "score": 32,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "New Castle",
+          "New Castle",
+          "New Castle"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=12"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          47704511,
+          47704512,
+          47704513
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "PIN",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0600400025",
+          "0600500001",
+          "0600500002"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          17.21062991,
+          41.90577538,
+          0.48755303
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "UPDATED",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          1785542400000,
+          1785542400000,
+          1785542400000
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "coOwnerName": [
+      {
+        "field": "COUNTY",
+        "score": 28,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "New Castle",
+          "New Castle",
+          "New Castle"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=8"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          47704511,
+          47704512,
+          47704513
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "PIN",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0600400025",
+          "0600500001",
+          "0600500002"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          17.21062991,
+          41.90577538,
+          0.48755303
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "UPDATED",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          1785542400000,
+          1785542400000,
+          1785542400000
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "sourceRecordId": [
+      {
+        "field": "OBJECTID",
+        "score": 155,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          47704511,
+          47704512,
+          47704513
+        ],
+        "reasons": [
+          "name:/^objectid$/i=100",
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "PIN",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0600400025",
+          "0600500001",
+          "0600500002"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          17.21062991,
+          41.90577538,
+          0.48755303
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "Shape__Area",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          118263.379585705,
+          287963.57691627,
+          3350.43094237
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "Shape__Length",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          2245.92671222576,
+          2802.91732481254,
+          230.171974429956
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      }
+    ],
+    "sourceUpdatedAt": [
+      {
+        "field": "UPDATED",
+        "score": 118,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          1785542400000,
+          1785542400000,
+          1785542400000
+        ],
+        "reasons": [
+          "name:/update/i=68",
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      },
+      {
+        "field": "PIN",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0600400025",
+          "0600500001",
+          "0600500002"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          47704511,
+          47704512,
+          47704513
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          17.21062991,
+          41.90577538,
+          0.48755303
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "COUNTY",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "New Castle",
+          "New Castle",
+          "New Castle"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "estimatedValue": [
+      {
+        "field": "OBJECTID",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          47704511,
+          47704512,
+          47704513
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "PIN",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0600400025",
+          "0600500001",
+          "0600500002"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          17.21062991,
+          41.90577538,
+          0.48755303
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "UPDATED",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          1785542400000,
+          1785542400000,
+          1785542400000
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "Shape__Area",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          118263.379585705,
+          287963.57691627,
+          3350.43094237
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      }
+    ],
+    "assessmentValue": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          47704511,
+          47704512,
+          47704513
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "PIN",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0600400025",
+          "0600500001",
+          "0600500002"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          17.21062991,
+          41.90577538,
+          0.48755303
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "UPDATED",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          1785542400000,
+          1785542400000,
+          1785542400000
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "Shape__Area",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          118263.379585705,
+          287963.57691627,
+          3350.43094237
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ],
+    "landValue": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          47704511,
+          47704512,
+          47704513
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "PIN",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0600400025",
+          "0600500001",
+          "0600500002"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          17.21062991,
+          41.90577538,
+          0.48755303
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "UPDATED",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          1785542400000,
+          1785542400000,
+          1785542400000
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "Shape__Area",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          118263.379585705,
+          287963.57691627,
+          3350.43094237
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ],
+    "buildingValue": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          47704511,
+          47704512,
+          47704513
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "PIN",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0600400025",
+          "0600500001",
+          "0600500002"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          17.21062991,
+          41.90577538,
+          0.48755303
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "UPDATED",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          1785542400000,
+          1785542400000,
+          1785542400000
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "Shape__Area",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          118263.379585705,
+          287963.57691627,
+          3350.43094237
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ],
+    "yearBuilt": [
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          47704511,
+          47704512,
+          47704513
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "PIN",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0600400025",
+          "0600500001",
+          "0600500002"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          17.21062991,
+          41.90577538,
+          0.48755303
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "COUNTY",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "New Castle",
+          "New Castle",
+          "New Castle"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "UPDATED",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          1785542400000,
+          1785542400000,
+          1785542400000
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "landAcres": [
+      {
+        "field": "ACRES",
+        "score": 133,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          17.21062991,
+          41.90577538,
+          0.48755303
+        ],
+        "reasons": [
+          "name:/^acres$/i=98",
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          47704511,
+          47704512,
+          47704513
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "PIN",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0600400025",
+          "0600500001",
+          "0600500002"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "UPDATED",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          1785542400000,
+          1785542400000,
+          1785542400000
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "Shape__Area",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          118263.379585705,
+          287963.57691627,
+          3350.43094237
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      }
+    ],
+    "livingArea": [
+      {
+        "field": "OBJECTID",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          47704511,
+          47704512,
+          47704513
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "PIN",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0600400025",
+          "0600500001",
+          "0600500002"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          17.21062991,
+          41.90577538,
+          0.48755303
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "UPDATED",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          1785542400000,
+          1785542400000,
+          1785542400000
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "Shape__Area",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          118263.379585705,
+          287963.57691627,
+          3350.43094237
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      }
+    ],
+    "saleDate": [
+      {
+        "field": "PIN",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0600400025",
+          "0600500001",
+          "0600500002"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      },
+      {
+        "field": "UPDATED",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          1785542400000,
+          1785542400000,
+          1785542400000
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          47704511,
+          47704512,
+          47704513
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          17.21062991,
+          41.90577538,
+          0.48755303
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "COUNTY",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "New Castle",
+          "New Castle",
+          "New Castle"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "salePrice": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          47704511,
+          47704512,
+          47704513
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "PIN",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0600400025",
+          "0600500001",
+          "0600500002"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "ACRES",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          17.21062991,
+          41.90577538,
+          0.48755303
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "UPDATED",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          1785542400000,
+          1785542400000,
+          1785542400000
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "Shape__Area",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          118263.379585705,
+          287963.57691627,
+          3350.43094237
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ]
+  },
+  "recordFilter": {
+    "requireAny": [
+      [
+        "PIN"
+      ]
+    ]
+  },
+  "warnings": [],
+  "connectorId": "DE-SUSSEX",
+  "endpoint": "https://enterprise.firstmaptest.delaware.gov/arcgis/rest/services/PlanningCadastre/DE_StateParcels/FeatureServer/0/query",
+  "adapter": "arcgis",
+  "manifest": "config/county-connectors/DE-SUSSEX.json"
+}

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785868549326-4315",
+  "startedAt": "2026-08-04T18:35:49.326Z",
+  "completedAt": "2026-08-04T18:36:16.199Z",
+  "state": "PA",
+  "county": "Washington",
+  "connectorId": "PA-WASHINGTON",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "parcel_inventory"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T18:35:49.330Z",
+      "completedAt": "2026-08-04T18:36:03.813Z",
+      "ok": true,
+      "candidateCount": 36,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/PA-WASHINGTON-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T18:36:10.208Z",
+      "completedAt": "2026-08-04T18:36:10.373Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "parcel_inventory": {
+      "dataset": "parcel_inventory",
+      "adapter": "arcgis",
+      "endpoint": "https://gis.dep.pa.gov/depgisprd/rest/services/Parcels/PA_Parcels/MapServer/0/query",
+      "title": "Pennsylvania DEP Parcel Layer",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T18:36:03.816Z",
+          "completedAt": "2026-08-04T18:36:03.996Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T18:36:03.997Z",
+          "completedAt": "2026-08-04T18:36:10.208Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T18:36:10.373Z",
+          "completedAt": "2026-08-04T18:36:16.199Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

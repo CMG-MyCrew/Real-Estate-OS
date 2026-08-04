@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785868356088-9052",
+  "startedAt": "2026-08-04T18:32:36.089Z",
+  "completedAt": "2026-08-04T18:33:02.244Z",
+  "state": "PA",
+  "county": "Potter",
+  "connectorId": "PA-POTTER",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "parcel_inventory"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T18:32:36.092Z",
+      "completedAt": "2026-08-04T18:32:50.115Z",
+      "ok": true,
+      "candidateCount": 15,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/PA-POTTER-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T18:32:55.875Z",
+      "completedAt": "2026-08-04T18:32:56.058Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "parcel_inventory": {
+      "dataset": "parcel_inventory",
+      "adapter": "arcgis",
+      "endpoint": "https://gis.dep.pa.gov/depgisprd/rest/services/Parcels/PA_Parcels/MapServer/0/query",
+      "title": "Pennsylvania DEP Parcel Layer",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T18:32:50.120Z",
+          "completedAt": "2026-08-04T18:32:50.293Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T18:32:50.293Z",
+          "completedAt": "2026-08-04T18:32:55.875Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T18:32:56.058Z",
+          "completedAt": "2026-08-04T18:33:02.244Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

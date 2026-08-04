@@ -1,0 +1,167 @@
+{
+  "id": "NJ-ATLANTIC",
+  "state": "NJ",
+  "county": "Atlantic",
+  "version": "1.0.0",
+  "enabled": true,
+  "generatedAt": "2026-08-04T11:47:45.778Z",
+  "datasets": {
+    "property_assessment": {
+      "adapter": "arcgis",
+      "endpointProperty": "REOS_COUNTY_NJ_ATLANTIC_PROPERTY_ASSESSMENT_URL",
+      "endpoint": "https://maps.nj.gov/arcgis/rest/services/Framework/Cadastral/MapServer/0/query",
+      "enabled": true,
+      "maxLimit": 2000,
+      "mapping": {
+        "address": [
+          "ST_ADDRESS",
+          "PROP_LOC"
+        ],
+        "city": [
+          "MUN_NAME",
+          "CITY_STATE"
+        ],
+        "zip": [
+          "ZIP_CODE",
+          "ZIP5",
+          "ZIP_PLUS4"
+        ],
+        "parcelId": [
+          "PAMS_PIN",
+          "PIN_NODUP",
+          "GIS_PIN"
+        ],
+        "ownerName": [
+          "OWNER_NAME"
+        ],
+        "coOwnerName": [],
+        "sourceRecordId": [
+          "OBJECTID"
+        ],
+        "sourceUpdatedAt": [
+          "PCL_PBDATE",
+          "PCLLASTUPD"
+        ],
+        "estimatedValue": [],
+        "assessmentValue": [],
+        "landValue": [],
+        "buildingValue": [],
+        "yearBuilt": [],
+        "landAcres": [
+          "CALC_ACRE"
+        ],
+        "livingArea": [],
+        "saleDate": [],
+        "salePrice": [
+          "SALE_PRICE"
+        ]
+      },
+      "sourceQuery": {
+        "where": "COUNTY='ATLANTIC'"
+      },
+      "discovery": {
+        "report": "reports/county-build/NJ-ATLANTIC/promotion-input.json",
+        "candidate": 1,
+        "promotedAt": "2026-08-04T11:47:45.779Z",
+        "title": "Parcels and MOD-IV Composite of New Jersey",
+        "source": "",
+        "sourceScope": "statewide",
+        "authoritative": true,
+        "sourceItemId": "",
+        "sourceLayerId": "",
+        "compatibilityScore": 100,
+        "matchedTerms": [],
+        "endpoint": "https://maps.nj.gov/arcgis/rest/services/Framework/Cadastral/MapServer/0/query"
+      },
+      "recordFilter": {
+        "requireAny": [
+          [
+            "ST_ADDRESS",
+            "PROP_LOC"
+          ],
+          [
+            "PAMS_PIN",
+            "PIN_NODUP",
+            "GIS_PIN"
+          ]
+        ]
+      },
+      "autoMapping": {
+        "appliedAt": "2026-08-04T12:01:21.021Z",
+        "sampleCount": 50,
+        "report": "reports/county-mapping/NJ-ATLANTIC-PROPERTY_ASSESSMENT-MAPPING.json",
+        "minimumScore": 65,
+        "confidence": {
+          "address": {
+            "score": 165,
+            "primaryField": "ST_ADDRESS",
+            "completeness": 1,
+            "alternatives": [
+              "PROP_LOC"
+            ]
+          },
+          "city": {
+            "score": 138,
+            "primaryField": "MUN_NAME",
+            "completeness": 1,
+            "alternatives": [
+              "CITY_STATE"
+            ]
+          },
+          "zip": {
+            "score": 148,
+            "primaryField": "ZIP_CODE",
+            "completeness": 1,
+            "alternatives": [
+              "ZIP5",
+              "ZIP_PLUS4"
+            ]
+          },
+          "parcelId": {
+            "score": 175,
+            "primaryField": "PAMS_PIN",
+            "completeness": 1,
+            "alternatives": [
+              "PIN_NODUP",
+              "GIS_PIN"
+            ]
+          },
+          "ownerName": {
+            "score": 120,
+            "primaryField": "OWNER_NAME",
+            "completeness": 0,
+            "alternatives": []
+          },
+          "sourceRecordId": {
+            "score": 155,
+            "primaryField": "OBJECTID",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "sourceUpdatedAt": {
+            "score": 160,
+            "primaryField": "PCL_PBDATE",
+            "completeness": 1,
+            "alternatives": [
+              "PCLLASTUPD"
+            ]
+          },
+          "landAcres": {
+            "score": 155,
+            "primaryField": "CALC_ACRE",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "salePrice": {
+            "score": 158,
+            "primaryField": "SALE_PRICE",
+            "completeness": 1,
+            "alternatives": []
+          }
+        },
+        "warnings": []
+      }
+    }
+  },
+  "updatedAt": "2026-08-04T12:01:21.021Z"
+}

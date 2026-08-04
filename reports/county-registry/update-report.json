@@ -1,0 +1,43 @@
+{
+  "checkedAt": "2026-08-04T11:24:12.752Z",
+  "count": 7,
+  "passed": 7,
+  "failed": 0,
+  "results": [
+    {
+      "connectorId": "DE-KENT",
+      "ok": true,
+      "status": "READY"
+    },
+    {
+      "connectorId": "DE-NEW-CASTLE",
+      "ok": true,
+      "status": "READY"
+    },
+    {
+      "connectorId": "DE-SUSSEX",
+      "ok": true,
+      "status": "READY"
+    },
+    {
+      "connectorId": "PA-BUCKS",
+      "ok": true,
+      "status": "READY"
+    },
+    {
+      "connectorId": "PA-CHESTER",
+      "ok": true,
+      "status": "READY"
+    },
+    {
+      "connectorId": "PA-DELAWARE",
+      "ok": true,
+      "status": "READY"
+    },
+    {
+      "connectorId": "PA-MONTGOMERY",
+      "ok": true,
+      "status": "READY"
+    }
+  ]
+}

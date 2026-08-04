@@ -1,0 +1,1487 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-04T12:18:42.894Z",
+  "dataset": "property_assessment",
+  "sampleCount": 50,
+  "sourceFields": [
+    "OBJECTID",
+    "PAMS_PIN",
+    "PCL_MUN",
+    "PCLBLOCK",
+    "PCLLOT",
+    "PCLQCODE",
+    "PCLLASTUPD",
+    "PIN_NODUP",
+    "COUNTY",
+    "MUN_NAME",
+    "CD_CODE",
+    "PROP_CLASS",
+    "PROP_LOC",
+    "OWNER_NAME",
+    "ST_ADDRESS",
+    "CITY_STATE",
+    "ZIP_CODE",
+    "ZIP5",
+    "ZIP_PLUS4",
+    "LAND_VAL",
+    "IMPRVT_VAL",
+    "NET_VALUE",
+    "LAST_YR_TX",
+    "GIS_PIN",
+    "BLDG_DESC",
+    "LAND_DESC",
+    "CALC_ACRE",
+    "ADD_LOTS1",
+    "ADD_LOTS2",
+    "FAC_NAME",
+    "PROP_USE",
+    "BLDG_CLASS",
+    "DEED_BOOK",
+    "DEED_PAGE",
+    "DEED_DATE",
+    "YR_CONSTR",
+    "SALES_CODE",
+    "SALE_PRICE",
+    "DWELL",
+    "COMM_DWELL",
+    "OLD_PROPID",
+    "Shape_Length",
+    "Shape_Area",
+    "PCL_PBDATE",
+    "PCL_GUID"
+  ],
+  "mapping": {
+    "address": [
+      "ST_ADDRESS",
+      "PROP_LOC"
+    ],
+    "city": [
+      "MUN_NAME",
+      "CITY_STATE"
+    ],
+    "zip": [
+      "ZIP_CODE",
+      "ZIP5",
+      "ZIP_PLUS4"
+    ],
+    "parcelId": [
+      "PAMS_PIN",
+      "PIN_NODUP",
+      "GIS_PIN"
+    ],
+    "ownerName": [
+      "OWNER_NAME"
+    ],
+    "coOwnerName": [],
+    "sourceRecordId": [
+      "OBJECTID"
+    ],
+    "sourceUpdatedAt": [
+      "PCL_PBDATE",
+      "PCLLASTUPD"
+    ],
+    "estimatedValue": [],
+    "assessmentValue": [],
+    "landValue": [],
+    "buildingValue": [],
+    "yearBuilt": [],
+    "landAcres": [
+      "CALC_ACRE"
+    ],
+    "livingArea": [],
+    "saleDate": [],
+    "salePrice": [
+      "SALE_PRICE"
+    ]
+  },
+  "confidence": {
+    "address": {
+      "score": 165,
+      "primaryField": "ST_ADDRESS",
+      "completeness": 1,
+      "alternatives": [
+        "PROP_LOC"
+      ]
+    },
+    "city": {
+      "score": 138,
+      "primaryField": "MUN_NAME",
+      "completeness": 1,
+      "alternatives": [
+        "CITY_STATE"
+      ]
+    },
+    "zip": {
+      "score": 148,
+      "primaryField": "ZIP_CODE",
+      "completeness": 1,
+      "alternatives": [
+        "ZIP5",
+        "ZIP_PLUS4"
+      ]
+    },
+    "parcelId": {
+      "score": 175,
+      "primaryField": "PAMS_PIN",
+      "completeness": 1,
+      "alternatives": [
+        "PIN_NODUP",
+        "GIS_PIN"
+      ]
+    },
+    "ownerName": {
+      "score": 120,
+      "primaryField": "OWNER_NAME",
+      "completeness": 0,
+      "alternatives": []
+    },
+    "sourceRecordId": {
+      "score": 155,
+      "primaryField": "OBJECTID",
+      "completeness": 1,
+      "alternatives": []
+    },
+    "sourceUpdatedAt": {
+      "score": 160,
+      "primaryField": "PCL_PBDATE",
+      "completeness": 1,
+      "alternatives": [
+        "PCLLASTUPD"
+      ]
+    },
+    "landAcres": {
+      "score": 155,
+      "primaryField": "CALC_ACRE",
+      "completeness": 1,
+      "alternatives": []
+    },
+    "salePrice": {
+      "score": 158,
+      "primaryField": "SALE_PRICE",
+      "completeness": 1,
+      "alternatives": []
+    }
+  },
+  "rankedCandidates": {
+    "address": [
+      {
+        "field": "ST_ADDRESS",
+        "score": 165,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "35 HILLSIDE AVE",
+          "62 FOREST AVE",
+          "64 FOREST AVE"
+        ],
+        "reasons": [
+          "name:/^st_?address$/i=120",
+          "complete>=95%=20",
+          "addressLike>=80%=25"
+        ]
+      },
+      {
+        "field": "PROP_LOC",
+        "score": 163,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "35 HILLSIDE AVE",
+          "62 FOREST AVE",
+          "64 FOREST AVE"
+        ],
+        "reasons": [
+          "name:/^prop_?loc$/i=118",
+          "complete>=95%=20",
+          "addressLike>=80%=25"
+        ]
+      },
+      {
+        "field": "LAND_DESC",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 0.92,
+        "sampleValues": [
+          "75X200",
+          "75X198 IRR",
+          "50X187 IRR"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "addressLike>=80%=25"
+        ]
+      },
+      {
+        "field": "PCL_GUID",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "94ed7180-5f09-4889-82fc-c05db53e80de",
+          "497e90cb-f9e9-4191-9b6e-fcd4a069eda2",
+          "ec5eb26a-22e3-437b-8df7-8658895184c8"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "addressLike>=80%=25"
+        ]
+      },
+      {
+        "field": "OLD_PROPID",
+        "score": 27,
+        "completeness": 0.34,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "00014    00004   B",
+          "00014    00004   A",
+          "00014    00001"
+        ],
+        "reasons": [
+          "addressLike>=80%=25"
+        ]
+      }
+    ],
+    "city": [
+      {
+        "field": "MUN_NAME",
+        "score": 138,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "CALDWELL BORO TWP",
+          "CALDWELL BORO TWP",
+          "CALDWELL BORO TWP"
+        ],
+        "reasons": [
+          "name:/^mun_?name$/i=108",
+          "complete>=95%=20",
+          "mostlyText>=80%=10"
+        ]
+      },
+      {
+        "field": "CITY_STATE",
+        "score": 135,
+        "completeness": 1,
+        "uniqueRatio": 0.06,
+        "sampleValues": [
+          "CALDWELL, NJ",
+          "CALDWELL, NJ",
+          "CALDWELL, NJ"
+        ],
+        "reasons": [
+          "name:/^city_?state$/i=105",
+          "complete>=95%=20",
+          "mostlyText>=80%=10"
+        ]
+      },
+      {
+        "field": "COUNTY",
+        "score": 30,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "ESSEX",
+          "ESSEX",
+          "ESSEX"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=10"
+        ]
+      },
+      {
+        "field": "PROP_LOC",
+        "score": 30,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "35 HILLSIDE AVE",
+          "62 FOREST AVE",
+          "64 FOREST AVE"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=10"
+        ]
+      },
+      {
+        "field": "ST_ADDRESS",
+        "score": 30,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "35 HILLSIDE AVE",
+          "62 FOREST AVE",
+          "64 FOREST AVE"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=10"
+        ]
+      }
+    ],
+    "zip": [
+      {
+        "field": "ZIP_CODE",
+        "score": 148,
+        "completeness": 1,
+        "uniqueRatio": 0.04,
+        "sampleValues": [
+          "07006",
+          "07006",
+          "07006"
+        ],
+        "reasons": [
+          "name:/^zip_?code$/i=98",
+          "complete>=95%=20",
+          "zipLike>=80%=30"
+        ]
+      },
+      {
+        "field": "ZIP5",
+        "score": 115,
+        "completeness": 1,
+        "uniqueRatio": 0.04,
+        "sampleValues": [
+          "07006",
+          "07006",
+          "07006"
+        ],
+        "reasons": [
+          "name:/zip/i=65",
+          "complete>=95%=20",
+          "zipLike>=80%=30"
+        ]
+      },
+      {
+        "field": "ZIP_PLUS4",
+        "score": 65,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/zip/i=65"
+        ]
+      },
+      {
+        "field": "DEED_BOOK",
+        "score": 44,
+        "completeness": 0.88,
+        "uniqueRatio": 0.6818181818181818,
+        "sampleValues": [
+          "12151",
+          "20180",
+          "05820"
+        ],
+        "reasons": [
+          "complete>=75%=14",
+          "zipLike>=80%=30"
+        ]
+      },
+      {
+        "field": "DEED_PAGE",
+        "score": 44,
+        "completeness": 0.88,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "06592",
+          "63679",
+          "00625"
+        ],
+        "reasons": [
+          "complete>=75%=14",
+          "zipLike>=80%=30"
+        ]
+      }
+    ],
+    "parcelId": [
+      {
+        "field": "PAMS_PIN",
+        "score": 175,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0703_14_6",
+          "0703_14_5",
+          "0703_14_4.02"
+        ],
+        "reasons": [
+          "name:/^pams_?pin$/i=130",
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "PIN_NODUP",
+        "score": 173,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0703_14_6",
+          "0703_14_5",
+          "0703_14_4.02"
+        ],
+        "reasons": [
+          "name:/^pin_?nodup$/i=128",
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "GIS_PIN",
+        "score": 170,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0703_14_6",
+          "0703_14_5",
+          "0703_14_4.02"
+        ],
+        "reasons": [
+          "name:/^gis_?pin$/i=125",
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "PCL_MUN",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "0703",
+          "0703",
+          "0703"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "COUNTY",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "ESSEX",
+          "ESSEX",
+          "ESSEX"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      }
+    ],
+    "ownerName": [
+      {
+        "field": "OWNER_NAME",
+        "score": 120,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/^owner_?name$/i=120"
+        ]
+      },
+      {
+        "field": "COUNTY",
+        "score": 32,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "ESSEX",
+          "ESSEX",
+          "ESSEX"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=12"
+        ]
+      },
+      {
+        "field": "MUN_NAME",
+        "score": 32,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "CALDWELL BORO TWP",
+          "CALDWELL BORO TWP",
+          "CALDWELL BORO TWP"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=12"
+        ]
+      },
+      {
+        "field": "PROP_LOC",
+        "score": 32,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "35 HILLSIDE AVE",
+          "62 FOREST AVE",
+          "64 FOREST AVE"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=12"
+        ]
+      },
+      {
+        "field": "ST_ADDRESS",
+        "score": 32,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "35 HILLSIDE AVE",
+          "62 FOREST AVE",
+          "64 FOREST AVE"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=12"
+        ]
+      }
+    ],
+    "coOwnerName": [
+      {
+        "field": "COUNTY",
+        "score": 28,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "ESSEX",
+          "ESSEX",
+          "ESSEX"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=8"
+        ]
+      },
+      {
+        "field": "MUN_NAME",
+        "score": 28,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "CALDWELL BORO TWP",
+          "CALDWELL BORO TWP",
+          "CALDWELL BORO TWP"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=8"
+        ]
+      },
+      {
+        "field": "PROP_LOC",
+        "score": 28,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "35 HILLSIDE AVE",
+          "62 FOREST AVE",
+          "64 FOREST AVE"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=8"
+        ]
+      },
+      {
+        "field": "ST_ADDRESS",
+        "score": 28,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "35 HILLSIDE AVE",
+          "62 FOREST AVE",
+          "64 FOREST AVE"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=8"
+        ]
+      },
+      {
+        "field": "CITY_STATE",
+        "score": 28,
+        "completeness": 1,
+        "uniqueRatio": 0.06,
+        "sampleValues": [
+          "CALDWELL, NJ",
+          "CALDWELL, NJ",
+          "CALDWELL, NJ"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=8"
+        ]
+      }
+    ],
+    "sourceRecordId": [
+      {
+        "field": "OBJECTID",
+        "score": 155,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "name:/^objectid$/i=100",
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "PAMS_PIN",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0703_14_6",
+          "0703_14_5",
+          "0703_14_4.02"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "PIN_NODUP",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0703_14_6",
+          "0703_14_5",
+          "0703_14_4.02"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "PROP_LOC",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "35 HILLSIDE AVE",
+          "62 FOREST AVE",
+          "64 FOREST AVE"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "IMPRVT_VAL",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 0.98,
+        "sampleValues": [
+          293900,
+          245900,
+          222900
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      }
+    ],
+    "sourceUpdatedAt": [
+      {
+        "field": "PCL_PBDATE",
+        "score": 160,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          1695168000000,
+          1695168000000,
+          1695168000000
+        ],
+        "reasons": [
+          "name:/^pcl_?pbdate$/i=110",
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      },
+      {
+        "field": "PCLLASTUPD",
+        "score": 115,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/^pcl_?lastupd$/i=115"
+        ]
+      },
+      {
+        "field": "PCL_MUN",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "0703",
+          "0703",
+          "0703"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      },
+      {
+        "field": "PCLLOT",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 0.66,
+        "sampleValues": [
+          "6",
+          "5",
+          "4.02"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      },
+      {
+        "field": "CD_CODE",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "0703",
+          "0703",
+          "0703"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      }
+    ],
+    "estimatedValue": [
+      {
+        "field": "OBJECTID",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "PCL_MUN",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "0703",
+          "0703",
+          "0703"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "PCLBLOCK",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 0.1,
+        "sampleValues": [
+          "14",
+          "14",
+          "14"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "PCLLOT",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 0.66,
+        "sampleValues": [
+          "6",
+          "5",
+          "4.02"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "CD_CODE",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "0703",
+          "0703",
+          "0703"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      }
+    ],
+    "assessmentValue": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "PCL_MUN",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "0703",
+          "0703",
+          "0703"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "PCLBLOCK",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.1,
+        "sampleValues": [
+          "14",
+          "14",
+          "14"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "PCLLOT",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.66,
+        "sampleValues": [
+          "6",
+          "5",
+          "4.02"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "CD_CODE",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "0703",
+          "0703",
+          "0703"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ],
+    "landValue": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "PCL_MUN",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "0703",
+          "0703",
+          "0703"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "PCLBLOCK",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.1,
+        "sampleValues": [
+          "14",
+          "14",
+          "14"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "PCLLOT",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.66,
+        "sampleValues": [
+          "6",
+          "5",
+          "4.02"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "CD_CODE",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "0703",
+          "0703",
+          "0703"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ],
+    "buildingValue": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "PCL_MUN",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "0703",
+          "0703",
+          "0703"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "PCLBLOCK",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.1,
+        "sampleValues": [
+          "14",
+          "14",
+          "14"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "PCLLOT",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.66,
+        "sampleValues": [
+          "6",
+          "5",
+          "4.02"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "CD_CODE",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "0703",
+          "0703",
+          "0703"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ],
+    "yearBuilt": [
+      {
+        "field": "YR_CONSTR",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.5,
+        "sampleValues": [
+          1900,
+          1900,
+          1961
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "yearLike>=80%=28"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "PAMS_PIN",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0703_14_6",
+          "0703_14_5",
+          "0703_14_4.02"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "PCL_MUN",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "0703",
+          "0703",
+          "0703"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "PCLBLOCK",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.1,
+        "sampleValues": [
+          "14",
+          "14",
+          "14"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "landAcres": [
+      {
+        "field": "CALC_ACRE",
+        "score": 155,
+        "completeness": 1,
+        "uniqueRatio": 0.28,
+        "sampleValues": [
+          0.34440000000000004,
+          0,
+          0
+        ],
+        "reasons": [
+          "name:/^calc_?acre$/i=120",
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "PCL_MUN",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "0703",
+          "0703",
+          "0703"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "PCLBLOCK",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 0.1,
+        "sampleValues": [
+          "14",
+          "14",
+          "14"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "PCLLOT",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 0.66,
+        "sampleValues": [
+          "6",
+          "5",
+          "4.02"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      }
+    ],
+    "livingArea": [
+      {
+        "field": "OBJECTID",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "PCL_MUN",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "0703",
+          "0703",
+          "0703"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "PCLBLOCK",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 0.1,
+        "sampleValues": [
+          "14",
+          "14",
+          "14"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "PCLLOT",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 0.66,
+        "sampleValues": [
+          "6",
+          "5",
+          "4.02"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "CD_CODE",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "0703",
+          "0703",
+          "0703"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      }
+    ],
+    "saleDate": [
+      {
+        "field": "PCL_MUN",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "0703",
+          "0703",
+          "0703"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      },
+      {
+        "field": "PCLLOT",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.66,
+        "sampleValues": [
+          "6",
+          "5",
+          "4.02"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      },
+      {
+        "field": "CD_CODE",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "0703",
+          "0703",
+          "0703"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      },
+      {
+        "field": "PROP_CLASS",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.04,
+        "sampleValues": [
+          "2",
+          "2",
+          "2"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      },
+      {
+        "field": "ZIP_CODE",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.04,
+        "sampleValues": [
+          "07006",
+          "07006",
+          "07006"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      }
+    ],
+    "salePrice": [
+      {
+        "field": "SALE_PRICE",
+        "score": 158,
+        "completeness": 1,
+        "uniqueRatio": 0.76,
+        "sampleValues": [
+          0,
+          675000,
+          518000
+        ],
+        "reasons": [
+          "name:/^sale_?price$/i=120",
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "PCL_MUN",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "0703",
+          "0703",
+          "0703"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "PCLBLOCK",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.1,
+        "sampleValues": [
+          "14",
+          "14",
+          "14"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "PCLLOT",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.66,
+        "sampleValues": [
+          "6",
+          "5",
+          "4.02"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ]
+  },
+  "recordFilter": {
+    "requireAny": [
+      [
+        "ST_ADDRESS",
+        "PROP_LOC"
+      ],
+      [
+        "PAMS_PIN",
+        "PIN_NODUP",
+        "GIS_PIN"
+      ]
+    ]
+  },
+  "warnings": [],
+  "connectorId": "NJ-MORRIS",
+  "endpoint": "https://maps.nj.gov/arcgis/rest/services/Framework/Cadastral/MapServer/0/query",
+  "adapter": "arcgis",
+  "manifest": "config/county-connectors/NJ-MORRIS.json"
+}

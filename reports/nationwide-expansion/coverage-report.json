@@ -1,0 +1,565 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-04T20:39:17.736Z",
+  "states": {
+    "PA": {
+      "state": "PA",
+      "name": "Pennsylvania",
+      "countyCount": 67,
+      "connectorCount": 42,
+      "ready": 4,
+      "production": 1,
+      "reviewRequired": 0,
+      "failed": 0,
+      "missing": 25,
+      "counties": [
+        {
+          "county": "Adams",
+          "connectorId": "PA-ADAMS",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Allegheny",
+          "connectorId": "PA-ALLEGHENY",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Armstrong",
+          "connectorId": "PA-ARMSTRONG",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Beaver",
+          "connectorId": "PA-BEAVER",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Bedford",
+          "connectorId": "PA-BEDFORD",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Berks",
+          "connectorId": "PA-BERKS",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Blair",
+          "connectorId": "PA-BLAIR",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Bradford",
+          "connectorId": "PA-BRADFORD",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Bucks",
+          "connectorId": "PA-BUCKS",
+          "exists": true,
+          "status": "READY",
+          "implementation": "generated",
+          "datasets": 2
+        },
+        {
+          "county": "Butler",
+          "connectorId": "PA-BUTLER",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Cambria",
+          "connectorId": "PA-CAMBRIA",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Cameron",
+          "connectorId": "PA-CAMERON",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Carbon",
+          "connectorId": "PA-CARBON",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Centre",
+          "connectorId": "PA-CENTRE",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Chester",
+          "connectorId": "PA-CHESTER",
+          "exists": true,
+          "status": "READY",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Clarion",
+          "connectorId": "PA-CLARION",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Clearfield",
+          "connectorId": "PA-CLEARFIELD",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Clinton",
+          "connectorId": "PA-CLINTON",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Columbia",
+          "connectorId": "PA-COLUMBIA",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Crawford",
+          "connectorId": "PA-CRAWFORD",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Cumberland",
+          "connectorId": "PA-CUMBERLAND",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Dauphin",
+          "connectorId": "PA-DAUPHIN",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Delaware",
+          "connectorId": "PA-DELAWARE",
+          "exists": true,
+          "status": "READY",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Elk",
+          "connectorId": "PA-ELK",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Erie",
+          "connectorId": "PA-ERIE",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Fayette",
+          "connectorId": "PA-FAYETTE",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Forest",
+          "connectorId": "PA-FOREST",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Franklin",
+          "connectorId": "PA-FRANKLIN",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Fulton",
+          "connectorId": "PA-FULTON",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Greene",
+          "connectorId": "PA-GREENE",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Huntingdon",
+          "connectorId": "PA-HUNTINGDON",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Indiana",
+          "connectorId": "PA-INDIANA",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Jefferson",
+          "connectorId": "PA-JEFFERSON",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Juniata",
+          "connectorId": "PA-JUNIATA",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Lackawanna",
+          "connectorId": "PA-LACKAWANNA",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Lancaster",
+          "connectorId": "PA-LANCASTER",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Lawrence",
+          "connectorId": "PA-LAWRENCE",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Lebanon",
+          "connectorId": "PA-LEBANON",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Lehigh",
+          "connectorId": "PA-LEHIGH",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Luzerne",
+          "connectorId": "PA-LUZERNE",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Lycoming",
+          "connectorId": "PA-LYCOMING",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "McKean",
+          "connectorId": "PA-MCKEAN",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Mercer",
+          "connectorId": "PA-MERCER",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Mifflin",
+          "connectorId": "PA-MIFFLIN",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Monroe",
+          "connectorId": "PA-MONROE",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Montgomery",
+          "connectorId": "PA-MONTGOMERY",
+          "exists": true,
+          "status": "READY",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Montour",
+          "connectorId": "PA-MONTOUR",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Northampton",
+          "connectorId": "PA-NORTHAMPTON",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Northumberland",
+          "connectorId": "PA-NORTHUMBERLAND",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Perry",
+          "connectorId": "PA-PERRY",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Philadelphia",
+          "connectorId": "PA-PHILADELPHIA",
+          "exists": true,
+          "status": "PRODUCTION",
+          "implementation": "handcrafted",
+          "datasets": 0
+        },
+        {
+          "county": "Pike",
+          "connectorId": "PA-PIKE",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Potter",
+          "connectorId": "PA-POTTER",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Schuylkill",
+          "connectorId": "PA-SCHUYLKILL",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Snyder",
+          "connectorId": "PA-SNYDER",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Somerset",
+          "connectorId": "PA-SOMERSET",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Sullivan",
+          "connectorId": "PA-SULLIVAN",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Susquehanna",
+          "connectorId": "PA-SUSQUEHANNA",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Tioga",
+          "connectorId": "PA-TIOGA",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Union",
+          "connectorId": "PA-UNION",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Venango",
+          "connectorId": "PA-VENANGO",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Warren",
+          "connectorId": "PA-WARREN",
+          "exists": false,
+          "status": "MISSING",
+          "implementation": "",
+          "datasets": 0
+        },
+        {
+          "county": "Washington",
+          "connectorId": "PA-WASHINGTON",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Wayne",
+          "connectorId": "PA-WAYNE",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Westmoreland",
+          "connectorId": "PA-WESTMORELAND",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "Wyoming",
+          "connectorId": "PA-WYOMING",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        },
+        {
+          "county": "York",
+          "connectorId": "PA-YORK",
+          "exists": true,
+          "status": "GENERATED",
+          "implementation": "generated",
+          "datasets": 1
+        }
+      ]
+    }
+  },
+  "totals": {
+    "states": 1,
+    "counties": 67,
+    "connectors": 42,
+    "ready": 4,
+    "production": 1,
+    "reviewRequired": 0,
+    "failed": 0,
+    "missing": 25
+  }
+}

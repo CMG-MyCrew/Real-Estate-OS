@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785845684475-7563",
+  "startedAt": "2026-08-04T12:14:44.475Z",
+  "completedAt": "2026-08-04T12:15:04.637Z",
+  "state": "NJ",
+  "county": "Camden",
+  "connectorId": "NJ-CAMDEN",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "property_assessment"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T12:14:44.479Z",
+      "completedAt": "2026-08-04T12:14:56.978Z",
+      "ok": true,
+      "candidateCount": 14,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/NJ-CAMDEN-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T12:14:58.314Z",
+      "completedAt": "2026-08-04T12:14:58.495Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "property_assessment": {
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://maps.nj.gov/arcgis/rest/services/Framework/Cadastral/MapServer/0/query",
+      "title": "Parcels and MOD-IV Composite of New Jersey",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T12:14:56.981Z",
+          "completedAt": "2026-08-04T12:14:57.171Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T12:14:57.172Z",
+          "completedAt": "2026-08-04T12:14:58.313Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T12:14:58.495Z",
+          "completedAt": "2026-08-04T12:15:04.637Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

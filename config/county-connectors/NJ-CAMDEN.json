@@ -1,0 +1,252 @@
+{
+  "id": "NJ-CAMDEN",
+  "state": "NJ",
+  "county": "Camden",
+  "version": "1.0.0",
+  "enabled": true,
+  "generatedAt": "2026-08-04T12:14:57.087Z",
+  "datasets": {
+    "property_assessment": {
+      "adapter": "arcgis",
+      "endpointProperty": "REOS_COUNTY_NJ_CAMDEN_PROPERTY_ASSESSMENT_URL",
+      "endpoint": "https://maps.nj.gov/arcgis/rest/services/Framework/Cadastral/MapServer/0/query",
+      "enabled": true,
+      "maxLimit": 2000,
+      "mapping": {
+        "address": [
+          "ST_ADDRESS",
+          "st_address",
+          "PROP_LOC",
+          "prop_loc",
+          "ADDRESS",
+          "address",
+          "STREET_ADDRESS",
+          "street_address",
+          "property_address",
+          "location"
+        ],
+        "city": [
+          "CITY_STATE",
+          "city_state",
+          "MUN_NAME",
+          "mun_name",
+          "CITY",
+          "city",
+          "MUNICIPALITY",
+          "municipality",
+          "property_city"
+        ],
+        "zip": [
+          "ZIP",
+          "zip",
+          "ZIP_CODE",
+          "zip_code",
+          "ZIPCODE",
+          "zipcode",
+          "postal_code",
+          "ZIP5",
+          "ZIP_PLUS4"
+        ],
+        "parcelId": [
+          "PAMS_PIN",
+          "pams_pin",
+          "PIN_NODUP",
+          "pin_nodup",
+          "GIS_PIN",
+          "gis_pin",
+          "PCL_PIN",
+          "pcl_pin",
+          "PIN",
+          "pin",
+          "TAXPIN",
+          "taxpin",
+          "PARCEL_NUM",
+          "parcel_num",
+          "PARCEL_ID",
+          "parcel_id",
+          "parcel_number",
+          "OPA_NUMBER",
+          "opa_number",
+          "account_number"
+        ],
+        "ownerName": [
+          "OWNER_NAME",
+          "owner_name",
+          "OWNER1",
+          "owner1",
+          "OWNER",
+          "owner",
+          "legal_owner"
+        ],
+        "coOwnerName": [
+          "OWNER2",
+          "owner2",
+          "CO_OWNER",
+          "co_owner"
+        ],
+        "sourceRecordId": [
+          "OBJECTID",
+          "objectid",
+          "ID",
+          "id",
+          "record_id",
+          "PARCEL_NUM",
+          "parcel_number"
+        ],
+        "sourceUpdatedAt": [
+          "PCLLASTUPD",
+          "pcllastupd",
+          "PCL_PBDATE",
+          "pcl_pbdate",
+          "UPDATED",
+          "updated",
+          "MODIFY_DATE",
+          "modify_date",
+          "UPDATED_AT",
+          "updated_at",
+          "last_updated",
+          "date_updated"
+        ],
+        "landValue": [
+          "LAND_VAL",
+          "land_val",
+          "LAND_VALUE",
+          "land_value",
+          "assessed_land_value"
+        ],
+        "buildingValue": [
+          "IMPRVT_VAL",
+          "imprvt_val",
+          "BUILDING_VALUE",
+          "building_value",
+          "improvement_value"
+        ],
+        "estimatedValue": [
+          "NET_VALUE",
+          "net_value",
+          "TOTAL_VALUE",
+          "total_value",
+          "TOTAL_ASSESSMENT",
+          "total_assessment",
+          "assessed_value"
+        ],
+        "assessmentValue": [],
+        "yearBuilt": [],
+        "landAcres": [
+          "CALC_ACRE"
+        ],
+        "livingArea": [],
+        "saleDate": [],
+        "salePrice": [
+          "SALE_PRICE"
+        ]
+      },
+      "sourceQuery": {
+        "where": "COUNTY='CAMDEN'"
+      },
+      "discovery": {
+        "report": "reports/county-build/NJ-CAMDEN/promotion-input.json",
+        "candidate": 1,
+        "promotedAt": "2026-08-04T12:14:57.088Z",
+        "title": "Parcels and MOD-IV Composite of New Jersey",
+        "source": "",
+        "sourceScope": "statewide",
+        "authoritative": true,
+        "sourceItemId": "",
+        "sourceLayerId": "",
+        "compatibilityScore": 100,
+        "matchedTerms": [],
+        "endpoint": "https://maps.nj.gov/arcgis/rest/services/Framework/Cadastral/MapServer/0/query"
+      },
+      "recordFilter": {
+        "requireAny": [
+          [
+            "ST_ADDRESS",
+            "PROP_LOC"
+          ],
+          [
+            "PAMS_PIN",
+            "PIN_NODUP",
+            "GIS_PIN"
+          ]
+        ]
+      },
+      "autoMapping": {
+        "appliedAt": "2026-08-04T12:14:58.204Z",
+        "sampleCount": 50,
+        "report": "reports/county-mapping/NJ-CAMDEN-PROPERTY_ASSESSMENT-MAPPING.json",
+        "minimumScore": 65,
+        "confidence": {
+          "address": {
+            "score": 165,
+            "primaryField": "ST_ADDRESS",
+            "completeness": 1,
+            "alternatives": [
+              "PROP_LOC"
+            ]
+          },
+          "city": {
+            "score": 138,
+            "primaryField": "MUN_NAME",
+            "completeness": 1,
+            "alternatives": [
+              "CITY_STATE"
+            ]
+          },
+          "zip": {
+            "score": 148,
+            "primaryField": "ZIP_CODE",
+            "completeness": 1,
+            "alternatives": [
+              "ZIP5",
+              "ZIP_PLUS4"
+            ]
+          },
+          "parcelId": {
+            "score": 175,
+            "primaryField": "PAMS_PIN",
+            "completeness": 1,
+            "alternatives": [
+              "PIN_NODUP",
+              "GIS_PIN"
+            ]
+          },
+          "ownerName": {
+            "score": 120,
+            "primaryField": "OWNER_NAME",
+            "completeness": 0,
+            "alternatives": []
+          },
+          "sourceRecordId": {
+            "score": 155,
+            "primaryField": "OBJECTID",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "sourceUpdatedAt": {
+            "score": 160,
+            "primaryField": "PCL_PBDATE",
+            "completeness": 1,
+            "alternatives": [
+              "PCLLASTUPD"
+            ]
+          },
+          "landAcres": {
+            "score": 155,
+            "primaryField": "CALC_ACRE",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "salePrice": {
+            "score": 158,
+            "primaryField": "SALE_PRICE",
+            "completeness": 1,
+            "alternatives": []
+          }
+        },
+        "warnings": []
+      }
+    }
+  },
+  "updatedAt": "2026-08-04T12:14:58.204Z"
+}

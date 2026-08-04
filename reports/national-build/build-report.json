@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "NBP-1785813713401-7422",
+  "startedAt": "2026-08-04T03:21:53.401Z",
+  "completedAt": "2026-08-04T03:22:02.114Z",
+  "mode": "EXECUTE",
+  "statesRequested": [
+    "NJ"
+  ],
+  "datasets": [
+    "property_assessment"
+  ],
+  "stages": [
+    {
+      "name": "registry-refresh",
+      "startedAt": "2026-08-04T03:22:01.915Z",
+      "completedAt": "2026-08-04T03:22:02.114Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "states": {
+    "NJ": {
+      "state": "NJ",
+      "catalog": "config/states/NJ.json",
+      "status": "BUILD_FAILED",
+      "countyCount": 2,
+      "connectorCount": 0,
+      "buildReport": "reports/state-build/NJ/build-report.json",
+      "error": "",
+      "ok": false,
+      "counties": [
+        "Atlantic",
+        "Bergen"
+      ],
+      "connectors": []
+    }
+  },
+  "connectors": {},
+  "counts": {
+    "statesRequested": 1,
+    "statesAvailable": 1,
+    "statesMissingCatalog": 0,
+    "statesBuilt": 0,
+    "statesFailed": 1,
+    "countiesRequested": 2,
+    "connectorsDiscovered": 0,
+    "connectorsVerified": 0,
+    "connectorsReady": 0,
+    "connectorsReviewRequired": 0,
+    "connectorsFailed": 0
+  },
+  "push": {
+    "requested": false,
+    "attempted": false,
+    "ok": null
+  },
+  "registryRefresh": {
+    "attempted": true,
+    "ok": true
+  },
+  "ok": false
+}

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785858642988-2397",
+  "startedAt": "2026-08-04T15:50:42.988Z",
+  "completedAt": "2026-08-04T15:51:35.888Z",
+  "state": "MD",
+  "county": "Allegany",
+  "connectorId": "MD-ALLEGANY",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "property_assessment"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T15:50:42.995Z",
+      "completedAt": "2026-08-04T15:51:16.345Z",
+      "ok": true,
+      "candidateCount": 16,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/MD-ALLEGANY-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T15:51:19.170Z",
+      "completedAt": "2026-08-04T15:51:19.793Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "property_assessment": {
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+      "title": "Maryland Statewide Property Data",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T15:51:16.354Z",
+          "completedAt": "2026-08-04T15:51:16.840Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T15:51:16.840Z",
+          "completedAt": "2026-08-04T15:51:19.166Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T15:51:19.793Z",
+          "completedAt": "2026-08-04T15:51:35.888Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

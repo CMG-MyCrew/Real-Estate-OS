@@ -1,0 +1,96 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-04T15:06:56.521Z",
+  "locality": {
+    "state": "MD",
+    "county": "Anne Arundel"
+  },
+  "sources": [
+    "arcgis",
+    "socrata"
+  ],
+  "candidateCount": 2,
+  "results": [
+    {
+      "id": "MD-STATE-PROPERTY-DATA",
+      "title": "Maryland Statewide Property Data",
+      "description": "Official Maryland statewide property and assessment point data.",
+      "owner": "",
+      "tags": [
+        "authoritative",
+        "MD",
+        "Anne Arundel",
+        "property_assessment"
+      ],
+      "adapter": "arcgis",
+      "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+      "serviceUrl": "",
+      "authoritative": true,
+      "sourceScope": "statewide",
+      "sourceQuery": {
+        "where": "JURSCODE='ANNE'"
+      },
+      "compatibility": {
+        "dataset": "property_assessment",
+        "score": 100
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": true,
+        "seeded": true
+      },
+      "health": {
+        "ok": true,
+        "exitCode": 0,
+        "stdout": "{\n  adapter: 'arcgis',\n  count: 2396022,\n  ok: true,\n  durationMs: 355,\n  status: 200\n}",
+        "stderr": ""
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Anne Arundel County Real Property Assessments: Hidden Property Owner Names",
+      "description": "Please read all metadata before accessing the dataset. Note that records shown here are updated at different frequencies from data in products from MDP and SDAT. Please see the full documentation at https://opendata.maryland.gov/api/views/ed4q-f8tm/files/WtRzMltUzm25OasOCYtu7PgOGUfrplWsZTalSH4Iukg?download=true&filename=Real%20Property%20Records%20Documentation.pdf and review the dedicated metadata site (https://opendata.maryland.gov/dataset/Beta-Maryland-Statewide-Real-Property-Assessments-/ed4q-f8tm/about).",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "opendata.maryland.gov",
+      "resourceId": "3w75-7rie",
+      "type": "filter",
+      "endpoint": "https://opendata.maryland.gov/resource/3w75-7rie.json",
+      "isPublic": true,
+      "permalink": "https://opendata.maryland.gov/d/3w75-7rie",
+      "compatibility": {
+        "score": 100,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "property assessment",
+          "property assessments",
+          "assessment",
+          "real property"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": true
+      },
+      "health": {
+        "ok": true,
+        "exitCode": 0,
+        "stdout": "{ adapter: 'socrata', ok: true, durationMs: 592, status: 200 }",
+        "stderr": ""
+      }
+    }
+  ]
+}

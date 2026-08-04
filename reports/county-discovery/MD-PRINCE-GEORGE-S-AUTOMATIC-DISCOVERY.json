@@ -1,0 +1,372 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-04T16:00:25.846Z",
+  "locality": {
+    "state": "MD",
+    "county": "Prince George's"
+  },
+  "sources": [
+    "arcgis",
+    "socrata"
+  ],
+  "datasets": [
+    "property_assessment"
+  ],
+  "candidateCount": 4,
+  "selections": {
+    "property_assessment": {
+      "threshold": 60,
+      "status": "SELECTED",
+      "selected": {
+        "id": "MD-STATE-PROPERTY-DATA",
+        "title": "Maryland Statewide Property Data",
+        "description": "Official Maryland statewide property and assessment point data.",
+        "owner": "",
+        "tags": [
+          "authoritative",
+          "MD",
+          "Prince George's",
+          "property_assessment"
+        ],
+        "adapter": "arcgis",
+        "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+        "serviceUrl": "",
+        "authoritative": true,
+        "sourceScope": "statewide",
+        "sourceQuery": {
+          "where": "JURSCODE='PRIN'"
+        },
+        "compatibility": {
+          "dataset": "property_assessment",
+          "score": 100
+        },
+        "automaticDiscovery": {
+          "score": 100,
+          "originalScore": 100,
+          "countyMatch": true,
+          "stateMatch": true,
+          "negativeTerms": [],
+          "endpointQuality": 0,
+          "eligible": true,
+          "seeded": true
+        },
+        "health": {
+          "ok": true,
+          "exitCode": 0,
+          "stdout": "{\n  adapter: 'arcgis',\n  count: 2396022,\n  ok: true,\n  durationMs: 409,\n  status: 200\n}",
+          "stderr": ""
+        }
+      },
+      "reviewedCandidates": [
+        {
+          "id": "MD-STATE-PROPERTY-DATA",
+          "title": "Maryland Statewide Property Data",
+          "description": "Official Maryland statewide property and assessment point data.",
+          "owner": "",
+          "tags": [
+            "authoritative",
+            "MD",
+            "Prince George's",
+            "property_assessment"
+          ],
+          "adapter": "arcgis",
+          "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+          "serviceUrl": "",
+          "authoritative": true,
+          "sourceScope": "statewide",
+          "sourceQuery": {
+            "where": "JURSCODE='PRIN'"
+          },
+          "compatibility": {
+            "dataset": "property_assessment",
+            "score": 100
+          },
+          "automaticDiscovery": {
+            "score": 100,
+            "originalScore": 100,
+            "countyMatch": true,
+            "stateMatch": true,
+            "negativeTerms": [],
+            "endpointQuality": 0,
+            "eligible": true,
+            "seeded": true
+          },
+          "health": {
+            "ok": true,
+            "exitCode": 0,
+            "stdout": "{\n  adapter: 'arcgis',\n  count: 2396022,\n  ok: true,\n  durationMs: 409,\n  status: 200\n}",
+            "stderr": ""
+          }
+        },
+        {
+          "adapter": "arcgis",
+          "source": "arcgis-online",
+          "title": "Prince Georges County MD Parcels",
+          "description": "<DIV STYLE=\"text-align:Left;\"><DIV><DIV><P><SPAN>This layer was created and is maintained to form the basis for a number of other maps, notably zoning, land use, and development activity cases. It often takes a central role in mapping and analyses for various planning projects, and is frequently referenced by the general public via the M-NCPPC's web portal, www.PGAtlas.com. As part of the GEOMAP agreement in 1993 the M-NCPPC contracted with ASI to transfer the property lines from the M-NCPPC's Mylar base maps into a tiled series of Arc/INFO coverages. In subsequent years the M-NCPPC improved the accuracy and completeness of the original data in several ways. These ways include normalizing the data structure, correcting for topological errors, establishing a many-to-many relationship between the property shapes and the Maryland State Department of Assessment and Taxation tax accounts, and combining the property coverages within an ArcGIS feature dataset. Starting in 2001 and continuing to the present time, new and old property shapes and tax accounts are captured and maintained using the survey information from recorded plats, deeds, and right-of-way plats with an estimated positional accuracy of 2.0' +/-. The Property_Poly layer is maintained as part of the property dataset by the M-NCPPC GIS staff. Constraints on accessing and using the data: The Property_Poly layer is a graphical representation of data taken from many sources - recorded plats of subdivision, deeds, the Maryland Department of Planning's tax maps, and the Maryland State Highway Administration's road right-of-way plats. The level of accuracy accordingly varies as these sources are of varying quality and the M-NCPPC's capture techniques have changed over time. Maps of this layer therefore should not be substituted for a survey from a registered land surveyor, nor are they a legal description of property boundaries. Any measurements of position, length, area, or shape derived from this layer may only be used for general, reference, or approximate purposes, and the accuracy of such measurements should always be considered. To obtain legal descriptions and measurements, please refer to the legally recorded source document, typically a deed or subdivision plat, which may be found online at the Maryland State Archives. While the majority of this layer serves as a cadastral map, note that ownership boundaries internal to a tax parcel (acreage) or recorded lot are not captured. Tax account information for the property shapes is maintained through a relationship class using the PROP_ID field. Further information for tax account records and definitions are available within the metadata for the LDF, located at the GIS Data Inventory section of the Mapping Tools page at pgplanning.org.</SPAN></P><P><SPAN>Property Symbolized from Assessment</SPAN></P><P><SPAN>Assessment tax exemption data was used to prepare several layers available through Data Loader in ArcMap, under the Property Symbolized from Assessment folder.</SPAN></P><P><SPAN /></P><P><SPAN>Seven layers were created, one for each category of tax exemption, as defined by the State Assessor’s office. These layers are live and are linked to the Property_Poly layer from the Assessment data, but these layers do not contain the specific code as an attribute that identifies the exemption. </SPAN></P><P><SPAN /></P><P><SPAN>Values used are found within the LDF table field EXEMPT_CLASS. For further information on the individual exemptions, what each code represents, and what each category of exemptions contain, please refer to the list of codes available on the GIS SharePoint site; the list of EXEMPT_CLASS codes begins on page 3: Assessment Codes </SPAN></P><P><SPAN /></P><P><SPAN>Please refer to this list before making any assumptions, since the information is not always clear or intuitive. </SPAN></P><P><SPAN>For example:</SPAN></P><P><SPAN>• What are the differences between the Individual, Private, and Non-profit/Charitable categories? </SPAN></P><P><SPAN>• Which category would a religious institution fall under? </SPAN></P><P><SPAN>• Is M-NCPPC captured as a State or County exemption? </SPAN></P><P><SPAN /></P><P><SPAN>The answers may be surprising. </SPAN></P><P><SPAN /></P><P><SPAN>The GIS layers for Property Symbolized by Assessment Data are named for the exemption categories, but do not contain the individual values of the EXEMPT_CLASS field. They should be used for simple mapping and analysis projects such as “Where are all the State and/or County exempt properties within the county?” These layers should not be used for “Where are all the exempt M-NCPPC properties in the county?” since the M-NCPPC exempt code isn’t the only type of County exemption. </SPAN></P><P><SPAN /></P><P><SPAN>To see the individual EXEMPT_CLASS values for each account, extract the information from the Property_Poly layer with its one-to-many relationship to the LDF table. This will provide the true one-to-many values for any analysis dealing with the fields in the LDF table. For a quick check, do an identify on the actual Property_Poly layer being represented by these seven layers, then look at the individual EXEMPT_CLASS codes from the assessment data.</SPAN></P><P><SPAN /></P><P><SPAN>These layers are a live, spatially enabled ‘join’ of the relationship class that exists between the LDF table and Property_Poly layer in ArcSDE. All caveats apply, such as potential issues when flattening the relationship to a one-to-one join. For example, the seven layers will definitely overlap; the same property feature may appear in two separate tax exempt layers. How would a property shape be both a State exempt property and a Private exemption? Consider a commercial condominium complex, which is one large polygon in the Property_Poly layer but could contains dozens (or more) of Tax accounts within the LDF table. Any account within that condominium complex could be a State office, church owned, M-NCPPC owned (like Lakeside), a non-profit organization, etc. Therefore, that Condominium complex would be shown in any of the assessment category layers associated with any exemption type found with any account tied to that property shape. So, while each layer could be considered 100% correct, according to the State Tax Assessors office, there can be multiple tax exemptions on one property shape and each exemption layer represents only one of the possible categories. </SPAN></P><P><SPAN /></P></DIV></DIV></DIV>",
+          "snippet": "Graphical representation of property boundaries throughout Prince George's County, Maryland as established by deed, recorded plat of subdivision, and road right-of-way plats.",
+          "tags": [
+            "Parcels",
+            "Prince Georges County",
+            "Maryland"
+          ],
+          "owner": "wharcgisdeveloper",
+          "itemId": "40179d777ed44235b69ced4907e989e1",
+          "type": "Feature Service",
+          "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/prince_georges_county_md_parcels/FeatureServer",
+          "endpoint": "",
+          "isPublic": true,
+          "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+          "compatibility": {
+            "score": 100,
+            "dataset": "property_assessment",
+            "matchedTerms": [
+              "parcel",
+              "parcels",
+              "tax parcel",
+              "assessment",
+              "assessor"
+            ],
+            "generatorReady": false
+          },
+          "automaticDiscovery": {
+            "score": 100,
+            "originalScore": 100,
+            "countyMatch": true,
+            "stateMatch": true,
+            "negativeTerms": [],
+            "endpointQuality": 0,
+            "eligible": false
+          }
+        },
+        {
+          "adapter": "socrata",
+          "source": "socrata-catalog",
+          "title": "Prince George's County Real Property Assessments: Hidden Property Owner Names",
+          "description": "Please read all metadata before accessing the dataset. Note that records shown here are updated at different frequencies from data in products from MDP and SDAT. Please see the full documentation at https://opendata.maryland.gov/api/views/ed4q-f8tm/files/WtRzMltUzm25OasOCYtu7PgOGUfrplWsZTalSH4Iukg?download=true&filename=Real%20Property%20Records%20Documentation.pdf and review the dedicated metadata site (https://opendata.maryland.gov/dataset/Beta-Maryland-Statewide-Real-Property-Assessments-/ed4q-f8tm/about).",
+          "snippet": "",
+          "tags": [],
+          "owner": "",
+          "domain": "opendata.maryland.gov",
+          "resourceId": "w3eb-4mzd",
+          "type": "filter",
+          "endpoint": "https://opendata.maryland.gov/resource/w3eb-4mzd.json",
+          "isPublic": true,
+          "permalink": "https://opendata.maryland.gov/d/w3eb-4mzd",
+          "compatibility": {
+            "score": 100,
+            "dataset": "property_assessment",
+            "matchedTerms": [
+              "property assessment",
+              "property assessments",
+              "assessment",
+              "real property"
+            ],
+            "generatorReady": true
+          },
+          "automaticDiscovery": {
+            "score": 100,
+            "originalScore": 100,
+            "countyMatch": true,
+            "stateMatch": true,
+            "negativeTerms": [],
+            "endpointQuality": 15,
+            "eligible": true
+          },
+          "health": {
+            "ok": true,
+            "exitCode": 0,
+            "stdout": "{ adapter: 'socrata', ok: true, durationMs: 342, status: 200 }",
+            "stderr": ""
+          }
+        },
+        {
+          "adapter": "socrata",
+          "source": "socrata-catalog",
+          "title": "Property",
+          "description": "This dataset contains information about properties located within Prince George's County, including ownership, assessment, location, land use, valuation, and related property characteristics. It supports analysis of property values, taxation, development trends, land use planning, and real estate activity throughout the county.",
+          "snippet": "",
+          "tags": [],
+          "owner": "",
+          "domain": "data.princegeorgescountymd.gov",
+          "resourceId": "qzrv-2tnv",
+          "type": "dataset",
+          "endpoint": "https://data.princegeorgescountymd.gov/resource/qzrv-2tnv.json",
+          "isPublic": true,
+          "permalink": "https://data.princegeorgescountymd.gov/d/qzrv-2tnv",
+          "compatibility": {
+            "score": 78,
+            "dataset": "property_assessment",
+            "matchedTerms": [
+              "assessment"
+            ],
+            "generatorReady": true
+          },
+          "automaticDiscovery": {
+            "score": 93,
+            "originalScore": 78,
+            "countyMatch": true,
+            "stateMatch": false,
+            "negativeTerms": [],
+            "endpointQuality": 15,
+            "eligible": false
+          }
+        }
+      ]
+    }
+  },
+  "candidates": [
+    {
+      "id": "MD-STATE-PROPERTY-DATA",
+      "title": "Maryland Statewide Property Data",
+      "description": "Official Maryland statewide property and assessment point data.",
+      "owner": "",
+      "tags": [
+        "authoritative",
+        "MD",
+        "Prince George's",
+        "property_assessment"
+      ],
+      "adapter": "arcgis",
+      "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+      "serviceUrl": "",
+      "authoritative": true,
+      "sourceScope": "statewide",
+      "sourceQuery": {
+        "where": "JURSCODE='PRIN'"
+      },
+      "compatibility": {
+        "dataset": "property_assessment",
+        "score": 100
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": true,
+        "seeded": true
+      },
+      "health": {
+        "ok": true,
+        "exitCode": 0,
+        "stdout": "{\n  adapter: 'arcgis',\n  count: 2396022,\n  ok: true,\n  durationMs: 409,\n  status: 200\n}",
+        "stderr": ""
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Prince Georges County MD Parcels",
+      "description": "<DIV STYLE=\"text-align:Left;\"><DIV><DIV><P><SPAN>This layer was created and is maintained to form the basis for a number of other maps, notably zoning, land use, and development activity cases. It often takes a central role in mapping and analyses for various planning projects, and is frequently referenced by the general public via the M-NCPPC's web portal, www.PGAtlas.com. As part of the GEOMAP agreement in 1993 the M-NCPPC contracted with ASI to transfer the property lines from the M-NCPPC's Mylar base maps into a tiled series of Arc/INFO coverages. In subsequent years the M-NCPPC improved the accuracy and completeness of the original data in several ways. These ways include normalizing the data structure, correcting for topological errors, establishing a many-to-many relationship between the property shapes and the Maryland State Department of Assessment and Taxation tax accounts, and combining the property coverages within an ArcGIS feature dataset. Starting in 2001 and continuing to the present time, new and old property shapes and tax accounts are captured and maintained using the survey information from recorded plats, deeds, and right-of-way plats with an estimated positional accuracy of 2.0' +/-. The Property_Poly layer is maintained as part of the property dataset by the M-NCPPC GIS staff. Constraints on accessing and using the data: The Property_Poly layer is a graphical representation of data taken from many sources - recorded plats of subdivision, deeds, the Maryland Department of Planning's tax maps, and the Maryland State Highway Administration's road right-of-way plats. The level of accuracy accordingly varies as these sources are of varying quality and the M-NCPPC's capture techniques have changed over time. Maps of this layer therefore should not be substituted for a survey from a registered land surveyor, nor are they a legal description of property boundaries. Any measurements of position, length, area, or shape derived from this layer may only be used for general, reference, or approximate purposes, and the accuracy of such measurements should always be considered. To obtain legal descriptions and measurements, please refer to the legally recorded source document, typically a deed or subdivision plat, which may be found online at the Maryland State Archives. While the majority of this layer serves as a cadastral map, note that ownership boundaries internal to a tax parcel (acreage) or recorded lot are not captured. Tax account information for the property shapes is maintained through a relationship class using the PROP_ID field. Further information for tax account records and definitions are available within the metadata for the LDF, located at the GIS Data Inventory section of the Mapping Tools page at pgplanning.org.</SPAN></P><P><SPAN>Property Symbolized from Assessment</SPAN></P><P><SPAN>Assessment tax exemption data was used to prepare several layers available through Data Loader in ArcMap, under the Property Symbolized from Assessment folder.</SPAN></P><P><SPAN /></P><P><SPAN>Seven layers were created, one for each category of tax exemption, as defined by the State Assessor’s office. These layers are live and are linked to the Property_Poly layer from the Assessment data, but these layers do not contain the specific code as an attribute that identifies the exemption. </SPAN></P><P><SPAN /></P><P><SPAN>Values used are found within the LDF table field EXEMPT_CLASS. For further information on the individual exemptions, what each code represents, and what each category of exemptions contain, please refer to the list of codes available on the GIS SharePoint site; the list of EXEMPT_CLASS codes begins on page 3: Assessment Codes </SPAN></P><P><SPAN /></P><P><SPAN>Please refer to this list before making any assumptions, since the information is not always clear or intuitive. </SPAN></P><P><SPAN>For example:</SPAN></P><P><SPAN>• What are the differences between the Individual, Private, and Non-profit/Charitable categories? </SPAN></P><P><SPAN>• Which category would a religious institution fall under? </SPAN></P><P><SPAN>• Is M-NCPPC captured as a State or County exemption? </SPAN></P><P><SPAN /></P><P><SPAN>The answers may be surprising. </SPAN></P><P><SPAN /></P><P><SPAN>The GIS layers for Property Symbolized by Assessment Data are named for the exemption categories, but do not contain the individual values of the EXEMPT_CLASS field. They should be used for simple mapping and analysis projects such as “Where are all the State and/or County exempt properties within the county?” These layers should not be used for “Where are all the exempt M-NCPPC properties in the county?” since the M-NCPPC exempt code isn’t the only type of County exemption. </SPAN></P><P><SPAN /></P><P><SPAN>To see the individual EXEMPT_CLASS values for each account, extract the information from the Property_Poly layer with its one-to-many relationship to the LDF table. This will provide the true one-to-many values for any analysis dealing with the fields in the LDF table. For a quick check, do an identify on the actual Property_Poly layer being represented by these seven layers, then look at the individual EXEMPT_CLASS codes from the assessment data.</SPAN></P><P><SPAN /></P><P><SPAN>These layers are a live, spatially enabled ‘join’ of the relationship class that exists between the LDF table and Property_Poly layer in ArcSDE. All caveats apply, such as potential issues when flattening the relationship to a one-to-one join. For example, the seven layers will definitely overlap; the same property feature may appear in two separate tax exempt layers. How would a property shape be both a State exempt property and a Private exemption? Consider a commercial condominium complex, which is one large polygon in the Property_Poly layer but could contains dozens (or more) of Tax accounts within the LDF table. Any account within that condominium complex could be a State office, church owned, M-NCPPC owned (like Lakeside), a non-profit organization, etc. Therefore, that Condominium complex would be shown in any of the assessment category layers associated with any exemption type found with any account tied to that property shape. So, while each layer could be considered 100% correct, according to the State Tax Assessors office, there can be multiple tax exemptions on one property shape and each exemption layer represents only one of the possible categories. </SPAN></P><P><SPAN /></P></DIV></DIV></DIV>",
+      "snippet": "Graphical representation of property boundaries throughout Prince George's County, Maryland as established by deed, recorded plat of subdivision, and road right-of-way plats.",
+      "tags": [
+        "Parcels",
+        "Prince Georges County",
+        "Maryland"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "40179d777ed44235b69ced4907e989e1",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/prince_georges_county_md_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 100,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels",
+          "tax parcel",
+          "assessment",
+          "assessor"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Prince George's County Real Property Assessments: Hidden Property Owner Names",
+      "description": "Please read all metadata before accessing the dataset. Note that records shown here are updated at different frequencies from data in products from MDP and SDAT. Please see the full documentation at https://opendata.maryland.gov/api/views/ed4q-f8tm/files/WtRzMltUzm25OasOCYtu7PgOGUfrplWsZTalSH4Iukg?download=true&filename=Real%20Property%20Records%20Documentation.pdf and review the dedicated metadata site (https://opendata.maryland.gov/dataset/Beta-Maryland-Statewide-Real-Property-Assessments-/ed4q-f8tm/about).",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "opendata.maryland.gov",
+      "resourceId": "w3eb-4mzd",
+      "type": "filter",
+      "endpoint": "https://opendata.maryland.gov/resource/w3eb-4mzd.json",
+      "isPublic": true,
+      "permalink": "https://opendata.maryland.gov/d/w3eb-4mzd",
+      "compatibility": {
+        "score": 100,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "property assessment",
+          "property assessments",
+          "assessment",
+          "real property"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": true
+      },
+      "health": {
+        "ok": true,
+        "exitCode": 0,
+        "stdout": "{ adapter: 'socrata', ok: true, durationMs: 342, status: 200 }",
+        "stderr": ""
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Property",
+      "description": "This dataset contains information about properties located within Prince George's County, including ownership, assessment, location, land use, valuation, and related property characteristics. It supports analysis of property values, taxation, development trends, land use planning, and real estate activity throughout the county.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.princegeorgescountymd.gov",
+      "resourceId": "qzrv-2tnv",
+      "type": "dataset",
+      "endpoint": "https://data.princegeorgescountymd.gov/resource/qzrv-2tnv.json",
+      "isPublic": true,
+      "permalink": "https://data.princegeorgescountymd.gov/d/qzrv-2tnv",
+      "compatibility": {
+        "score": 78,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "assessment"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 93,
+        "originalScore": 78,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    }
+  ]
+}

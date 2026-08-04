@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785837453845-7870",
+  "startedAt": "2026-08-04T09:57:33.845Z",
+  "completedAt": "2026-08-04T09:57:54.240Z",
+  "state": "DE",
+  "county": "New Castle",
+  "connectorId": "DE-NEW-CASTLE",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "parcel_inventory"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T09:57:33.852Z",
+      "completedAt": "2026-08-04T09:57:45.911Z",
+      "ok": true,
+      "candidateCount": 6,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/DE-NEW-CASTLE-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T09:57:47.676Z",
+      "completedAt": "2026-08-04T09:57:47.860Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "parcel_inventory": {
+      "dataset": "parcel_inventory",
+      "adapter": "arcgis",
+      "endpoint": "https://enterprise.firstmaptest.delaware.gov/arcgis/rest/services/PlanningCadastre/DE_StateParcels/FeatureServer/0/query",
+      "title": "Delaware State Parcels",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T09:57:45.913Z",
+          "completedAt": "2026-08-04T09:57:46.139Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T09:57:46.140Z",
+          "completedAt": "2026-08-04T09:57:47.676Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T09:57:47.860Z",
+          "completedAt": "2026-08-04T09:57:54.240Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

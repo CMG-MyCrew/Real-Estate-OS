@@ -1,0 +1,607 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-04T18:24:56.136Z",
+  "locality": {
+    "state": "PA",
+    "county": "Clinton"
+  },
+  "sources": [
+    "arcgis",
+    "socrata"
+  ],
+  "datasets": [
+    "parcel_inventory"
+  ],
+  "candidateCount": 15,
+  "selections": {
+    "parcel_inventory": {
+      "threshold": 60,
+      "status": "SELECTED",
+      "selected": {
+        "id": "PA-DEP-STATE-PARCELS",
+        "title": "Pennsylvania DEP Parcel Layer",
+        "description": "Official Pennsylvania DEP partial statewide parcel inventory dataset.",
+        "owner": "",
+        "tags": [
+          "authoritative",
+          "PA",
+          "Clinton",
+          "parcel_inventory"
+        ],
+        "adapter": "arcgis",
+        "endpoint": "https://gis.dep.pa.gov/depgisprd/rest/services/Parcels/PA_Parcels/MapServer/0/query",
+        "serviceUrl": "",
+        "authoritative": true,
+        "sourceScope": "statewide",
+        "sourceQuery": {
+          "where": "COUNTY_NAME='CLINTON'"
+        },
+        "compatibility": {
+          "dataset": "parcel_inventory",
+          "score": 100
+        },
+        "automaticDiscovery": {
+          "score": 100,
+          "originalScore": 100,
+          "countyMatch": true,
+          "stateMatch": true,
+          "negativeTerms": [],
+          "endpointQuality": 0,
+          "eligible": true,
+          "seeded": true
+        },
+        "health": {
+          "ok": true,
+          "exitCode": 0,
+          "stdout": "{\n  adapter: 'arcgis',\n  count: 4685585,\n  ok: true,\n  durationMs: 1719,\n  status: 200\n}",
+          "stderr": ""
+        }
+      },
+      "reviewedCandidates": [
+        {
+          "id": "PA-DEP-STATE-PARCELS",
+          "title": "Pennsylvania DEP Parcel Layer",
+          "description": "Official Pennsylvania DEP partial statewide parcel inventory dataset.",
+          "owner": "",
+          "tags": [
+            "authoritative",
+            "PA",
+            "Clinton",
+            "parcel_inventory"
+          ],
+          "adapter": "arcgis",
+          "endpoint": "https://gis.dep.pa.gov/depgisprd/rest/services/Parcels/PA_Parcels/MapServer/0/query",
+          "serviceUrl": "",
+          "authoritative": true,
+          "sourceScope": "statewide",
+          "sourceQuery": {
+            "where": "COUNTY_NAME='CLINTON'"
+          },
+          "compatibility": {
+            "dataset": "parcel_inventory",
+            "score": 100
+          },
+          "automaticDiscovery": {
+            "score": 100,
+            "originalScore": 100,
+            "countyMatch": true,
+            "stateMatch": true,
+            "negativeTerms": [],
+            "endpointQuality": 0,
+            "eligible": true,
+            "seeded": true
+          },
+          "health": {
+            "ok": true,
+            "exitCode": 0,
+            "stdout": "{\n  adapter: 'arcgis',\n  count: 4685585,\n  ok: true,\n  durationMs: 1719,\n  status: 200\n}",
+            "stderr": ""
+          }
+        }
+      ]
+    }
+  },
+  "candidates": [
+    {
+      "id": "PA-DEP-STATE-PARCELS",
+      "title": "Pennsylvania DEP Parcel Layer",
+      "description": "Official Pennsylvania DEP partial statewide parcel inventory dataset.",
+      "owner": "",
+      "tags": [
+        "authoritative",
+        "PA",
+        "Clinton",
+        "parcel_inventory"
+      ],
+      "adapter": "arcgis",
+      "endpoint": "https://gis.dep.pa.gov/depgisprd/rest/services/Parcels/PA_Parcels/MapServer/0/query",
+      "serviceUrl": "",
+      "authoritative": true,
+      "sourceScope": "statewide",
+      "sourceQuery": {
+        "where": "COUNTY_NAME='CLINTON'"
+      },
+      "compatibility": {
+        "dataset": "parcel_inventory",
+        "score": 100
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": true,
+        "seeded": true
+      },
+      "health": {
+        "ok": true,
+        "exitCode": 0,
+        "stdout": "{\n  adapter: 'arcgis',\n  count: 4685585,\n  ok: true,\n  durationMs: 1719,\n  status: 200\n}",
+        "stderr": ""
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Assessor - Parcel Proximity",
+      "description": "Cook County 10-digit parcels with attached distances to various spatial features.\n\nWhen working with 10-digit Parcel Index Numbers (PINs) make sure to zero-pad them to 10 digits. Some datasets may lose leading zeros for PINs when downloaded. 10-digit PINs do not identify individual condominium units.\n\nAdditional notes:<ul><li>Centroids are based on <a href=\"https://datacatalog.cookcountyil.gov/Property-Taxation/ccgisdata-Parcel-2021/77tz-riq7\">Cook County parcel shapefiles</a>.</li>\n<li>Older properties may be missing coordinates and thus also missing attached spatial data (usually they are missing a parcel boundary in the shapefile).</li>\n<li>Attached spatial data does NOT all go back to 2000. It is only available for more recent years, primarily those after 2012.</li>\n<li>This dataset contains data for the current tax year, which may not yet be complete or final. Assessed values for any given year are subject to change until <a href=\"https://www.cookcountyassessor.com/assessment-calendar-and-deadlines\">review and certification of values by the Cook County Board of Review</a>, though there are a few rare circumstances where values may change for the current or past years after that.</li>\n<li>Rowcount for a given year is final once the Assessor <a href=\"https://www.cookcountyassessor.com/assessment-calendar-and-deadlines\">has certified the assessment roll</a> all townships.</li>\n<li>Data will be updated annually as new parcel shapefiles are made available.</li></ul>For more information on the sourcing of attached data and the preparation of this dataset, see the <a href=\"https://github.com/ccao-data/wiki/blob/master/SOPs/Open-Data.md\">Assessor's Standard Operating Procedures for Open Data</a> on GitHub.\n\n<a href=\"https://datacatalog.cookcountyil.gov/stories/s/gzdr-q7c4\">Read about the Assessor's 2025 Open Data Refresh.</a>",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "ydue-e5u3",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/ydue-e5u3.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/ydue-e5u3",
+      "compatibility": {
+        "score": 100,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels",
+          "assessment",
+          "assessor"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 77,
+        "originalScore": 100,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Clinton County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Clinton County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "4be125dd485244fd97cd9338e6a5b1dd",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/clinton_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 90,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 90,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Dauphin County GIS Open Data Portal",
+      "description": "This is a connection to the Dauphin County GIS Data Portal. \nThe following categories are available: \nBoundaries\nElection\nHydrology\nTax Assessment\nTransportation\nElevation\n\nThe following Applications are available: \nMobile Parcel Viewer -  provides the general public and other interested parties access to searchable and interactive information such as property tax and assessment information or the locations of water access points.\n\nMDJ (Magisterial District Judges) Locator - Identifies Magisterial District Judge and Municipality\n\nDauphin County Homicides - Application showing Dauphin County homicides in 2015 and 2016\n\nParcel Viewer - Search for a Parcel, Property Information, Tax Assessment, Municipality, Assessed Land or Building Value, Acres, etc. \n\nDigital Data is distributed as a countywide dataset in ESRI shapefile format.  Aerial imagery is available as a countywide dataset either through Dauphin County GIS or downloaded from PA Spatial Data Access (PASDA also available on the Commonwealth Open Data portal)",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.pa.gov",
+      "resourceId": "cws5-v2de",
+      "type": "href",
+      "endpoint": "https://data.pa.gov/resource/cws5-v2de.json",
+      "isPublic": true,
+      "permalink": "https://data.pa.gov/d/cws5-v2de",
+      "compatibility": {
+        "score": 81,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "assessment"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 68,
+        "originalScore": 81,
+        "countyMatch": false,
+        "stateMatch": true,
+        "negativeTerms": [
+          "election"
+        ],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Parcel Counts By Type By Municipality: Beginning Roll Year 2000",
+      "description": "The Department of Taxation and Finance annually produces a report pertaining to the distribution of parcels by property class.  The data analysis involves a breakdown of property classes to nine segments of broad use, namely Agricultural, Residential, Vacant Land/Farm, Commercial, Recreation, Community Service, Industrial, Public Service, and Forest/Conservation. For more information please go to:  http://www.tax.ny.gov/research/property/default.htm",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.ny.gov",
+      "resourceId": "tnwc-mx3q",
+      "type": "dataset",
+      "endpoint": "https://data.ny.gov/resource/tnwc-mx3q.json",
+      "isPublic": true,
+      "permalink": "https://data.ny.gov/d/tnwc-mx3q",
+      "compatibility": {
+        "score": 73,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 15,
+        "originalScore": 73,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Assessor [Archived 05-11-2022] - Residential Modeling Characteristics (Chicago)",
+      "description": "This data set contains characteristic data points used by the Cook County Assessor in the 2021 Chicago reassessment to produce initial estimates of the current market value of most Chicago homes (single-family homes, small multi-family homes, and condo units). You can use the \"Filter\" option to search for a property's PIN or address, and see what data the Assessor’s Office had about a home’s characteristics at the time of modeling*. To learn more about how the 2021 model used this data, read about our public <a href=\"https://gitlab.com/ccao-data-science---modeling/models/ccao_res_avm\" target=_new>Residential Automated Valuation Model here</a>. Chicago properties not listed here are reassessed using different modeling procedures.\n\n<br> <br>\n\n<b>*Important Note:</b> This dataset is, at the time of publication, an early snapshot of data. Data about a home might change later in the assessment process this year as Assessor’s Office staff and analysts review these properties. After this review, updated characteristics and market values are mailed to homeowners. If the data listed on the assessment notice is incorrect, an appeal can be filed to provide the correct characteristics.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "8f9d-wy2d",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/8f9d-wy2d.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/8f9d-wy2d",
+      "compatibility": {
+        "score": 73,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "assessment",
+          "assessor"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 50,
+        "originalScore": 73,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Assessor [Archived 05-11-2022] - Residential Property Characteristics",
+      "description": "Assessment dataset used by the Cook County Assessor in their Computer Assisted Mass Appraisal (CAMA) system used to assess residential properties in Northern Triennial Townships. This dataset contains property information for every residential PIN in the northern triennial townships where class is within a specified list of classes. For disclaimers, see dataset narrative at https://datacatalog.cookcountyil.gov/stories/s/p2kt-hk36",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "bcnq-qi2z",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/bcnq-qi2z.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/bcnq-qi2z",
+      "compatibility": {
+        "score": 73,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "assessment",
+          "assessor"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 50,
+        "originalScore": 73,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "City of Albany Vacant Building Inventory: 2013",
+      "description": "Since January 2012, the Division of Buildings & Regulatory Compliance has created a living database documenting vacant buildings in the City of Albany. To create this database, the Division reconciled the Division of Building and Codes Vacant Building Registry with the Department of Fire and Emergency Services Vacant Building Database. This first reconciliation yielded a list of approximately 750 vacant buildings. The Division then reconciled that list with lists from neighborhood associations and lists from the Department of Assessment and Taxation.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.ny.gov",
+      "resourceId": "nv2j-hmda",
+      "type": "dataset",
+      "endpoint": "https://data.ny.gov/resource/nv2j-hmda.json",
+      "isPublic": true,
+      "permalink": "https://data.ny.gov/d/nv2j-hmda",
+      "compatibility": {
+        "score": 65,
+        "dataset": "vacant_properties",
+        "matchedTerms": [
+          "vacant building",
+          "vacant buildings"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 15,
+        "originalScore": 65,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Treasurer - 2009 Annual Tax Sale Sold PINS",
+      "description": "Annual Tax Sale: A yearly auction of delinquent taxes where a tax buyer (purchaser) pays the delinquent taxes due on a parcel. This results in a lien on the property. The property owner must repay the tax buyer with interest for the amount of the sale – this is known as “redemption.” If redemption does not occur within a set time period, the tax buyer can obtain legal title to the property – this is referred to as a “tax deed.”",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "ae8r-hsd6",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/ae8r-hsd6.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/ae8r-hsd6",
+      "compatibility": {
+        "score": 61,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 38,
+        "originalScore": 61,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Special Programs",
+      "description": "This dataset provides data from the City of Norfolk’s special programs tracking system. Special program issues originate from inspections conducted by the Department of Neighborhood Services and the Department of City Planning. The goal of pursuing compliance with special programs is to strengthen neighborhood standards and improve property health and safety. Types of special programs may include property issues such emergency demolitions, fire department red tags, vacant building registration, Virginia Natural Gas red tags, short-term rentals, new auto establishments, and others.  This dataset will contain a rolling three years of data and will be updated daily.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.norfolk.gov",
+      "resourceId": "7fk7-nqxm",
+      "type": "dataset",
+      "endpoint": "https://data.norfolk.gov/resource/7fk7-nqxm.json",
+      "isPublic": true,
+      "permalink": "https://data.norfolk.gov/d/7fk7-nqxm",
+      "compatibility": {
+        "score": 53,
+        "dataset": "vacant_properties",
+        "matchedTerms": [
+          "vacant building"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 30,
+        "originalScore": 53,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Assessor [Archived 05-11-2022] - Residential Sales Data",
+      "description": "This is the data set of residential sales used by the Cook County Assessor in their Computer Assisted Mass Appraisal system used to assess residential property values. This data set contains property information for every arm's-length residential sale in Cook County where class is within a specified list of classes. For disclaimers, see data set narrative at https://datacatalog.cookcountyil.gov/stories/s/p2kt-hk36\n\nThis data set was replaced by the more comprehensive data set Cook County Assessor's Sales.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "5pge-nu6u",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/5pge-nu6u.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/5pge-nu6u",
+      "compatibility": {
+        "score": 53,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "assessor"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 30,
+        "originalScore": 53,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Defaulted Tax Data",
+      "description": "County of Sonoma Auditor-Controller-Treasurer-Tax Collector listing of defaulted tax data. The data provided indicates prior year delinquent tax information as of July 1st in this current fiscal tax year.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.sonomacounty.ca.gov",
+      "resourceId": "bp8v-uax7",
+      "type": "dataset",
+      "endpoint": "https://data.sonomacounty.ca.gov/resource/bp8v-uax7.json",
+      "isPublic": true,
+      "permalink": "https://data.sonomacounty.ca.gov/d/bp8v-uax7",
+      "compatibility": {
+        "score": 45,
+        "dataset": "tax_delinquent",
+        "matchedTerms": [
+          "delinquent tax"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 22,
+        "originalScore": 45,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Delinquent Tax Values",
+      "description": "This dataset shows all of the prior year delinquent tax amounts in Clermont County.  The Dataset includes owner information, delinquent tax amount, certified delinquent year and  total appraised and assessed value of the property.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "internal.opendata.clermontauditor.org",
+      "resourceId": "q52y-wzm4",
+      "type": "dataset",
+      "endpoint": "https://internal.opendata.clermontauditor.org/resource/q52y-wzm4.json",
+      "isPublic": true,
+      "permalink": "https://internal.opendata.clermontauditor.org/d/q52y-wzm4",
+      "compatibility": {
+        "score": 45,
+        "dataset": "tax_delinquent",
+        "matchedTerms": [
+          "delinquent tax"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 22,
+        "originalScore": 45,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Bodega Tax Default as of July 1 2017",
+      "description": "County of Sonoma Auditor-Controller-Treasurer-Tax Collector listing of defaulted tax data. The data provided indicates prior year delinquent tax information as of July 1st in this current fiscal tax year.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.sonomacounty.ca.gov",
+      "resourceId": "y42d-aiqs",
+      "type": "filter",
+      "endpoint": "https://data.sonomacounty.ca.gov/resource/y42d-aiqs.json",
+      "isPublic": true,
+      "permalink": "https://data.sonomacounty.ca.gov/d/y42d-aiqs",
+      "compatibility": {
+        "score": 45,
+        "dataset": "tax_delinquent",
+        "matchedTerms": [
+          "delinquent tax"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 22,
+        "originalScore": 45,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Market Value Analysis (MVA) 2020",
+      "description": "The Market Value Analysis uses local data sources to help describe and categorize local housing markets in Kansas City at the block group level. For more information on the MVA methodology and use, see here: https://www.kcmo.gov/city-hall/departments/city-planning-development/market-value-analysis-kansas-city-missouri",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.kcmo.org",
+      "resourceId": "qhqc-4mi2",
+      "type": "dataset",
+      "endpoint": "https://data.kcmo.org/resource/qhqc-4mi2.json",
+      "isPublic": true,
+      "permalink": "https://data.kcmo.org/d/qhqc-4mi2",
+      "compatibility": {
+        "score": 33,
+        "dataset": "unknown",
+        "matchedTerms": [],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 10,
+        "originalScore": 33,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    }
+  ]
+}

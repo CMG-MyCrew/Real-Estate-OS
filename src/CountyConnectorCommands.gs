@@ -82,6 +82,12 @@ function REOS_COUNTY_REGISTER_CONNECTORS_() {
       registrar();
     }
   });
+
+  generatedRegistrars.forEach(function (registrar) {
+    if (typeof registrar === 'function') {
+      registrar();
+    }
+  });
 }
 
 function REOS_COUNTY_SETUP() {
@@ -237,6 +243,20 @@ function REOS_COUNTY_TERMINAL_SYNC(options) {
         endpoint: healthEndpoint
       }
     );
+  }
+
+  if (action === 'nationwide-status') {
+    return REOS_NATIONWIDE_GET_STATUS();
+  }
+
+  if (action === 'nationwide-set-status') {
+    return REOS_NATIONWIDE_SET_STATUS(
+      options.status || {}
+    );
+  }
+
+  if (action === 'nationwide-clear-status') {
+    return REOS_NATIONWIDE_CLEAR_STATUS();
   }
 
   if (action === 'maintenance-status') {

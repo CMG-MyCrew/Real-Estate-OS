@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785858696127-1286",
+  "startedAt": "2026-08-04T15:51:36.127Z",
+  "completedAt": "2026-08-04T15:52:43.254Z",
+  "state": "MD",
+  "county": "Baltimore",
+  "connectorId": "MD-BALTIMORE",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "property_assessment"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T15:51:36.132Z",
+      "completedAt": "2026-08-04T15:52:01.833Z",
+      "ok": true,
+      "candidateCount": 17,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/MD-BALTIMORE-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T15:52:06.416Z",
+      "completedAt": "2026-08-04T15:52:07.042Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "property_assessment": {
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+      "title": "Maryland Statewide Property Data",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T15:52:01.859Z",
+          "completedAt": "2026-08-04T15:52:03.416Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T15:52:03.416Z",
+          "completedAt": "2026-08-04T15:52:06.416Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T15:52:07.042Z",
+          "completedAt": "2026-08-04T15:52:43.250Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

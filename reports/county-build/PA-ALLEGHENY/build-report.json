@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785864749216-3271",
+  "startedAt": "2026-08-04T17:32:29.216Z",
+  "completedAt": "2026-08-04T17:32:56.224Z",
+  "state": "PA",
+  "county": "Allegheny",
+  "connectorId": "PA-ALLEGHENY",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "parcel_inventory"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T17:32:29.220Z",
+      "completedAt": "2026-08-04T17:32:42.525Z",
+      "ok": true,
+      "candidateCount": 15,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/PA-ALLEGHENY-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T17:32:48.603Z",
+      "completedAt": "2026-08-04T17:32:48.861Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "parcel_inventory": {
+      "dataset": "parcel_inventory",
+      "adapter": "arcgis",
+      "endpoint": "https://gis.dep.pa.gov/depgisprd/rest/services/Parcels/PA_Parcels/MapServer/0/query",
+      "title": "Pennsylvania DEP Parcel Layer",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T17:32:42.529Z",
+          "completedAt": "2026-08-04T17:32:42.870Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T17:32:42.870Z",
+          "completedAt": "2026-08-04T17:32:48.602Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T17:32:48.861Z",
+          "completedAt": "2026-08-04T17:32:56.224Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

@@ -1,0 +1,789 @@
+{
+  "schemaVersion": "1.0.0",
+  "checkedAt": "2026-08-04T02:37:09.717Z",
+  "connectorId": "PA-CHESTER",
+  "dataset": "property_assessment",
+  "adapter": "arcgis",
+  "endpoint": "https://services1.arcgis.com/xnOV358bj0tLwxji/arcgis/rest/services/Chester_County_PA_Parcels/FeatureServer/0/query",
+  "baselineExists": true,
+  "schema": {
+    "sampleCount": 50,
+    "fields": {
+      "ACRE_PLAN_": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 39,
+        "sampleValues": [
+          1,
+          0.810009,
+          0.017011,
+          1,
+          0.017539
+        ]
+      },
+      "ACRE_PLA_1": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 39,
+        "sampleValues": [
+          1,
+          0.810009,
+          0.017011,
+          1,
+          0.017539
+        ]
+      },
+      "ACTIVE_DAT": {
+        "type": "integer",
+        "populatedCount": 3,
+        "completeness": 0.06,
+        "uniqueCount": 2,
+        "sampleValues": [
+          1355184000000,
+          1355184000000,
+          1374537600000
+        ]
+      },
+      "ADDR1": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 49,
+        "sampleValues": [
+          "1336 OLD WILMINGTON RD",
+          "1330 OLD WILMINGTON RD",
+          "52 E JONATHAN CRT",
+          "1162 RAPPS DAM RD",
+          "66 E JONATHAN CRT"
+        ]
+      },
+      "ADDR2": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 13,
+        "sampleValues": [
+          "EAST FALLOWFIELD PA",
+          "EAST FALLOWFIELD PA",
+          "KENNETT SQUARE PA",
+          "PHOENIXVILLE PA",
+          "KENNETT SQUARE PA"
+        ]
+      },
+      "ADDR3": {
+        "type": "string",
+        "populatedCount": 3,
+        "completeness": 0.06,
+        "uniqueCount": 2,
+        "sampleValues": [
+          "EXTON PA",
+          "CHICAGO IL",
+          "CHICAGO IL"
+        ]
+      },
+      "AD_ROLE": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "ASMT_DATE": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          1608249600000,
+          1608249600000,
+          1608249600000,
+          1608249600000,
+          1608249600000
+        ]
+      },
+      "BOOK": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "7548",
+          "V53",
+          "9587",
+          "3478",
+          "10458"
+        ]
+      },
+      "CLASS": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 2,
+        "sampleValues": [
+          "R",
+          "R",
+          "R",
+          "R",
+          "R"
+        ]
+      },
+      "CODE": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ]
+      },
+      "CREATE_DAT": {
+        "type": "integer",
+        "populatedCount": 3,
+        "completeness": 0.06,
+        "uniqueCount": 2,
+        "sampleValues": [
+          1355184000000,
+          1355184000000,
+          1374537600000
+        ]
+      },
+      "DEED_REC_D": {
+        "type": "integer",
+        "populatedCount": 48,
+        "completeness": 0.96,
+        "uniqueCount": 48,
+        "sampleValues": [
+          1226966400000,
+          1501459200000,
+          725846400000,
+          1614297600000,
+          1513296000000
+        ]
+      },
+      "DIR": {
+        "type": "string",
+        "populatedCount": 10,
+        "completeness": 0.2,
+        "uniqueCount": 3,
+        "sampleValues": [
+          "E",
+          "E",
+          "E",
+          "E",
+          "E"
+        ]
+      },
+      "FID": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "FMV319": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 2,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "FMV515": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "JURIS": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 10,
+        "sampleValues": [
+          "47",
+          "47",
+          "61",
+          "26",
+          "61"
+        ]
+      },
+      "LAND_DEV_I": {
+        "type": "string",
+        "populatedCount": 5,
+        "completeness": 0.1,
+        "uniqueCount": 3,
+        "sampleValues": [
+          "SUB-11536",
+          "SUB-11536",
+          "SUB-11536",
+          "SUB-03447",
+          "SUB-11229"
+        ]
+      },
+      "LAST_SALE_": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 33,
+        "sampleValues": [
+          1,
+          0,
+          185000,
+          0,
+          235000
+        ]
+      },
+      "LEGAL1": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 36,
+        "sampleValues": [
+          "NS OF OLD WILMINGTON RD",
+          "NS OF OLD WILMINGTON ROAD",
+          "ORCHARD VALLEY",
+          "NE COR OF COVERED BRIDGE L",
+          "ORCHARD VALLEY"
+        ]
+      },
+      "LEGAL2": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 41,
+        "sampleValues": [
+          "1 AC DWG & GAR",
+          "LOT & DWG",
+          "UNIT 52 & DWG",
+          "1 AC DWG & GAR LOT 1",
+          "UNIT 66 & DWG"
+        ]
+      },
+      "LOC_ADDRES": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "1336 OLD WILMINGTON RD",
+          "1330 OLD WILMINGTON RD",
+          "52 E JONATHAN CT",
+          "1162 COVERED BRIDGE LA",
+          "66 E JONATHAN CT"
+        ]
+      },
+      "LOT": {
+        "type": "string",
+        "populatedCount": 35,
+        "completeness": 0.7,
+        "uniqueCount": 33,
+        "sampleValues": [
+          "52",
+          "66",
+          "68",
+          "53",
+          "17"
+        ]
+      },
+      "LOT_ASSESS": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 37,
+        "sampleValues": [
+          33540,
+          28790,
+          23660,
+          55470,
+          23660
+        ]
+      },
+      "LUC": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 2,
+        "sampleValues": [
+          "R-10",
+          "R-10",
+          "R-10",
+          "R-10",
+          "R-10"
+        ]
+      },
+      "MODIFY_DAT": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "MULTI_POLY": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "MUNI": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 10,
+        "sampleValues": [
+          47,
+          47,
+          61,
+          26,
+          61
+        ]
+      },
+      "NO_ADDR_CO": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "NUM_SUF": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "OBJECTID": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          68011826,
+          68011827,
+          68011828,
+          68011829,
+          68011830
+        ]
+      },
+      "OWN1": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "EDWARDS WALTER NORMAN JR &",
+          "PATTON CAROL E JR &",
+          "HYDE TRACY L",
+          "SMITH ALAN K",
+          "MULE CHRISTOPHER PAUL"
+        ]
+      },
+      "OWN2": {
+        "type": "string",
+        "populatedCount": 22,
+        "completeness": 0.44,
+        "uniqueCount": 22,
+        "sampleValues": [
+          "KAREN K",
+          "PATRICIA A",
+          "HOLCOMB BEHAVIORAL HEALTH SYSTEMS",
+          "HUNT STEPHEN",
+          "GEORGE LISA M"
+        ]
+      },
+      "PAGE": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 49,
+        "sampleValues": [
+          "704",
+          "594",
+          "1973",
+          "463",
+          "1939"
+        ]
+      },
+      "PIN_ASMNT": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "4704 00020000",
+          "4703 00120300",
+          "6106Q01510000",
+          "2603 010201A0",
+          "6106Q01650000"
+        ]
+      },
+      "PIN_COMMON": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "47-4-2",
+          "47-3-12.3",
+          "61-6Q-151",
+          "26-3-102.1A",
+          "61-6Q-165"
+        ]
+      },
+      "PIN_MAP": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "4704 0002000",
+          "4703 0012030",
+          "6106Q0151000",
+          "2603 010201A",
+          "6106Q0165000"
+        ]
+      },
+      "PLAN_NUM": {
+        "type": "string",
+        "populatedCount": 5,
+        "completeness": 0.1,
+        "uniqueCount": 4,
+        "sampleValues": [
+          "SDLD-11536",
+          "SDLD-11536",
+          "SDLD-11536-2",
+          "SDLD-03447-2",
+          "SDLD-11229-2"
+        ]
+      },
+      "POLY_PER_P": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "PROP_ASSES": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          85450,
+          82730,
+          79610,
+          111720,
+          80790
+        ]
+      },
+      "SCHDIST": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 8,
+        "sampleValues": [
+          "02",
+          "02",
+          "04",
+          "08",
+          "04"
+        ]
+      },
+      "SQFT_PLAN_": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 39,
+        "sampleValues": [
+          43560,
+          35284,
+          741,
+          43560,
+          764
+        ]
+      },
+      "ST_NAME": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 22,
+        "sampleValues": [
+          "OLD WILMINGTON",
+          "OLD WILMINGTON",
+          "JONATHAN",
+          "COVERED BRIDGE",
+          "JONATHAN"
+        ]
+      },
+      "ST_NUM": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          1336,
+          1330,
+          52,
+          1162,
+          66
+        ]
+      },
+      "ST_TYPE": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 8,
+        "sampleValues": [
+          "RD",
+          "RD",
+          "CT",
+          "LA",
+          "CT"
+        ]
+      },
+      "SUBDIV_NAM": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "SUBDIV_NUM": {
+        "type": "string",
+        "populatedCount": 37,
+        "completeness": 0.74,
+        "uniqueCount": 14,
+        "sampleValues": [
+          "6466",
+          "3434",
+          "6466",
+          "6466",
+          "6466"
+        ]
+      },
+      "Shape__Are": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          43827.6702270508,
+          30802.9996337891,
+          802.953063964844,
+          41848.0484619141,
+          791.454498291016
+        ]
+      },
+      "Shape__Area": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          6939.0390625,
+          4876.9609375,
+          126.765625,
+          6659.5859375,
+          124.94921875
+        ]
+      },
+      "Shape__Len": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          829.368074587331,
+          806.964395633536,
+          120.99991024933,
+          907.702710514879,
+          120.435296867298
+        ]
+      },
+      "Shape__Length": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          329.9299768495636,
+          320.93319281606614,
+          48.084074399927275,
+          361.75857983926574,
+          47.850089309523256
+        ]
+      },
+      "TAXYR": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          2022,
+          2022,
+          2022,
+          2022,
+          2022
+        ]
+      },
+      "TILE_1200": {
+        "type": "string",
+        "populatedCount": 39,
+        "completeness": 0.78,
+        "uniqueCount": 5,
+        "sampleValues": [
+          "2",
+          "2",
+          "3",
+          "1",
+          "3"
+        ]
+      },
+      "TILE_2400": {
+        "type": "string",
+        "populatedCount": 47,
+        "completeness": 0.94,
+        "uniqueCount": 11,
+        "sampleValues": [
+          "490230",
+          "490230",
+          "550200",
+          "580295",
+          "550200"
+        ]
+      },
+      "TOT_ASSESS": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          118990,
+          111520,
+          103270,
+          167190,
+          104450
+        ]
+      },
+      "UNIT": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "UNIT_N": {
+        "type": "empty",
+        "populatedCount": 0,
+        "completeness": 0,
+        "uniqueCount": 0,
+        "sampleValues": []
+      },
+      "UPI": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "47-4-2",
+          "47-3-12.3",
+          "61-6Q-151",
+          "26-3-102.1A",
+          "61-6Q-165"
+        ]
+      },
+      "XCOORD": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          2494706,
+          2494037,
+          2551068,
+          2582394,
+          2550860.25
+        ]
+      },
+      "YCOORD": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          234360,
+          234470.46875,
+          200072.375,
+          299842,
+          200121.03125
+        ]
+      },
+      "ZIP1": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 12,
+        "sampleValues": [
+          "19320",
+          "19320",
+          "19348",
+          "19460",
+          "19348"
+        ]
+      }
+    },
+    "fingerprint": "e5931c8c745e84d7c24fbad17573451958abc06898ba9a1a16ed0c881a115c55"
+  },
+  "comparison": {
+    "severity": "NONE",
+    "changed": false,
+    "addedFields": [],
+    "removedFields": [],
+    "changedTypes": [],
+    "completenessChanges": [],
+    "requiresReview": false
+  },
+  "status": "UNCHANGED"
+}

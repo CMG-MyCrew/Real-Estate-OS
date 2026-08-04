@@ -1,0 +1,1557 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-04T15:58:52.088Z",
+  "dataset": "property_assessment",
+  "sampleCount": 50,
+  "sourceFields": [
+    "OBJECTID",
+    "JURSCODE",
+    "ACCTID",
+    "DIGXCORD",
+    "DIGYCORD",
+    "CT2020",
+    "BG2020",
+    "GEOGCODE",
+    "OOI",
+    "RESITYP",
+    "ADDRESS",
+    "STRTNUM",
+    "STRTDIR",
+    "STRTNAM",
+    "STRTTYP",
+    "STRTSFX",
+    "STRTUNT",
+    "ADDRTYP",
+    "CITY",
+    "ZIPCODE",
+    "OWNADD1",
+    "OWNADD2",
+    "OWNCITY",
+    "OWNSTATE",
+    "OWNERZIP",
+    "OWNZIP2",
+    "PREMSNUM",
+    "PREMSDIR",
+    "PREMSNAM",
+    "PREMSTYP",
+    "PREMCITY",
+    "PREMZIP",
+    "PREMZIP2",
+    "LEGAL1",
+    "LEGAL2",
+    "LEGAL3",
+    "DR1LIBER",
+    "DR1FOLIO",
+    "TOWNCODE",
+    "DESCTOWN",
+    "SUBDIVSN",
+    "DSUBCODE",
+    "DESCSUBD",
+    "PLAT",
+    "PLTLIBER",
+    "PLTFOLIO",
+    "SECTION",
+    "BLOCK",
+    "LOT",
+    "MAP",
+    "GRID",
+    "PARCEL",
+    "ZONING",
+    "ZNCHGDAT",
+    "RZREALDAT",
+    "CIUSE",
+    "DESCCIUSE",
+    "EXCLASS",
+    "DESCEXCL",
+    "LU",
+    "DESCLU",
+    "ACRES",
+    "LANDAREA",
+    "LUOM",
+    "WIDTH",
+    "DEPTH",
+    "PFUW",
+    "PFUS",
+    "PFLW",
+    "PFSP",
+    "PFSU",
+    "PFIC",
+    "PFIH",
+    "RECIND",
+    "PERMITTYP",
+    "YEARBLT",
+    "SQFTSTRC",
+    "STRUGRAD",
+    "DESCGRAD",
+    "STRUCNST",
+    "DESCCNST",
+    "STRUSTYL",
+    "DESCSTYL",
+    "STRUBLDG",
+    "DESCBLDG",
+    "LASTINSP",
+    "LASTASSD",
+    "ASSESSOR",
+    "GR1LIBR1",
+    "GR1FOLO1",
+    "CONVEY1",
+    "TRADATE",
+    "CONSIDR1",
+    "NFMLNDVL",
+    "NFMIMPVL",
+    "NFMTTLVL",
+    "CRTARCOD",
+    "FCMACODE",
+    "AGFNDAREA",
+    "ENTZNDAT",
+    "ENTZNASSM",
+    "PLNDEVDAT",
+    "NPRCTSTDAT",
+    "NPRCAREA",
+    "NPRCLUOM",
+    "HOMQLCOD",
+    "HOMQLDAT",
+    "BLDG_STORY",
+    "BLDG_UNITS",
+    "PTYPE",
+    "SDATWEBADR",
+    "MDPVDATE",
+    "SDATDATE"
+  ],
+  "mapping": {
+    "address": [
+      "ADDRESS"
+    ],
+    "city": [
+      "CITY",
+      "OWNCITY",
+      "PREMCITY"
+    ],
+    "zip": [
+      "ZIPCODE",
+      "OWNERZIP",
+      "PREMZIP"
+    ],
+    "parcelId": [
+      "PARCEL"
+    ],
+    "ownerName": [
+      "OWNADD1",
+      "OWNCITY",
+      "OWNSTATE"
+    ],
+    "coOwnerName": [],
+    "sourceRecordId": [
+      "OBJECTID"
+    ],
+    "sourceUpdatedAt": [],
+    "estimatedValue": [],
+    "assessmentValue": [],
+    "landValue": [],
+    "buildingValue": [],
+    "yearBuilt": [],
+    "landAcres": [
+      "ACRES"
+    ],
+    "livingArea": [
+      "SQFTSTRC"
+    ],
+    "saleDate": [],
+    "salePrice": []
+  },
+  "confidence": {
+    "address": {
+      "score": 139,
+      "primaryField": "ADDRESS",
+      "completeness": 0.8,
+      "alternatives": []
+    },
+    "city": {
+      "score": 130,
+      "primaryField": "CITY",
+      "completeness": 1,
+      "alternatives": [
+        "OWNCITY",
+        "PREMCITY"
+      ]
+    },
+    "zip": {
+      "score": 148,
+      "primaryField": "ZIPCODE",
+      "completeness": 1,
+      "alternatives": [
+        "OWNERZIP",
+        "PREMZIP"
+      ]
+    },
+    "parcelId": {
+      "score": 145,
+      "primaryField": "PARCEL",
+      "completeness": 0.98,
+      "alternatives": []
+    },
+    "ownerName": {
+      "score": 97,
+      "primaryField": "OWNADD1",
+      "completeness": 1,
+      "alternatives": [
+        "OWNCITY",
+        "OWNSTATE"
+      ]
+    },
+    "sourceRecordId": {
+      "score": 155,
+      "primaryField": "OBJECTID",
+      "completeness": 1,
+      "alternatives": []
+    },
+    "landAcres": {
+      "score": 133,
+      "primaryField": "ACRES",
+      "completeness": 1,
+      "alternatives": []
+    },
+    "livingArea": {
+      "score": 96,
+      "primaryField": "SQFTSTRC",
+      "completeness": 0.66,
+      "alternatives": []
+    }
+  },
+  "rankedCandidates": {
+    "address": [
+      {
+        "field": "ADDRESS",
+        "score": 139,
+        "completeness": 0.8,
+        "uniqueRatio": 0.975,
+        "sampleValues": [
+          "18214 BAUER RD",
+          "17399 JUTLAND RD",
+          "15031 POINT LOOKOUT RD"
+        ],
+        "reasons": [
+          "name:/^address$/i=100",
+          "complete>=75%=14",
+          "addressLike>=80%=25"
+        ]
+      },
+      {
+        "field": "OWNADD1",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 0.92,
+        "sampleValues": [
+          "18214 BAUER RD",
+          "23279 PATUXENT VIEW RD",
+          "18214 BAUER RD"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "addressLike>=80%=25"
+        ]
+      },
+      {
+        "field": "LEGAL1",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 0.98,
+        "sampleValues": [
+          "IMPSPT LOT 96",
+          "IMPS27.439 ACRES",
+          "PT LOT 96"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "addressLike>=80%=25"
+        ]
+      },
+      {
+        "field": "SDATWEBADR",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "https://sdat.dat.maryland.gov/RealProperty/Pages/viewdetails.aspx?County=19&SearchType=ACCT&District=01&AccountNumber=000047",
+          "https://sdat.dat.maryland.gov/RealProperty/Pages/viewdetails.aspx?County=19&SearchType=ACCT&District=01&AccountNumber=000055",
+          "https://sdat.dat.maryland.gov/RealProperty/Pages/viewdetails.aspx?County=19&SearchType=ACCT&District=01&AccountNumber=000063"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "addressLike>=80%=25"
+        ]
+      },
+      {
+        "field": "MDPVDATE",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "2023JUN",
+          "2023JUN",
+          "2023JUN"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "addressLike>=80%=25"
+        ]
+      }
+    ],
+    "city": [
+      {
+        "field": "CITY",
+        "score": 130,
+        "completeness": 1,
+        "uniqueRatio": 0.1,
+        "sampleValues": [
+          "LEXINGTON PARK",
+          "SAINT INIGOES",
+          "LEXINGTON PARK"
+        ],
+        "reasons": [
+          "name:/^city$/i=100",
+          "complete>=95%=20",
+          "mostlyText>=80%=10"
+        ]
+      },
+      {
+        "field": "OWNCITY",
+        "score": 95,
+        "completeness": 1,
+        "uniqueRatio": 0.52,
+        "sampleValues": [
+          "SAINT MARYS CITY",
+          "LEXINGTON PARK",
+          "SAINT MARYS CITY"
+        ],
+        "reasons": [
+          "name:/city/i=65",
+          "complete>=95%=20",
+          "mostlyText>=80%=10"
+        ]
+      },
+      {
+        "field": "PREMCITY",
+        "score": 89,
+        "completeness": 0.82,
+        "uniqueRatio": 0.17073170731707318,
+        "sampleValues": [
+          "SAINT MARY'S CITY",
+          "SAINT INIGOES",
+          "ST INIGOES"
+        ],
+        "reasons": [
+          "name:/city/i=65",
+          "complete>=75%=14",
+          "mostlyText>=80%=10"
+        ]
+      },
+      {
+        "field": "JURSCODE",
+        "score": 30,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "STMA",
+          "STMA",
+          "STMA"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=10"
+        ]
+      },
+      {
+        "field": "OWNADD1",
+        "score": 30,
+        "completeness": 1,
+        "uniqueRatio": 0.92,
+        "sampleValues": [
+          "18214 BAUER RD",
+          "23279 PATUXENT VIEW RD",
+          "18214 BAUER RD"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=10"
+        ]
+      }
+    ],
+    "zip": [
+      {
+        "field": "ZIPCODE",
+        "score": 148,
+        "completeness": 1,
+        "uniqueRatio": 0.1,
+        "sampleValues": [
+          "20653",
+          "20684",
+          "20653"
+        ],
+        "reasons": [
+          "name:/^zip_?code$/i=98",
+          "complete>=95%=20",
+          "zipLike>=80%=30"
+        ]
+      },
+      {
+        "field": "OWNERZIP",
+        "score": 115,
+        "completeness": 1,
+        "uniqueRatio": 0.5,
+        "sampleValues": [
+          "20686",
+          "20653",
+          "20686"
+        ],
+        "reasons": [
+          "name:/zip/i=65",
+          "complete>=95%=20",
+          "zipLike>=80%=30"
+        ]
+      },
+      {
+        "field": "PREMZIP",
+        "score": 115,
+        "completeness": 0.98,
+        "uniqueRatio": 0.14285714285714285,
+        "sampleValues": [
+          "20686",
+          "20684",
+          "00000"
+        ],
+        "reasons": [
+          "name:/zip/i=65",
+          "complete>=95%=20",
+          "zipLike>=80%=30"
+        ]
+      },
+      {
+        "field": "PREMZIP2",
+        "score": 85,
+        "completeness": 0.96,
+        "uniqueRatio": 0.08333333333333333,
+        "sampleValues": [
+          "0053",
+          "0000",
+          "0000"
+        ],
+        "reasons": [
+          "name:/zip/i=65",
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "OWNZIP2",
+        "score": 67,
+        "completeness": 0.34,
+        "uniqueRatio": 0.9411764705882353,
+        "sampleValues": [
+          "0988",
+          "3817",
+          "3817"
+        ],
+        "reasons": [
+          "name:/zip/i=65"
+        ]
+      }
+    ],
+    "parcelId": [
+      {
+        "field": "PARCEL",
+        "score": 145,
+        "completeness": 0.98,
+        "uniqueRatio": 0.7959183673469388,
+        "sampleValues": [
+          "0146",
+          "0019",
+          "0122"
+        ],
+        "reasons": [
+          "name:/^parcel$/i=100",
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "JURSCODE",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "STMA",
+          "STMA",
+          "STMA"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "ACCTID",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1901000047",
+          "1901000055",
+          "1901000063"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "DIGXCORD",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          450588.1,
+          451813,
+          450607.3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "DIGYCORD",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          55703.7,
+          53244.2,
+          55779
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      }
+    ],
+    "ownerName": [
+      {
+        "field": "OWNADD1",
+        "score": 97,
+        "completeness": 1,
+        "uniqueRatio": 0.92,
+        "sampleValues": [
+          "18214 BAUER RD",
+          "23279 PATUXENT VIEW RD",
+          "18214 BAUER RD"
+        ],
+        "reasons": [
+          "name:/^own/i=65",
+          "complete>=95%=20",
+          "mostlyText>=80%=12"
+        ]
+      },
+      {
+        "field": "OWNCITY",
+        "score": 97,
+        "completeness": 1,
+        "uniqueRatio": 0.52,
+        "sampleValues": [
+          "SAINT MARYS CITY",
+          "LEXINGTON PARK",
+          "SAINT MARYS CITY"
+        ],
+        "reasons": [
+          "name:/^own/i=65",
+          "complete>=95%=20",
+          "mostlyText>=80%=12"
+        ]
+      },
+      {
+        "field": "OWNSTATE",
+        "score": 97,
+        "completeness": 1,
+        "uniqueRatio": 0.08,
+        "sampleValues": [
+          "MD",
+          "MD",
+          "MD"
+        ],
+        "reasons": [
+          "name:/^own/i=65",
+          "complete>=95%=20",
+          "mostlyText>=80%=12"
+        ]
+      },
+      {
+        "field": "OWNERZIP",
+        "score": 90,
+        "completeness": 1,
+        "uniqueRatio": 0.5,
+        "sampleValues": [
+          "20686",
+          "20653",
+          "20686"
+        ],
+        "reasons": [
+          "name:/owner/i=70",
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "OWNADD2",
+        "score": 79,
+        "completeness": 0.1,
+        "uniqueRatio": 0.8,
+        "sampleValues": [
+          "8321 OLD COURTHOUSE RD STE 300",
+          "240 COVE DR",
+          "2402 SNOW HILL CT"
+        ],
+        "reasons": [
+          "name:/^own/i=65",
+          "mostlyText>=80%=12"
+        ]
+      }
+    ],
+    "coOwnerName": [
+      {
+        "field": "JURSCODE",
+        "score": 28,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "STMA",
+          "STMA",
+          "STMA"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=8"
+        ]
+      },
+      {
+        "field": "CITY",
+        "score": 28,
+        "completeness": 1,
+        "uniqueRatio": 0.1,
+        "sampleValues": [
+          "LEXINGTON PARK",
+          "SAINT INIGOES",
+          "LEXINGTON PARK"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=8"
+        ]
+      },
+      {
+        "field": "OWNADD1",
+        "score": 28,
+        "completeness": 1,
+        "uniqueRatio": 0.92,
+        "sampleValues": [
+          "18214 BAUER RD",
+          "23279 PATUXENT VIEW RD",
+          "18214 BAUER RD"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=8"
+        ]
+      },
+      {
+        "field": "OWNCITY",
+        "score": 28,
+        "completeness": 1,
+        "uniqueRatio": 0.52,
+        "sampleValues": [
+          "SAINT MARYS CITY",
+          "LEXINGTON PARK",
+          "SAINT MARYS CITY"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=8"
+        ]
+      },
+      {
+        "field": "OWNSTATE",
+        "score": 28,
+        "completeness": 1,
+        "uniqueRatio": 0.08,
+        "sampleValues": [
+          "MD",
+          "MD",
+          "MD"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=8"
+        ]
+      }
+    ],
+    "sourceRecordId": [
+      {
+        "field": "OBJECTID",
+        "score": 155,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "name:/^objectid$/i=100",
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "ACCTID",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1901000047",
+          "1901000055",
+          "1901000063"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "DIGXCORD",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          450588.1,
+          451813,
+          450607.3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "DIGYCORD",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          55703.7,
+          53244.2,
+          55779
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "LEGAL1",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 0.98,
+        "sampleValues": [
+          "IMPSPT LOT 96",
+          "IMPS27.439 ACRES",
+          "PT LOT 96"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      }
+    ],
+    "sourceUpdatedAt": [
+      {
+        "field": "ACCTID",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1901000047",
+          "1901000055",
+          "1901000063"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      },
+      {
+        "field": "DIGYCORD",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          55703.7,
+          53244.2,
+          55779
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      },
+      {
+        "field": "CT2020",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "24037876200",
+          "24037876200",
+          "24037876200"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      },
+      {
+        "field": "BG2020",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 0.08,
+        "sampleValues": [
+          "240378762003",
+          "240378762001",
+          "240378762003"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      },
+      {
+        "field": "GEOGCODE",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "82",
+          "82",
+          "82"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      }
+    ],
+    "estimatedValue": [
+      {
+        "field": "OBJECTID",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "ACCTID",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1901000047",
+          "1901000055",
+          "1901000063"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "DIGXCORD",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          450588.1,
+          451813,
+          450607.3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "DIGYCORD",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          55703.7,
+          53244.2,
+          55779
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "CT2020",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "24037876200",
+          "24037876200",
+          "24037876200"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      }
+    ],
+    "assessmentValue": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "ACCTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1901000047",
+          "1901000055",
+          "1901000063"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "DIGXCORD",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          450588.1,
+          451813,
+          450607.3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "DIGYCORD",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          55703.7,
+          53244.2,
+          55779
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "CT2020",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "24037876200",
+          "24037876200",
+          "24037876200"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ],
+    "landValue": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "ACCTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1901000047",
+          "1901000055",
+          "1901000063"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "DIGXCORD",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          450588.1,
+          451813,
+          450607.3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "DIGYCORD",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          55703.7,
+          53244.2,
+          55779
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "CT2020",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "24037876200",
+          "24037876200",
+          "24037876200"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ],
+    "buildingValue": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "ACCTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1901000047",
+          "1901000055",
+          "1901000063"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "DIGXCORD",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          450588.1,
+          451813,
+          450607.3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "DIGYCORD",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          55703.7,
+          53244.2,
+          55779
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "CT2020",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "24037876200",
+          "24037876200",
+          "24037876200"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ],
+    "yearBuilt": [
+      {
+        "field": "ASSESSOR",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.1,
+        "sampleValues": [
+          "1955",
+          "1918",
+          "1955"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "yearLike>=80%=28"
+        ]
+      },
+      {
+        "field": "YEARBLT",
+        "score": 36,
+        "completeness": 0.66,
+        "uniqueRatio": 0.7878787878787878,
+        "sampleValues": [
+          "1976",
+          "1790",
+          "1917"
+        ],
+        "reasons": [
+          "complete>=50%=8",
+          "yearLike>=80%=28"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "JURSCODE",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "STMA",
+          "STMA",
+          "STMA"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "ACCTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1901000047",
+          "1901000055",
+          "1901000063"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "landAcres": [
+      {
+        "field": "ACRES",
+        "score": 133,
+        "completeness": 1,
+        "uniqueRatio": 0.82,
+        "sampleValues": [
+          1.5,
+          27.43,
+          1.34
+        ],
+        "reasons": [
+          "name:/^acres$/i=98",
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "ACCTID",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1901000047",
+          "1901000055",
+          "1901000063"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "DIGXCORD",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          450588.1,
+          451813,
+          450607.3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "DIGYCORD",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          55703.7,
+          53244.2,
+          55779
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      }
+    ],
+    "livingArea": [
+      {
+        "field": "SQFTSTRC",
+        "score": 96,
+        "completeness": 0.66,
+        "uniqueRatio": 0.9696969696969697,
+        "sampleValues": [
+          2505,
+          2598,
+          2142
+        ],
+        "reasons": [
+          "name:/sqft/i=72",
+          "complete>=50%=8",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "ACCTID",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1901000047",
+          "1901000055",
+          "1901000063"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "DIGXCORD",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          450588.1,
+          451813,
+          450607.3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "DIGYCORD",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          55703.7,
+          53244.2,
+          55779
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      }
+    ],
+    "saleDate": [
+      {
+        "field": "ACCTID",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1901000047",
+          "1901000055",
+          "1901000063"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      },
+      {
+        "field": "DIGYCORD",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          55703.7,
+          53244.2,
+          55779
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      },
+      {
+        "field": "CT2020",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "24037876200",
+          "24037876200",
+          "24037876200"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      },
+      {
+        "field": "BG2020",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.08,
+        "sampleValues": [
+          "240378762003",
+          "240378762001",
+          "240378762003"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      },
+      {
+        "field": "GEOGCODE",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "82",
+          "82",
+          "82"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      }
+    ],
+    "salePrice": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "ACCTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "1901000047",
+          "1901000055",
+          "1901000063"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "DIGXCORD",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          450588.1,
+          451813,
+          450607.3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "DIGYCORD",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          55703.7,
+          53244.2,
+          55779
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "CT2020",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "24037876200",
+          "24037876200",
+          "24037876200"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ]
+  },
+  "recordFilter": {
+    "requireAny": [
+      [
+        "ADDRESS"
+      ],
+      [
+        "PARCEL"
+      ]
+    ]
+  },
+  "warnings": [],
+  "connectorId": "MD-HOWARD",
+  "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+  "adapter": "arcgis",
+  "manifest": "config/county-connectors/MD-HOWARD.json"
+}

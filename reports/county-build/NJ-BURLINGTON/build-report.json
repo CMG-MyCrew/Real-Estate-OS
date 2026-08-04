@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785845658260-8637",
+  "startedAt": "2026-08-04T12:14:18.260Z",
+  "completedAt": "2026-08-04T12:14:44.316Z",
+  "state": "NJ",
+  "county": "Burlington",
+  "connectorId": "NJ-BURLINGTON",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "property_assessment"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T12:14:18.272Z",
+      "completedAt": "2026-08-04T12:14:36.314Z",
+      "ok": true,
+      "candidateCount": 15,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/NJ-BURLINGTON-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T12:14:38.027Z",
+      "completedAt": "2026-08-04T12:14:38.226Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "property_assessment": {
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://maps.nj.gov/arcgis/rest/services/Framework/Cadastral/MapServer/0/query",
+      "title": "Parcels and MOD-IV Composite of New Jersey",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T12:14:36.317Z",
+          "completedAt": "2026-08-04T12:14:36.535Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T12:14:36.535Z",
+          "completedAt": "2026-08-04T12:14:38.027Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T12:14:38.227Z",
+          "completedAt": "2026-08-04T12:14:44.316Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

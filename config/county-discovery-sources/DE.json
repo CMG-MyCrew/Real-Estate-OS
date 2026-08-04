@@ -14,8 +14,8 @@
       "countyField": "COUNTY",
       "countyValues": {
         "Kent": "Kent",
-        "New Castle": "NEW CASTLE",
-        "Sussex": "SUSSEX"
+        "New Castle": "New Castle",
+        "Sussex": "Sussex"
       },
       "minimumScore": 100
     }

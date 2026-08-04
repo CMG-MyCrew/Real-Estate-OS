@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785855993661-3494",
+  "startedAt": "2026-08-04T15:06:33.661Z",
+  "completedAt": "2026-08-04T15:07:06.156Z",
+  "state": "MD",
+  "county": "Anne Arundel",
+  "connectorId": "MD-ANNE-ARUNDEL",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "property_assessment"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T15:06:33.672Z",
+      "completedAt": "2026-08-04T15:06:56.627Z",
+      "ok": true,
+      "candidateCount": 2,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/MD-ANNE-ARUNDEL-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T15:06:57.869Z",
+      "completedAt": "2026-08-04T15:06:58.051Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "property_assessment": {
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+      "title": "Maryland Statewide Property Data",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T15:06:56.633Z",
+          "completedAt": "2026-08-04T15:06:56.939Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T15:06:56.939Z",
+          "completedAt": "2026-08-04T15:06:57.868Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T15:06:58.051Z",
+          "completedAt": "2026-08-04T15:07:06.156Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

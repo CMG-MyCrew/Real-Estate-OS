@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "SBP-NJ-1785813713581-8167",
+  "state": "NJ",
+  "stateName": "New Jersey",
+  "mode": "EXECUTE",
+  "startedAt": "2026-08-04T03:21:53.581Z",
+  "completedAt": "2026-08-04T03:22:01.867Z",
+  "datasets": [
+    "property_assessment"
+  ],
+  "countiesRequested": 2,
+  "counts": {
+    "planned": 2,
+    "skippedExisting": 0,
+    "generated": 0,
+    "passed": 0,
+    "reviewRequired": 0,
+    "failed": 2
+  },
+  "counties": [
+    {
+      "county": "Atlantic",
+      "connectorId": "NJ-ATLANTIC",
+      "existedBeforeBuild": false,
+      "status": "BUILD_FAILED",
+      "buildReport": "reports/county-build/NJ-ATLANTIC/build-report.json",
+      "syncs": [],
+      "ok": false
+    },
+    {
+      "county": "Bergen",
+      "connectorId": "NJ-BERGEN",
+      "existedBeforeBuild": false,
+      "status": "BUILD_FAILED",
+      "buildReport": "reports/county-build/NJ-BERGEN/build-report.json",
+      "syncs": [],
+      "ok": false
+    }
+  ],
+  "push": {
+    "requested": false,
+    "attempted": false,
+    "ok": null
+  },
+  "ok": false
+}

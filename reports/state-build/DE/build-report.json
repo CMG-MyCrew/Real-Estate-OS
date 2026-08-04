@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "SBP-DE-1785813703891-1540",
+  "state": "DE",
+  "stateName": "Delaware",
+  "mode": "EXECUTE",
+  "startedAt": "2026-08-04T03:21:43.891Z",
+  "completedAt": "2026-08-04T03:21:53.030Z",
+  "datasets": [
+    "property_assessment"
+  ],
+  "countiesRequested": 2,
+  "counts": {
+    "planned": 2,
+    "skippedExisting": 0,
+    "generated": 0,
+    "passed": 0,
+    "reviewRequired": 0,
+    "failed": 2
+  },
+  "counties": [
+    {
+      "county": "Kent",
+      "connectorId": "DE-KENT",
+      "existedBeforeBuild": false,
+      "status": "BUILD_FAILED",
+      "buildReport": "reports/county-build/DE-KENT/build-report.json",
+      "syncs": [],
+      "ok": false
+    },
+    {
+      "county": "New Castle",
+      "connectorId": "DE-NEW-CASTLE",
+      "existedBeforeBuild": false,
+      "status": "BUILD_FAILED",
+      "buildReport": "reports/county-build/DE-NEW-CASTLE/build-report.json",
+      "syncs": [],
+      "ok": false
+    }
+  ],
+  "push": {
+    "requested": false,
+    "attempted": false,
+    "ok": null
+  },
+  "ok": false
+}

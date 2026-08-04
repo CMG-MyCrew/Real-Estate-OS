@@ -1,0 +1,3546 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-04T19:40:42.705Z",
+  "locality": {
+    "state": "PA",
+    "county": "<County Name>"
+  },
+  "sources": [
+    "arcgis",
+    "socrata"
+  ],
+  "datasets": [
+    "parcel_inventory"
+  ],
+  "candidateCount": 100,
+  "selections": {
+    "parcel_inventory": {
+      "threshold": 60,
+      "status": "NOT_FOUND",
+      "selected": null,
+      "reviewedCandidates": []
+    }
+  },
+  "candidates": [
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Property Assessment Data from Local Assessment Rolls",
+      "description": "This dataset is comprised of the final assessment rolls submitted to the New York State Department of Taxation and Finance – Office of Real Property Tax Services by 996 local governments. Together, the assessment rolls provide the details of the more than 4.7 million parcels in New York State.  \r\n \r\nThe dataset includes assessment rolls for all cities and towns, except New York City. (For New York City assessment roll data, see NYC Open Data [https://opendata.cityofnewyork.us]) \r\n \r\nFor each property, the dataset includes assessed value, full market value, property size, owners, exemption information, and other fields. \r\n  \r\nTip: For a unique identifier for every property in New York State, combine the SWIS code and print key fields.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.ny.gov",
+      "resourceId": "7vem-aaz7",
+      "type": "dataset",
+      "endpoint": "https://data.ny.gov/resource/7vem-aaz7.json",
+      "isPublic": true,
+      "permalink": "https://data.ny.gov/d/7vem-aaz7",
+      "compatibility": {
+        "score": 100,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "property assessment",
+          "parcel",
+          "parcels",
+          "assessment",
+          "real property"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 15,
+        "originalScore": 100,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Assessor - Assessed Values",
+      "description": "Land, building, and total assessed values for all Cook County parcels, from 1999 to present. The Assessor's Office uses these values for reporting, evaluating assessment performance over time, and research.\n\nWhen working with Parcel Index Numbers (PINs) make sure to zero-pad them to 14 digits. Some datasets may lose leading zeros for PINs when downloaded.\n\nThis data is parcel-level. Each row contains the assessed values for a single PIN for a single year. Important notes:<ul><li>Assessed values are available in three stages: 1) mailed, these are the initial values estimated by the Assessor's Office and mailed to taxpayers. 2) certified, these are values after the Assessor's Office closes appeals. 3) Board of Review certified, these are values after the Board of Review closes appeals.</li>\n<li>The values in this data are assessed values, NOT market values. Assessed values must be adjusted by their <a href=\"https://prodassets.cookcountyassessor.com/s3fs-public/form_documents/classcode.pdf\">level of assessment</a> to arrive at market value. Note that levels of assessment have changed throughout the time period covered by this data set.</li>\n<li>This data set will be updated roughly contemporaneously (semi-monthly) with the <a href=\"https://www.cookcountyassessor.com/\">Assessor's website</a> as values are mailed and certified. However, note that there may be small discrepancies between the Assessor's site and this data set, as each pulls from a slightly different system. If you find a discrepancy, please email the Data Department using the contact link below.</li>\n<li>This dataset contains data for the current tax year, which may not yet be complete or final. Assessed values for any given year are subject to change until <a href=\"https://www.cookcountyassessor.com/assessment-calendar-and-deadlines\">review and certification of values by the Cook County Board of Review</a>, though there are a few rare circumstances where values may change for the current or past years after that.</li>\n<li>Rowcount for a given year is final once the Assessor <a href=\"https://www.cookcountyassessor.com/assessment-calendar-and-deadlines\">has certified the assessment roll</a> all townships.</li>\n<li>Current property class codes, their levels of assessment, and descriptions can be found <a href=\"https://prodassets.cookcountyassessor.com/s3fs-public/form_documents/classcode.pdf\">on the Assessor's website</a>. Note that class codes details can change across time.</li></ul>For more information on the sourcing of attached data and the preparation of this dataset, see the <a href=\"https://github.com/ccao-data/wiki/blob/master/SOPs/Open-Data.md\">Assessor's Standard Operating Procedures for Open Data</a> on GitHub.\n\n<a href=\"https://datacatalog.cookcountyil.gov/stories/s/gzdr-q7c4\">Read about the Assessor's 2025 Open Data Refresh.</a>",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "uzyt-m557",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/uzyt-m557.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/uzyt-m557",
+      "compatibility": {
+        "score": 100,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels",
+          "assessment",
+          "assessor"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Assessor - Parcel Universe",
+      "description": "A complete, historic universe of Cook County parcels with attached geographic, governmental, and spatial data.\n\nWhen working with Parcel Index Numbers (PINs) make sure to zero-pad them to 14 digits. Some datasets may lose leading zeros for PINs when downloaded.\n\nAdditional notes:<ul><li>Non-taxing district data is attached via spatial join (st_contains) to each parcel's centroid.</li>\n<li>Tax district data (school district, park district, municipality, etc.) are attached by a parcel's assigned tax code.</li>\n<li>Centroids are based on <a href=\"https://datacatalog.cookcountyil.gov/Property-Taxation/ccgisdata-Parcel-2021/77tz-riq7\">Cook County parcel shapefiles</a>.</li>\n<li>Older properties may be missing coordinates and thus also missing attached spatial data (usually they are missing a parcel boundary in the shapefile).</li>\n<li>Newer properties may be missing a mailing or property address, as they need to be assigned one by the postal service.</li>\n<li>This dataset contains data for the current tax year, which may not yet be complete or final. Assessed values for any given year are subject to change until <a href=\"https://www.cookcountyassessor.com/assessment-calendar-and-deadlines\">review and certification of values by the Cook County Board of Review</a>, though there are a few rare circumstances where values may change for the current or past years after that.</li>\n<li>Rowcount for a given year is final once the Assessor <a href=\"https://www.cookcountyassessor.com/assessment-calendar-and-deadlines\">has certified the assessment roll</a> all townships.</li>\n<li>Data will be updated semi-monthly.</li>\n<li>Depending on the time of year, some third-party and internal data will be missing for the most recent year. Assessments mailed this year represent values from last year, so this isn't an issue. By the time the Data Department models values for this year, those data will have populated.</li>\n<li>Current property class codes, their levels of assessment, and descriptions can be found <a href=\"https://prodassets.cookcountyassessor.com/s3fs-public/form_documents/classcode.pdf\">on the Assessor's website</a>. Note that class codes details can change across time.</li>\n<li>Due to discrepancies between the systems used by the Assessor and Clerk's offices, <i>tax_district_code</i> is not currently up-to-date in this table.</li>\n<li>There are currently two different sources of parcel-level municipality available in this data set, and they will not always agree: tax and spatial records. Tax records from the Cook County Clerk indicate the municipality to which a parcel owner pays taxes, while spatial records, also from the Cook County Clerk, indicate the municipal boundaries within which a parcel lies.</li></ul>\nFor more information on the sourcing of attached data and the preparation of this dataset, see the <a href=\"https://github.com/ccao-data/wiki/blob/master/SOPs/Open-Data.md\">Assessor's Standard Operating Procedures for Open Data</a> on GitHub.\n\n<a href=\"https://datacatalog.cookcountyil.gov/stories/s/gzdr-q7c4\">Read about the Assessor's 2025 Open Data Refresh.</a>",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "nj4t-kc8j",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/nj4t-kc8j.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/nj4t-kc8j",
+      "compatibility": {
+        "score": 100,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels",
+          "assessment",
+          "assessor"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Assessor - Property Tax-Exempt Parcels",
+      "description": "Parcels with property tax-exempt status across all of Cook County per tax year, from Tax Year 2022 on, with geographic coordinates and addresses.\n\nProperties of religious, charitable, and educational organizations, as well as units of federal, state and local governments, can be eligible for exemption from property taxes. The Illinois Department of Revenue (IDOR) ultimately grants qualified organizations with property tax exempt status, with additional administration by the Board of Review and/or Assessor.  Learn more <a href=\"https://www.cookcountyboardofreview.com/what-we-do/property-tax-exemptions\" target=_new>here</a>, and see the Assessor's guidance for religious organizations <a href=\"https://www.cookcountyassessor.com/exemptions-religious-institutions\" target=_new>here</a>.\n\nWhen working with Parcel Index Numbers (PINs) make sure to zero-pad them to 14 digits. Some datasets may lose leading zeros for PINs when downloaded.\n\nAdditional notes:<ul><li>Parcel entroids are based on <a href=\"https://datacatalog.cookcountyil.gov/Property-Taxation/ccgisdata-Parcel-2021/77tz-riq7\">Cook County parcel shapefiles</a>.</li>\n<li>Newer properties may be missing a mailing or property address, as they need to be assigned one by the postal service.</li>\n<li>Exempt status for parcels changes regularly depending on the use and owner of a given parcel. Please contact Assessor.Exempt@cookcountyil.gov if you need additional information about parcels excluded from this dataset.</li>\n<li>Data will be updated semi-monthly.</li>\n<li>This dataset contains data for the current tax year, which may not yet be complete or final. Assessed values and property tax-exempt status for any given year are subject to change until <a href=\"https://www.cookcountyassessor.com/assessment-calendar-and-deadlines\">review and certification of values by the Cook County Board of Review</a>, though there are a few rare circumstances where values may change for the current or past years after that.</li>\n<li>Rowcount for a given year is final once the Assessor <a href=\"https://www.cookcountyassessor.com/assessment-calendar-and-deadlines\">has certified the assessment roll</a> all townships.</li>\n<li>Current property class codes, their levels of assessment, and descriptions can be found <a href=\"https://prodassets.cookcountyassessor.com/s3fs-public/form_documents/classcode.pdf\">on the Assessor's website</a>. Note that class codes details can change across time.</li></ul>\nFor more information on the sourcing of attached data and the preparation of this dataset, see the <a href=\"https://github.com/ccao-data/wiki/blob/master/SOPs/Open-Data.md\">Assessor's Standard Operating Procedures for Open Data</a> on GitHub.\n\n<a href=\"https://datacatalog.cookcountyil.gov/stories/s/gzdr-q7c4\">Read about the Assessor's 2025 Open Data Refresh.</a>",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "vgzx-68gb",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/vgzx-68gb.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/vgzx-68gb",
+      "compatibility": {
+        "score": 100,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels",
+          "assessment",
+          "assessor"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Board of Review Appeal Decision History",
+      "description": "Historic land, building, and total assessed values for all Cook County parcels appealed with the Board of Review, from 2010 to present. The Board of Review uses these values for reporting, evaluating assessment performance over time, and research.\n\nWhen working with Parcel Index Numbers (PINs) make sure to zero-pad them to 14 digits. Some datasets may lose leading zeros for PINs when downloaded\n\nThis data is parcel-level. Each row contains the assessed values for a single PIN for a single year. Important notes:\n•\tAssessed values are available when the Board of Review closes appeals and certifies the values.\n•\tThe values in this data are assessed values, NOT market values. Assessed values must be adjusted by their level of assessment (https://prodassets.cookcountyassessor.com/s3fs-public/form_documents/classcode.pdf) to arrive at market value. Note that levels of assessment may have changed throughout the time period covered by this data set.\n•\tThis data set will be updated when each township is certified. However, note that there may be discrepancies between the Board of Review’s data and the Assessor's site and this data set, as each pull from a slightly different system.\n•\tCurrent property class codes, their levels of assessment, and descriptions can be found on the Assessor's website (https://prodassets.cookcountyassessor.com/s3fs-public/form_documents/classcode.pdf). Note that class codes details can change across time.\n•\tThe Change Reason and No Change Reason fields are only populated starting with the 2015 year data.\n\nAll data provided here is prepared for internal purposes by the County of Cook only is provided to the public as a courtesy. \n\nWhile efforts have been made to be as accurate as possible, Cook County provides the data for personal use “as is”. The data is not guaranteed to be accurate, correct, or complete. Information provided should not be used as a substitute for legal, business, tax, or other professional advice. The recipient/viewer should contact appropriate regulating agencies to determine accuracy or suitability of the data for a particular use.  This data may not be used in states that do not allow the exclusion or limitation of incidental or consequential damages.  \n\nCook County or its staff assume no liability whatsoever for any losses that might occur from the use, misuse, or inability to use its geospatial data, maps or websites.   All materials appearing on a map, geospatial data or County web site are transmitted without warranty of any kind and are subject to the terms on this disclaimer.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "7pny-nedm",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/7pny-nedm.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/7pny-nedm",
+      "compatibility": {
+        "score": 100,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels",
+          "assessment",
+          "assessor"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Assessor - Parcel Addresses",
+      "description": "Situs and mailing addresses of Cook County parcels. Used by the Assessor's office to mail assessment notices.\n\nThis dataset was updated in March 2026 to include both owner <i>and</i> taxpayer information. Please note that owner name and mailing address is, to our knowledge, only intermittently updated in the ias source data. Users can use <a href=\"https://datacatalog.cookcountyil.gov/Property-Taxation/Assessor-Parcel-Sales/wvhk-k5uv/about_data\">Parcel Sales data</a> to query owner and seller names.\n\nWhen working with Parcel Index Numbers (PINs) make sure to zero-pad them to 14 digits. Some datasets may lose leading zeros for PINs when downloaded.\n\nAdditional notes:\n<ul><li>Newer properties may be missing a mailing or property address, as they need to be assigned one by the postal service.</li>\n<li>Rowcount for a given year is final once the Assessor <a href=\"https://www.cookcountyassessor.com/assessment-calendar-and-deadlines\">has certified the assessment roll</a> all townships.</li>\n<li>Data will be updated semi-monthly.</li></ul>For more information on the sourcing of attached data and the preparation of this dataset, see the <a href=\"https://github.com/ccao-data/wiki/blob/master/SOPs/Open-Data.md\">Assessor's Standard Operating Procedures for Open Data</a> on GitHub.\n\n<a href=\"https://datacatalog.cookcountyil.gov/stories/s/gzdr-q7c4\">Read about the Assessor's 2025 Open Data Refresh.</a>",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "3723-97qp",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/3723-97qp.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/3723-97qp",
+      "compatibility": {
+        "score": 100,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels",
+          "assessment",
+          "assessor"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Assessor [Archived 05-11-2022] - Cook County Property Assessments",
+      "description": "Every assessed value in Cook County 2010 to 2020, and appeal indicators. Each PIN has three stages of assessments each year: CCAO Mailed, CCAO Certified, and Board of Review (BOR) Certified final values. This allows comparison in assessments across agencies.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "tnes-dgyi",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/tnes-dgyi.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/tnes-dgyi",
+      "compatibility": {
+        "score": 100,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "property assessment",
+          "property assessments",
+          "assessment",
+          "assessor"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Assessor - Parcel Universe (Current Year Only)",
+      "description": "A <i><b>current-year-only</b></i> universe of Cook County parcels with attached geographic, governmental, and spatial data.\n\nWhen working with Parcel Index Numbers (PINs) make sure to zero-pad them to 14 digits. Some datasets may lose leading zeros for PINs when downloaded.\n\nAdditional notes:<ul><li>Non-taxing district data is attached via spatial join (st_contains) to each parcel's centroid.</li>\n<li>Tax district data (school district, park district, municipality, etc.) are attached by a parcel's assigned tax code.</li>\n<li>Centroids are based on <a href=\"https://datacatalog.cookcountyil.gov/Property-Taxation/ccgisdata-Parcel-2021/77tz-riq7\">Cook County parcel shapefiles</a>.</li>\n<li>Older properties may be missing coordinates and thus also missing attached spatial data (usually they are missing a parcel boundary in the shapefile).</li>\n<li>Newer properties may be missing a mailing or property address, as they need to be assigned one by the postal service.</li>\n<li>This dataset contains data for the current tax year, which may not yet be complete or final. Assessed values for any given year are subject to change until <a href=\"https://www.cookcountyassessor.com/assessment-calendar-and-deadlines\">review and certification of values by the Cook County Board of Review</a>, though there are a few rare circumstances where values may change for the current or past years after that.</li>\n<li>Rowcount for a given year is final once the Assessor <a href=\"https://www.cookcountyassessor.com/assessment-calendar-and-deadlines\">has certified the assessment roll</a> all townships.</li>\n<li>Data will be updated semi-monthly.</li>\n<li>Depending on the time of year, some third-party and internal data will be missing for the most recent year. Assessments mailed this year represent values from last year, so this isn't an issue. By the time the Data Department models values for this year, those data will have populated.</li>\n<li>Current property class codes, their levels of assessment, and descriptions can be found <a href=\"https://prodassets.cookcountyassessor.com/s3fs-public/form_documents/classcode.pdf\">on the Assessor's website</a>. Note that class codes details can change across time.</li>\n<li>Due to discrepancies between the systems used by the Assessor and Clerk's offices, <i>tax_district_code</i> is not currently up-to-date in this table.</li>\n<li>There are currently two different sources of parcel-level municipality available in this data set, and they will not always agree: tax and spatial records. Tax records from the Cook County Clerk indicate the municipality to which a parcel owner pays taxes, while spatial records, also from the Cook County Clerk, indicate the municipal boundaries within which a parcel lies.</li></ul>\nFor more information on the sourcing of attached data and the preparation of this dataset, see the <a href=\"https://github.com/ccao-data/wiki/blob/master/SOPs/Open-Data.md\">Assessor's Standard Operating Procedures for Open Data</a> on GitHub.\n\n<a href=\"https://datacatalog.cookcountyil.gov/stories/s/gzdr-q7c4\">Read about the Assessor's 2025 Open Data Refresh.</a>",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "pabr-t5kh",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/pabr-t5kh.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/pabr-t5kh",
+      "compatibility": {
+        "score": 100,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels",
+          "assessment",
+          "assessor"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Assessor - Appeals",
+      "description": "<i><b>Appeals for many years are currently missing from this dataset as we repopulate our system of record with updated records. We expect all missing appeals to be available again before the end of 2025. To the best of our knowledge, appeals from 2021 and after should continue to remain available throughout the update process.</b></i>\n\nLand, building, and total assessed values, pre and post-appeal with the Cook County Assessor’s office, for all Cook County parcels, from 1999 to present. The Assessor's Office uses these values for reporting, evaluating assessment performance over time, and research.\n\nWhen working with Parcel Identification Numbers (PINs) make sure to zero-pad them to 14 digits. Some datasets may lose leading zeros for PINs when downloaded.\n\nThis data is parcel-level. Each row contains the assessed values for a single PIN for a single year pre and post-appeal. Important notes:<ul><li>This dataset includes appeal cases that are <b>currently open</b>. Data for these cases is not final and is subject to change.</li>\n<li>Each row includes two stages: 1) mailed, these are the initial assessed values (AVs) estimated by the Assessor's Office and mailed to taxpayers. The columns mailed_bldg, mailed_land, and mailed_tot are the AVs for the building, land, and total, at the mailed stage.  2) certified, these are values after the Assessor's Office closes appeals. The columns certified_bldg, certified_land, and certified_tot are the AVs for the building, land, and total, after the Assessor has completed appeal decisions.</li>\n<li>Values in this dataset are not final assessed values for a given year as they are still subject to change if a taxpayer appeals to the Cook County Board of Review. At present, this dataset does not contain appeal decisions from this final third stage. However, the final stage AVs and appeal decisions can be downloaded from the <a href=\"https://datacatalog.cookcountyil.gov/Property-Taxation/Board-of-Review-Appeal-Decision-History/7pny-nedm\">Board of Review Appeal Decision History</a> dataset.</li>\n<li>Due to the current transition from the county's legacy system to a modern system of record, appeal data is sparse prior to 2021. Values and change/no change decisions are available, but the reason, agent, and type fields will only be complete once the new system has been successfully batch updated with complete historical data.</li>\n<li>The values in this data are assessed values, NOT market values. Assessed values must be adjusted by their <a href=\"https://prodassets.cookcountyassessor.com/s3fs-public/form_documents/classcode.pdf\">level of assessment</a> to arrive at market value. Note that levels of assessment have changed throughout the time period covered by this data set.</li>\n<li>This data set will be updated <i>semi-monthly</i> regardless of the  <a href=\"https://www.cookcountyassessor.com/assessment-calendar-and-deadlines\">Assessor's mailing and certification schedule</a>. There may be small discrepancies between the Assessor's site and this data set, as each pulls from a slightly different system. If you find a discrepancy, please email the Data Department using the contact link below.</li>\n<li>This dataset contains data for the current tax year, which may not yet be complete or final. Assessed values for any given year are subject to change until <a href=\"https://www.cookcountyassessor.com/assessment-calendar-and-deadlines\">review and certification of values by the Cook County Board of Review</a>, though there are a few rare circumstances where values may change for the current or past years after that.</li>\n<li>Rowcount for a given year is final once the Assessor <a href=\"https://www.cookcountyassessor.com/assessment-calendar-and-deadlines\">has certified the assessment roll</a> all townships.</li>\n<li>Current property class codes, their levels of assessment, and descriptions can be found on <a href=\"https://prodassets.cookcountyassessor.com/s3fs-public/form_documents/classcode.pdf\">the Asse",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "y282-6ig3",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/y282-6ig3.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/y282-6ig3",
+      "compatibility": {
+        "score": 100,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels",
+          "assessment",
+          "assessor"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Assessor - Parcel Proximity",
+      "description": "Cook County 10-digit parcels with attached distances to various spatial features.\n\nWhen working with 10-digit Parcel Index Numbers (PINs) make sure to zero-pad them to 10 digits. Some datasets may lose leading zeros for PINs when downloaded. 10-digit PINs do not identify individual condominium units.\n\nAdditional notes:<ul><li>Centroids are based on <a href=\"https://datacatalog.cookcountyil.gov/Property-Taxation/ccgisdata-Parcel-2021/77tz-riq7\">Cook County parcel shapefiles</a>.</li>\n<li>Older properties may be missing coordinates and thus also missing attached spatial data (usually they are missing a parcel boundary in the shapefile).</li>\n<li>Attached spatial data does NOT all go back to 2000. It is only available for more recent years, primarily those after 2012.</li>\n<li>This dataset contains data for the current tax year, which may not yet be complete or final. Assessed values for any given year are subject to change until <a href=\"https://www.cookcountyassessor.com/assessment-calendar-and-deadlines\">review and certification of values by the Cook County Board of Review</a>, though there are a few rare circumstances where values may change for the current or past years after that.</li>\n<li>Rowcount for a given year is final once the Assessor <a href=\"https://www.cookcountyassessor.com/assessment-calendar-and-deadlines\">has certified the assessment roll</a> all townships.</li>\n<li>Data will be updated annually as new parcel shapefiles are made available.</li></ul>For more information on the sourcing of attached data and the preparation of this dataset, see the <a href=\"https://github.com/ccao-data/wiki/blob/master/SOPs/Open-Data.md\">Assessor's Standard Operating Procedures for Open Data</a> on GitHub.\n\n<a href=\"https://datacatalog.cookcountyil.gov/stories/s/gzdr-q7c4\">Read about the Assessor's 2025 Open Data Refresh.</a>",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "ydue-e5u3",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/ydue-e5u3.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/ydue-e5u3",
+      "compatibility": {
+        "score": 100,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels",
+          "assessment",
+          "assessor"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "King County Tax Parcel Centroids with select City of Seattle geographic overlays",
+      "description": "<div><b>PLEASE NOTE</b>: If choosing the Download option of &quot;Spreadsheet&quot; the field PIN is reformatted to a number - you will need to format it as a 10 character text string with leading zeros to join this data with data from King County.</div><div><br /></div><div>King County Assessor data has been summarized to the tax parcel identification number (PIN) and City of Seattle spatial overlay data has been assigned through geographic overlay processes.  This data is updated periodically and is used to support the analytical and reporting functions of the City of Seattle long-range and policy planning office.</div><div><br /></div><div>The table includes attribute data from the King County Assessor as well as spatial overlay data for various City of Seattle reporting geographies.  These geographic attributes are assigned as &quot;majority rules&quot; by land area in cases where multiple geographies span a single tax parcel.</div><div><br /></div><div>KCA tax parcels are created by King County for property tax assessment and collection and may not match development sites as defined by the City of Seattle (single buildings may span multiple tax parcels), may be stacked on top of each other to represent undivided interest and vertical parcels, or may be made up of several sites that are not contiguous.  Every effort is made to accurately summarize key tax parcel attributes to a single PIN.  </div><div><br /></div><div>Attributes include parcel centroid locations in latitude/longitude and Washington State Plane X,Y.  To get polygon representation of the data please see King County's open data page for <a href='https://gis-kingcounty.opendata.arcgis.com/datasets/king-county-parcels-parcel-area' target='_blank' rel='nofollow ugc noopener noreferrer'>parcels</a> and join this table through the PIN field.  Please be aware that the King County Assessor site address is not a postal address and may not match other address sources for the same property such as postal, utility billing, and permitting.<br /></div><div><br /></div><div>See the detailed <a href='https://seattlecitygis.maps.arcgis.com/sharing/rest/content/items/2bd094a63fdd4c30a90129b09f818485/data' target='_blank' rel='nofollow ugc noopener noreferrer'>data dictionary</a> for more information.</div>",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "cos-data.seattle.gov",
+      "resourceId": "xeax-bz9e",
+      "type": "federated_href",
+      "endpoint": "https://cos-data.seattle.gov/resource/xeax-bz9e.json",
+      "isPublic": true,
+      "permalink": "https://cos-data.seattle.gov/d/xeax-bz9e",
+      "compatibility": {
+        "score": 100,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels",
+          "tax parcel",
+          "tax parcels",
+          "assessment",
+          "assessor"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Assessor - Parcel Sales",
+      "description": "<b>Update 10/31/2023:</b> Sales are no longer filtered out of this data set based on deed type, sale price, or recency of sale for a given PIN with the same price. If users wish to recreate the former filtering schema they should set <i>sale_filter_same_sale_within_365</i>, <i>sale_filter_less_than_10k</i>, and <i>sale_filter_deed_type</i> to False.\n\nParcel sales for real property in Cook County, from 1999 to present. The Assessor's Office uses this data in its modeling to estimate the fair market value of unsold properties.\n\nWhen working with Parcel Index Numbers (PINs) make sure to zero-pad them to 14 digits. Some datasets may lose leading zeros for PINs when downloaded.\n\nSale document numbers correspond to those of the Cook County Clerk, and can be used on the <a href=\"https://ccrd.cookcountyclerkil.gov/i2/default.aspx\">Clerk's website</a> to find more information about each sale.\n\nNOTE: These sales <i>are</i> filtered, but likely include non-arms-length transactions - sales less than $10,000 along with quit claims, executor deeds, beneficial interests are excluded.  While the Data Department will upload what it has access to semi-monthly, sales are reported on a lag, with many records not populating until months after their official recording date.\n\nCurrent property class codes, their levels of assessment, and descriptions can be found <a href=\"https://prodassets.cookcountyassessor.com/s3fs-public/form_documents/classcode.pdf\">on the Assessor's website</a>. Note that class codes details can change across time.\n\nFor more information on the sourcing of attached data and the preparation of this dataset, see the <a href=\"https://github.com/ccao-data/wiki/blob/master/SOPs/Open-Data.md\">Assessor's Standard Operating Procedures for Open Data</a> on GitHub.\n\n<a href=\"https://datacatalog.cookcountyil.gov/stories/s/gzdr-q7c4\">Read about the Assessor's 2025 Open Data Refresh.</a>",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "wvhk-k5uv",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/wvhk-k5uv.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/wvhk-k5uv",
+      "compatibility": {
+        "score": 100,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "assessment",
+          "assessor",
+          "real property"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Tax Parcels",
+      "description": "Tax parcel polygons throughout Pierce County, including condos, but not including mobile homes which can be found in the \"Mobile Home\" layer instead.   Parcel number is the unique identifier and additional parcel attribution can be found here (https://www.piercecountywa.gov/736/Data-Downloads).  Click the link for Use Code Descriptions (https://www.piercecountywa.gov/DocumentCenter/View/604/Use-Code-Listing?bidId=).    Please read metadata (https://matterhorn.piercecountywa.gov/GISmetadata/pdbparc_taxparcel.html) for additional information.  Any use or data download constitutes acceptance of the Terms of Use (https://matterhorn.piercecountywa.gov/disclaimer/PierceCountyGISDataTermsofUse.pdf). If you have questions or need supplemental information, please call the Assessor-Treasurer Operations Team at 253-798-3134.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "internal.open.piercecountywa.gov",
+      "resourceId": "3tuq-ykmp",
+      "type": "dataset",
+      "endpoint": "https://internal.open.piercecountywa.gov/resource/3tuq-ykmp.json",
+      "isPublic": true,
+      "permalink": "https://internal.open.piercecountywa.gov/d/3tuq-ykmp",
+      "compatibility": {
+        "score": 100,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels",
+          "tax parcel",
+          "tax parcels",
+          "assessor"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "King County Assessor Residential Unit Types and Sizes",
+      "description": "<div><b>PLEASE NOTE</b>: If choosing the Download option of &quot;Spreadsheet&quot; the field PIN is reformatted to a number - you will need to format it as a 10 character text string with leading zeros to join this data with data from King County.</div><div><br /></div><div>King County Assessor (KCA) data has been compiled to create a dataset of unit types and sizes by tax parcel identification number (PIN). City of Seattle spatial overlay data has been assigned through geographic overlay processes.  This data is updated periodically and is used to support the analytical and reporting functions of the City of Seattle long-range and policy planning office.</div><div><br /></div><div>See the data in action in this <a href='https://seattlecitygis.maps.arcgis.com/apps/dashboards/fa11d5937411491985372ae7562e71a2' target='_blank' rel='nofollow ugc noopener noreferrer'>dashboard</a>.</div><div><br /></div><div>The table includes attribute data from the King County Assessor tables that characterize the use, number of units, number of bedrooms and building square footage (net) for all buildings that indicate a residential use.  Due to the way KCA reports the data, some records are for all units within individual buildings (residential and commercial building records), while other records are for the combination of unit type and number of bedrooms (apartment and condominium records) on a particular property (called complex in the table). Therefore there may be many records for any given PIN.</div><div><br /></div><div>Some unit counts and type assignments have been imputed based on other data to allow characterization of the complete data set.  Other fields have been added to aid in classification for planning purposes such as the complex category. Every effort is made to characterize the data accurately.  </div><div><br /></div><div>Spatial overlay data for various City of Seattle reporting geographies are assigned as &quot;majority rules&quot; by land area in cases where multiple geographies span a single tax parcel.</div><div><br /></div><div>KCA tax parcels are created by King County for property tax assessment and collection and may not match development sites as defined by the City of Seattle (single buildings may span multiple tax parcels), may be stacked on top of each other to represent undivided interest and vertical parcels, or may be made up of several sites that are not contiguous.  </div><div><br /></div><div>Attributes include parcel centroid locations in latitude/longitude and Washington State Plane X,Y.  To get polygon representation of the data please see King County's open data page for <a href='https://gis-kingcounty.opendata.arcgis.com/datasets/king-county-parcels-parcel-area' target='_blank' rel='nofollow ugc noopener noreferrer'>parcels</a> and join this table through the PIN field.  Please be aware that the King County Assessor site address is not a postal address and may not match other address sources for the same property such as postal, utility billing, and permitting.<br /></div><div><br /></div><div>See the detailed data dictionaries for the <a href='https://info.kingcounty.gov/assessor/DataDownload/default.aspx' target='_blank' rel='nofollow ugc noopener noreferrer'>King County Assessor tables</a> for more information.</div>",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "cos-data.seattle.gov",
+      "resourceId": "ri3y-zeyp",
+      "type": "federated_href",
+      "endpoint": "https://cos-data.seattle.gov/resource/ri3y-zeyp.json",
+      "isPublic": true,
+      "permalink": "https://cos-data.seattle.gov/d/ri3y-zeyp",
+      "compatibility": {
+        "score": 100,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels",
+          "tax parcel",
+          "tax parcels",
+          "assessment",
+          "assessor"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 100,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "ccgisdata - Parcel 2021",
+      "description": "The Parcel 2021 feature contains tax parcel polygons for the 2021 property tax assessment at the County. This feature reflects tax parcel polygons as they existed from 1/1/2021 through 12/31/2021. An ESRI Service is available at: https://hub-cookcountyil.opendata.arcgis.com/datasets/34021b4f3b834a69bf737e6c3344888e_0",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "77tz-riq7",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/77tz-riq7.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/77tz-riq7",
+      "compatibility": {
+        "score": 93,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "tax parcel",
+          "assessment"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 93,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "ccgisdata - Parcel 2020",
+      "description": "The Parcel 2020 feature contains tax parcel polygons for the 2020 property tax assessment at the County. This feature reflects tax parcel polygons as they existed from 1/1/2020 through 12/31/2020. An ESRI Service is available at: https://hub-cookcountyil.opendata.arcgis.com/datasets/577d80fcbf0441a780ecdfd9e1b6b5c2_0/explore",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "2yvh-uwrw",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/2yvh-uwrw.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/2yvh-uwrw",
+      "compatibility": {
+        "score": 93,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "tax parcel",
+          "assessment"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 93,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Historical - ccgisdata - Parcel 2019",
+      "description": "The Parcel 2019 feature contains tax parcel polygons for the 2019 property tax assessment at the County. This feature reflects tax parcel polygons as they existed from 1/1/2019 through 12/31/2019.  An ESRI Service is available at: https://hub-cookcountyil.opendata.arcgis.com/datasets/3d3375ac11d147308815d5cf4bb43f4e_0",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "c5mi-ck9v",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/c5mi-ck9v.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/c5mi-ck9v",
+      "compatibility": {
+        "score": 93,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "tax parcel",
+          "assessment"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 93,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Dauphin County PA Parcels",
+      "description": "<DIV STYLE=\"text-align:Left;\"><DIV><DIV><P><SPAN>This data product has a county-wide coverage and is intended to provide a useful representation of the geometry and topology of tax parcels. The maps were derived from a variety of source documents including certified survey maps, deed descriptions, subdivision plans, and condominium plats. This product is intended for graphical representation and the information contained herein should not be relied upon for determination of ownership or market value.</SPAN></P><P><SPAN /></P></DIV></DIV></DIV>",
+      "snippet": "The parcels are intended to provide a graphical representation of deeded properties in Dauphin County and be used for basemapping, thematic mapping and analysis.",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Dauphin County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "4ff26be57cb14e318e3057feaf03169a",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/dauphin_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 89,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels",
+          "tax parcel",
+          "tax parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 89,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Maryland Real Property Assessments_Hidden Property Owner Names",
+      "description": "Please read all metadata before accessing the dataset. Note that records shown here are updated at different frequencies from data in products from MDP and SDAT. \n\n<a href=\"https://opendata.maryland.gov/api/views/ed4q-f8tm/files/5064508a-f244-4741-a548-b5ec5c5f3019?download=true&filename=Real_Property_Records_Documentation.pdf\">Please read the full documentation</a>.\n\nFor more on Real Property Data, review the dedicated data story: https://opendata.maryland.gov/stories/s/Maryland-Real-Property-Resources/x8p6-5dqp/",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "opendata.maryland.gov",
+      "resourceId": "ed4q-f8tm",
+      "type": "dataset",
+      "endpoint": "https://opendata.maryland.gov/resource/ed4q-f8tm.json",
+      "isPublic": true,
+      "permalink": "https://opendata.maryland.gov/d/ed4q-f8tm",
+      "compatibility": {
+        "score": 89,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "property assessment",
+          "property assessments",
+          "assessment",
+          "real property"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 66,
+        "originalScore": 89,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Summary of Real Property Tax Exemptions by Code by Municipality: Beginning Roll Year 1999",
+      "description": "The Department of Taxation and Finance annually produces a report pertaining to the exemptions from real property taxation in New York State.  The data analysis includes an examination and summary of exemptions by exemption code for each municipality in the State.  The summary data include the number of exemptions in each code, the assessed value of the parcels containing the exemption code and the exemption amount itself, as well as the estimated full value of both the parcels containing the exemption code and the exemption amount.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.ny.gov",
+      "resourceId": "ykg4-r7ad",
+      "type": "dataset",
+      "endpoint": "https://data.ny.gov/resource/ykg4-r7ad.json",
+      "isPublic": true,
+      "permalink": "https://data.ny.gov/d/ykg4-r7ad",
+      "compatibility": {
+        "score": 85,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels",
+          "real property"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 15,
+        "originalScore": 85,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Assessor - Permits",
+      "description": "Historical permit data submitted by municipalities to the Cook County Assessor's Office.\n\nWhen working with Parcel Index Numbers (PINs) make sure to zero-pad them to 14 digits. Some datasets may lose leading zeros for PINs when downloaded.\n\nAdditional notes:<ul>\n<li>Almost all of the data in this dataset, such as address, estimated date of completion, work description, and permit amount, is data submitted by municipalities to the CCAO. The CCAO verifies or corrects the PIN number, determines whether the work is assessable, updates the status of CCAO workflows (e.g., open or closed), and sets the recheck year.</li>\n\n<li>In addition to permits that are already closed, this dataset includes permits that are <b>currently open or pending</b>. These permits are not final and are subject to change.</li>\n<li>Data will be updated semi-monthly.</li></ul>\n<li>Rows are unique by the combination of \"pin\", \"permit_number\", and \"date_issued\".</li>\n<li>Job codes and improvement codes are not correct in all cases. Consider \"work_description\" to be the canonical description of the work that the permit describes.</li>\n<li>In many past cases permits have been submitted in irreconcilably different formats by different municipalities, or not at all. As such, this dataset does not represent the complete universe of permits in all municipalities, but rather represents the universe of permits that the CCAO knows about.</li>\n<li>Each row represents a parcel and a permit that is associated with that parcel. Permits may be associated with multiple parcels, and parcels may be associated with multiple permits.</li>\n<li>\"date_issued\" is more reliable than \"date_submitted\". Prefer \"date_issued\" when making temporal comparisons between parcels.</li>\n<li>Data for the current tax year may not yet be complete or final.</li>\n\nFor more information on the sourcing of attached data and the preparation of this dataset, see the <a href=\"https://github.com/ccao-data/wiki/blob/master/SOPs/Open-Data.md\">Assessor's Standard Operating Procedures for Open Data</a> on GitHub.\n\n<a href=\"https://datacatalog.cookcountyil.gov/stories/s/gzdr-q7c4\">Read about the Assessor's 2025 Open Data Refresh.</a>",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "6yjf-dfxs",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/6yjf-dfxs.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/6yjf-dfxs",
+      "compatibility": {
+        "score": 85,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels",
+          "assessor"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 85,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Morris Arboretum Property Boundary — Morris Arboretum Property Boundary",
+      "description": "",
+      "snippet": "Property boundary derived from City of Philadelphia land use data at https://openmaps.phila.gov/ and Montgomery County PA parcels at https://data-montcopa.opendata.arcgis.com/. Vertices edited to follow road and stream centerlines.",
+      "tags": [
+        "Morris Arboretum"
+      ],
+      "owner": "abell_upenn",
+      "itemId": "125b471219874a769cdff49d2e52f950",
+      "type": "Feature Service",
+      "serviceUrl": "https://services3.arcgis.com/9nfxWATFamVUTTGb/arcgis/rest/services/Morris_Arboretum_Property_Boundary/FeatureServer",
+      "endpoint": "https://services3.arcgis.com/9nfxWATFamVUTTGb/arcgis/rest/services/Morris_Arboretum_Property_Boundary/FeatureServer/10/query",
+      "isPublic": true,
+      "layerId": 10,
+      "layerName": "Morris Arboretum Property Boundary",
+      "compatibility": {
+        "score": 83,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 75,
+        "originalScore": 83,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [
+          "arboretum"
+        ],
+        "endpointQuality": 17,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Dauphin County GIS Open Data Portal",
+      "description": "This is a connection to the Dauphin County GIS Data Portal. \nThe following categories are available: \nBoundaries\nElection\nHydrology\nTax Assessment\nTransportation\nElevation\n\nThe following Applications are available: \nMobile Parcel Viewer -  provides the general public and other interested parties access to searchable and interactive information such as property tax and assessment information or the locations of water access points.\n\nMDJ (Magisterial District Judges) Locator - Identifies Magisterial District Judge and Municipality\n\nDauphin County Homicides - Application showing Dauphin County homicides in 2015 and 2016\n\nParcel Viewer - Search for a Parcel, Property Information, Tax Assessment, Municipality, Assessed Land or Building Value, Acres, etc. \n\nDigital Data is distributed as a countywide dataset in ESRI shapefile format.  Aerial imagery is available as a countywide dataset either through Dauphin County GIS or downloaded from PA Spatial Data Access (PASDA also available on the Commonwealth Open Data portal)",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.pa.gov",
+      "resourceId": "cws5-v2de",
+      "type": "href",
+      "endpoint": "https://data.pa.gov/resource/cws5-v2de.json",
+      "isPublic": true,
+      "permalink": "https://data.pa.gov/d/cws5-v2de",
+      "compatibility": {
+        "score": 81,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "assessment"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 81,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [
+          "election"
+        ],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Washington County PA Parcels — Parcels___Washington_County%2C_PA",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        ""
+      ],
+      "owner": "ramsinc_maps",
+      "itemId": "fe4bfb62b1e249759edc3bb755e34d14",
+      "type": "Feature Service",
+      "serviceUrl": "https://services5.arcgis.com/5gJx3Y6fqFQGF6ci/arcgis/rest/services/Washington_County_PA_Parcels/FeatureServer",
+      "endpoint": "https://services5.arcgis.com/5gJx3Y6fqFQGF6ci/arcgis/rest/services/Washington_County_PA_Parcels/FeatureServer/635/query",
+      "isPublic": true,
+      "layerId": 635,
+      "layerName": "Parcels___Washington_County%2C_PA",
+      "compatibility": {
+        "score": 75,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 92,
+        "originalScore": 75,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 17,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Union County PA Parcels — UnionParcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        ""
+      ],
+      "owner": "BucknellGIS",
+      "itemId": "a13672ff4a6e47a49b715df2055d5a16",
+      "type": "Feature Service",
+      "serviceUrl": "https://services2.arcgis.com/xsh7pVZv42relbEf/arcgis/rest/services/Union_County_PA_Parcels/FeatureServer",
+      "endpoint": "https://services2.arcgis.com/xsh7pVZv42relbEf/arcgis/rest/services/Union_County_PA_Parcels/FeatureServer/1918/query",
+      "isPublic": true,
+      "layerId": 1918,
+      "layerName": "UnionParcels",
+      "compatibility": {
+        "score": 75,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 92,
+        "originalScore": 75,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 17,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Parcel Counts By Type By Municipality: Beginning Roll Year 2000",
+      "description": "The Department of Taxation and Finance annually produces a report pertaining to the distribution of parcels by property class.  The data analysis involves a breakdown of property classes to nine segments of broad use, namely Agricultural, Residential, Vacant Land/Farm, Commercial, Recreation, Community Service, Industrial, Public Service, and Forest/Conservation. For more information please go to:  http://www.tax.ny.gov/research/property/default.htm",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.ny.gov",
+      "resourceId": "tnwc-mx3q",
+      "type": "dataset",
+      "endpoint": "https://data.ny.gov/resource/tnwc-mx3q.json",
+      "isPublic": true,
+      "permalink": "https://data.ny.gov/d/tnwc-mx3q",
+      "compatibility": {
+        "score": 73,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 15,
+        "originalScore": 73,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Assessor [Archived 05-18-2022] - Residential Assessments",
+      "description": "This data contains every residential Property Index Number (PIN) and corresponding Assessed Values from significant stages in the assessment process.\n\nThis data was replaced with the more comprehensive Cook County Assessor's Fair Cash Values.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "uqb9-r7vn",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/uqb9-r7vn.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/uqb9-r7vn",
+      "compatibility": {
+        "score": 73,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "assessment",
+          "assessor"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 88,
+        "originalScore": 73,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Assessor [Archived 05-11-2022] - Residential Modeling Characteristics (Chicago)",
+      "description": "This data set contains characteristic data points used by the Cook County Assessor in the 2021 Chicago reassessment to produce initial estimates of the current market value of most Chicago homes (single-family homes, small multi-family homes, and condo units). You can use the \"Filter\" option to search for a property's PIN or address, and see what data the Assessor’s Office had about a home’s characteristics at the time of modeling*. To learn more about how the 2021 model used this data, read about our public <a href=\"https://gitlab.com/ccao-data-science---modeling/models/ccao_res_avm\" target=_new>Residential Automated Valuation Model here</a>. Chicago properties not listed here are reassessed using different modeling procedures.\n\n<br> <br>\n\n<b>*Important Note:</b> This dataset is, at the time of publication, an early snapshot of data. Data about a home might change later in the assessment process this year as Assessor’s Office staff and analysts review these properties. After this review, updated characteristics and market values are mailed to homeowners. If the data listed on the assessment notice is incorrect, an appeal can be filed to provide the correct characteristics.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "8f9d-wy2d",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/8f9d-wy2d.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/8f9d-wy2d",
+      "compatibility": {
+        "score": 73,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "assessment",
+          "assessor"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 88,
+        "originalScore": 73,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "State Real Property",
+      "description": "This dataset contains information on individual properties owned by the State of Connecticut, which is collected and updated annually in March by the Office of Policy and Management. This inventory is maintained primarily for the purposes of payments in lieu of property taxes (PILOT) to the host municipality.\n\nThe column \"Reference Number\" refers to the unique ID for the parcel (if available) and the \"Address\" column contains the physical address when assigned by the municipality, otherwise the street name is provided.\n\nThis data is updated each March.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.ct.gov",
+      "resourceId": "meyk-xprb",
+      "type": "dataset",
+      "endpoint": "https://data.ct.gov/resource/meyk-xprb.json",
+      "isPublic": true,
+      "permalink": "https://data.ct.gov/d/meyk-xprb",
+      "compatibility": {
+        "score": 73,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "real property"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 50,
+        "originalScore": 73,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Real Estate Sales 2001-2023 GL",
+      "description": "The Office of Policy and Management maintains a listing of all real estate sales with a sales price of $2,000 or greater that occur between October 1 and September 30 of each year. For each sale record, the file includes: town, property address, date of sale, property type (residential, apartment, commercial, industrial or vacant land), sales price, and property assessment.\n\nData are collected in accordance with Connecticut General Statutes, section 10-261a and 10-261b: https://www.cga.ct.gov/current/pub/chap_172.htm#sec_10-261a and https://www.cga.ct.gov/current/pub/chap_172.htm#sec_10-261b. \nAnnual real estate sales are reported by grand list year (October 1 through September 30 each year). For instance, sales from 2018 GL are from 10/01/2018 through 9/30/2019.\n\nSome municipalities may not report data for certain years because when a municipality implements a revaluation, they are not required to submit sales data for the twelve months following implementation.\n\nFor questions about this data, please contact us at: OPMIGPP@ct.gov",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.ct.gov",
+      "resourceId": "5mzw-sjtu",
+      "type": "dataset",
+      "endpoint": "https://data.ct.gov/resource/5mzw-sjtu.json",
+      "isPublic": true,
+      "permalink": "https://data.ct.gov/d/5mzw-sjtu",
+      "compatibility": {
+        "score": 73,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "property assessment",
+          "assessment"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 50,
+        "originalScore": 73,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Assessor [Archived 05-11-2022] - Residential COVID Adjustment Replication Data",
+      "description": "In response to the 2020 COVID-19 pandemic and its anticipated effects on the residential real estate market, the Cook County Assessor will adjust residential assessments. This data can be used to replicate residential COVID adjustments. Code can be located on GitLab. See data notes for link. NOTE that the 'adjusted values' in this data will not necessarily be consistent with each individual PIN's final assessment. To get the final assessment for an individual PIN, please visit www.cookcountyassessor.com.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "sypz-gxn2",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/sypz-gxn2.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/sypz-gxn2",
+      "compatibility": {
+        "score": 73,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "assessment",
+          "assessor"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 88,
+        "originalScore": 73,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Wayne County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Wayne County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "09570fb67ea647ce929725842453826d",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/wayne_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Wyoming County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Wyoming County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "396ce055bc7545ebaea69f46eb166ec3",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/wyoming_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Westmoreland County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Westmoreland County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "cdf7e6ad6b4d438fba09e978d139d99c",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/westmoreland_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Washington County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Washington County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "589a031f4382438ab29edd0076d8c898",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/washington_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Warren County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Warren County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "d2b8042089fc43cfb8be124b3c12f179",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/warren_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Venango County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Venango County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "bb2419ab57674b9fb54a3dc94107b5a5",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/venango_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Union County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Union County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "667cbef4797b4fbfbc67b567d68c102d",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/union_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Tioga County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Tioga County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "a26de3acb3b34a54a7bcaeb9f1d918e6",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/tioga_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Sullivan County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Sullivan County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "2e988530a75848fb91b901690b314d92",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/sullivan_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Snyder County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Snyder County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "0d64c86a8b164ff2acb96bc620f10cc7",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/snyder_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Schuylkill County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Schuylkill County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "4afd53c598a9412b8efe06ab4026db05",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/schuylkill_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Potter County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Potter County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "a92a9e16df744de3a26dfcf94343e7b4",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/potter_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Perry County PA Parcels",
+      "description": "REQUIRED: A brief narrative summary of the data set.",
+      "snippet": "REQUIRED: A summary of the intentions with which the data set was developed.",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Perry County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "6940216ec9da474f8c30502b4a95dbf9",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/perry_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Northumberland County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Northumberland County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "b018d552f5df49c1a6090928c792ba88",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/northumberland_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Mifflin County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Mifflin County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "8adc843cbf4042b19ffd8b4db4ef119f",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/mifflin_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Mercer County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Mercer County",
+        "Parcels",
+        "Pennsylvania"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "ac73ae957cf5468d8a9e5ca6d9b680fd",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/mercer_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "McKean County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "McKean County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "e290384d4e9f4a4298d7fa0212dcb767",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/mckean_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Luzerne County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Luzerne County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "ce22c9b8a6c8450d8bc3f616945af189",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/luzerne_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Lawrence County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Lawrence County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "03716e42113f4008aa5ef4df8d5a830c",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/lawrence_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Lycoming County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Lycoming County",
+        "Parcels",
+        "Pennsylvania"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "657defb981774e489519994bdd0d1ee1",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/lycoming_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Juniata County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Juniata County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "cb34432aec854fd383c0b8c6a606c304",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/juniata_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Indiana County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Indiana County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "9b9889c3fce94472baa8ca253e959826",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/indiana_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Huntingdon County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Huntingdon County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "85baa730fd944a4983bd7d1e8489d339",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/huntingdon_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Greene County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Greene County",
+        "Parcels",
+        "Pennsylvania"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "56aa7ab605194f7a924f2ee34f6bfa9f",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/greene_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Fulton County PA Parcels",
+      "description": "REQUIRED: A brief narrative summary of the data set.",
+      "snippet": "REQUIRED: A summary of the intentions with which the data set was developed.",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Fulton County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "6b25308f240d421ab40c39666c818a45",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/fulton_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Franklin County PA Parcels",
+      "description": "<DIV STYLE=\"text-align:Left;\"><DIV><P><SPAN>The geographic extent of individual parcels within Franklin County with NO associated CAMA (Computer Assisted Mass Appraisal - tax base) or parcel information. Polygons derived from original documents (deeds &amp; surveys) by the Sidwell Co in 2013 and maintained since by County GIS staff. </SPAN></P><P><SPAN /></P></DIV></DIV>",
+      "snippet": "Franklin County PA Parcel Polygons",
+      "tags": [
+        "Franklin County",
+        "Parcels",
+        "Pennsylvania"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "d6acaa6e52654ee8bbbee182bc42f843",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/franklin_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Forest County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Forest County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "bd492c23f8f34908aca43aff24c6acad",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/forest_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Erie County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Erie County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "7b17387880e14b10943a7647cd4e96da",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/erie_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Cumberland County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Cumberland County",
+        "Parcels",
+        "Pennsylvania"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "ae44b82593284363be8f3dc71b08d265",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/cumberland_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Clinton County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Clinton County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "4be125dd485244fd97cd9338e6a5b1dd",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/clinton_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Clearfield County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Clearfield County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "082a7c87e2994a85bd219b8088085ce2",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/clearfield_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Clarion County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Clarion County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "4b0fbb00c5534705ad2077cddb1e1d6a",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/clarion_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Centre County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Centre County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "a400f88b1c5d489fb73854b8cfd88824",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/centre_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Carbon County PA Parcel",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Carbon County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "26dbc1c34d2a454897dba6dc3b953cbe",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/carbon_county_pa_parcel/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Butler County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Butler County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "c74a3ab6f2e24e51b2707c5b47220b69",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/butler_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Bradford County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Bradford County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "befe6ccdb52540adb3072f3b8cc9a190",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/bradford_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Blair County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Blair County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "da72bb9c88f74583abb07e25f31cf58e",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/blair_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Bedford County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Bedford County",
+        "Parcels",
+        "Pennsylvania"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "891c488356a24ef0960cc7b799d933fd",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/bedford_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Delaware County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Delaware County",
+        "Pennsylvania"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "2660e36b49ea46efa93647fbb9158135",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/delaware_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Beaver County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Beaver County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "ba82ddce762248048e5a9b3c2b5a5a82",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/beaver_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Allegheny County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Allegheny County",
+        "Parcels",
+        "Pennsylvania"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "cc5f39c5abe54f5d9b6d6f11947e8915",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/allegheny_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Adams County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Adams County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "a8e061cb83164e29868327c824f42e7b",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/adams_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Lackawanna County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Lackawanna County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "d6ff8a88051049f298e344fb2d686ce1",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/lackawanna_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Susquehanna County PA Parcels",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        "Parcels",
+        "Pennsylvania",
+        "Susquehanna County"
+      ],
+      "owner": "wharcgisdeveloper",
+      "itemId": "c31e3d3a7f7f49c6814f00594c40f7c4",
+      "type": "Feature Service",
+      "serviceUrl": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/susquehanna_county_pa_parcels/FeatureServer",
+      "endpoint": "",
+      "isPublic": true,
+      "expansionError": "ArcGIS metadata error: {\"code\":499,\"message\":\"Token Required\",\"messageCode\":\"GWM_0003\",\"details\":[\"Token Required\"]}",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 100,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": true,
+        "negativeTerms": [],
+        "endpointQuality": 0,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Parcels",
+      "description": "This shapefile contains the Parcel Boundaries for Williamson County, Texas. This shapefile is created and maintained by the Williamson Central Appraisal District Mapping Department. The data in this layer are represented as polygons.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.wcad.org",
+      "resourceId": "an3x-cnmw",
+      "type": "dataset",
+      "endpoint": "https://data.wcad.org/resource/an3x-cnmw.json",
+      "isPublic": true,
+      "permalink": "https://data.wcad.org/d/an3x-cnmw",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 80,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "City of Albany Vacant Building Inventory: 2013",
+      "description": "Since January 2012, the Division of Buildings & Regulatory Compliance has created a living database documenting vacant buildings in the City of Albany. To create this database, the Division reconciled the Division of Building and Codes Vacant Building Registry with the Department of Fire and Emergency Services Vacant Building Database. This first reconciliation yielded a list of approximately 750 vacant buildings. The Division then reconciled that list with lists from neighborhood associations and lists from the Department of Assessment and Taxation.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.ny.gov",
+      "resourceId": "nv2j-hmda",
+      "type": "dataset",
+      "endpoint": "https://data.ny.gov/resource/nv2j-hmda.json",
+      "isPublic": true,
+      "permalink": "https://data.ny.gov/d/nv2j-hmda",
+      "compatibility": {
+        "score": 65,
+        "dataset": "vacant_properties",
+        "matchedTerms": [
+          "vacant building",
+          "vacant buildings"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 15,
+        "originalScore": 65,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Address Points",
+      "description": "This is a comprehensive building address point layer for Pierce County, Washington. Every unique house number has a point located within the building footprint of the addressed structure (where possible). Multi-unit structures, mobile home parks, and buildings with the same street address are further identified by mailstop in the attribute table. Some vacant parcels may or may not have an assigned temporary address point. A permanent address will be assigned to a vacant parcel if a permitted structure is built on that parcel. Please read metadata for additional information (https://matterhorn.piercecountywa.gov/GISmetadata/pdbis_buildingaddress_public.html). Any use or data download constitutes acceptance of the Terms of Use (https://matterhorn.piercecountywa.gov/disclaimer/PierceCountyGISDataTermsofUse.pdf).",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "internal.open.piercecountywa.gov",
+      "resourceId": "ewun-9uc6",
+      "type": "dataset",
+      "endpoint": "https://internal.open.piercecountywa.gov/resource/ewun-9uc6.json",
+      "isPublic": true,
+      "permalink": "https://internal.open.piercecountywa.gov/d/ewun-9uc6",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 80,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "TIF Data",
+      "description": "This dataset contains information on all Tax Increment Finance (TIF) parcels. Includes the TIF parcel number, the billable parcel number, project name and number, type of TIF, year the TIF begins/ends and TIF tax calculation amounts.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "internal.opendata.clermontauditor.org",
+      "resourceId": "4h49-qn9c",
+      "type": "dataset",
+      "endpoint": "https://internal.opendata.clermontauditor.org/resource/4h49-qn9c.json",
+      "isPublic": true,
+      "permalink": "https://internal.opendata.clermontauditor.org/d/4h49-qn9c",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 42,
+        "originalScore": 65,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Vacant Industrial and Commercial Parcels in Grand Junction Colorado",
+      "description": "Vacant Parcels in Grand Junction, Colorado.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.colorado.gov",
+      "resourceId": "rtgb-6zh7",
+      "type": "dataset",
+      "endpoint": "https://data.colorado.gov/resource/rtgb-6zh7.json",
+      "isPublic": true,
+      "permalink": "https://data.colorado.gov/d/rtgb-6zh7",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 42,
+        "originalScore": 65,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "AC - Parcels",
+      "description": "The dataset shows information about dwellings, commercial structures, and sales for each parcel in Clermont County.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "internal.opendata.clermontauditor.org",
+      "resourceId": "dh49-9zqk",
+      "type": "dataset",
+      "endpoint": "https://internal.opendata.clermontauditor.org/resource/dh49-9zqk.json",
+      "isPublic": true,
+      "permalink": "https://internal.opendata.clermontauditor.org/d/dh49-9zqk",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 80,
+        "originalScore": 65,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "CRA and EZ Information",
+      "description": "The dataset shows parcels receiving a tax abatement via a Community Reinvestment Area (CRA) or part of an Enterprise Zone (EZ).  Data includes the type of tax abatement, when the abatement began, when the abatement ends, how long the abatement lasts, the authority that approved the abatement, and the appraised value (land, building, and total) being abated.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "internal.opendata.clermontauditor.org",
+      "resourceId": "7vqu-sjxw",
+      "type": "dataset",
+      "endpoint": "https://internal.opendata.clermontauditor.org/resource/7vqu-sjxw.json",
+      "isPublic": true,
+      "permalink": "https://internal.opendata.clermontauditor.org/d/7vqu-sjxw",
+      "compatibility": {
+        "score": 65,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel",
+          "parcels"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 42,
+        "originalScore": 65,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Delaware_County_PA_Parcel_Data — pa_delaware",
+      "description": "",
+      "snippet": "",
+      "tags": [
+        ""
+      ],
+      "owner": "matthew.porter_Censeo",
+      "itemId": "71ae09ff40b94361998885027d4ec2d7",
+      "type": "Feature Service",
+      "serviceUrl": "https://services2.arcgis.com/Z4oonA9tfgNvnlIk/arcgis/rest/services/Delaware_County_PA_Parcel_Data/FeatureServer",
+      "endpoint": "https://services2.arcgis.com/Z4oonA9tfgNvnlIk/arcgis/rest/services/Delaware_County_PA_Parcel_Data/FeatureServer/26/query",
+      "isPublic": true,
+      "layerId": 26,
+      "layerName": "pa_delaware",
+      "compatibility": {
+        "score": 63,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 42,
+        "originalScore": 63,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 17,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "arcgis",
+      "source": "arcgis-online",
+      "title": "Lawrence County PA Parcel — Lawrence_County_PA_Parcel",
+      "description": "",
+      "snippet": "",
+      "tags": [],
+      "owner": "dave.tenney_evsketchinspect",
+      "itemId": "c97ef5cb83614635bacc2ea3dc163353",
+      "type": "Feature Service",
+      "serviceUrl": "https://services5.arcgis.com/9Z9r3rLUCq0SjsRb/arcgis/rest/services/Lawrence_County_PA_Parcel/FeatureServer",
+      "endpoint": "https://services5.arcgis.com/9Z9r3rLUCq0SjsRb/arcgis/rest/services/Lawrence_County_PA_Parcel/FeatureServer/0/query",
+      "isPublic": true,
+      "layerId": 0,
+      "layerName": "Lawrence_County_PA_Parcel",
+      "compatibility": {
+        "score": 63,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 80,
+        "originalScore": 63,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 17,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Treasurer - 2009 Annual Tax Sale Sold PINS",
+      "description": "Annual Tax Sale: A yearly auction of delinquent taxes where a tax buyer (purchaser) pays the delinquent taxes due on a parcel. This results in a lien on the property. The property owner must repay the tax buyer with interest for the amount of the sale – this is known as “redemption.” If redemption does not occur within a set time period, the tax buyer can obtain legal title to the property – this is referred to as a “tax deed.”",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "ae8r-hsd6",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/ae8r-hsd6.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/ae8r-hsd6",
+      "compatibility": {
+        "score": 61,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 38,
+        "originalScore": 61,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Treasurer - Annual Tax Sale",
+      "description": "Under Illinois law, the Treasurer’s Office is required to hold an Annual Tax Sale. The sale is held once a year, sometime after the Second Installment. If property taxes for the immediately preceding tax year are delinquent on a parcel, they are offered for sale to tax purchasers at the Annual Tax Sale. The buyer is buying a tax lien on the property not the property itself. For more information on Annual Tax Sales visit http://www.cookcountytreasurer.com/annualtaxsale.aspx and https://www.cooktaxsale.com.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "55ju-2fs9",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/55ju-2fs9.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/55ju-2fs9",
+      "compatibility": {
+        "score": 61,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 38,
+        "originalScore": 61,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Hamilton County Parcel Polygons",
+      "description": "This layer displays the property boundaries of Hamilton County. Information regarding each property can be found on the Hamilton Auditor's County, by entering the owner's name, the parcel ID, or the street address. The auditor's website provides regarding the tax district, the school district, the owner name and address, the land use, the appraisal information, the assessed value, and the property description, amongst other information.\r\nIn order to perform a parcel search on Hamilton's County Auditor's website, the parcel ID should be entered without the first \"0\", or use the Auditor Parcel ID.\r\nThis layer doesn't display when zoomed out beyond 1:4,822.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.cincinnati-oh.gov",
+      "resourceId": "g24g-2pi5",
+      "type": "href",
+      "endpoint": "https://data.cincinnati-oh.gov/resource/g24g-2pi5.json",
+      "isPublic": true,
+      "permalink": "https://data.cincinnati-oh.gov/d/g24g-2pi5",
+      "compatibility": {
+        "score": 61,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 76,
+        "originalScore": 61,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Building Violations",
+      "description": "Violations issued by the Department of Buildings from 2006 to the present.  Lenders and title companies, please note: These data are historical in nature and should not be relied upon for real estate transactions. For transactional purposes such as closings, please consult the title commitment for outstanding enforcement actions in the Circuit Court of Cook County or the Chicago Department of Administrative Hearings. Violations are always associated to an inspection and there can be multiple violation records to one inspection record. Related Applications: Building Data Warehouse http://www.cityofchicago.org/city/en/depts/bldgs/provdrs/inspect/svcs/building_violationsonline.html. The information presented on this website is informational only and does not necessarily reflect the current condition of the building or property. The dataset contains cases where a respondent has been found to be liable as well as cases where the respondent has been found to be not liable.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.cityofchicago.org",
+      "resourceId": "22u3-xenr",
+      "type": "dataset",
+      "endpoint": "https://data.cityofchicago.org/resource/22u3-xenr.json",
+      "isPublic": true,
+      "permalink": "https://data.cityofchicago.org/d/22u3-xenr",
+      "compatibility": {
+        "score": 61,
+        "dataset": "code_violations",
+        "matchedTerms": [
+          "building violation"
+        ],
+        "generatorReady": true
+      },
+      "automaticDiscovery": {
+        "score": 76,
+        "originalScore": 61,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "START-UP NY Tax-Free Area Locations Data Lens",
+      "description": "Empire State Development (ESD) produces an annual report with a cumulative list of College and University Sponsors approved in the START-UP NY Program. The dataset displays the name of the Sponsor, the street address, city and county of the tax-free areas (TFA) designated by that college or university, square footage of each building space and acreage of each parcel of vacant land, the name of buildings designated and the START-UPNY website of the college.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.ny.gov",
+      "resourceId": "xrve-jg9b",
+      "type": "story",
+      "endpoint": "https://data.ny.gov/resource/xrve-jg9b.json",
+      "isPublic": true,
+      "permalink": "https://data.ny.gov/stories/s/xrve-jg9b",
+      "compatibility": {
+        "score": 53,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 15,
+        "originalScore": 53,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Taxable Square Footage",
+      "description": "This dataset of taxable square footage per property is used to calculate special assessments approved by Berkeley voters in ballot measures.  \n\nAlameda County’s property tax bills include taxes, fixed charges, and special assessments from many agencies, including the City of Berkeley. Most voter-approved City of Berkeley special assessments and taxes are based on taxable square footage, not assessed value.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.cityofberkeley.info",
+      "resourceId": "9a47-nj4i",
+      "type": "dataset",
+      "endpoint": "https://data.cityofberkeley.info/resource/9a47-nj4i.json",
+      "isPublic": true,
+      "permalink": "https://data.cityofberkeley.info/d/9a47-nj4i",
+      "compatibility": {
+        "score": 53,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "assessment"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 68,
+        "originalScore": 53,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "START-UP NY Tax-Free Area Locations",
+      "description": "Empire State Development (ESD) produces an annual report with a cumulative list of College and University Sponsors approved in the START-UP NY Program.  The dataset displays the name of the Sponsor, the street address, city and county of the tax-free areas (TFA) designated by that college or university, square footage of each building space and acreage of each parcel of vacant land, the name of buildings designated and the START-UPNY website of the college.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.ny.gov",
+      "resourceId": "rpku-hjxn",
+      "type": "dataset",
+      "endpoint": "https://data.ny.gov/resource/rpku-hjxn.json",
+      "isPublic": true,
+      "permalink": "https://data.ny.gov/d/rpku-hjxn",
+      "compatibility": {
+        "score": 53,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 15,
+        "originalScore": 53,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "All Parcel Values",
+      "description": "This dataset shows values from tax year 2010 to current. Includes the 100% appraised and  35% assessed values of land, building and total for each parcel. Also shows if a parcel is receiving the homestead reduction, owner occupancy credit and if part of a Tax Increment Finance (TIF) district.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "internal.opendata.clermontauditor.org",
+      "resourceId": "rpbb-wy7g",
+      "type": "dataset",
+      "endpoint": "https://internal.opendata.clermontauditor.org/resource/rpbb-wy7g.json",
+      "isPublic": true,
+      "permalink": "https://internal.opendata.clermontauditor.org/d/rpbb-wy7g",
+      "compatibility": {
+        "score": 53,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "parcel"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 30,
+        "originalScore": 53,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Total Taxes Due and Paid",
+      "description": "This Dataset shows Real Estate Taxes, Delinquent taxes, Interest, Farm Recoup, Special Net and Delinquent, Owner name and property address.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "internal.opendata.clermontauditor.org",
+      "resourceId": "94fc-2usj",
+      "type": "dataset",
+      "endpoint": "https://internal.opendata.clermontauditor.org/resource/94fc-2usj.json",
+      "isPublic": true,
+      "permalink": "https://internal.opendata.clermontauditor.org/d/94fc-2usj",
+      "compatibility": {
+        "score": 53,
+        "dataset": "tax_delinquent",
+        "matchedTerms": [
+          "delinquent tax"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 30,
+        "originalScore": 53,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Defaulted Tax Data",
+      "description": "County of Sonoma Auditor-Controller-Treasurer-Tax Collector listing of defaulted tax data. The data provided indicates prior year delinquent tax information as of July 1st in this current fiscal tax year.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.sonomacounty.ca.gov",
+      "resourceId": "bp8v-uax7",
+      "type": "dataset",
+      "endpoint": "https://data.sonomacounty.ca.gov/resource/bp8v-uax7.json",
+      "isPublic": true,
+      "permalink": "https://data.sonomacounty.ca.gov/d/bp8v-uax7",
+      "compatibility": {
+        "score": 45,
+        "dataset": "tax_delinquent",
+        "matchedTerms": [
+          "delinquent tax"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 60,
+        "originalScore": 45,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Delinquent Tax Values",
+      "description": "This dataset shows all of the prior year delinquent tax amounts in Clermont County.  The Dataset includes owner information, delinquent tax amount, certified delinquent year and  total appraised and assessed value of the property.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "internal.opendata.clermontauditor.org",
+      "resourceId": "q52y-wzm4",
+      "type": "dataset",
+      "endpoint": "https://internal.opendata.clermontauditor.org/resource/q52y-wzm4.json",
+      "isPublic": true,
+      "permalink": "https://internal.opendata.clermontauditor.org/d/q52y-wzm4",
+      "compatibility": {
+        "score": 45,
+        "dataset": "tax_delinquent",
+        "matchedTerms": [
+          "delinquent tax"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 60,
+        "originalScore": 45,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Bodega Tax Default as of July 1 2017",
+      "description": "County of Sonoma Auditor-Controller-Treasurer-Tax Collector listing of defaulted tax data. The data provided indicates prior year delinquent tax information as of July 1st in this current fiscal tax year.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.sonomacounty.ca.gov",
+      "resourceId": "y42d-aiqs",
+      "type": "filter",
+      "endpoint": "https://data.sonomacounty.ca.gov/resource/y42d-aiqs.json",
+      "isPublic": true,
+      "permalink": "https://data.sonomacounty.ca.gov/d/y42d-aiqs",
+      "compatibility": {
+        "score": 45,
+        "dataset": "tax_delinquent",
+        "matchedTerms": [
+          "delinquent tax"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 60,
+        "originalScore": 45,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Real Property Tax - 2019",
+      "description": "This data represents all of the County’s residential real estate properties and all of the associated tax charges and credits with that property processed at the annual billing in July of each year, excluding any subsequent billing additions and/or revisions throughout the year. This dataset excludes the names of the property owners. The addresses in this database represent the address of the property. For more information about the individual taxes and credits, please go to http://www.montgomerycountymd.gov/finance/taxes/faqs.html#credit. \n\nUpdate Frequency: Updated Annually in July",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.montgomerycountymd.gov",
+      "resourceId": "8imd-9mre",
+      "type": "dataset",
+      "endpoint": "https://data.montgomerycountymd.gov/resource/8imd-9mre.json",
+      "isPublic": true,
+      "permalink": "https://data.montgomerycountymd.gov/d/8imd-9mre",
+      "compatibility": {
+        "score": 45,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "real property"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 60,
+        "originalScore": 45,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Real Property Tax - 2020",
+      "description": "This data represents all of the County’s residential real estate properties and all of the associated tax charges and credits with that property processed at the annual billing in July of each year, excluding any subsequent billing additions and/or revisions throughout the year. This dataset excludes the names of the property owners. The addresses in this database represent the address of the property. For more information about the individual taxes and credits, please go to http://www.montgomerycountymd.gov/finance/taxes/faqs.html#credit. \n\nUpdate Frequency: Updated Annually in July",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "data.montgomerycountymd.gov",
+      "resourceId": "q545-92hr",
+      "type": "dataset",
+      "endpoint": "https://data.montgomerycountymd.gov/resource/q545-92hr.json",
+      "isPublic": true,
+      "permalink": "https://data.montgomerycountymd.gov/d/q545-92hr",
+      "compatibility": {
+        "score": 45,
+        "dataset": "property_assessment",
+        "matchedTerms": [
+          "real property"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 60,
+        "originalScore": 45,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "Treasurer - Scavenger Tax Sale",
+      "description": "The biennial Scavenger Sale (conducted in odd-numbered years) offers taxes on properties that have delinquencies on three or more years that were not purchased at an Annual Tax Sale. In Cook County, the sale has traditionally taken place in the fall or early winter months.For more information on Scavenger Sales see http://www.cookcountytreasurer.com/scavengersale.aspx",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "datacatalog.cookcountyil.gov",
+      "resourceId": "ydgz-vkrp",
+      "type": "dataset",
+      "endpoint": "https://datacatalog.cookcountyil.gov/resource/ydgz-vkrp.json",
+      "isPublic": true,
+      "permalink": "https://datacatalog.cookcountyil.gov/d/ydgz-vkrp",
+      "compatibility": {
+        "score": 37,
+        "dataset": "sheriff_sales",
+        "matchedTerms": [
+          "tax sale"
+        ],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 52,
+        "originalScore": 37,
+        "countyMatch": true,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    },
+    {
+      "adapter": "socrata",
+      "source": "socrata-catalog",
+      "title": "SALES",
+      "description": "This dataset contains information on all sales from January 1, 2016 to Current. The dataset includes sale date, sale price, type of sale, sale validity, owner information, class, land use code (LUC),  district and school district information.",
+      "snippet": "",
+      "tags": [],
+      "owner": "",
+      "domain": "internal.opendata.clermontauditor.org",
+      "resourceId": "gnjq-xf8x",
+      "type": "dataset",
+      "endpoint": "https://internal.opendata.clermontauditor.org/resource/gnjq-xf8x.json",
+      "isPublic": true,
+      "permalink": "https://internal.opendata.clermontauditor.org/d/gnjq-xf8x",
+      "compatibility": {
+        "score": 25,
+        "dataset": "unknown",
+        "matchedTerms": [],
+        "generatorReady": false
+      },
+      "automaticDiscovery": {
+        "score": 2,
+        "originalScore": 25,
+        "countyMatch": false,
+        "stateMatch": false,
+        "negativeTerms": [],
+        "endpointQuality": 15,
+        "eligible": false
+      }
+    }
+  ]
+}

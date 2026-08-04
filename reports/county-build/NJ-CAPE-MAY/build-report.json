@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785845704829-2759",
+  "startedAt": "2026-08-04T12:15:04.829Z",
+  "completedAt": "2026-08-04T12:15:27.147Z",
+  "state": "NJ",
+  "county": "Cape May",
+  "connectorId": "NJ-CAPE-MAY",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "property_assessment"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T12:15:04.834Z",
+      "completedAt": "2026-08-04T12:15:18.275Z",
+      "ok": true,
+      "candidateCount": 10,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/NJ-CAPE-MAY-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T12:15:20.364Z",
+      "completedAt": "2026-08-04T12:15:20.545Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "property_assessment": {
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://maps.nj.gov/arcgis/rest/services/Framework/Cadastral/MapServer/0/query",
+      "title": "Parcels and MOD-IV Composite of New Jersey",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T12:15:18.280Z",
+          "completedAt": "2026-08-04T12:15:18.499Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T12:15:18.499Z",
+          "completedAt": "2026-08-04T12:15:20.363Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T12:15:20.545Z",
+          "completedAt": "2026-08-04T12:15:27.147Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

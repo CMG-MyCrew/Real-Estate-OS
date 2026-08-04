@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785864706532-5976",
+  "startedAt": "2026-08-04T17:31:46.532Z",
+  "completedAt": "2026-08-04T17:32:29.054Z",
+  "state": "PA",
+  "county": "Adams",
+  "connectorId": "PA-ADAMS",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "parcel_inventory"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T17:31:46.542Z",
+      "completedAt": "2026-08-04T17:32:12.156Z",
+      "ok": true,
+      "candidateCount": 15,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/PA-ADAMS-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T17:32:19.125Z",
+      "completedAt": "2026-08-04T17:32:19.397Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "parcel_inventory": {
+      "dataset": "parcel_inventory",
+      "adapter": "arcgis",
+      "endpoint": "https://gis.dep.pa.gov/depgisprd/rest/services/Parcels/PA_Parcels/MapServer/0/query",
+      "title": "Pennsylvania DEP Parcel Layer",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T17:32:12.166Z",
+          "completedAt": "2026-08-04T17:32:12.670Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T17:32:12.671Z",
+          "completedAt": "2026-08-04T17:32:19.124Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T17:32:19.397Z",
+          "completedAt": "2026-08-04T17:32:29.054Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

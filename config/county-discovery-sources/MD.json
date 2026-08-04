@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0.0",
+  "state": "MD",
+  "sources": [
+    {
+      "id": "MD-STATE-PROPERTY-DATA",
+      "title": "Maryland Statewide Property Data",
+      "description": "Official Maryland statewide property and assessment point data.",
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
+      "scope": "statewide",
+      "authoritative": true,
+      "countyField": "JURSCODE",
+      "countyValues": {
+        "Allegany": "ALLE",
+        "Anne Arundel": "ANNE",
+        "Baltimore": "BACO",
+        "Calvert": "CALV",
+        "Caroline": "CARO",
+        "Carroll": "CARR",
+        "Cecil": "CECI",
+        "Charles": "CHAR",
+        "Dorchester": "DORC",
+        "Frederick": "FRED",
+        "Garrett": "GARR",
+        "Harford": "HARF",
+        "Howard": "HOWA",
+        "Kent": "KENT",
+        "Montgomery": "MONT",
+        "Prince George's": "PRIN",
+        "Queen Anne's": "QUEE",
+        "Somerset": "SOME",
+        "St. Mary's": "STMA",
+        "Talbot": "TALB",
+        "Washington": "WASH",
+        "Wicomico": "WICO",
+        "Worcester": "WORC",
+        "Baltimore City": "BACI"
+      },
+      "minimumScore": 100
+    }
+  ]
+}

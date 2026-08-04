@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785837485886-2013",
+  "startedAt": "2026-08-04T09:58:05.886Z",
+  "completedAt": "2026-08-04T09:58:27.347Z",
+  "state": "DE",
+  "county": "Sussex",
+  "connectorId": "DE-SUSSEX",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "parcel_inventory"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T09:58:05.892Z",
+      "completedAt": "2026-08-04T09:58:19.469Z",
+      "ok": true,
+      "candidateCount": 15,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/DE-SUSSEX-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T09:58:21.322Z",
+      "completedAt": "2026-08-04T09:58:21.501Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "parcel_inventory": {
+      "dataset": "parcel_inventory",
+      "adapter": "arcgis",
+      "endpoint": "https://enterprise.firstmaptest.delaware.gov/arcgis/rest/services/PlanningCadastre/DE_StateParcels/FeatureServer/0/query",
+      "title": "Delaware State Parcels",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T09:58:19.472Z",
+          "completedAt": "2026-08-04T09:58:19.713Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T09:58:19.713Z",
+          "completedAt": "2026-08-04T09:58:21.321Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T09:58:21.502Z",
+          "completedAt": "2026-08-04T09:58:27.347Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}

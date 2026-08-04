@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "buildId": "CBP-1785845890530-4554",
+  "startedAt": "2026-08-04T12:18:10.530Z",
+  "completedAt": "2026-08-04T12:18:29.344Z",
+  "state": "NJ",
+  "county": "Monmouth",
+  "connectorId": "NJ-MONMOUTH",
+  "mode": "EXECUTE",
+  "requestedDatasets": [
+    "property_assessment"
+  ],
+  "stages": [
+    {
+      "name": "discovery",
+      "startedAt": "2026-08-04T12:18:10.537Z",
+      "completedAt": "2026-08-04T12:18:21.060Z",
+      "ok": true,
+      "candidateCount": 15,
+      "selectedCount": 1,
+      "plan": "reports/county-discovery/NJ-MONMOUTH-AUTOMATIC-DISCOVERY.json"
+    },
+    {
+      "name": "regenerate",
+      "startedAt": "2026-08-04T12:18:22.128Z",
+      "completedAt": "2026-08-04T12:18:22.322Z",
+      "ok": true,
+      "exitCode": 0
+    }
+  ],
+  "datasets": {
+    "property_assessment": {
+      "dataset": "property_assessment",
+      "adapter": "arcgis",
+      "endpoint": "https://maps.nj.gov/arcgis/rest/services/Framework/Cadastral/MapServer/0/query",
+      "title": "Parcels and MOD-IV Composite of New Jersey",
+      "stages": [
+        {
+          "name": "promote",
+          "startedAt": "2026-08-04T12:18:21.062Z",
+          "completedAt": "2026-08-04T12:18:21.265Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "automap",
+          "startedAt": "2026-08-04T12:18:21.266Z",
+          "completedAt": "2026-08-04T12:18:22.127Z",
+          "ok": true,
+          "exitCode": 0
+        },
+        {
+          "name": "configure-endpoint",
+          "startedAt": "2026-08-04T12:18:22.322Z",
+          "completedAt": "2026-08-04T12:18:29.344Z",
+          "ok": true,
+          "exitCode": 0
+        }
+      ],
+      "ok": true
+    }
+  },
+  "ok": true
+}
