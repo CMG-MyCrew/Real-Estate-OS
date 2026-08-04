@@ -1,0 +1,105 @@
+{
+  "schemaVersion": "1.0.0",
+  "acceptedAt": "2026-08-04T10:06:14.882Z",
+  "connectorId": "DE-KENT",
+  "dataset": "parcel_inventory",
+  "adapter": "arcgis",
+  "endpoint": "https://enterprise.firstmaptest.delaware.gov/arcgis/rest/services/PlanningCadastre/DE_StateParcels/FeatureServer/0/query",
+  "schema": {
+    "sampleCount": 50,
+    "fields": {
+      "ACRES": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          17.21062991,
+          41.90577538,
+          0.48755303,
+          1.00163555,
+          0.55019798
+        ]
+      },
+      "COUNTY": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          "New Castle",
+          "New Castle",
+          "New Castle",
+          "New Castle",
+          "New Castle"
+        ]
+      },
+      "OBJECTID": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          47704511,
+          47704512,
+          47704513,
+          47704514,
+          47704515
+        ]
+      },
+      "PIN": {
+        "type": "string",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          "0600400025",
+          "0600500001",
+          "0600500002",
+          "0600500003",
+          "0600500004"
+        ]
+      },
+      "Shape__Area": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          118263.379585705,
+          287963.57691627,
+          3350.43094237,
+          6883.08451211,
+          3780.89969153
+        ]
+      },
+      "Shape__Length": {
+        "type": "number",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 50,
+        "sampleValues": [
+          2245.92671222576,
+          2802.91732481254,
+          230.171974429956,
+          333.20358151872205,
+          259.26533258700704
+        ]
+      },
+      "UPDATED": {
+        "type": "integer",
+        "populatedCount": 50,
+        "completeness": 1,
+        "uniqueCount": 1,
+        "sampleValues": [
+          1785542400000,
+          1785542400000,
+          1785542400000,
+          1785542400000,
+          1785542400000
+        ]
+      }
+    },
+    "fingerprint": "7fa954024fbf6b18a10d367268204b83df9b7a95132c9c690fabe16bed442029"
+  }
+}

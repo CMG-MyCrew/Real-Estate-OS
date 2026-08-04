@@ -235,8 +235,31 @@ function getMappingConfidence(definition) {
   );
 }
 
-function requiredMappingStatus(definition) {
+function hasMappedField(mapping, key) {
+  return (
+    Array.isArray(mapping[key]) &&
+    mapping[key].length > 0
+  );
+}
+
+function requiredMappingStatus(
+  dataset,
+  definition
+) {
   const mapping = definition.mapping || {};
+
+  if (dataset === 'parcel_inventory') {
+    const hasParcelIdentity =
+      hasMappedField(mapping, 'parcelId') ||
+      hasMappedField(mapping, 'sourceRecordId');
+
+    return {
+      ok: hasParcelIdentity,
+      missing: hasParcelIdentity
+        ? []
+        : ['parcelId or sourceRecordId']
+    };
+  }
 
   const required = [
     'address',
@@ -245,10 +268,7 @@ function requiredMappingStatus(definition) {
   ];
 
   const missing = required.filter(key => {
-    return (
-      !Array.isArray(mapping[key]) ||
-      mapping[key].length === 0
-    );
+    return !hasMappedField(mapping, key);
   });
 
   return {
@@ -263,7 +283,10 @@ function createDatasetEntry(
   definition
 ) {
   const mappingStatus =
-    requiredMappingStatus(definition);
+    requiredMappingStatus(
+      dataset,
+      definition
+    );
 
   return {
     dataset,
