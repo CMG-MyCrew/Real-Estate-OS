@@ -1,0 +1,14 @@
+{
+  "state": "PA",
+  "county": "Erie",
+  "dataset": "parcel_inventory",
+  "status": "PARTIAL",
+  "reviewedCandidates": [
+    {
+      "title": "City of Erie Parcel Boundaries",
+      "endpoint": "https://gis.erie.pa.us/server/rest/services/Hosted/Parcel_Boundaries_Zoning_view_AGOL/FeatureServer/31",
+      "usable": false,
+      "reason": "Covers only the City of Erie, not Erie County."
+    }
+  ]
+}
