@@ -41,6 +41,135 @@ const NEGATIVE_TERMS = [
   'bus route'
 ];
 
+function readJsonIfPresent(filePath) {
+  if (!fs.existsSync(filePath)) {
+    return null;
+  }
+
+  return JSON.parse(
+    fs.readFileSync(filePath, 'utf8')
+  );
+}
+
+function escapeArcGISString(value) {
+  return String(value || '')
+    .replace(/'/g, "''");
+}
+
+function loadAuthoritativeCandidates(
+  root,
+  locality,
+  datasets
+) {
+  const state = String(
+    locality.state || ''
+  )
+    .trim()
+    .toUpperCase();
+
+  const county = String(
+    locality.county || ''
+  )
+    .trim()
+    .replace(/\s+County$/i, '');
+
+  const sourcePath = path.join(
+    root,
+    'config',
+    'county-discovery-sources',
+    `${state}.json`
+  );
+
+  const catalog = readJsonIfPresent(
+    sourcePath
+  );
+
+  if (!catalog) {
+    return [];
+  }
+
+  return (catalog.sources || [])
+    .filter(source => {
+      return (
+        source &&
+        source.endpoint &&
+        source.adapter &&
+        source.dataset &&
+        datasets.includes(source.dataset)
+      );
+    })
+    .map(source => {
+      const countyField = String(
+        source.countyField || ''
+      ).trim();
+
+      const countyValue =
+        source.countyValues?.[county];
+
+      if (
+        source.scope === 'statewide' &&
+        (
+          !countyField ||
+          typeof countyValue === 'undefined'
+        )
+      ) {
+        return null;
+      }
+
+      const sourceQuery =
+        source.scope === 'statewide'
+          ? {
+              where:
+                `${countyField}='` +
+                `${escapeArcGISString(countyValue)}'`
+            }
+          : null;
+
+      return {
+        id: source.id || '',
+        title: source.title || source.id,
+        description:
+          source.description || '',
+        owner: source.owner || '',
+        tags: [
+          'authoritative',
+          state,
+          county,
+          source.dataset
+        ],
+        adapter: source.adapter,
+        endpoint: source.endpoint,
+        serviceUrl:
+          source.serviceUrl || '',
+        authoritative: true,
+        sourceScope:
+          source.scope || 'county',
+        sourceQuery,
+        compatibility: {
+          dataset: source.dataset,
+          score: Number(
+            source.minimumScore || 100
+          )
+        },
+        automaticDiscovery: {
+          score: Number(
+            source.minimumScore || 100
+          ),
+          originalScore: Number(
+            source.minimumScore || 100
+          ),
+          countyMatch: true,
+          stateMatch: true,
+          negativeTerms: [],
+          endpointQuality: 0,
+          eligible: true,
+          seeded: true
+        }
+      };
+    })
+    .filter(Boolean);
+}
+
 function normalizeText(value) {
   return String(value || '')
     .replace(/<[^>]+>/g, ' ')
@@ -317,7 +446,9 @@ function runHealthCheck(root, candidate) {
       JSON.stringify([{
         action: 'adapter-health',
         adapter: candidate.adapter,
-        endpoint: candidate.endpoint
+        endpoint: candidate.endpoint,
+        sourceQuery:
+          candidate.sourceQuery || null
       }])
     ],
     {
@@ -409,12 +540,22 @@ export async function discoverAllDatasets(options) {
     health: false
   });
 
-  let candidates = discoveryReport.results.map(candidate =>
-    rescoreCandidate(
-      candidate,
-      discoveryReport.locality
+  const authoritativeCandidates =
+    loadAuthoritativeCandidates(
+      root,
+      discoveryReport.locality,
+      datasets
+    );
+
+  let candidates = [
+    ...authoritativeCandidates,
+    ...discoveryReport.results.map(candidate =>
+      rescoreCandidate(
+        candidate,
+        discoveryReport.locality
+      )
     )
-  );
+  ];
 
   if (options.health === true) {
     const healthLimit = Math.max(
@@ -444,12 +585,19 @@ export async function discoverAllDatasets(options) {
       );
     }
 
-    candidates = candidates.map(candidate =>
-      rescoreCandidate(
+    candidates = candidates.map(candidate => {
+      if (
+        candidate.authoritative === true &&
+        candidate.automaticDiscovery?.seeded === true
+      ) {
+        return candidate;
+      }
+
+      return rescoreCandidate(
         candidate,
         discoveryReport.locality
-      )
-    );
+      );
+    });
   }
 
   const groups = groupByDataset(
