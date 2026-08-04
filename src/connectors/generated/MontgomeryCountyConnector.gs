@@ -12,245 +12,242 @@ REOS.GeneratedCountyConnectorRegistrars =
 
 REOS.MontgomeryCountyConnector = (function () {
   var MANIFEST = {
-    id: "PA-MONTGOMERY",
-    state: "PA",
+    id: "MD-MONTGOMERY",
+    state: "MD",
     county: "Montgomery",
     version: "1.0.0",
     enabled: true,
-    generatedAt: "2026-08-01T12:25:14.993Z",
+    generatedAt: "2026-08-04T15:59:48.681Z",
     datasets: {
       property_assessment: {
         adapter: "arcgis",
-        endpointProperty: "REOS_COUNTY_PA_MONTGOMERY_PROPERTY_ASSESSMENT_URL",
+        endpointProperty: "REOS_COUNTY_MD_MONTGOMERY_PROPERTY_ASSESSMENT_URL",
+        endpoint: "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query",
         enabled: true,
         maxLimit: 2000,
         mapping: {
           address: [
-            "LOCATION1",
-            "ADDR1",
-            "LOC_ADD"
+            "ST_ADDRESS",
+            "st_address",
+            "PROP_LOC",
+            "prop_loc",
+            "ADDRESS",
+            "address",
+            "STREET_ADDRESS",
+            "street_address",
+            "property_address",
+            "location"
           ],
           city: [
-            "Muni_Name"
+            "CITY_STATE",
+            "city_state",
+            "MUN_NAME",
+            "mun_name",
+            "CITY",
+            "city",
+            "MUNICIPALITY",
+            "municipality",
+            "property_city",
+            "OWNCITY",
+            "PREMCITY"
           ],
           zip: [
-            "ZIP1_ZIP2",
-            "LOC_ZIP1_Z"
+            "ZIP",
+            "zip",
+            "ZIP_CODE",
+            "zip_code",
+            "ZIPCODE",
+            "zipcode",
+            "postal_code",
+            "OWNERZIP",
+            "PREMZIP"
           ],
           parcelId: [
-            "PARCEL",
+            "PAMS_PIN",
+            "pams_pin",
+            "PIN_NODUP",
+            "pin_nodup",
+            "GIS_PIN",
+            "gis_pin",
+            "PCL_PIN",
+            "pcl_pin",
+            "PIN",
+            "pin",
             "TAXPIN",
-            "ALT_ID"
+            "taxpin",
+            "PARCEL_NUM",
+            "parcel_num",
+            "PARCEL_ID",
+            "parcel_id",
+            "parcel_number",
+            "OPA_NUMBER",
+            "opa_number",
+            "account_number",
+            "PARCEL"
           ],
           ownerName: [
-            "OWN1",
-            "OWN_INFO_C",
-            "OWN_INFO_1"
+            "OWNER_NAME",
+            "owner_name",
+            "OWNER1",
+            "owner1",
+            "OWNER",
+            "owner",
+            "legal_owner",
+            "OWNADD1",
+            "OWNCITY",
+            "OWNSTATE"
           ],
           coOwnerName: [
-            "OWN2"
+            "OWNER2",
+            "owner2",
+            "CO_OWNER",
+            "co_owner"
           ],
           sourceRecordId: [
             "OBJECTID",
-            "OBJECTID_1"
+            "objectid",
+            "ID",
+            "id",
+            "record_id",
+            "PARCEL_NUM",
+            "parcel_number"
           ],
           sourceUpdatedAt: [
-            "PROP_INFO1",
-            "ASSMT_CHGD"
+            "PCLLASTUPD",
+            "pcllastupd",
+            "PCL_PBDATE",
+            "pcl_pbdate",
+            "UPDATED",
+            "updated",
+            "MODIFY_DATE",
+            "modify_date",
+            "UPDATED_AT",
+            "updated_at",
+            "last_updated",
+            "date_updated"
           ],
           landValue: [
+            "LAND_VAL",
+            "land_val",
             "LAND_VALUE",
             "land_value",
             "assessed_land_value"
           ],
           buildingValue: [
+            "IMPRVT_VAL",
+            "imprvt_val",
             "BUILDING_VALUE",
             "building_value",
             "improvement_value"
           ],
           estimatedValue: [
-            "TOTAL_APPR",
-            "TOTAL_ASSE",
-            "ASSESSMENT"
+            "NET_VALUE",
+            "net_value",
+            "TOTAL_VALUE",
+            "total_value",
+            "TOTAL_ASSESSMENT",
+            "total_assessment",
+            "assessed_value"
           ],
-          assessmentValue: [
-            "TOTAL_ASSE",
-            "ASSESSMENT"
-          ],
-          yearBuilt: [
-            "YEAR_BUILT"
-          ],
+          assessmentValue: [],
+          yearBuilt: [],
           landAcres: [
-            "LAND_ACRES"
+            "ACRES"
           ],
           livingArea: [
-            "SFLA"
+            "SQFTSTRC"
           ],
-          saleDate: [
-            "SALE_DATE_",
-            "SALE_DATE"
-          ],
-          salePrice: [
-            "CONSIDERAT"
-          ]
+          saleDate: [],
+          salePrice: []
+        },
+        sourceQuery: {
+          where: "JURSCODE='MONT'"
         },
         discovery: {
-          report: "reports/county-discovery/PA-MONTGOMERY-DISCOVERY.json",
+          report: "reports/county-build/MD-MONTGOMERY/promotion-input.json",
           candidate: 1,
-          promotedAt: "2026-08-01T12:26:19.678Z",
-          title: "Montgomery County Parcels",
-          source: "arcgis-online",
-          sourceItemId: "125b471219874a769cdff49d2e52f950",
-          sourceLayerId: 10,
+          promotedAt: "2026-08-04T15:59:48.682Z",
+          title: "Maryland Statewide Property Data",
+          source: "",
+          sourceScope: "statewide",
+          authoritative: true,
+          sourceItemId: "",
+          sourceLayerId: "",
           compatibilityScore: 100,
-          matchedTerms: [
-            "parcel",
-            "parcels"
-          ],
-          endpoint: "https://services1.arcgis.com/kOChldNuKsox8qZD/arcgis/rest/services/Montgomery_County_Parcels/FeatureServer/6/query",
-          reviewStatus: "field_mapping_verified",
-          rejectedEndpoint: "https://services3.arcgis.com/9nfxWATFamVUTTGb/arcgis/rest/services/Morris_Arboretum_Property_Boundary/FeatureServer/10/query",
-          verifiedFields: [
-            "LOCATION1",
-            "Muni_Name",
-            "ZIP1_ZIP2",
-            "PARCEL",
-            "OWN1",
-            "OBJECTID",
-            "TOTAL_APPR",
-            "PROP_INFO1"
-          ]
+          matchedTerms: [],
+          endpoint: "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0/query"
         },
         recordFilter: {
           requireAny: [
             [
-              "LOCATION1",
-              "ADDR1",
-              "LOC_ADD"
+              "ADDRESS"
             ],
             [
-              "PARCEL",
-              "TAXPIN",
-              "ALT_ID"
+              "PARCEL"
             ]
           ]
         },
         autoMapping: {
-          appliedAt: "2026-08-01T13:06:37.786Z",
+          appliedAt: "2026-08-04T15:59:50.672Z",
           sampleCount: 50,
-          report: "reports/county-mapping/PA-MONTGOMERY-PROPERTY_ASSESSMENT-MAPPING.json",
+          report: "reports/county-mapping/MD-MONTGOMERY-PROPERTY_ASSESSMENT-MAPPING.json",
           minimumScore: 65,
           confidence: {
             address: {
               score: 139,
-              primaryField: "LOCATION1",
-              completeness: 1,
-              alternatives: [
-                "ADDR1",
-                "LOC_ADD"
-              ]
-            },
-            city: {
-              score: 123,
-              primaryField: "Muni_Name",
-              completeness: 1,
+              primaryField: "ADDRESS",
+              completeness: 0.8,
               alternatives: []
             },
-            zip: {
-              score: 145,
-              primaryField: "ZIP1_ZIP2",
+            city: {
+              score: 130,
+              primaryField: "CITY",
               completeness: 1,
               alternatives: [
-                "LOC_ZIP1_Z"
+                "OWNCITY",
+                "PREMCITY"
+              ]
+            },
+            zip: {
+              score: 148,
+              primaryField: "ZIPCODE",
+              completeness: 1,
+              alternatives: [
+                "OWNERZIP",
+                "PREMZIP"
               ]
             },
             parcelId: {
               score: 145,
               primaryField: "PARCEL",
-              completeness: 1,
-              alternatives: [
-                "TAXPIN",
-                "ALT_ID"
-              ]
+              completeness: 0.98,
+              alternatives: []
             },
             ownerName: {
-              score: 130,
-              primaryField: "OWN1",
+              score: 97,
+              primaryField: "OWNADD1",
               completeness: 1,
               alternatives: [
-                "OWN_INFO_C",
-                "OWN_INFO_1"
+                "OWNCITY",
+                "OWNSTATE"
               ]
-            },
-            coOwnerName: {
-              score: 109,
-              primaryField: "OWN2",
-              completeness: 0.04,
-              alternatives: []
             },
             sourceRecordId: {
               score: 155,
               primaryField: "OBJECTID",
               completeness: 1,
-              alternatives: [
-                "OBJECTID_1"
-              ]
-            },
-            sourceUpdatedAt: {
-              score: 140,
-              primaryField: "PROP_INFO1",
-              completeness: 1,
-              alternatives: [
-                "ASSMT_CHGD"
-              ]
-            },
-            estimatedValue: {
-              score: 140,
-              primaryField: "TOTAL_APPR",
-              completeness: 1,
-              alternatives: [
-                "TOTAL_ASSE",
-                "ASSESSMENT"
-              ]
-            },
-            assessmentValue: {
-              score: 138,
-              primaryField: "TOTAL_ASSE",
-              completeness: 1,
-              alternatives: [
-                "ASSESSMENT"
-              ]
-            },
-            yearBuilt: {
-              score: 148,
-              primaryField: "YEAR_BUILT",
-              completeness: 1,
               alternatives: []
             },
             landAcres: {
-              score: 135,
-              primaryField: "LAND_ACRES",
+              score: 133,
+              primaryField: "ACRES",
               completeness: 1,
               alternatives: []
             },
             livingArea: {
-              score: 136,
-              primaryField: "SFLA",
-              completeness: 1,
-              alternatives: []
-            },
-            saleDate: {
-              score: 148,
-              primaryField: "SALE_DATE",
-              completeness: 1,
-              alternatives: [
-                "SALE_DATE_"
-              ]
-            },
-            salePrice: {
-              score: 136,
-              primaryField: "CONSIDERAT",
-              completeness: 1,
+              score: 96,
+              primaryField: "SQFTSTRC",
+              completeness: 0.66,
               alternatives: []
             }
           },
@@ -258,7 +255,7 @@ REOS.MontgomeryCountyConnector = (function () {
         }
       }
     },
-    updatedAt: "2026-08-01T13:06:37.786Z"
+    updatedAt: "2026-08-04T15:59:50.672Z"
   };
 
   function register() {
@@ -298,7 +295,12 @@ REOS.MontgomeryCountyConnector = (function () {
     };
 
     if (definition.adapter === 'arcgis') {
-      adapterOptions.where = '1=1';
+      adapterOptions.where =
+        definition.sourceQuery &&
+        definition.sourceQuery.where
+          ? String(definition.sourceQuery.where)
+          : '1=1';
+
       adapterOptions.outFields = '*';
       adapterOptions.returnGeometry = false;
     }
@@ -383,7 +385,34 @@ REOS.MontgomeryCountyConnector = (function () {
     };
   }
 
-  function validate_(record) {
+  function validate_(record, context) {
+    if (
+      context &&
+      context.dataset === 'parcel_inventory'
+    ) {
+      var parcelId = String(
+        record['Parcel ID'] || ''
+      ).trim();
+
+      var sourceRecordId = String(
+        record['Source Record ID'] || ''
+      ).trim();
+
+      if (!parcelId && !sourceRecordId) {
+        return {
+          ok: false,
+          errors: [
+            'Parcel inventory requires Parcel ID or Source Record ID.'
+          ]
+        };
+      }
+
+      return {
+        ok: true,
+        errors: []
+      };
+    }
+
     return REOS.CountyConnectorSDK.validateLead(record);
   }
 
@@ -419,6 +448,7 @@ REOS.MontgomeryCountyConnector = (function () {
       PropertiesService
         .getScriptProperties()
         .getProperty(definition.endpointProperty) ||
+      definition.endpoint ||
       ''
     );
   }

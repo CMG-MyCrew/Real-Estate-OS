@@ -12,17 +12,17 @@ REOS.GeneratedCountyConnectorRegistrars =
 
 REOS.UnionCountyConnector = (function () {
   var MANIFEST = {
-    id: "NJ-UNION",
-    state: "NJ",
+    id: "PA-UNION",
+    state: "PA",
     county: "Union",
     version: "1.0.0",
     enabled: true,
-    generatedAt: "2026-08-04T12:20:51.576Z",
+    generatedAt: "2026-08-04T18:35:36.679Z",
     datasets: {
-      property_assessment: {
+      parcel_inventory: {
         adapter: "arcgis",
-        endpointProperty: "REOS_COUNTY_NJ_UNION_PROPERTY_ASSESSMENT_URL",
-        endpoint: "https://maps.nj.gov/arcgis/rest/services/Framework/Cadastral/MapServer/0/query",
+        endpointProperty: "REOS_COUNTY_PA_UNION_PARCEL_INVENTORY_URL",
+        endpoint: "https://gis.dep.pa.gov/depgisprd/rest/services/Parcels/PA_Parcels/MapServer/0/query",
         enabled: true,
         maxLimit: 2000,
         mapping: {
@@ -36,7 +36,9 @@ REOS.UnionCountyConnector = (function () {
             "STREET_ADDRESS",
             "street_address",
             "property_address",
-            "location"
+            "location",
+            "PROPERTY_ADDRESS_1",
+            "PROPERTY_ADDRESS_2"
           ],
           city: [
             "CITY_STATE",
@@ -56,9 +58,7 @@ REOS.UnionCountyConnector = (function () {
             "zip_code",
             "ZIPCODE",
             "zipcode",
-            "postal_code",
-            "ZIP5",
-            "ZIP_PLUS4"
+            "postal_code"
           ],
           parcelId: [
             "PAMS_PIN",
@@ -89,7 +89,9 @@ REOS.UnionCountyConnector = (function () {
             "owner1",
             "OWNER",
             "owner",
-            "legal_owner"
+            "legal_owner",
+            "OWNER_LAST_NAME",
+            "OWNER_FIRST_NAME"
           ],
           coOwnerName: [
             "OWNER2",
@@ -104,7 +106,8 @@ REOS.UnionCountyConnector = (function () {
             "id",
             "record_id",
             "PARCEL_NUM",
-            "parcel_number"
+            "parcel_number",
+            "GLOBALID"
           ],
           sourceUpdatedAt: [
             "PCLLASTUPD",
@@ -120,48 +123,30 @@ REOS.UnionCountyConnector = (function () {
             "last_updated",
             "date_updated"
           ],
-          landValue: [
-            "LAND_VAL",
-            "land_val",
-            "LAND_VALUE",
-            "land_value",
-            "assessed_land_value"
-          ],
-          buildingValue: [
-            "IMPRVT_VAL",
-            "imprvt_val",
-            "BUILDING_VALUE",
-            "building_value",
-            "improvement_value"
-          ],
-          estimatedValue: [
-            "NET_VALUE",
-            "net_value",
-            "TOTAL_VALUE",
-            "total_value",
-            "TOTAL_ASSESSMENT",
-            "total_assessment",
-            "assessed_value"
-          ],
-          assessmentValue: [],
-          yearBuilt: [],
           landAcres: [
-            "CALC_ACRE"
+            "ACRES",
+            "acres",
+            "ACREAGE",
+            "acreage",
+            "land_acres"
           ],
+          estimatedValue: [],
+          assessmentValue: [],
+          landValue: [],
+          buildingValue: [],
+          yearBuilt: [],
           livingArea: [],
           saleDate: [],
-          salePrice: [
-            "SALE_PRICE"
-          ]
+          salePrice: []
         },
         sourceQuery: {
-          where: "COUNTY='UNION'"
+          where: "COUNTY_NAME='UNION'"
         },
         discovery: {
-          report: "reports/county-build/NJ-UNION/promotion-input.json",
+          report: "reports/county-build/PA-UNION/promotion-input.json",
           candidate: 1,
-          promotedAt: "2026-08-04T12:20:51.578Z",
-          title: "Parcels and MOD-IV Composite of New Jersey",
+          promotedAt: "2026-08-04T18:35:36.680Z",
+          title: "Pennsylvania DEP Parcel Layer",
           source: "",
           sourceScope: "statewide",
           authoritative: true,
@@ -169,99 +154,82 @@ REOS.UnionCountyConnector = (function () {
           sourceLayerId: "",
           compatibilityScore: 100,
           matchedTerms: [],
-          endpoint: "https://maps.nj.gov/arcgis/rest/services/Framework/Cadastral/MapServer/0/query"
+          endpoint: "https://gis.dep.pa.gov/depgisprd/rest/services/Parcels/PA_Parcels/MapServer/0/query"
         },
         recordFilter: {
           requireAny: [
             [
-              "ST_ADDRESS",
-              "PROP_LOC"
+              "PROPERTY_ADDRESS_1",
+              "PROPERTY_ADDRESS_2"
             ],
             [
-              "PAMS_PIN",
-              "PIN_NODUP",
-              "GIS_PIN"
+              "PARCEL_ID"
             ]
           ]
         },
         autoMapping: {
-          appliedAt: "2026-08-04T12:20:52.866Z",
+          appliedAt: "2026-08-04T18:35:42.842Z",
           sampleCount: 50,
-          report: "reports/county-mapping/NJ-UNION-PROPERTY_ASSESSMENT-MAPPING.json",
+          report: "reports/county-mapping/PA-UNION-PARCEL_INVENTORY-MAPPING.json",
           minimumScore: 65,
           confidence: {
             address: {
-              score: 165,
-              primaryField: "ST_ADDRESS",
+              score: 115,
+              primaryField: "PROPERTY_ADDRESS_1",
               completeness: 1,
               alternatives: [
-                "PROP_LOC"
+                "PROPERTY_ADDRESS_2"
               ]
             },
             city: {
-              score: 138,
-              primaryField: "MUN_NAME",
+              score: 130,
+              primaryField: "CITY",
               completeness: 1,
-              alternatives: [
-                "CITY_STATE"
-              ]
+              alternatives: []
             },
             zip: {
-              score: 148,
-              primaryField: "ZIP_CODE",
+              score: 150,
+              primaryField: "ZIP",
               completeness: 1,
-              alternatives: [
-                "ZIP5",
-                "ZIP_PLUS4"
-              ]
+              alternatives: []
             },
             parcelId: {
-              score: 175,
-              primaryField: "PAMS_PIN",
+              score: 165,
+              primaryField: "PARCEL_ID",
               completeness: 1,
-              alternatives: [
-                "PIN_NODUP",
-                "GIS_PIN"
-              ]
+              alternatives: []
             },
             ownerName: {
-              score: 120,
+              score: 152,
               primaryField: "OWNER_NAME",
-              completeness: 0,
-              alternatives: []
+              completeness: 1,
+              alternatives: [
+                "OWNER_LAST_NAME",
+                "OWNER_FIRST_NAME"
+              ]
             },
             sourceRecordId: {
               score: 155,
               primaryField: "OBJECTID",
               completeness: 1,
-              alternatives: []
-            },
-            sourceUpdatedAt: {
-              score: 160,
-              primaryField: "PCL_PBDATE",
-              completeness: 1,
               alternatives: [
-                "PCLLASTUPD"
+                "GLOBALID"
               ]
             },
             landAcres: {
-              score: 155,
-              primaryField: "CALC_ACRE",
+              score: 133,
+              primaryField: "ACRES",
               completeness: 1,
-              alternatives: []
-            },
-            salePrice: {
-              score: 158,
-              primaryField: "SALE_PRICE",
-              completeness: 1,
-              alternatives: []
+              alternatives: [
+                "ACREAGE"
+              ]
             }
           },
           warnings: []
         }
       }
     },
-    updatedAt: "2026-08-04T12:20:52.866Z"
+    updatedAt: "2026-08-04T18:35:42.842Z"
   };
 
   function register() {

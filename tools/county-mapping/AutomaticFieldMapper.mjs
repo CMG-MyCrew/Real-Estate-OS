@@ -5,6 +5,8 @@ const FIELD_RULES = {
   address: {
     required: true,
     patterns: [
+      [/^st_?address$/i, 120],
+      [/^prop_?loc$/i, 118],
       [/^address$/i, 100],
       [/^property_?address$/i, 98],
       [/^street_?address$/i, 96],
@@ -23,6 +25,8 @@ const FIELD_RULES = {
 
   city: {
     patterns: [
+      [/^city_?state$/i, 105],
+      [/^mun_?name$/i, 108],
       [/^city$/i, 100],
       [/^property_?city$/i, 95],
       [/^municipality$/i, 94],
@@ -57,6 +61,11 @@ const FIELD_RULES = {
   parcelId: {
     required: true,
     patterns: [
+      [/^pams_?pin$/i, 130],
+      [/^pin_?nodup$/i, 128],
+      [/^gis_?pin$/i, 125],
+      [/^pcl_?pin$/i, 122],
+      [/^parcel_?id$/i, 120],
       [/^parcel$/i, 100],
       [/^pin$/i, 100],
       [/^tax_?pin$/i, 99],
@@ -80,6 +89,7 @@ const FIELD_RULES = {
 
   ownerName: {
     patterns: [
+      [/^owner_?name$/i, 120],
       [/^owner$/i, 100],
       [/^owner1$/i, 99],
       [/^own1$/i, 98],
@@ -125,6 +135,8 @@ const FIELD_RULES = {
 
   sourceUpdatedAt: {
     patterns: [
+      [/^pcl_?lastupd$/i, 115],
+      [/^pcl_?pbdate$/i, 110],
       [/^modify_?date$/i, 100],
       [/^modified$/i, 98],
       [/^updated_?at$/i, 97],
@@ -208,6 +220,7 @@ const FIELD_RULES = {
 
   landAcres: {
     patterns: [
+      [/^calc_?acre$/i, 120],
       [/^land_?acres$/i, 100],
       [/^acres$/i, 98],
       [/^acreage$/i, 96],
@@ -245,6 +258,7 @@ const FIELD_RULES = {
 
   salePrice: {
     patterns: [
+      [/^sale_?price$/i, 120],
       [/^sale_?price$/i, 100],
       [/^considerat$/i, 98],
       [/^consideration$/i, 98],

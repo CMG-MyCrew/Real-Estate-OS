@@ -1153,6 +1153,10 @@ function readJsonFile(filePath, label) {
 function defaultMappingForDataset(dataset) {
   const common = {
     address: [
+      'ST_ADDRESS',
+      'st_address',
+      'PROP_LOC',
+      'prop_loc',
       'ADDRESS',
       'address',
       'STREET_ADDRESS',
@@ -1161,6 +1165,10 @@ function defaultMappingForDataset(dataset) {
       'location'
     ],
     city: [
+      'CITY_STATE',
+      'city_state',
+      'MUN_NAME',
+      'mun_name',
       'CITY',
       'city',
       'MUNICIPALITY',
@@ -1177,6 +1185,14 @@ function defaultMappingForDataset(dataset) {
       'postal_code'
     ],
     parcelId: [
+      'PAMS_PIN',
+      'pams_pin',
+      'PIN_NODUP',
+      'pin_nodup',
+      'GIS_PIN',
+      'gis_pin',
+      'PCL_PIN',
+      'pcl_pin',
       'PIN',
       'pin',
       'TAXPIN',
@@ -1191,6 +1207,8 @@ function defaultMappingForDataset(dataset) {
       'account_number'
     ],
     ownerName: [
+      'OWNER_NAME',
+      'owner_name',
       'OWNER1',
       'owner1',
       'OWNER',
@@ -1214,6 +1232,10 @@ function defaultMappingForDataset(dataset) {
       'parcel_number'
     ],
     sourceUpdatedAt: [
+      'PCLLASTUPD',
+      'pcllastupd',
+      'PCL_PBDATE',
+      'pcl_pbdate',
       'UPDATED',
       'updated',
       'MODIFY_DATE',
@@ -1242,16 +1264,22 @@ function defaultMappingForDataset(dataset) {
     return {
       ...common,
       landValue: [
+        'LAND_VAL',
+        'land_val',
         'LAND_VALUE',
         'land_value',
         'assessed_land_value'
       ],
       buildingValue: [
+        'IMPRVT_VAL',
+        'imprvt_val',
         'BUILDING_VALUE',
         'building_value',
         'improvement_value'
       ],
       estimatedValue: [
+        'NET_VALUE',
+        'net_value',
         'TOTAL_VALUE',
         'total_value',
         'TOTAL_ASSESSMENT',

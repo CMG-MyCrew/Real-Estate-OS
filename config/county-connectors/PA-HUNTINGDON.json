@@ -1,0 +1,220 @@
+{
+  "id": "PA-HUNTINGDON",
+  "state": "PA",
+  "county": "Huntingdon",
+  "version": "1.0.0",
+  "enabled": true,
+  "generatedAt": "2026-08-04T18:28:12.041Z",
+  "datasets": {
+    "parcel_inventory": {
+      "adapter": "arcgis",
+      "endpointProperty": "REOS_COUNTY_PA_HUNTINGDON_PARCEL_INVENTORY_URL",
+      "endpoint": "https://gis.dep.pa.gov/depgisprd/rest/services/Parcels/PA_Parcels/MapServer/0/query",
+      "enabled": true,
+      "maxLimit": 2000,
+      "mapping": {
+        "address": [
+          "ST_ADDRESS",
+          "st_address",
+          "PROP_LOC",
+          "prop_loc",
+          "ADDRESS",
+          "address",
+          "STREET_ADDRESS",
+          "street_address",
+          "property_address",
+          "location",
+          "PROPERTY_ADDRESS_1",
+          "PROPERTY_ADDRESS_2"
+        ],
+        "city": [
+          "CITY_STATE",
+          "city_state",
+          "MUN_NAME",
+          "mun_name",
+          "CITY",
+          "city",
+          "MUNICIPALITY",
+          "municipality",
+          "property_city"
+        ],
+        "zip": [
+          "ZIP",
+          "zip",
+          "ZIP_CODE",
+          "zip_code",
+          "ZIPCODE",
+          "zipcode",
+          "postal_code"
+        ],
+        "parcelId": [
+          "PAMS_PIN",
+          "pams_pin",
+          "PIN_NODUP",
+          "pin_nodup",
+          "GIS_PIN",
+          "gis_pin",
+          "PCL_PIN",
+          "pcl_pin",
+          "PIN",
+          "pin",
+          "TAXPIN",
+          "taxpin",
+          "PARCEL_NUM",
+          "parcel_num",
+          "PARCEL_ID",
+          "parcel_id",
+          "parcel_number",
+          "OPA_NUMBER",
+          "opa_number",
+          "account_number"
+        ],
+        "ownerName": [
+          "OWNER_NAME",
+          "owner_name",
+          "OWNER1",
+          "owner1",
+          "OWNER",
+          "owner",
+          "legal_owner",
+          "OWNER_LAST_NAME",
+          "OWNER_FIRST_NAME"
+        ],
+        "coOwnerName": [
+          "OWNER2",
+          "owner2",
+          "CO_OWNER",
+          "co_owner"
+        ],
+        "sourceRecordId": [
+          "OBJECTID",
+          "objectid",
+          "ID",
+          "id",
+          "record_id",
+          "PARCEL_NUM",
+          "parcel_number",
+          "GLOBALID"
+        ],
+        "sourceUpdatedAt": [
+          "PCLLASTUPD",
+          "pcllastupd",
+          "PCL_PBDATE",
+          "pcl_pbdate",
+          "UPDATED",
+          "updated",
+          "MODIFY_DATE",
+          "modify_date",
+          "UPDATED_AT",
+          "updated_at",
+          "last_updated",
+          "date_updated"
+        ],
+        "landAcres": [
+          "ACRES",
+          "acres",
+          "ACREAGE",
+          "acreage",
+          "land_acres"
+        ],
+        "estimatedValue": [],
+        "assessmentValue": [],
+        "landValue": [],
+        "buildingValue": [],
+        "yearBuilt": [],
+        "livingArea": [],
+        "saleDate": [],
+        "salePrice": []
+      },
+      "sourceQuery": {
+        "where": "COUNTY_NAME='HUNTINGDON'"
+      },
+      "discovery": {
+        "report": "reports/county-build/PA-HUNTINGDON/promotion-input.json",
+        "candidate": 1,
+        "promotedAt": "2026-08-04T18:28:12.043Z",
+        "title": "Pennsylvania DEP Parcel Layer",
+        "source": "",
+        "sourceScope": "statewide",
+        "authoritative": true,
+        "sourceItemId": "",
+        "sourceLayerId": "",
+        "compatibilityScore": 100,
+        "matchedTerms": [],
+        "endpoint": "https://gis.dep.pa.gov/depgisprd/rest/services/Parcels/PA_Parcels/MapServer/0/query"
+      },
+      "recordFilter": {
+        "requireAny": [
+          [
+            "PROPERTY_ADDRESS_1",
+            "PROPERTY_ADDRESS_2"
+          ],
+          [
+            "PARCEL_ID"
+          ]
+        ]
+      },
+      "autoMapping": {
+        "appliedAt": "2026-08-04T18:28:17.843Z",
+        "sampleCount": 50,
+        "report": "reports/county-mapping/PA-HUNTINGDON-PARCEL_INVENTORY-MAPPING.json",
+        "minimumScore": 65,
+        "confidence": {
+          "address": {
+            "score": 115,
+            "primaryField": "PROPERTY_ADDRESS_1",
+            "completeness": 1,
+            "alternatives": [
+              "PROPERTY_ADDRESS_2"
+            ]
+          },
+          "city": {
+            "score": 130,
+            "primaryField": "CITY",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "zip": {
+            "score": 150,
+            "primaryField": "ZIP",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "parcelId": {
+            "score": 165,
+            "primaryField": "PARCEL_ID",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "ownerName": {
+            "score": 152,
+            "primaryField": "OWNER_NAME",
+            "completeness": 1,
+            "alternatives": [
+              "OWNER_LAST_NAME",
+              "OWNER_FIRST_NAME"
+            ]
+          },
+          "sourceRecordId": {
+            "score": 155,
+            "primaryField": "OBJECTID",
+            "completeness": 1,
+            "alternatives": [
+              "GLOBALID"
+            ]
+          },
+          "landAcres": {
+            "score": 133,
+            "primaryField": "ACRES",
+            "completeness": 1,
+            "alternatives": [
+              "ACREAGE"
+            ]
+          }
+        },
+        "warnings": []
+      }
+    }
+  },
+  "updatedAt": "2026-08-04T18:28:17.843Z"
+}
