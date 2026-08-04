@@ -6,14 +6,14 @@
       "id": "DE-STATE-PARCELS",
       "title": "Delaware State Parcels",
       "description": "Authoritative statewide parcel inventory published by Delaware FirstMap.",
-      "dataset": "property_assessment",
+      "dataset": "parcel_inventory",
       "adapter": "arcgis",
       "endpoint": "https://enterprise.firstmaptest.delaware.gov/arcgis/rest/services/PlanningCadastre/DE_StateParcels/FeatureServer/0/query",
       "scope": "statewide",
       "authoritative": true,
       "countyField": "COUNTY",
       "countyValues": {
-        "Kent": "KENT",
+        "Kent": "Kent",
         "New Castle": "NEW CASTLE",
         "Sussex": "SUSSEX"
       },

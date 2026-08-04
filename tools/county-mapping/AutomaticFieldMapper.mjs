@@ -58,6 +58,8 @@ const FIELD_RULES = {
     required: true,
     patterns: [
       [/^parcel$/i, 100],
+      [/^pin$/i, 100],
+      [/^tax_?pin$/i, 99],
       [/^parcel_?id$/i, 99],
       [/^parcel_?num$/i, 99],
       [/^parcel_?number$/i, 99],
@@ -577,10 +579,30 @@ function scoreField(field, rule, records) {
 }
 
 function mergeRules(dataset) {
-  return {
+  const rules = {
     ...FIELD_RULES,
     ...(DATASET_RULES[dataset] || {})
   };
+
+  if (dataset === 'parcel_inventory') {
+    return {
+      ...rules,
+      address: {
+        ...rules.address,
+        required: false
+      },
+      parcelId: {
+        ...rules.parcelId,
+        required: true
+      },
+      sourceRecordId: {
+        ...rules.sourceRecordId,
+        required: false
+      }
+    };
+  }
+
+  return rules;
 }
 
 export function inferFieldMapping(records, dataset, options = {}) {
@@ -664,10 +686,21 @@ function buildRecordFilter(mapping) {
     : null;
 }
 
-export function fetchArcGISRecords(endpoint, sampleCount = 25) {
+export function fetchArcGISRecords(
+  endpoint,
+  sampleCount = 25,
+  options = {}
+) {
   const url = new URL(endpoint);
 
-  url.searchParams.set('where', '1=1');
+  const sourceWhere = String(
+    options.sourceQuery?.where || ''
+  ).trim();
+
+  url.searchParams.set(
+    'where',
+    sourceWhere || '1=1'
+  );
   url.searchParams.set('outFields', '*');
   url.searchParams.set('returnGeometry', 'false');
   url.searchParams.set(

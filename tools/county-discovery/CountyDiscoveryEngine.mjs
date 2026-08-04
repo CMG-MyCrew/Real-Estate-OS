@@ -9,6 +9,26 @@ const SOCRATA_CATALOG =
   'https://api.us.socrata.com/api/catalog/v1';
 
 const DATASET_RULES = {
+  parcel_inventory: {
+    labels: [
+      'parcel inventory',
+      'parcel boundaries',
+      'parcel boundary',
+      'parcel layer',
+      'parcel polygons',
+      'land parcels',
+      'tax parcels',
+      'cadastral parcels',
+      'state parcels'
+    ],
+    requiredSignals: [
+      'parcel',
+      'parcels',
+      'cadastral',
+      'tax parcel'
+    ]
+  },
+
   property_assessment: {
     labels: [
       'property assessment',

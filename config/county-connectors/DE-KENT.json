@@ -1,0 +1,102 @@
+{
+  "id": "DE-KENT",
+  "state": "DE",
+  "county": "Kent",
+  "version": "1.0.0",
+  "enabled": true,
+  "generatedAt": "2026-08-04T09:27:24.878Z",
+  "datasets": {
+    "parcel_inventory": {
+      "adapter": "arcgis",
+      "endpointProperty": "REOS_COUNTY_DE_KENT_PARCEL_INVENTORY_URL",
+      "endpoint": "https://enterprise.firstmaptest.delaware.gov/arcgis/rest/services/PlanningCadastre/DE_StateParcels/FeatureServer/0/query",
+      "enabled": true,
+      "maxLimit": 2000,
+      "mapping": {
+        "address": [],
+        "city": [],
+        "zip": [],
+        "parcelId": [
+          "PIN"
+        ],
+        "ownerName": [],
+        "coOwnerName": [],
+        "sourceRecordId": [
+          "OBJECTID"
+        ],
+        "sourceUpdatedAt": [
+          "UPDATED"
+        ],
+        "estimatedValue": [],
+        "assessmentValue": [],
+        "landValue": [],
+        "buildingValue": [],
+        "yearBuilt": [],
+        "landAcres": [
+          "ACRES"
+        ],
+        "livingArea": [],
+        "saleDate": [],
+        "salePrice": []
+      },
+      "sourceQuery": {
+        "where": "COUNTY='Kent'"
+      },
+      "discovery": {
+        "report": "reports/county-build/DE-KENT/promotion-input.json",
+        "candidate": 1,
+        "promotedAt": "2026-08-04T09:27:58.964Z",
+        "title": "Delaware State Parcels",
+        "source": "",
+        "sourceScope": "statewide",
+        "authoritative": true,
+        "sourceItemId": "",
+        "sourceLayerId": "",
+        "compatibilityScore": 100,
+        "matchedTerms": [],
+        "endpoint": "https://enterprise.firstmaptest.delaware.gov/arcgis/rest/services/PlanningCadastre/DE_StateParcels/FeatureServer/0/query"
+      },
+      "recordFilter": {
+        "requireAny": [
+          [
+            "PIN"
+          ]
+        ]
+      },
+      "autoMapping": {
+        "appliedAt": "2026-08-04T09:28:09.226Z",
+        "sampleCount": 25,
+        "report": "reports/county-mapping/DE-KENT-PARCEL_INVENTORY-MAPPING.json",
+        "minimumScore": 65,
+        "confidence": {
+          "parcelId": {
+            "score": 145,
+            "primaryField": "PIN",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "sourceRecordId": {
+            "score": 155,
+            "primaryField": "OBJECTID",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "sourceUpdatedAt": {
+            "score": 118,
+            "primaryField": "UPDATED",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "landAcres": {
+            "score": 133,
+            "primaryField": "ACRES",
+            "completeness": 1,
+            "alternatives": []
+          }
+        },
+        "warnings": []
+      }
+    }
+  },
+  "updatedAt": "2026-08-04T09:28:09.226Z"
+}

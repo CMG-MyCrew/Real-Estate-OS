@@ -8,6 +8,7 @@ import {
 } from './CountyDiscoveryEngine.mjs';
 
 const DEFAULT_DATASETS = [
+  'parcel_inventory',
   'property_assessment',
   'tax_delinquent',
   'code_violations',
@@ -17,6 +18,7 @@ const DEFAULT_DATASETS = [
 ];
 
 const DATASET_THRESHOLDS = {
+  parcel_inventory: 60,
   property_assessment: 60,
   tax_delinquent: 68,
   code_violations: 65,

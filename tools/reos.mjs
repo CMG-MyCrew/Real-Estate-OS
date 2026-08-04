@@ -47,6 +47,12 @@ import {
 import {
   runAutonomousMaintenance
 } from './autonomous-maintenance/AutonomousMaintenanceEngine.mjs';
+import {
+  syncNationwideCatalog,
+  runNationwideExpansion,
+  generateCoverageReport,
+  resetExpansionCheckpoint
+} from './nationwide-expansion/NationwideExpansionEngine.mjs';
 
 const ROOT = process.cwd();
 const CONNECTOR_DIR = path.join(ROOT, 'src', 'connectors', 'generated');
@@ -317,7 +323,12 @@ REOS.${countyClass} = (function () {
     };
 
     if (definition.adapter === 'arcgis') {
-      adapterOptions.where = '1=1';
+      adapterOptions.where =
+        definition.sourceQuery &&
+        definition.sourceQuery.where
+          ? String(definition.sourceQuery.where)
+          : '1=1';
+
       adapterOptions.outFields = '*';
       adapterOptions.returnGeometry = false;
     }
@@ -402,7 +413,34 @@ REOS.${countyClass} = (function () {
     };
   }
 
-  function validate_(record) {
+  function validate_(record, context) {
+    if (
+      context &&
+      context.dataset === 'parcel_inventory'
+    ) {
+      var parcelId = String(
+        record['Parcel ID'] || ''
+      ).trim();
+
+      var sourceRecordId = String(
+        record['Source Record ID'] || ''
+      ).trim();
+
+      if (!parcelId && !sourceRecordId) {
+        return {
+          ok: false,
+          errors: [
+            'Parcel inventory requires Parcel ID or Source Record ID.'
+          ]
+        };
+      }
+
+      return {
+        ok: true,
+        errors: []
+      };
+    }
+
     return REOS.CountyConnectorSDK.validateLead(record);
   }
 
@@ -438,6 +476,7 @@ REOS.${countyClass} = (function () {
       PropertiesService
         .getScriptProperties()
         .getProperty(definition.endpointProperty) ||
+      definition.endpoint ||
       ''
     );
   }
@@ -1138,6 +1177,10 @@ function defaultMappingForDataset(dataset) {
       'postal_code'
     ],
     parcelId: [
+      'PIN',
+      'pin',
+      'TAXPIN',
+      'taxpin',
       'PARCEL_NUM',
       'parcel_num',
       'PARCEL_ID',
@@ -1171,6 +1214,8 @@ function defaultMappingForDataset(dataset) {
       'parcel_number'
     ],
     sourceUpdatedAt: [
+      'UPDATED',
+      'updated',
       'MODIFY_DATE',
       'modify_date',
       'UPDATED_AT',
@@ -1179,6 +1224,19 @@ function defaultMappingForDataset(dataset) {
       'date_updated'
     ]
   };
+
+  if (dataset === 'parcel_inventory') {
+    return {
+      ...common,
+      landAcres: [
+        'ACRES',
+        'acres',
+        'ACREAGE',
+        'acreage',
+        'land_acres'
+      ]
+    };
+  }
 
   if (dataset === 'property_assessment') {
     return {
@@ -1282,8 +1340,10 @@ function normalizePromotedDataset(value) {
     sheriff_sale: 'sheriff_sales',
     sheriff_tax_sale: 'sheriff_sales',
     sheriff_mortgage_sale: 'sheriff_sales',
-    parcels: 'property_assessment',
-    parcel: 'property_assessment',
+    parcels: 'parcel_inventory',
+    parcel: 'parcel_inventory',
+    parcel_layer: 'parcel_inventory',
+    parcel_boundaries: 'parcel_inventory',
     assessment: 'property_assessment',
     violations: 'code_violations',
     vacant: 'vacant_properties'
@@ -1382,15 +1442,23 @@ function buildPromotedDatasetDefinition({
   return {
     adapter,
     endpointProperty: propertyKey(connectorIdValue, dataset),
+    endpoint,
     enabled: true,
     maxLimit: adapter === 'arcgis' ? 2000 : 5000,
     mapping: defaultMappingForDataset(dataset),
+    sourceQuery:
+      candidate.sourceQuery &&
+      typeof candidate.sourceQuery === 'object'
+        ? candidate.sourceQuery
+        : null,
     discovery: {
       report: path.relative(ROOT, reportPath),
       candidate: candidateNumber,
       promotedAt: new Date().toISOString(),
       title: candidate.title || '',
       source: candidate.source || '',
+      sourceScope: candidate.sourceScope || '',
+      authoritative: candidate.authoritative === true,
       sourceItemId: candidate.itemId || '',
       sourceLayerId:
         typeof candidate.layerId === 'undefined'
@@ -1831,10 +1899,17 @@ async function commandAutoMap(args) {
     `Fetching ${sampleCount} sample records from ${adapter}...`
   );
 
+  const sourceQuery =
+    definition.sourceQuery &&
+    typeof definition.sourceQuery === 'object'
+      ? definition.sourceQuery
+      : null;
+
   const records = await fetchSampleRecords({
     adapter,
     endpoint,
-    sampleCount
+    sampleCount,
+    sourceQuery
   });
 
   if (!records.length) {
@@ -1915,14 +1990,31 @@ async function commandAutoMap(args) {
     return;
   }
 
-  const requiredMappingFailures = [
-    'address',
-    'parcelId',
-    'sourceRecordId'
-  ].filter(target => {
-    return !Array.isArray(result.mapping[target]) ||
-      result.mapping[target].length === 0;
-  });
+  let requiredMappingFailures;
+
+  if (dataset === 'parcel_inventory') {
+    const hasParcelId =
+      Array.isArray(result.mapping.parcelId) &&
+      result.mapping.parcelId.length > 0;
+
+    const hasSourceRecordId =
+      Array.isArray(result.mapping.sourceRecordId) &&
+      result.mapping.sourceRecordId.length > 0;
+
+    requiredMappingFailures =
+      hasParcelId || hasSourceRecordId
+        ? []
+        : ['parcelId or sourceRecordId'];
+  } else {
+    requiredMappingFailures = [
+      'address',
+      'parcelId',
+      'sourceRecordId'
+    ].filter(target => {
+      return !Array.isArray(result.mapping[target]) ||
+        result.mapping[target].length === 0;
+    });
+  }
 
   if (
     requiredMappingFailures.length &&
@@ -3207,6 +3299,227 @@ async function commandAutonomousMaintenance(args) {
   }
 }
 
+async function commandNationwideCatalogSync(args) {
+  const states = splitList(
+    args.states || args.state,
+    []
+  );
+
+  const result =
+    await syncNationwideCatalog({
+      root: ROOT,
+      states,
+      overwrite:
+        args.overwrite === true,
+      continueOnError:
+        args['continue-on-error'] === true
+    });
+
+  console.log('');
+  console.log(
+    'Nationwide county catalog synchronized.'
+  );
+  console.log(
+    `States requested: ${result.catalog.counts.requested}`
+  );
+  console.log(
+    `States succeeded: ${result.catalog.counts.succeeded}`
+  );
+  console.log(
+    `States failed:    ${result.catalog.counts.failed}`
+  );
+  console.log(
+    `Counties:         ${result.catalog.counts.counties}`
+  );
+  console.log(
+    `Catalog:          ${path.relative(
+      ROOT,
+      result.catalogPath
+    )}`
+  );
+
+  if (!result.ok) {
+    process.exitCode = 1;
+  }
+}
+
+function parseNationwideCountyOverrides(value) {
+  const result = {};
+
+  if (!value) {
+    return result;
+  }
+
+  String(value)
+    .split(';')
+    .map(part => part.trim())
+    .filter(Boolean)
+    .forEach(part => {
+      const separator =
+        part.indexOf(':');
+
+      if (separator === -1) {
+        return;
+      }
+
+      const state = part
+        .slice(0, separator)
+        .trim()
+        .toUpperCase();
+
+      const counties = part
+        .slice(separator + 1)
+        .split(',')
+        .map(county => county.trim())
+        .filter(Boolean);
+
+      if (
+        /^[A-Z]{2}$/.test(state) &&
+        counties.length
+      ) {
+        result[state] = counties;
+      }
+    });
+
+  return result;
+}
+
+async function commandNationwideExpand(args) {
+  const result =
+    await runNationwideExpansion({
+      root: ROOT,
+      states: splitList(
+        args.states || args.state,
+        []
+      ),
+      datasets: splitList(
+        args.datasets,
+        ['property_assessment']
+      ),
+      countyOverrides:
+        parseNationwideCountyOverrides(
+          args.counties
+        ),
+      countyLimit: Math.max(
+        0,
+        Math.min(
+          Number(
+            args['county-limit'] || 0
+          ),
+          500
+        )
+      ),
+      execute:
+        args.execute === true,
+      push:
+        args.push === true,
+      rebuild:
+        args.rebuild === true,
+      resume:
+        args.resume === true,
+      includeExisting:
+        args['include-existing'] === true,
+      continueOnError:
+        args['continue-on-error'] === true,
+      samples: Math.max(
+        5,
+        Math.min(
+          Number(args.samples || 50),
+          250
+        )
+      ),
+      results: Math.max(
+        10,
+        Math.min(
+          Number(args.results || 150),
+          250
+        )
+      ),
+      healthLimit: Math.max(
+        1,
+        Math.min(
+          Number(
+            args['health-limit'] || 25
+          ),
+          50
+        )
+      ),
+      testLimit: Math.max(
+        1,
+        Math.min(
+          Number(
+            args['test-limit'] || 10
+          ),
+          100
+        )
+      )
+    });
+
+  if (!result.ok) {
+    process.exitCode = 1;
+  }
+}
+
+function commandNationwideCoverage(args) {
+  const report =
+    generateCoverageReport({
+      root: ROOT,
+      states: splitList(
+        args.states || args.state,
+        []
+      )
+    });
+
+  console.log('');
+  console.log(
+    'Nationwide connector coverage'
+  );
+  console.log(
+    '-----------------------------'
+  );
+  console.log(
+    `States:          ${report.totals.states}`
+  );
+  console.log(
+    `Counties:        ${report.totals.counties}`
+  );
+  console.log(
+    `Connectors:      ${report.totals.connectors}`
+  );
+  console.log(
+    `Ready:           ${report.totals.ready}`
+  );
+  console.log(
+    `Production:      ${report.totals.production}`
+  );
+  console.log(
+    `Review required: ${report.totals.reviewRequired}`
+  );
+  console.log(
+    `Failed:          ${report.totals.failed}`
+  );
+  console.log(
+    `Missing:         ${report.totals.missing}`
+  );
+  console.log(
+    `Report:          ${path.relative(
+      ROOT,
+      report.reportPath
+    )}`
+  );
+}
+
+function commandNationwideReset() {
+  const result =
+    resetExpansionCheckpoint({
+      root: ROOT
+    });
+
+  console.log(
+    `Checkpoint reset: ${result.checkpoint}`
+  );
+}
+
 function commandList() {
   const manifests = readManifests();
 
@@ -3723,6 +4036,22 @@ switch (command) {
 
   case 'maintenance:run':
     await commandAutonomousMaintenance(args);
+    break;
+
+  case 'nationwide:catalog-sync':
+    await commandNationwideCatalogSync(args);
+    break;
+
+  case 'nationwide:expand':
+    await commandNationwideExpand(args);
+    break;
+
+  case 'nationwide:coverage':
+    commandNationwideCoverage(args);
+    break;
+
+  case 'nationwide:reset':
+    commandNationwideReset();
     break;
 
   case 'county:promote':
