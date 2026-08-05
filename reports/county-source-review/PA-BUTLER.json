@@ -1,0 +1,16 @@
+{
+  "state": "PA",
+  "county": "Butler",
+  "dataset": "parcel_inventory",
+  "status": "USABLE",
+  "reviewedCandidates": [
+    {
+      "title": "Butler County Parcel Layer",
+      "endpoint": "https://actual-server/.../MapServer/0/query",
+      "countywide": true,
+      "authenticationRequired": false,
+      "usable": true,
+      "reason": "Public countywide parcel query passed metadata, count, sample, mapping, and terminal dry-sync validation."
+    }
+  ]
+}

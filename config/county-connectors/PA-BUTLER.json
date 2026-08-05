@@ -1,0 +1,69 @@
+{
+  "id": "PA-BUTLER",
+  "state": "PA",
+  "county": "Butler",
+  "version": "1.0.0",
+  "enabled": true,
+  "generatedAt": "2026-08-05T21:30:24.408Z",
+  "datasets": {
+    "parcel_inventory": {
+      "adapter": "arcgis",
+      "endpointProperty": "REOS_COUNTY_PA_BUTLER_PARCEL_INVENTORY_URL",
+      "enabled": true,
+      "maxLimit": 2000,
+      "mapping": {
+        "address": [
+          "address",
+          "street_address",
+          "property_address",
+          "location"
+        ],
+        "city": [
+          "city",
+          "property_city"
+        ],
+        "zip": [
+          "zip",
+          "zipcode",
+          "zip_code",
+          "postal_code"
+        ],
+        "parcelId": [
+          "parcel_number",
+          "parcel_id",
+          "opa_number",
+          "account_number"
+        ],
+        "ownerName": [
+          "owner_name",
+          "owner",
+          "legal_owner"
+        ],
+        "sourceRecordId": [
+          "objectid",
+          "id",
+          "record_id",
+          "parcel_number"
+        ],
+        "sourceUpdatedAt": [
+          "updated_at",
+          "last_updated",
+          "date_updated"
+        ]
+      },
+      "endpoint": "https://actual-server/.../MapServer/0/query",
+      "sourceQuery": {
+        "where": "1=1"
+      },
+      "discovery": {
+        "report": "reports/county-source-review/PA-BUTLER.json",
+        "title": "Butler County Parcel Layer",
+        "source": "Butler County GIS",
+        "sourceScope": "county",
+        "authoritative": true,
+        "endpoint": "https://actual-server/.../MapServer/0/query",
+        "reviewStatus": "manual_source_verified"
+      }
+    }
+  }
+}

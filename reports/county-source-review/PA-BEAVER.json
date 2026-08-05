@@ -1,0 +1,20 @@
+{
+  "state": "PA",
+  "county": "Beaver",
+  "dataset": "parcel_inventory",
+  "status": "USABLE",
+  "reviewedCandidates": [
+    {
+      "title": "Beaver County Parcels with Owner",
+      "owner": "Beaver County",
+      "type": "ArcGIS MapServer Feature Layer",
+      "service": "https://gis.beavercountypa.gov/server/rest/services/InfoAtlas/Parcels_with_Owner/MapServer",
+      "layerId": 22,
+      "endpoint": "https://gis.beavercountypa.gov/server/rest/services/InfoAtlas/Parcels_with_Owner/MapServer/22/query",
+      "countywide": true,
+      "authenticationRequired": false,
+      "usable": true,
+      "reason": "Official Beaver County parcel layer; public metadata and query operations succeeded."
+    }
+  ]
+}
