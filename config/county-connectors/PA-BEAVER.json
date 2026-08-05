@@ -1,0 +1,182 @@
+{
+  "id": "PA-BEAVER",
+  "state": "PA",
+  "county": "Beaver",
+  "version": "1.0.0",
+  "enabled": true,
+  "generatedAt": "2026-08-05T01:03:53.486Z",
+  "datasets": {
+    "parcel_inventory": {
+      "adapter": "arcgis",
+      "endpointProperty": "REOS_COUNTY_PA_BEAVER_PARCEL_INVENTORY_URL",
+      "enabled": true,
+      "maxLimit": 2000,
+      "mapping": {
+        "address": [
+          "Mail_Address",
+          "Location_Street"
+        ],
+        "city": [
+          "Mail_City"
+        ],
+        "zip": [
+          "Mail_Zipcode"
+        ],
+        "parcelId": [
+          "Parcel_ID",
+          "PIN"
+        ],
+        "ownerName": [
+          "Owner_Name1",
+          "Current_Owner_ID",
+          "Owner_Name2"
+        ],
+        "coOwnerName": [],
+        "sourceRecordId": [
+          "OBJECTID"
+        ],
+        "sourceUpdatedAt": [],
+        "estimatedValue": [
+          "Total_Value",
+          "Total_Mark_Value"
+        ],
+        "assessmentValue": [],
+        "landValue": [
+          "Land_Value",
+          "Land_Mark_Value"
+        ],
+        "buildingValue": [
+          "Building_Value",
+          "Building_Mark_Value"
+        ],
+        "yearBuilt": [
+          "Year_Built"
+        ],
+        "landAcres": [
+          "Total_Acres"
+        ],
+        "livingArea": [],
+        "saleDate": [
+          "Sale_Date"
+        ],
+        "salePrice": []
+      },
+      "endpoint": "https://gis.beavercountypa.gov/server/rest/services/InfoAtlas/Parcels_with_Owner/MapServer/22/query",
+      "sourceQuery": {
+        "where": "1=1"
+      },
+      "discovery": {
+        "report": "reports/county-source-review/PA-BEAVER.json",
+        "title": "Beaver County Parcels with Owner",
+        "source": "Beaver County Geo Hub",
+        "sourceScope": "county",
+        "authoritative": true,
+        "endpoint": "https://gis.beavercountypa.gov/server/rest/services/InfoAtlas/Parcels_with_Owner/MapServer/22/query"
+      },
+      "recordFilter": {
+        "requireAny": [
+          [
+            "Parcel_ID",
+            "PIN",
+            "OBJECTID"
+          ]
+        ]
+      },
+      "autoMapping": {
+        "appliedAt": "2026-08-05T01:06:16.212Z",
+        "sampleCount": 50,
+        "report": "reports/county-mapping/PA-BEAVER-PARCEL_INVENTORY-MAPPING.json",
+        "minimumScore": 65,
+        "confidence": {
+          "address": {
+            "score": 109,
+            "primaryField": "Mail_Address",
+            "completeness": 0.84,
+            "alternatives": [
+              "Location_Street"
+            ]
+          },
+          "city": {
+            "score": 89,
+            "primaryField": "Mail_City",
+            "completeness": 0.84,
+            "alternatives": []
+          },
+          "zip": {
+            "score": 109,
+            "primaryField": "Mail_Zipcode",
+            "completeness": 0.84,
+            "alternatives": []
+          },
+          "parcelId": {
+            "score": 159,
+            "primaryField": "Parcel_ID",
+            "completeness": 0.84,
+            "alternatives": [
+              "PIN"
+            ]
+          },
+          "ownerName": {
+            "score": 96,
+            "primaryField": "Owner_Name1",
+            "completeness": 0.84,
+            "alternatives": [
+              "Current_Owner_ID",
+              "Owner_Name2"
+            ]
+          },
+          "sourceRecordId": {
+            "score": 155,
+            "primaryField": "OBJECTID",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "estimatedValue": {
+            "score": 133,
+            "primaryField": "Total_Value",
+            "completeness": 0.84,
+            "alternatives": [
+              "Total_Mark_Value"
+            ]
+          },
+          "landValue": {
+            "score": 132,
+            "primaryField": "Land_Value",
+            "completeness": 0.84,
+            "alternatives": [
+              "Land_Mark_Value"
+            ]
+          },
+          "buildingValue": {
+            "score": 132,
+            "primaryField": "Building_Value",
+            "completeness": 0.84,
+            "alternatives": [
+              "Building_Mark_Value"
+            ]
+          },
+          "yearBuilt": {
+            "score": 130,
+            "primaryField": "Year_Built",
+            "completeness": 0.44,
+            "alternatives": []
+          },
+          "landAcres": {
+            "score": 99,
+            "primaryField": "Total_Acres",
+            "completeness": 0.84,
+            "alternatives": []
+          },
+          "saleDate": {
+            "score": 142,
+            "primaryField": "Sale_Date",
+            "completeness": 0.84,
+            "alternatives": []
+          }
+        },
+        "warnings": []
+      }
+    }
+  },
+  "updatedAt": "2026-08-05T01:06:16.212Z"
+}
