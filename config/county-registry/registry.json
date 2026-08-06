@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "generatedAt": "2026-08-01T15:50:21.428Z",
-  "updatedAt": "2026-08-05T21:36:55.528Z",
+  "updatedAt": "2026-08-06T21:19:46.570Z",
   "connectors": {
     "DE-KENT": {
       "connectorId": "DE-KENT",
@@ -85,14 +85,14 @@
             "report": "reports/schema-drift/DE-KENT/parcel_inventory.json"
           },
           "status": "REVIEW_REQUIRED",
-          "updatedAt": "2026-08-05T21:36:55.532Z",
+          "updatedAt": "2026-08-06T21:19:46.575Z",
           "connectorId": "DE-KENT"
         }
       },
       "status": "REVIEW_REQUIRED",
       "lastVerifiedAt": "2026-08-05T10:24:19.334Z",
       "lastSuccessfulSyncAt": "2026-08-04T13:29:27.324Z",
-      "updatedAt": "2026-08-05T21:36:55.534Z",
+      "updatedAt": "2026-08-06T21:19:46.575Z",
       "history": [
         {
           "at": "2026-08-04T10:56:35.517Z",
@@ -646,14 +646,14 @@
             "report": "reports/schema-drift/DE-NEW-CASTLE/parcel_inventory.json"
           },
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.536Z",
+          "updatedAt": "2026-08-06T21:19:46.576Z",
           "connectorId": "DE-NEW-CASTLE"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:24:37.045Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:24:37.045Z",
-      "updatedAt": "2026-08-05T21:36:55.536Z",
+      "updatedAt": "2026-08-06T21:19:46.576Z",
       "history": [
         {
           "at": "2026-08-04T10:02:31.558Z",
@@ -1187,14 +1187,14 @@
             "report": "reports/schema-drift/DE-SUSSEX/parcel_inventory.json"
           },
           "status": "REVIEW_REQUIRED",
-          "updatedAt": "2026-08-05T21:36:55.536Z",
+          "updatedAt": "2026-08-06T21:19:46.577Z",
           "connectorId": "DE-SUSSEX"
         }
       },
       "status": "REVIEW_REQUIRED",
       "lastVerifiedAt": "2026-08-05T10:24:51.597Z",
       "lastSuccessfulSyncAt": "2026-08-04T11:23:02.549Z",
-      "updatedAt": "2026-08-05T21:36:55.537Z",
+      "updatedAt": "2026-08-06T21:19:46.577Z",
       "history": [
         {
           "at": "2026-08-04T10:02:50.499Z",
@@ -1721,14 +1721,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.538Z",
+          "updatedAt": "2026-08-06T21:19:46.577Z",
           "connectorId": "MD-ALLEGANY"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:25:09.113Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:25:09.113Z",
-      "updatedAt": "2026-08-05T21:36:55.538Z",
+      "updatedAt": "2026-08-06T21:19:46.578Z",
       "history": [
         {
           "at": "2026-08-04T16:16:47.681Z",
@@ -2003,14 +2003,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.539Z",
+          "updatedAt": "2026-08-06T21:19:46.578Z",
           "connectorId": "MD-ANNE-ARUNDEL"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:11:03.411Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:11:03.410Z",
-      "updatedAt": "2026-08-05T21:36:55.539Z",
+      "updatedAt": "2026-08-06T21:19:46.578Z",
       "history": [
         {
           "at": "2026-08-04T16:17:13.615Z",
@@ -2258,14 +2258,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.539Z",
+          "updatedAt": "2026-08-06T21:19:46.578Z",
           "connectorId": "MD-BALTIMORE-CITY"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:11:44.458Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:11:44.458Z",
-      "updatedAt": "2026-08-05T21:36:55.540Z",
+      "updatedAt": "2026-08-06T21:19:46.579Z",
       "history": [
         {
           "at": "2026-08-04T16:17:56.227Z",
@@ -2512,14 +2512,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.540Z",
+          "updatedAt": "2026-08-06T21:19:46.579Z",
           "connectorId": "MD-BALTIMORE"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:11:24.647Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:11:24.646Z",
-      "updatedAt": "2026-08-05T21:36:55.540Z",
+      "updatedAt": "2026-08-06T21:19:46.579Z",
       "history": [
         {
           "at": "2026-08-04T16:17:36.958Z",
@@ -2766,14 +2766,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.541Z",
+          "updatedAt": "2026-08-06T21:19:46.580Z",
           "connectorId": "MD-CALVERT"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:12:02.786Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:12:02.786Z",
-      "updatedAt": "2026-08-05T21:36:55.541Z",
+      "updatedAt": "2026-08-06T21:19:46.580Z",
       "history": [
         {
           "at": "2026-08-04T16:18:20.258Z",
@@ -3020,14 +3020,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.542Z",
+          "updatedAt": "2026-08-06T21:19:46.581Z",
           "connectorId": "MD-CAROLINE"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:12:21.440Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:12:21.439Z",
-      "updatedAt": "2026-08-05T21:36:55.543Z",
+      "updatedAt": "2026-08-06T21:19:46.581Z",
       "history": [
         {
           "at": "2026-08-04T16:18:39.383Z",
@@ -3274,14 +3274,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.544Z",
+          "updatedAt": "2026-08-06T21:19:46.581Z",
           "connectorId": "MD-CARROLL"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:12:39.053Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:12:39.053Z",
-      "updatedAt": "2026-08-05T21:36:55.544Z",
+      "updatedAt": "2026-08-06T21:19:46.581Z",
       "history": [
         {
           "at": "2026-08-04T16:19:04.590Z",
@@ -3528,14 +3528,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.545Z",
+          "updatedAt": "2026-08-06T21:19:46.582Z",
           "connectorId": "MD-CECIL"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:12:58.491Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:12:58.491Z",
-      "updatedAt": "2026-08-05T21:36:55.546Z",
+      "updatedAt": "2026-08-06T21:19:46.582Z",
       "history": [
         {
           "at": "2026-08-04T16:19:29.043Z",
@@ -3782,14 +3782,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.547Z",
+          "updatedAt": "2026-08-06T21:19:46.583Z",
           "connectorId": "MD-CHARLES"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:13:16.923Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:13:16.922Z",
-      "updatedAt": "2026-08-05T21:36:55.547Z",
+      "updatedAt": "2026-08-06T21:19:46.583Z",
       "history": [
         {
           "at": "2026-08-04T16:19:50.351Z",
@@ -3980,14 +3980,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.548Z",
+          "updatedAt": "2026-08-06T21:19:46.583Z",
           "connectorId": "MD-DORCHESTER"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:13:35.050Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:13:35.050Z",
-      "updatedAt": "2026-08-05T21:36:55.548Z",
+      "updatedAt": "2026-08-06T21:19:46.584Z",
       "history": [
         {
           "at": "2026-08-04T16:20:11.332Z",
@@ -4178,14 +4178,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.549Z",
+          "updatedAt": "2026-08-06T21:19:46.584Z",
           "connectorId": "MD-FREDERICK"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:13:59.734Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:13:59.729Z",
-      "updatedAt": "2026-08-05T21:36:55.549Z",
+      "updatedAt": "2026-08-06T21:19:46.584Z",
       "history": [
         {
           "at": "2026-08-04T16:20:29.059Z",
@@ -4376,14 +4376,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.549Z",
+          "updatedAt": "2026-08-06T21:19:46.585Z",
           "connectorId": "MD-GARRETT"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:14:26.269Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:14:26.269Z",
-      "updatedAt": "2026-08-05T21:36:55.550Z",
+      "updatedAt": "2026-08-06T21:19:46.585Z",
       "history": [
         {
           "at": "2026-08-04T16:20:52.201Z",
@@ -4574,14 +4574,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.551Z",
+          "updatedAt": "2026-08-06T21:19:46.585Z",
           "connectorId": "MD-HARFORD"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:14:48.997Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:14:48.996Z",
-      "updatedAt": "2026-08-05T21:36:55.551Z",
+      "updatedAt": "2026-08-06T21:19:46.585Z",
       "history": [
         {
           "at": "2026-08-04T16:21:11.413Z",
@@ -4772,14 +4772,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.552Z",
+          "updatedAt": "2026-08-06T21:19:46.586Z",
           "connectorId": "MD-HOWARD"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:15:14.489Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:15:14.487Z",
-      "updatedAt": "2026-08-05T21:36:55.552Z",
+      "updatedAt": "2026-08-06T21:19:46.586Z",
       "history": [
         {
           "at": "2026-08-04T16:21:31.001Z",
@@ -4942,14 +4942,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.552Z",
+          "updatedAt": "2026-08-06T21:19:46.587Z",
           "connectorId": "MD-KENT"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:15:43.783Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:15:43.782Z",
-      "updatedAt": "2026-08-05T21:36:55.553Z",
+      "updatedAt": "2026-08-06T21:19:46.587Z",
       "history": [
         {
           "at": "2026-08-04T16:21:51.570Z",
@@ -5112,14 +5112,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.553Z",
+          "updatedAt": "2026-08-06T21:19:46.587Z",
           "connectorId": "MD-MONTGOMERY"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:16:09.277Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:16:09.276Z",
-      "updatedAt": "2026-08-05T21:36:55.554Z",
+      "updatedAt": "2026-08-06T21:19:46.587Z",
       "history": [
         {
           "at": "2026-08-04T16:22:11.045Z",
@@ -5282,14 +5282,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.554Z",
+          "updatedAt": "2026-08-06T21:19:46.588Z",
           "connectorId": "MD-PRINCE-GEORGE-S"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:16:29.656Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:16:29.656Z",
-      "updatedAt": "2026-08-05T21:36:55.554Z",
+      "updatedAt": "2026-08-06T21:19:46.588Z",
       "history": [
         {
           "at": "2026-08-04T16:22:29.887Z",
@@ -5452,14 +5452,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.555Z",
+          "updatedAt": "2026-08-06T21:19:46.588Z",
           "connectorId": "MD-QUEEN-ANNE-S"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T08:56:46.049Z",
       "lastSuccessfulSyncAt": "2026-08-05T08:56:46.049Z",
-      "updatedAt": "2026-08-05T21:36:55.555Z",
+      "updatedAt": "2026-08-06T21:19:46.588Z",
       "history": [
         {
           "at": "2026-08-04T16:22:48.135Z",
@@ -5594,14 +5594,14 @@
           },
           "schemaDrift": null,
           "status": "REVIEW_REQUIRED",
-          "updatedAt": "2026-08-05T21:36:55.555Z",
+          "updatedAt": "2026-08-06T21:19:46.589Z",
           "connectorId": "MD-SOMERSET"
         }
       },
       "status": "REVIEW_REQUIRED",
       "lastVerifiedAt": "2026-08-05T08:57:03.686Z",
       "lastSuccessfulSyncAt": "2026-08-04T16:23:21.663Z",
-      "updatedAt": "2026-08-05T21:36:55.555Z",
+      "updatedAt": "2026-08-06T21:19:46.589Z",
       "history": [
         {
           "at": "2026-08-04T16:23:06.964Z",
@@ -5736,14 +5736,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.556Z",
+          "updatedAt": "2026-08-06T21:19:46.589Z",
           "connectorId": "MD-ST-MARY-S"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T08:57:18.806Z",
       "lastSuccessfulSyncAt": "2026-08-05T08:57:18.806Z",
-      "updatedAt": "2026-08-05T21:36:55.556Z",
+      "updatedAt": "2026-08-06T21:19:46.590Z",
       "history": [
         {
           "at": "2026-08-04T16:23:31.032Z",
@@ -5878,14 +5878,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.556Z",
+          "updatedAt": "2026-08-06T21:19:46.590Z",
           "connectorId": "MD-TALBOT"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T08:57:38.162Z",
       "lastSuccessfulSyncAt": "2026-08-05T08:57:38.162Z",
-      "updatedAt": "2026-08-05T21:36:55.556Z",
+      "updatedAt": "2026-08-06T21:19:46.590Z",
       "history": [
         {
           "at": "2026-08-04T16:23:50.860Z",
@@ -6020,14 +6020,14 @@
           },
           "schemaDrift": null,
           "status": "REVIEW_REQUIRED",
-          "updatedAt": "2026-08-05T21:36:55.557Z",
+          "updatedAt": "2026-08-06T21:19:46.590Z",
           "connectorId": "MD-WASHINGTON"
         }
       },
       "status": "REVIEW_REQUIRED",
       "lastVerifiedAt": "2026-08-05T08:57:53.824Z",
       "lastSuccessfulSyncAt": "2026-08-04T16:24:27.291Z",
-      "updatedAt": "2026-08-05T21:36:55.557Z",
+      "updatedAt": "2026-08-06T21:19:46.591Z",
       "history": [
         {
           "at": "2026-08-04T16:24:15.670Z",
@@ -6162,14 +6162,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.557Z",
+          "updatedAt": "2026-08-06T21:19:46.591Z",
           "connectorId": "MD-WICOMICO"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T08:58:13.546Z",
       "lastSuccessfulSyncAt": "2026-08-05T08:58:13.546Z",
-      "updatedAt": "2026-08-05T21:36:55.557Z",
+      "updatedAt": "2026-08-06T21:19:46.591Z",
       "history": [
         {
           "at": "2026-08-04T16:26:00.897Z",
@@ -6304,14 +6304,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.557Z",
+          "updatedAt": "2026-08-06T21:19:46.591Z",
           "connectorId": "MD-WORCESTER"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T08:58:31.084Z",
       "lastSuccessfulSyncAt": "2026-08-05T08:58:31.083Z",
-      "updatedAt": "2026-08-05T21:36:55.557Z",
+      "updatedAt": "2026-08-06T21:19:46.591Z",
       "history": [
         {
           "at": "2026-08-04T16:26:43.874Z",
@@ -6449,14 +6449,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.558Z",
+          "updatedAt": "2026-08-06T21:19:46.592Z",
           "connectorId": "NJ-ATLANTIC"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T08:58:49.831Z",
       "lastSuccessfulSyncAt": "2026-08-05T08:58:49.831Z",
-      "updatedAt": "2026-08-05T21:36:55.558Z",
+      "updatedAt": "2026-08-06T21:19:46.592Z",
       "history": [
         {
           "at": "2026-08-04T13:20:07.247Z",
@@ -6650,14 +6650,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.558Z",
+          "updatedAt": "2026-08-06T21:19:46.592Z",
           "connectorId": "NJ-BERGEN"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T08:59:10.250Z",
       "lastSuccessfulSyncAt": "2026-08-05T08:59:10.250Z",
-      "updatedAt": "2026-08-05T21:36:55.559Z",
+      "updatedAt": "2026-08-06T21:19:46.592Z",
       "history": [
         {
           "at": "2026-08-04T13:20:34.128Z",
@@ -6823,14 +6823,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.559Z",
+          "updatedAt": "2026-08-06T21:19:46.592Z",
           "connectorId": "NJ-BURLINGTON"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T08:59:29.377Z",
       "lastSuccessfulSyncAt": "2026-08-05T08:59:29.377Z",
-      "updatedAt": "2026-08-05T21:36:55.559Z",
+      "updatedAt": "2026-08-06T21:19:46.592Z",
       "history": [
         {
           "at": "2026-08-04T13:20:55.605Z",
@@ -6996,14 +6996,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.560Z",
+          "updatedAt": "2026-08-06T21:19:46.593Z",
           "connectorId": "NJ-CAMDEN"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T09:00:05.231Z",
       "lastSuccessfulSyncAt": "2026-08-05T09:00:05.230Z",
-      "updatedAt": "2026-08-05T21:36:55.560Z",
+      "updatedAt": "2026-08-06T21:19:46.593Z",
       "history": [
         {
           "at": "2026-08-04T13:21:16.379Z",
@@ -7169,14 +7169,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.561Z",
+          "updatedAt": "2026-08-06T21:19:46.593Z",
           "connectorId": "NJ-CAPE-MAY"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T09:00:23.898Z",
       "lastSuccessfulSyncAt": "2026-08-05T09:00:23.897Z",
-      "updatedAt": "2026-08-05T21:36:55.562Z",
+      "updatedAt": "2026-08-06T21:19:46.593Z",
       "history": [
         {
           "at": "2026-08-04T13:21:38.055Z",
@@ -7342,14 +7342,14 @@
           },
           "schemaDrift": null,
           "status": "REVIEW_REQUIRED",
-          "updatedAt": "2026-08-05T21:36:55.562Z",
+          "updatedAt": "2026-08-06T21:19:46.593Z",
           "connectorId": "NJ-CUMBERLAND"
         }
       },
       "status": "REVIEW_REQUIRED",
       "lastVerifiedAt": "2026-08-05T09:00:39.932Z",
       "lastSuccessfulSyncAt": "2026-08-04T16:30:35.921Z",
-      "updatedAt": "2026-08-05T21:36:55.562Z",
+      "updatedAt": "2026-08-06T21:19:46.593Z",
       "history": [
         {
           "at": "2026-08-04T13:21:58.568Z",
@@ -7515,14 +7515,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.563Z",
+          "updatedAt": "2026-08-06T21:19:46.594Z",
           "connectorId": "NJ-ESSEX"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T09:00:58.456Z",
       "lastSuccessfulSyncAt": "2026-08-05T09:00:58.455Z",
-      "updatedAt": "2026-08-05T21:36:55.563Z",
+      "updatedAt": "2026-08-06T21:19:46.594Z",
       "history": [
         {
           "at": "2026-08-04T13:22:17.806Z",
@@ -7688,14 +7688,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.563Z",
+          "updatedAt": "2026-08-06T21:19:46.594Z",
           "connectorId": "NJ-GLOUCESTER"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T09:01:20.189Z",
       "lastSuccessfulSyncAt": "2026-08-05T09:01:20.189Z",
-      "updatedAt": "2026-08-05T21:36:55.563Z",
+      "updatedAt": "2026-08-06T21:19:46.594Z",
       "history": [
         {
           "at": "2026-08-04T13:22:34.302Z",
@@ -7861,14 +7861,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.563Z",
+          "updatedAt": "2026-08-06T21:19:46.594Z",
           "connectorId": "NJ-HUDSON"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T09:01:44.889Z",
       "lastSuccessfulSyncAt": "2026-08-05T09:01:44.889Z",
-      "updatedAt": "2026-08-05T21:36:55.564Z",
+      "updatedAt": "2026-08-06T21:19:46.594Z",
       "history": [
         {
           "at": "2026-08-04T13:22:55.927Z",
@@ -8034,14 +8034,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.564Z",
+          "updatedAt": "2026-08-06T21:19:46.595Z",
           "connectorId": "NJ-HUNTERDON"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T09:02:03.579Z",
       "lastSuccessfulSyncAt": "2026-08-05T09:02:03.578Z",
-      "updatedAt": "2026-08-05T21:36:55.565Z",
+      "updatedAt": "2026-08-06T21:19:46.595Z",
       "history": [
         {
           "at": "2026-08-04T13:23:16.080Z",
@@ -8207,14 +8207,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.565Z",
+          "updatedAt": "2026-08-06T21:19:46.595Z",
           "connectorId": "NJ-MERCER"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T09:02:47.245Z",
       "lastSuccessfulSyncAt": "2026-08-05T09:02:47.245Z",
-      "updatedAt": "2026-08-05T21:36:55.565Z",
+      "updatedAt": "2026-08-06T21:19:46.595Z",
       "history": [
         {
           "at": "2026-08-04T13:23:35.891Z",
@@ -8380,14 +8380,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.566Z",
+          "updatedAt": "2026-08-06T21:19:46.596Z",
           "connectorId": "NJ-MIDDLESEX"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-04T16:32:50.272Z",
       "lastSuccessfulSyncAt": "2026-08-04T16:32:50.272Z",
-      "updatedAt": "2026-08-05T21:36:55.566Z",
+      "updatedAt": "2026-08-06T21:19:46.596Z",
       "history": [
         {
           "at": "2026-08-04T13:23:59.069Z",
@@ -8525,14 +8525,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.566Z",
+          "updatedAt": "2026-08-06T21:19:46.596Z",
           "connectorId": "NJ-MONMOUTH"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-04T16:33:08.923Z",
       "lastSuccessfulSyncAt": "2026-08-04T16:33:08.923Z",
-      "updatedAt": "2026-08-05T21:36:55.566Z",
+      "updatedAt": "2026-08-06T21:19:46.596Z",
       "history": [
         {
           "at": "2026-08-04T13:24:20.712Z",
@@ -8670,14 +8670,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.567Z",
+          "updatedAt": "2026-08-06T21:19:46.597Z",
           "connectorId": "NJ-MORRIS"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-04T16:33:28.337Z",
       "lastSuccessfulSyncAt": "2026-08-04T16:33:28.337Z",
-      "updatedAt": "2026-08-05T21:36:55.568Z",
+      "updatedAt": "2026-08-06T21:19:46.598Z",
       "history": [
         {
           "at": "2026-08-04T13:24:39.601Z",
@@ -8815,14 +8815,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.569Z",
+          "updatedAt": "2026-08-06T21:19:46.599Z",
           "connectorId": "NJ-OCEAN"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-04T16:33:52.866Z",
       "lastSuccessfulSyncAt": "2026-08-04T16:33:52.864Z",
-      "updatedAt": "2026-08-05T21:36:55.569Z",
+      "updatedAt": "2026-08-06T21:19:46.599Z",
       "history": [
         {
           "at": "2026-08-04T13:24:58.278Z",
@@ -8960,14 +8960,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.569Z",
+          "updatedAt": "2026-08-06T21:19:46.599Z",
           "connectorId": "NJ-PASSAIC"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-04T13:25:31.684Z",
       "lastSuccessfulSyncAt": "2026-08-04T13:25:31.684Z",
-      "updatedAt": "2026-08-05T21:36:55.569Z",
+      "updatedAt": "2026-08-06T21:19:46.599Z",
       "history": [
         {
           "at": "2026-08-04T13:25:16.648Z",
@@ -9077,14 +9077,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.569Z",
+          "updatedAt": "2026-08-06T21:19:46.600Z",
           "connectorId": "NJ-SALEM"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-04T13:25:51.614Z",
       "lastSuccessfulSyncAt": "2026-08-04T13:25:51.614Z",
-      "updatedAt": "2026-08-05T21:36:55.569Z",
+      "updatedAt": "2026-08-06T21:19:46.600Z",
       "history": [
         {
           "at": "2026-08-04T13:25:38.404Z",
@@ -9194,14 +9194,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.570Z",
+          "updatedAt": "2026-08-06T21:19:46.600Z",
           "connectorId": "NJ-SOMERSET"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-04T13:26:18.997Z",
       "lastSuccessfulSyncAt": "2026-08-04T13:26:18.997Z",
-      "updatedAt": "2026-08-05T21:36:55.570Z",
+      "updatedAt": "2026-08-06T21:19:46.600Z",
       "history": [
         {
           "at": "2026-08-04T13:26:05.027Z",
@@ -9311,14 +9311,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.570Z",
+          "updatedAt": "2026-08-06T21:19:46.600Z",
           "connectorId": "NJ-SUSSEX"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-04T13:26:36.253Z",
       "lastSuccessfulSyncAt": "2026-08-04T13:26:36.253Z",
-      "updatedAt": "2026-08-05T21:36:55.570Z",
+      "updatedAt": "2026-08-06T21:19:46.600Z",
       "history": [
         {
           "at": "2026-08-04T13:26:25.925Z",
@@ -9428,14 +9428,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.570Z",
+          "updatedAt": "2026-08-06T21:19:46.600Z",
           "connectorId": "NJ-UNION"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-04T13:26:51.442Z",
       "lastSuccessfulSyncAt": "2026-08-04T13:26:51.442Z",
-      "updatedAt": "2026-08-05T21:36:55.570Z",
+      "updatedAt": "2026-08-06T21:19:46.601Z",
       "history": [
         {
           "at": "2026-08-04T13:26:42.221Z",
@@ -9545,14 +9545,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.571Z",
+          "updatedAt": "2026-08-06T21:19:46.601Z",
           "connectorId": "NJ-WARREN"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-04T13:27:10.514Z",
       "lastSuccessfulSyncAt": "2026-08-04T13:27:10.513Z",
-      "updatedAt": "2026-08-05T21:36:55.571Z",
+      "updatedAt": "2026-08-06T21:19:46.601Z",
       "history": [
         {
           "at": "2026-08-04T13:26:57.782Z",
@@ -9660,14 +9660,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.571Z",
+          "updatedAt": "2026-08-06T21:19:46.601Z",
           "connectorId": "PA-ADAMS"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:26:05.645Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:26:05.644Z",
-      "updatedAt": "2026-08-05T21:36:55.571Z",
+      "updatedAt": "2026-08-06T21:19:46.601Z",
       "history": [
         {
           "at": "2026-08-05T10:25:50.519Z",
@@ -9775,14 +9775,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.571Z",
+          "updatedAt": "2026-08-06T21:19:46.601Z",
           "connectorId": "PA-ALLEGHENY"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:26:27.346Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:26:27.346Z",
-      "updatedAt": "2026-08-05T21:36:55.571Z",
+      "updatedAt": "2026-08-06T21:19:46.601Z",
       "history": [
         {
           "at": "2026-08-05T10:26:13.995Z",
@@ -9882,14 +9882,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.572Z",
+          "updatedAt": "2026-08-06T21:19:46.602Z",
           "connectorId": "PA-BEAVER"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:26:52.474Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:26:52.466Z",
-      "updatedAt": "2026-08-05T21:36:55.572Z",
+      "updatedAt": "2026-08-06T21:19:46.602Z",
       "history": [
         {
           "at": "2026-08-05T01:11:42.104Z",
@@ -10053,14 +10053,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.572Z",
+          "updatedAt": "2026-08-06T21:19:46.602Z",
           "connectorId": "PA-BEDFORD"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:27:13.923Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:27:13.923Z",
-      "updatedAt": "2026-08-05T21:36:55.572Z",
+      "updatedAt": "2026-08-06T21:19:46.602Z",
       "history": [
         {
           "at": "2026-08-05T10:27:03.175Z",
@@ -10168,14 +10168,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.572Z",
+          "updatedAt": "2026-08-06T21:19:46.602Z",
           "connectorId": "PA-BERKS"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:27:35.429Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:27:35.428Z",
-      "updatedAt": "2026-08-05T21:36:55.572Z",
+      "updatedAt": "2026-08-06T21:19:46.602Z",
       "history": [
         {
           "at": "2026-08-05T10:27:23.189Z",
@@ -10283,14 +10283,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.572Z",
+          "updatedAt": "2026-08-06T21:19:46.603Z",
           "connectorId": "PA-BLAIR"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:27:55.195Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:27:55.194Z",
-      "updatedAt": "2026-08-05T21:36:55.572Z",
+      "updatedAt": "2026-08-06T21:19:46.603Z",
       "history": [
         {
           "at": "2026-08-05T10:27:44.949Z",
@@ -10394,7 +10394,7 @@
             "report": "reports/schema-drift/PA-BUCKS/property_assessment.json"
           },
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.573Z",
+          "updatedAt": "2026-08-06T21:19:46.603Z",
           "connectorId": "PA-BUCKS"
         },
         "tax_delinquent": {
@@ -10427,14 +10427,14 @@
             "report": "reports/schema-drift/PA-BUCKS/tax_delinquent.json"
           },
           "status": "DISABLED",
-          "updatedAt": "2026-08-05T21:36:55.573Z",
+          "updatedAt": "2026-08-06T21:19:46.603Z",
           "connectorId": "PA-BUCKS"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:28:15.970Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:28:15.969Z",
-      "updatedAt": "2026-08-05T21:36:55.573Z",
+      "updatedAt": "2026-08-06T21:19:46.603Z",
       "history": [
         {
           "at": "2026-08-01T20:02:50.607Z",
@@ -10906,78 +10906,6 @@
         }
       ]
     },
-    "PA-BUTLER": {
-      "connectorId": "PA-BUTLER",
-      "state": "PA",
-      "county": "Butler",
-      "version": "1.0.0",
-      "enabled": true,
-      "implementation": "generated",
-      "manifestPath": "config/county-connectors/PA-BUTLER.json",
-      "connectorPath": "src/connectors/generated/ButlerCountyConnector.gs",
-      "connectorExists": true,
-      "manifestFingerprint": "d08734e8fb84d750d818670cf85fa94a03158352e403f12ff0fed6ad0c3390d0",
-      "datasets": {
-        "parcel_inventory": {
-          "dataset": "parcel_inventory",
-          "enabled": true,
-          "adapter": "arcgis",
-          "endpointProperty": "REOS_COUNTY_PA_BUTLER_PARCEL_INVENTORY_URL",
-          "endpoint": "https://actual-server/.../MapServer/0/query",
-          "endpointConfigured": true,
-          "discovery": {
-            "report": "reports/county-source-review/PA-BUTLER.json",
-            "title": "Butler County Parcel Layer",
-            "source": "Butler County GIS",
-            "sourceScope": "county",
-            "authoritative": true,
-            "endpoint": "https://actual-server/.../MapServer/0/query",
-            "reviewStatus": "manual_source_verified"
-          },
-          "mapping": {
-            "requiredFieldsPresent": true,
-            "missingRequiredFields": [],
-            "confidence": null,
-            "fingerprint": "96304216935399fc0ed9ff0737fb60b98200850533c28af4d558fcdcb22eee48",
-            "autoMappedAt": ""
-          },
-          "recordFilter": null,
-          "health": {
-            "checkedAt": "2026-08-05T21:36:55.318Z",
-            "ok": false,
-            "status": null,
-            "count": null,
-            "durationMs": null,
-            "output": "\nException: Exception: DNS error: https://actual-server/.../MapServer/0/query?where=1%3D1&returnCountOnly=true&f=json [\n  { function: 'request', lineNumber: 20 },\n  { function: 'health', lineNumber: 119 },\n  { function: 'health', lineNumber: 70 },\n  { function: 'REOS_COUNTY_TERMINAL_SYNC', lineNumber: 240 }\n]"
-          },
-          "lastDrySync": null,
-          "schemaDrift": null,
-          "status": "REVIEW_REQUIRED",
-          "updatedAt": "2026-08-05T21:36:55.573Z",
-          "connectorId": "PA-BUTLER"
-        }
-      },
-      "status": "REVIEW_REQUIRED",
-      "lastVerifiedAt": "2026-08-05T21:36:55.319Z",
-      "lastSuccessfulSyncAt": "",
-      "updatedAt": "2026-08-05T21:36:55.573Z",
-      "history": [
-        {
-          "at": "2026-08-05T21:36:55.318Z",
-          "action": "health-check",
-          "dataset": "parcel_inventory",
-          "ok": false,
-          "status": null,
-          "durationMs": null
-        },
-        {
-          "at": "2026-08-05T21:36:55.319Z",
-          "action": "registry-update-complete",
-          "ok": false,
-          "status": "REVIEW_REQUIRED"
-        }
-      ]
-    },
     "PA-CAMBRIA": {
       "connectorId": "PA-CAMBRIA",
       "state": "PA",
@@ -11054,14 +10982,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.574Z",
+          "updatedAt": "2026-08-06T21:19:46.604Z",
           "connectorId": "PA-CAMBRIA"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:28:57.353Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:28:57.353Z",
-      "updatedAt": "2026-08-05T21:36:55.574Z",
+      "updatedAt": "2026-08-06T21:19:46.604Z",
       "history": [
         {
           "at": "2026-08-05T10:28:43.430Z",
@@ -11087,6 +11015,105 @@
         },
         {
           "at": "2026-08-05T10:28:57.353Z",
+          "action": "registry-update-complete",
+          "ok": true,
+          "status": "READY"
+        }
+      ]
+    },
+    "PA-CARBON": {
+      "connectorId": "PA-CARBON",
+      "state": "PA",
+      "county": "Carbon",
+      "version": "1.0.0",
+      "enabled": true,
+      "implementation": "generated",
+      "manifestPath": "config/county-connectors/PA-CARBON.json",
+      "connectorPath": "src/connectors/generated/CarbonCountyConnector.gs",
+      "connectorExists": true,
+      "manifestFingerprint": "506266123556f279fd789df3eeda56bfc1aee4df7b00fc9098539f89bcfdbf33",
+      "datasets": {
+        "parcel_inventory": {
+          "dataset": "parcel_inventory",
+          "enabled": true,
+          "adapter": "arcgis",
+          "endpointProperty": "REOS_COUNTY_PA_CARBON_PARCEL_INVENTORY_URL",
+          "endpoint": "https://gis.carboncounty.com:6443/arcgis/rest/services/Parcel_Landhooks_2019/MapServer/0/query",
+          "endpointConfigured": true,
+          "discovery": null,
+          "mapping": {
+            "requiredFieldsPresent": true,
+            "missingRequiredFields": [],
+            "confidence": 155,
+            "fingerprint": "69d3bb6a2277cafc279814f7a13a7bae523c241179569b27820ed1b1c3b150e9",
+            "autoMappedAt": "2026-08-06T21:04:47.941Z"
+          },
+          "recordFilter": {
+            "requireAny": [
+              [
+                "OBJECTID",
+                "GlobalID"
+              ]
+            ]
+          },
+          "health": {
+            "checkedAt": "2026-08-06T21:19:36.645Z",
+            "ok": true,
+            "status": 200,
+            "count": 6074,
+            "durationMs": 249,
+            "output": "{\n  adapter: 'arcgis',\n  count: 6074,\n  ok: true,\n  durationMs: 249,\n  status: 200\n}\n"
+          },
+          "lastDrySync": {
+            "checkedAt": "2026-08-06T21:19:46.369Z",
+            "ok": true,
+            "mode": "DRY_RUN",
+            "nextCursor": "10",
+            "stats": {
+              "fetched": 10,
+              "valid": 10,
+              "inserted": 0,
+              "updated": 0,
+              "skipped": 10,
+              "failed": 0
+            },
+            "output": "{\n  nextCursor: '10',\n  mode: 'DRY_RUN',\n  completedAt: '2026-08-06T21:19:45.657Z',\n  recordErrors: [],\n  stats: {\n    valid: 10,\n    inserted: 0,\n    failed: 0,\n    updated: 0,\n    skipped: 10,\n    fetched: 10\n  },\n  connectorId: 'PA-CARBON',\n  validationErrors: [],\n  runId: 'CCR-20260806171944-4170',\n  ok: true,\n  dataset: 'parcel_inventory'\n}\n"
+          },
+          "schemaDrift": null,
+          "status": "READY",
+          "updatedAt": "2026-08-06T21:19:46.604Z",
+          "connectorId": "PA-CARBON"
+        }
+      },
+      "status": "READY",
+      "lastVerifiedAt": "2026-08-06T21:19:46.369Z",
+      "lastSuccessfulSyncAt": "2026-08-06T21:19:46.369Z",
+      "updatedAt": "2026-08-06T21:19:46.604Z",
+      "history": [
+        {
+          "at": "2026-08-06T21:19:36.647Z",
+          "action": "health-check",
+          "dataset": "parcel_inventory",
+          "ok": true,
+          "status": 200,
+          "durationMs": 249
+        },
+        {
+          "at": "2026-08-06T21:19:46.369Z",
+          "action": "dry-sync",
+          "dataset": "parcel_inventory",
+          "ok": true,
+          "stats": {
+            "fetched": 10,
+            "valid": 10,
+            "inserted": 0,
+            "updated": 0,
+            "skipped": 10,
+            "failed": 0
+          }
+        },
+        {
+          "at": "2026-08-06T21:19:46.369Z",
           "action": "registry-update-complete",
           "ok": true,
           "status": "READY"
@@ -11169,14 +11196,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.574Z",
+          "updatedAt": "2026-08-06T21:19:46.604Z",
           "connectorId": "PA-CENTRE"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:29:15.362Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:29:15.361Z",
-      "updatedAt": "2026-08-05T21:36:55.574Z",
+      "updatedAt": "2026-08-06T21:19:46.604Z",
       "history": [
         {
           "at": "2026-08-05T10:29:05.232Z",
@@ -11294,14 +11321,14 @@
             "report": "reports/schema-drift/PA-CHESTER/property_assessment.json"
           },
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.575Z",
+          "updatedAt": "2026-08-06T21:19:46.605Z",
           "connectorId": "PA-CHESTER"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:29:35.239Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:29:35.237Z",
-      "updatedAt": "2026-08-05T21:36:55.575Z",
+      "updatedAt": "2026-08-06T21:19:46.605Z",
       "history": [
         {
           "at": "2026-08-01T20:03:07.351Z",
@@ -11835,14 +11862,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.575Z",
+          "updatedAt": "2026-08-06T21:19:46.605Z",
           "connectorId": "PA-CLEARFIELD"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:29:54.692Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:29:54.690Z",
-      "updatedAt": "2026-08-05T21:36:55.575Z",
+      "updatedAt": "2026-08-06T21:19:46.605Z",
       "history": [
         {
           "at": "2026-08-05T10:29:44.770Z",
@@ -11950,14 +11977,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.575Z",
+          "updatedAt": "2026-08-06T21:19:46.606Z",
           "connectorId": "PA-CLINTON"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:30:14.760Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:30:14.760Z",
-      "updatedAt": "2026-08-05T21:36:55.575Z",
+      "updatedAt": "2026-08-06T21:19:46.606Z",
       "history": [
         {
           "at": "2026-08-05T10:30:03.305Z",
@@ -12065,14 +12092,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.576Z",
+          "updatedAt": "2026-08-06T21:19:46.606Z",
           "connectorId": "PA-COLUMBIA"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:30:33.913Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:30:33.912Z",
-      "updatedAt": "2026-08-05T21:36:55.576Z",
+      "updatedAt": "2026-08-06T21:19:46.606Z",
       "history": [
         {
           "at": "2026-08-05T10:30:23.225Z",
@@ -12180,14 +12207,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.576Z",
+          "updatedAt": "2026-08-06T21:19:46.606Z",
           "connectorId": "PA-CUMBERLAND"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:30:55.154Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:30:55.153Z",
-      "updatedAt": "2026-08-05T21:36:55.576Z",
+      "updatedAt": "2026-08-06T21:19:46.606Z",
       "history": [
         {
           "at": "2026-08-05T10:30:42.818Z",
@@ -12295,14 +12322,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.576Z",
+          "updatedAt": "2026-08-06T21:19:46.607Z",
           "connectorId": "PA-DAUPHIN"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:31:15.270Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:31:15.269Z",
-      "updatedAt": "2026-08-05T21:36:55.576Z",
+      "updatedAt": "2026-08-06T21:19:46.607Z",
       "history": [
         {
           "at": "2026-08-05T10:31:03.000Z",
@@ -12423,14 +12450,14 @@
             "report": "reports/schema-drift/PA-DELAWARE/property_assessment.json"
           },
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.577Z",
+          "updatedAt": "2026-08-06T21:19:46.607Z",
           "connectorId": "PA-DELAWARE"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:31:34.642Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:31:34.642Z",
-      "updatedAt": "2026-08-05T21:36:55.577Z",
+      "updatedAt": "2026-08-06T21:19:46.607Z",
       "history": [
         {
           "at": "2026-08-01T19:51:04.998Z",
@@ -12978,14 +13005,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.577Z",
+          "updatedAt": "2026-08-06T21:19:46.607Z",
           "connectorId": "PA-FRANKLIN"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:31:59.432Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:31:59.431Z",
-      "updatedAt": "2026-08-05T21:36:55.577Z",
+      "updatedAt": "2026-08-06T21:19:46.608Z",
       "history": [
         {
           "at": "2026-08-05T10:31:43.133Z",
@@ -13093,14 +13120,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.577Z",
+          "updatedAt": "2026-08-06T21:19:46.608Z",
           "connectorId": "PA-FULTON"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:32:19.029Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:32:19.027Z",
-      "updatedAt": "2026-08-05T21:36:55.577Z",
+      "updatedAt": "2026-08-06T21:19:46.608Z",
       "history": [
         {
           "at": "2026-08-05T10:32:08.217Z",
@@ -13208,14 +13235,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.577Z",
+          "updatedAt": "2026-08-06T21:19:46.608Z",
           "connectorId": "PA-GREENE"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:32:39.451Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:32:39.450Z",
-      "updatedAt": "2026-08-05T21:36:55.578Z",
+      "updatedAt": "2026-08-06T21:19:46.609Z",
       "history": [
         {
           "at": "2026-08-05T10:32:26.824Z",
@@ -13323,14 +13350,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.578Z",
+          "updatedAt": "2026-08-06T21:19:46.609Z",
           "connectorId": "PA-HUNTINGDON"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:33:01.968Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:33:01.966Z",
-      "updatedAt": "2026-08-05T21:36:55.578Z",
+      "updatedAt": "2026-08-06T21:19:46.609Z",
       "history": [
         {
           "at": "2026-08-05T10:32:48.766Z",
@@ -13438,14 +13465,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.578Z",
+          "updatedAt": "2026-08-06T21:19:46.609Z",
           "connectorId": "PA-LACKAWANNA"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:33:21.535Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:33:21.534Z",
-      "updatedAt": "2026-08-05T21:36:55.579Z",
+      "updatedAt": "2026-08-06T21:19:46.609Z",
       "history": [
         {
           "at": "2026-08-05T10:33:10.988Z",
@@ -13553,14 +13580,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.579Z",
+          "updatedAt": "2026-08-06T21:19:46.609Z",
           "connectorId": "PA-LANCASTER"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:33:43.658Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:33:43.657Z",
-      "updatedAt": "2026-08-05T21:36:55.579Z",
+      "updatedAt": "2026-08-06T21:19:46.610Z",
       "history": [
         {
           "at": "2026-08-05T10:33:30.438Z",
@@ -13668,14 +13695,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.579Z",
+          "updatedAt": "2026-08-06T21:19:46.610Z",
           "connectorId": "PA-LEBANON"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:34:04.850Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:34:04.848Z",
-      "updatedAt": "2026-08-05T21:36:55.579Z",
+      "updatedAt": "2026-08-06T21:19:46.610Z",
       "history": [
         {
           "at": "2026-08-05T10:33:52.708Z",
@@ -13783,14 +13810,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.580Z",
+          "updatedAt": "2026-08-06T21:19:46.610Z",
           "connectorId": "PA-LEHIGH"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:34:23.227Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:34:23.227Z",
-      "updatedAt": "2026-08-05T21:36:55.580Z",
+      "updatedAt": "2026-08-06T21:19:46.610Z",
       "history": [
         {
           "at": "2026-08-05T10:34:12.007Z",
@@ -13898,14 +13925,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.580Z",
+          "updatedAt": "2026-08-06T21:19:46.610Z",
           "connectorId": "PA-LYCOMING"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:34:44.813Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:34:44.812Z",
-      "updatedAt": "2026-08-05T21:36:55.580Z",
+      "updatedAt": "2026-08-06T21:19:46.611Z",
       "history": [
         {
           "at": "2026-08-05T10:34:31.890Z",
@@ -14013,14 +14040,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.580Z",
+          "updatedAt": "2026-08-06T21:19:46.611Z",
           "connectorId": "PA-MIFFLIN"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:35:06.424Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:35:06.422Z",
-      "updatedAt": "2026-08-05T21:36:55.580Z",
+      "updatedAt": "2026-08-06T21:19:46.611Z",
       "history": [
         {
           "at": "2026-08-05T10:34:53.787Z",
@@ -14154,14 +14181,14 @@
             "report": "reports/schema-drift/PA-MONTGOMERY/property_assessment.json"
           },
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.580Z",
+          "updatedAt": "2026-08-06T21:19:46.611Z",
           "connectorId": "PA-MONTGOMERY"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T21:07:34.101Z",
       "lastSuccessfulSyncAt": "2026-08-05T21:07:34.101Z",
-      "updatedAt": "2026-08-05T21:36:55.581Z",
+      "updatedAt": "2026-08-06T21:19:46.612Z",
       "history": [
         {
           "at": "2026-08-01T20:03:38.903Z",
@@ -14709,14 +14736,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.581Z",
+          "updatedAt": "2026-08-06T21:19:46.612Z",
           "connectorId": "PA-NORTHAMPTON"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T10:35:53.708Z",
       "lastSuccessfulSyncAt": "2026-08-05T10:35:53.707Z",
-      "updatedAt": "2026-08-05T21:36:55.581Z",
+      "updatedAt": "2026-08-06T21:19:46.612Z",
       "history": [
         {
           "at": "2026-08-05T10:35:41.002Z",
@@ -14824,14 +14851,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.581Z",
+          "updatedAt": "2026-08-06T21:19:46.612Z",
           "connectorId": "PA-NORTHUMBERLAND"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T20:06:41.560Z",
       "lastSuccessfulSyncAt": "2026-08-05T20:06:41.558Z",
-      "updatedAt": "2026-08-05T21:36:55.581Z",
+      "updatedAt": "2026-08-06T21:19:46.612Z",
       "history": [
         {
           "at": "2026-08-05T20:06:29.993Z",
@@ -14939,14 +14966,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.581Z",
+          "updatedAt": "2026-08-06T21:19:46.613Z",
           "connectorId": "PA-PERRY"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T20:10:37.749Z",
       "lastSuccessfulSyncAt": "2026-08-05T20:10:37.748Z",
-      "updatedAt": "2026-08-05T21:36:55.582Z",
+      "updatedAt": "2026-08-06T21:19:46.613Z",
       "history": [
         {
           "at": "2026-08-05T20:10:26.354Z",
@@ -15054,14 +15081,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.582Z",
+          "updatedAt": "2026-08-06T21:19:46.613Z",
           "connectorId": "PA-POTTER"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T20:10:58.641Z",
       "lastSuccessfulSyncAt": "2026-08-05T20:10:58.640Z",
-      "updatedAt": "2026-08-05T21:36:55.582Z",
+      "updatedAt": "2026-08-06T21:19:46.613Z",
       "history": [
         {
           "at": "2026-08-05T20:10:46.668Z",
@@ -15169,14 +15196,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.582Z",
+          "updatedAt": "2026-08-06T21:19:46.614Z",
           "connectorId": "PA-SCHUYLKILL"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T20:11:16.310Z",
       "lastSuccessfulSyncAt": "2026-08-05T20:11:16.308Z",
-      "updatedAt": "2026-08-05T21:36:55.582Z",
+      "updatedAt": "2026-08-06T21:19:46.614Z",
       "history": [
         {
           "at": "2026-08-05T20:11:06.321Z",
@@ -15284,14 +15311,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.582Z",
+          "updatedAt": "2026-08-06T21:19:46.614Z",
           "connectorId": "PA-SNYDER"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T20:11:36.292Z",
       "lastSuccessfulSyncAt": "2026-08-05T20:11:36.291Z",
-      "updatedAt": "2026-08-05T21:36:55.582Z",
+      "updatedAt": "2026-08-06T21:19:46.614Z",
       "history": [
         {
           "at": "2026-08-05T20:11:24.317Z",
@@ -15399,14 +15426,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.583Z",
+          "updatedAt": "2026-08-06T21:19:46.614Z",
           "connectorId": "PA-SOMERSET"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T20:11:53.965Z",
       "lastSuccessfulSyncAt": "2026-08-05T20:11:53.964Z",
-      "updatedAt": "2026-08-05T21:36:55.583Z",
+      "updatedAt": "2026-08-06T21:19:46.614Z",
       "history": [
         {
           "at": "2026-08-05T20:11:44.262Z",
@@ -15514,14 +15541,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.583Z",
+          "updatedAt": "2026-08-06T21:19:46.615Z",
           "connectorId": "PA-SULLIVAN"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T20:12:13.459Z",
       "lastSuccessfulSyncAt": "2026-08-05T20:12:13.458Z",
-      "updatedAt": "2026-08-05T21:36:55.583Z",
+      "updatedAt": "2026-08-06T21:19:46.615Z",
       "history": [
         {
           "at": "2026-08-05T20:12:02.309Z",
@@ -15629,14 +15656,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.584Z",
+          "updatedAt": "2026-08-06T21:19:46.616Z",
           "connectorId": "PA-SUSQUEHANNA"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T20:12:32.288Z",
       "lastSuccessfulSyncAt": "2026-08-05T20:12:32.287Z",
-      "updatedAt": "2026-08-05T21:36:55.584Z",
+      "updatedAt": "2026-08-06T21:19:46.616Z",
       "history": [
         {
           "at": "2026-08-05T20:12:21.900Z",
@@ -15744,14 +15771,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.584Z",
+          "updatedAt": "2026-08-06T21:19:46.616Z",
           "connectorId": "PA-UNION"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T20:12:51.590Z",
       "lastSuccessfulSyncAt": "2026-08-05T20:12:51.589Z",
-      "updatedAt": "2026-08-05T21:36:55.584Z",
+      "updatedAt": "2026-08-06T21:19:46.616Z",
       "history": [
         {
           "at": "2026-08-05T20:12:40.892Z",
@@ -15859,14 +15886,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.585Z",
+          "updatedAt": "2026-08-06T21:19:46.616Z",
           "connectorId": "PA-WASHINGTON"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T20:13:12.681Z",
       "lastSuccessfulSyncAt": "2026-08-05T20:13:12.680Z",
-      "updatedAt": "2026-08-05T21:36:55.585Z",
+      "updatedAt": "2026-08-06T21:19:46.617Z",
       "history": [
         {
           "at": "2026-08-05T20:12:59.894Z",
@@ -15974,14 +16001,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.585Z",
+          "updatedAt": "2026-08-06T21:19:46.617Z",
           "connectorId": "PA-WAYNE"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T20:13:31.836Z",
       "lastSuccessfulSyncAt": "2026-08-05T20:13:31.836Z",
-      "updatedAt": "2026-08-05T21:36:55.585Z",
+      "updatedAt": "2026-08-06T21:19:46.617Z",
       "history": [
         {
           "at": "2026-08-05T20:13:20.930Z",
@@ -16089,14 +16116,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.585Z",
+          "updatedAt": "2026-08-06T21:19:46.617Z",
           "connectorId": "PA-WESTMORELAND"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T20:13:52.284Z",
       "lastSuccessfulSyncAt": "2026-08-05T20:13:52.283Z",
-      "updatedAt": "2026-08-05T21:36:55.585Z",
+      "updatedAt": "2026-08-06T21:19:46.618Z",
       "history": [
         {
           "at": "2026-08-05T20:13:39.921Z",
@@ -16204,14 +16231,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.586Z",
+          "updatedAt": "2026-08-06T21:19:46.618Z",
           "connectorId": "PA-WYOMING"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T20:14:13.270Z",
       "lastSuccessfulSyncAt": "2026-08-05T20:14:13.269Z",
-      "updatedAt": "2026-08-05T21:36:55.586Z",
+      "updatedAt": "2026-08-06T21:19:46.618Z",
       "history": [
         {
           "at": "2026-08-05T20:14:01.019Z",
@@ -16319,14 +16346,14 @@
           },
           "schemaDrift": null,
           "status": "READY",
-          "updatedAt": "2026-08-05T21:36:55.586Z",
+          "updatedAt": "2026-08-06T21:19:46.619Z",
           "connectorId": "PA-YORK"
         }
       },
       "status": "READY",
       "lastVerifiedAt": "2026-08-05T20:14:32.022Z",
       "lastSuccessfulSyncAt": "2026-08-05T20:14:32.021Z",
-      "updatedAt": "2026-08-05T21:36:55.586Z",
+      "updatedAt": "2026-08-06T21:19:46.619Z",
       "history": [
         {
           "at": "2026-08-05T20:14:20.836Z",
@@ -16373,7 +16400,7 @@
       "status": "PRODUCTION",
       "lastVerifiedAt": "",
       "lastSuccessfulSyncAt": "",
-      "updatedAt": "2026-08-05T21:36:55.586Z",
+      "updatedAt": "2026-08-06T21:19:46.619Z",
       "history": []
     }
   }

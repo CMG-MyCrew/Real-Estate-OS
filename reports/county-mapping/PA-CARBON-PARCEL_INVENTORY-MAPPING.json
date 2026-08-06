@@ -1,0 +1,1356 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-06T21:04:47.829Z",
+  "dataset": "parcel_inventory",
+  "sampleCount": 50,
+  "sourceFields": [
+    "OBJECTID",
+    "FNODE_",
+    "TNODE_",
+    "LPOLY_",
+    "RPOLY_",
+    "LENGTH",
+    "FCODE",
+    "PSYM",
+    "created_user",
+    "created_date",
+    "last_edited_user",
+    "last_edited_date",
+    "SHAPE.STLength()",
+    "GlobalID"
+  ],
+  "mapping": {
+    "address": [],
+    "city": [],
+    "zip": [],
+    "parcelId": [],
+    "ownerName": [],
+    "coOwnerName": [],
+    "sourceRecordId": [
+      "OBJECTID",
+      "GlobalID"
+    ],
+    "sourceUpdatedAt": [],
+    "estimatedValue": [],
+    "assessmentValue": [],
+    "landValue": [],
+    "buildingValue": [],
+    "yearBuilt": [],
+    "landAcres": [],
+    "livingArea": [],
+    "saleDate": [],
+    "salePrice": []
+  },
+  "confidence": {
+    "sourceRecordId": {
+      "score": 155,
+      "primaryField": "OBJECTID",
+      "completeness": 1,
+      "alternatives": [
+        "GlobalID"
+      ]
+    }
+  },
+  "rankedCandidates": {
+    "address": [
+      {
+        "field": "GlobalID",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "{EA73719A-B2E0-4986-885A-5BA61404A6A9}",
+          "{2E8F7698-1F15-4EAD-84E8-A91F1AC3B9D3}",
+          "{151CCFF2-C5D7-4F07-BF72-86A6C96E5FEA}"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "addressLike>=80%=25"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          2,
+          3,
+          4
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "FNODE_",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          88581,
+          88582,
+          88583
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "TNODE_",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.94,
+        "sampleValues": [
+          88582,
+          88583,
+          88584
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "LPOLY_",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "city": [
+      {
+        "field": "GlobalID",
+        "score": 30,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "{EA73719A-B2E0-4986-885A-5BA61404A6A9}",
+          "{2E8F7698-1F15-4EAD-84E8-A91F1AC3B9D3}",
+          "{151CCFF2-C5D7-4F07-BF72-86A6C96E5FEA}"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=10"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          2,
+          3,
+          4
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "FNODE_",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          88581,
+          88582,
+          88583
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "TNODE_",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.94,
+        "sampleValues": [
+          88582,
+          88583,
+          88584
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "LPOLY_",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "zip": [
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          2,
+          3,
+          4
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "FNODE_",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          88581,
+          88582,
+          88583
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "TNODE_",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.94,
+        "sampleValues": [
+          88582,
+          88583,
+          88584
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "LPOLY_",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "RPOLY_",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "parcelId": [
+      {
+        "field": "FNODE_",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          88581,
+          88582,
+          88583
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "TNODE_",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 0.94,
+        "sampleValues": [
+          88582,
+          88583,
+          88584
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "LENGTH",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          193.86641367,
+          73.25048952,
+          158.99233995
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "FCODE",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 0.04,
+        "sampleValues": [
+          5001,
+          5001,
+          5001
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "SHAPE.STLength()",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          193.86654263177587,
+          73.25045860301181,
+          158.99226132036017
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      }
+    ],
+    "ownerName": [
+      {
+        "field": "GlobalID",
+        "score": 32,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "{EA73719A-B2E0-4986-885A-5BA61404A6A9}",
+          "{2E8F7698-1F15-4EAD-84E8-A91F1AC3B9D3}",
+          "{151CCFF2-C5D7-4F07-BF72-86A6C96E5FEA}"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=12"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          2,
+          3,
+          4
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "FNODE_",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          88581,
+          88582,
+          88583
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "TNODE_",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.94,
+        "sampleValues": [
+          88582,
+          88583,
+          88584
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "LPOLY_",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "coOwnerName": [
+      {
+        "field": "GlobalID",
+        "score": 28,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "{EA73719A-B2E0-4986-885A-5BA61404A6A9}",
+          "{2E8F7698-1F15-4EAD-84E8-A91F1AC3B9D3}",
+          "{151CCFF2-C5D7-4F07-BF72-86A6C96E5FEA}"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=8"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          2,
+          3,
+          4
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "FNODE_",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          88581,
+          88582,
+          88583
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "TNODE_",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.94,
+        "sampleValues": [
+          88582,
+          88583,
+          88584
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "LPOLY_",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "sourceRecordId": [
+      {
+        "field": "OBJECTID",
+        "score": 155,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          2,
+          3,
+          4
+        ],
+        "reasons": [
+          "name:/^objectid$/i=100",
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "GlobalID",
+        "score": 149,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "{EA73719A-B2E0-4986-885A-5BA61404A6A9}",
+          "{2E8F7698-1F15-4EAD-84E8-A91F1AC3B9D3}",
+          "{151CCFF2-C5D7-4F07-BF72-86A6C96E5FEA}"
+        ],
+        "reasons": [
+          "name:/^globalid$/i=94",
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "FNODE_",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          88581,
+          88582,
+          88583
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "LENGTH",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          193.86641367,
+          73.25048952,
+          158.99233995
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "SHAPE.STLength()",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          193.86654263177587,
+          73.25045860301181,
+          158.99226132036017
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      }
+    ],
+    "sourceUpdatedAt": [
+      {
+        "field": "FNODE_",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          88581,
+          88582,
+          88583
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      },
+      {
+        "field": "TNODE_",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 0.94,
+        "sampleValues": [
+          88582,
+          88583,
+          88584
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      },
+      {
+        "field": "LPOLY_",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      },
+      {
+        "field": "RPOLY_",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      },
+      {
+        "field": "FCODE",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 0.04,
+        "sampleValues": [
+          5001,
+          5001,
+          5001
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      }
+    ],
+    "estimatedValue": [
+      {
+        "field": "OBJECTID",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          2,
+          3,
+          4
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "FNODE_",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          88581,
+          88582,
+          88583
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "TNODE_",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 0.94,
+        "sampleValues": [
+          88582,
+          88583,
+          88584
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "LPOLY_",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "RPOLY_",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      }
+    ],
+    "assessmentValue": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          2,
+          3,
+          4
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "FNODE_",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          88581,
+          88582,
+          88583
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "TNODE_",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.94,
+        "sampleValues": [
+          88582,
+          88583,
+          88584
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "LPOLY_",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "RPOLY_",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ],
+    "landValue": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          2,
+          3,
+          4
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "FNODE_",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          88581,
+          88582,
+          88583
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "TNODE_",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.94,
+        "sampleValues": [
+          88582,
+          88583,
+          88584
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "LPOLY_",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "RPOLY_",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ],
+    "buildingValue": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          2,
+          3,
+          4
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "FNODE_",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          88581,
+          88582,
+          88583
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "TNODE_",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.94,
+        "sampleValues": [
+          88582,
+          88583,
+          88584
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "LPOLY_",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "RPOLY_",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ],
+    "yearBuilt": [
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          2,
+          3,
+          4
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "FNODE_",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          88581,
+          88582,
+          88583
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "TNODE_",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.94,
+        "sampleValues": [
+          88582,
+          88583,
+          88584
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "LPOLY_",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "RPOLY_",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "landAcres": [
+      {
+        "field": "OBJECTID",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          2,
+          3,
+          4
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "FNODE_",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          88581,
+          88582,
+          88583
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "TNODE_",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 0.94,
+        "sampleValues": [
+          88582,
+          88583,
+          88584
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "LPOLY_",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "RPOLY_",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      }
+    ],
+    "livingArea": [
+      {
+        "field": "OBJECTID",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          2,
+          3,
+          4
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "FNODE_",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          88581,
+          88582,
+          88583
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "TNODE_",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 0.94,
+        "sampleValues": [
+          88582,
+          88583,
+          88584
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "LPOLY_",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "RPOLY_",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      }
+    ],
+    "saleDate": [
+      {
+        "field": "FNODE_",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          88581,
+          88582,
+          88583
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      },
+      {
+        "field": "TNODE_",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.94,
+        "sampleValues": [
+          88582,
+          88583,
+          88584
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      },
+      {
+        "field": "LPOLY_",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      },
+      {
+        "field": "RPOLY_",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      },
+      {
+        "field": "FCODE",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.04,
+        "sampleValues": [
+          5001,
+          5001,
+          5001
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      }
+    ],
+    "salePrice": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          2,
+          3,
+          4
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "FNODE_",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          88581,
+          88582,
+          88583
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "TNODE_",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.94,
+        "sampleValues": [
+          88582,
+          88583,
+          88584
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "LPOLY_",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "RPOLY_",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ]
+  },
+  "recordFilter": {
+    "requireAny": [
+      [
+        "OBJECTID",
+        "GlobalID"
+      ]
+    ]
+  },
+  "warnings": [
+    "No confident mapping found for required field parcelId."
+  ],
+  "connectorId": "PA-CARBON",
+  "endpoint": "https://gis.carboncounty.com:6443/arcgis/rest/services/Parcel_Landhooks_2019/MapServer/0/query",
+  "adapter": "arcgis",
+  "manifest": "config/county-connectors/PA-CARBON.json"
+}

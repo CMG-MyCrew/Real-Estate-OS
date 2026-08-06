@@ -1,23 +1,23 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-04T20:39:17.736Z",
+  "generatedAt": "2026-08-06T21:19:46.873Z",
   "states": {
     "PA": {
       "state": "PA",
       "name": "Pennsylvania",
       "countyCount": 67,
-      "connectorCount": 42,
-      "ready": 4,
+      "connectorCount": 44,
+      "ready": 43,
       "production": 1,
       "reviewRequired": 0,
       "failed": 0,
-      "missing": 25,
+      "missing": 23,
       "counties": [
         {
           "county": "Adams",
           "connectorId": "PA-ADAMS",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -25,7 +25,7 @@
           "county": "Allegheny",
           "connectorId": "PA-ALLEGHENY",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -40,16 +40,16 @@
         {
           "county": "Beaver",
           "connectorId": "PA-BEAVER",
-          "exists": false,
-          "status": "MISSING",
-          "implementation": "",
-          "datasets": 0
+          "exists": true,
+          "status": "READY",
+          "implementation": "generated",
+          "datasets": 1
         },
         {
           "county": "Bedford",
           "connectorId": "PA-BEDFORD",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -57,7 +57,7 @@
           "county": "Berks",
           "connectorId": "PA-BERKS",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -65,7 +65,7 @@
           "county": "Blair",
           "connectorId": "PA-BLAIR",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -97,7 +97,7 @@
           "county": "Cambria",
           "connectorId": "PA-CAMBRIA",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -112,16 +112,16 @@
         {
           "county": "Carbon",
           "connectorId": "PA-CARBON",
-          "exists": false,
-          "status": "MISSING",
-          "implementation": "",
-          "datasets": 0
+          "exists": true,
+          "status": "READY",
+          "implementation": "generated",
+          "datasets": 1
         },
         {
           "county": "Centre",
           "connectorId": "PA-CENTRE",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -145,7 +145,7 @@
           "county": "Clearfield",
           "connectorId": "PA-CLEARFIELD",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -153,7 +153,7 @@
           "county": "Clinton",
           "connectorId": "PA-CLINTON",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -161,7 +161,7 @@
           "county": "Columbia",
           "connectorId": "PA-COLUMBIA",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -177,7 +177,7 @@
           "county": "Cumberland",
           "connectorId": "PA-CUMBERLAND",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -185,7 +185,7 @@
           "county": "Dauphin",
           "connectorId": "PA-DAUPHIN",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -233,7 +233,7 @@
           "county": "Franklin",
           "connectorId": "PA-FRANKLIN",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -241,7 +241,7 @@
           "county": "Fulton",
           "connectorId": "PA-FULTON",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -249,7 +249,7 @@
           "county": "Greene",
           "connectorId": "PA-GREENE",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -257,7 +257,7 @@
           "county": "Huntingdon",
           "connectorId": "PA-HUNTINGDON",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -289,7 +289,7 @@
           "county": "Lackawanna",
           "connectorId": "PA-LACKAWANNA",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -297,7 +297,7 @@
           "county": "Lancaster",
           "connectorId": "PA-LANCASTER",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -313,7 +313,7 @@
           "county": "Lebanon",
           "connectorId": "PA-LEBANON",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -321,7 +321,7 @@
           "county": "Lehigh",
           "connectorId": "PA-LEHIGH",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -337,7 +337,7 @@
           "county": "Lycoming",
           "connectorId": "PA-LYCOMING",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -361,7 +361,7 @@
           "county": "Mifflin",
           "connectorId": "PA-MIFFLIN",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -393,7 +393,7 @@
           "county": "Northampton",
           "connectorId": "PA-NORTHAMPTON",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -401,7 +401,7 @@
           "county": "Northumberland",
           "connectorId": "PA-NORTHUMBERLAND",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -409,7 +409,7 @@
           "county": "Perry",
           "connectorId": "PA-PERRY",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -433,7 +433,7 @@
           "county": "Potter",
           "connectorId": "PA-POTTER",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -441,7 +441,7 @@
           "county": "Schuylkill",
           "connectorId": "PA-SCHUYLKILL",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -449,7 +449,7 @@
           "county": "Snyder",
           "connectorId": "PA-SNYDER",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -457,7 +457,7 @@
           "county": "Somerset",
           "connectorId": "PA-SOMERSET",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -465,7 +465,7 @@
           "county": "Sullivan",
           "connectorId": "PA-SULLIVAN",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -473,7 +473,7 @@
           "county": "Susquehanna",
           "connectorId": "PA-SUSQUEHANNA",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -489,7 +489,7 @@
           "county": "Union",
           "connectorId": "PA-UNION",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -513,7 +513,7 @@
           "county": "Washington",
           "connectorId": "PA-WASHINGTON",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -521,7 +521,7 @@
           "county": "Wayne",
           "connectorId": "PA-WAYNE",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -529,7 +529,7 @@
           "county": "Westmoreland",
           "connectorId": "PA-WESTMORELAND",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -537,7 +537,7 @@
           "county": "Wyoming",
           "connectorId": "PA-WYOMING",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         },
@@ -545,7 +545,7 @@
           "county": "York",
           "connectorId": "PA-YORK",
           "exists": true,
-          "status": "GENERATED",
+          "status": "READY",
           "implementation": "generated",
           "datasets": 1
         }
@@ -555,11 +555,11 @@
   "totals": {
     "states": 1,
     "counties": 67,
-    "connectors": 42,
-    "ready": 4,
+    "connectors": 44,
+    "ready": 43,
     "production": 1,
     "reviewRequired": 0,
     "failed": 0,
-    "missing": 25
+    "missing": 23
   }
 }
