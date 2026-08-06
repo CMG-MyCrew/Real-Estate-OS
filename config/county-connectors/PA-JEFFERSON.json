@@ -1,0 +1,130 @@
+{
+  "id": "PA-JEFFERSON",
+  "state": "PA",
+  "county": "Jefferson",
+  "version": "1.0.0",
+  "enabled": true,
+  "generatedAt": "2026-08-06T23:37:13.565Z",
+  "datasets": {
+    "parcel_inventory": {
+      "adapter": "arcgis",
+      "endpointProperty": "REOS_COUNTY_PA_JEFFERSON_PARCEL_INVENTORY_URL",
+      "enabled": true,
+      "maxLimit": 2000,
+      "mapping": {
+        "address": [],
+        "city": [
+          "AdrCity"
+        ],
+        "zip": [
+          "AdrZip5",
+          "MailingZip"
+        ],
+        "parcelId": [
+          "ParcelId",
+          "ParcelLgl",
+          "ParcelType"
+        ],
+        "ownerName": [
+          "OwnerName"
+        ],
+        "coOwnerName": [],
+        "sourceRecordId": [
+          "OBJECTID"
+        ],
+        "sourceUpdatedAt": [],
+        "estimatedValue": [
+          "TotalValue"
+        ],
+        "assessmentValue": [],
+        "landValue": [
+          "LandValue"
+        ],
+        "buildingValue": [],
+        "yearBuilt": [],
+        "landAcres": [],
+        "livingArea": [],
+        "saleDate": [],
+        "salePrice": []
+      },
+      "endpoint": "https://services1.arcgis.com/qXvbYftT9ld1YWzi/arcgis/rest/services/Jefferson_County_Parcels_View/FeatureServer/0/query",
+      "sourceQuery": {
+        "where": "1=1"
+      },
+      "discovery": {
+        "title": "Jefferson County Parcels View",
+        "source": "Jefferson County GIS",
+        "sourceScope": "county",
+        "authoritative": true,
+        "reviewStatus": "manual_source_verified",
+        "endpoint": "https://services1.arcgis.com/qXvbYftT9ld1YWzi/arcgis/rest/services/Jefferson_County_Parcels_View/FeatureServer/0/query"
+      },
+      "recordFilter": {
+        "requireAny": [
+          [
+            "ParcelId",
+            "ParcelLgl",
+            "ParcelType"
+          ]
+        ]
+      },
+      "autoMapping": {
+        "appliedAt": "2026-08-06T23:37:33.311Z",
+        "sampleCount": 50,
+        "report": "reports/county-mapping/PA-JEFFERSON-PARCEL_INVENTORY-MAPPING.json",
+        "minimumScore": 65,
+        "confidence": {
+          "city": {
+            "score": 65,
+            "primaryField": "AdrCity",
+            "completeness": 0,
+            "alternatives": []
+          },
+          "zip": {
+            "score": 85,
+            "primaryField": "AdrZip5",
+            "completeness": 1,
+            "alternatives": [
+              "MailingZip"
+            ]
+          },
+          "parcelId": {
+            "score": 165,
+            "primaryField": "ParcelId",
+            "completeness": 0.96,
+            "alternatives": [
+              "ParcelLgl",
+              "ParcelType"
+            ]
+          },
+          "ownerName": {
+            "score": 120,
+            "primaryField": "OwnerName",
+            "completeness": 0,
+            "alternatives": []
+          },
+          "sourceRecordId": {
+            "score": 155,
+            "primaryField": "OBJECTID",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "estimatedValue": {
+            "score": 139,
+            "primaryField": "TotalValue",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "landValue": {
+            "score": 138,
+            "primaryField": "LandValue",
+            "completeness": 1,
+            "alternatives": []
+          }
+        },
+        "warnings": []
+      }
+    }
+  },
+  "updatedAt": "2026-08-06T23:37:33.311Z"
+}

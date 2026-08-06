@@ -1,0 +1,1420 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-06T23:37:33.300Z",
+  "dataset": "parcel_inventory",
+  "sampleCount": 50,
+  "sourceFields": [
+    "OBJECTID",
+    "FID_1",
+    "CountyFips",
+    "county_id",
+    "ParcelId",
+    "ParcelLgl",
+    "SourceRef",
+    "SourceDate",
+    "OwnerName",
+    "MailingAdd",
+    "MailingAd1",
+    "MailingAd2",
+    "MailingCty",
+    "MailingSt",
+    "MailingZip",
+    "AdrNum",
+    "PreDir",
+    "PstrNam",
+    "PstrType",
+    "PsufDir",
+    "AdrCity",
+    "AdrZip5",
+    "AdrLabel",
+    "ParcelType",
+    "AssesValue",
+    "ImpValue",
+    "LandValue",
+    "TotalValue",
+    "Subdivisio",
+    "NBHD",
+    "Section",
+    "Township",
+    "Range",
+    "STR",
+    "TaxCode",
+    "TaxArea",
+    "CAMAKey",
+    "CAMAProv",
+    "County",
+    "DataProv",
+    "CAMADate",
+    "PubDate",
+    "NatCooSys",
+    "Shape__Area",
+    "Shape__Length"
+  ],
+  "mapping": {
+    "address": [],
+    "city": [
+      "AdrCity"
+    ],
+    "zip": [
+      "AdrZip5",
+      "MailingZip"
+    ],
+    "parcelId": [
+      "ParcelId",
+      "ParcelLgl",
+      "ParcelType"
+    ],
+    "ownerName": [
+      "OwnerName"
+    ],
+    "coOwnerName": [],
+    "sourceRecordId": [
+      "OBJECTID"
+    ],
+    "sourceUpdatedAt": [],
+    "estimatedValue": [
+      "TotalValue"
+    ],
+    "assessmentValue": [],
+    "landValue": [
+      "LandValue"
+    ],
+    "buildingValue": [],
+    "yearBuilt": [],
+    "landAcres": [],
+    "livingArea": [],
+    "saleDate": [],
+    "salePrice": []
+  },
+  "confidence": {
+    "city": {
+      "score": 65,
+      "primaryField": "AdrCity",
+      "completeness": 0,
+      "alternatives": []
+    },
+    "zip": {
+      "score": 85,
+      "primaryField": "AdrZip5",
+      "completeness": 1,
+      "alternatives": [
+        "MailingZip"
+      ]
+    },
+    "parcelId": {
+      "score": 165,
+      "primaryField": "ParcelId",
+      "completeness": 0.96,
+      "alternatives": [
+        "ParcelLgl",
+        "ParcelType"
+      ]
+    },
+    "ownerName": {
+      "score": 120,
+      "primaryField": "OwnerName",
+      "completeness": 0,
+      "alternatives": []
+    },
+    "sourceRecordId": {
+      "score": 155,
+      "primaryField": "OBJECTID",
+      "completeness": 1,
+      "alternatives": []
+    },
+    "estimatedValue": {
+      "score": 139,
+      "primaryField": "TotalValue",
+      "completeness": 1,
+      "alternatives": []
+    },
+    "landValue": {
+      "score": 138,
+      "primaryField": "LandValue",
+      "completeness": 1,
+      "alternatives": []
+    }
+  },
+  "rankedCandidates": {
+    "address": [
+      {
+        "field": "ParcelId",
+        "score": 34,
+        "completeness": 0.96,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "19-205-0128 .16C",
+          "09-201-0102 .19B",
+          "05-002-0604 A"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "addressLike>=50%"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "FID_1",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0",
+          "1",
+          "2"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "CountyFips",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "42065",
+          "42065",
+          "42065"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "AdrNum",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "city": [
+      {
+        "field": "AdrCity",
+        "score": 65,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/city/i=65"
+        ]
+      },
+      {
+        "field": "Township",
+        "score": 55,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/township/i=55"
+        ]
+      },
+      {
+        "field": "DataProv",
+        "score": 30,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "DataScout OneMap",
+          "DataScout OneMap",
+          "DataScout OneMap"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=10"
+        ]
+      },
+      {
+        "field": "ParcelId",
+        "score": 26,
+        "completeness": 0.96,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "19-205-0128 .16C",
+          "09-201-0102 .19B",
+          "05-002-0604 A"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=50%"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "zip": [
+      {
+        "field": "AdrZip5",
+        "score": 85,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "name:/zip/i=65",
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "MailingZip",
+        "score": 65,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/zip/i=65"
+        ]
+      },
+      {
+        "field": "CountyFips",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "42065",
+          "42065",
+          "42065"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "zipLike>=80%=30"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "FID_1",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0",
+          "1",
+          "2"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "parcelId": [
+      {
+        "field": "ParcelId",
+        "score": 165,
+        "completeness": 0.96,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "19-205-0128 .16C",
+          "09-201-0102 .19B",
+          "05-002-0604 A"
+        ],
+        "reasons": [
+          "name:/^parcel_?id$/i=120",
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "ParcelLgl",
+        "score": 72,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/parcel/i=72"
+        ]
+      },
+      {
+        "field": "ParcelType",
+        "score": 72,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/parcel/i=72"
+        ]
+      },
+      {
+        "field": "CountyFips",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "42065",
+          "42065",
+          "42065"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "DataProv",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "DataScout OneMap",
+          "DataScout OneMap",
+          "DataScout OneMap"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      }
+    ],
+    "ownerName": [
+      {
+        "field": "OwnerName",
+        "score": 120,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/^owner_?name$/i=120"
+        ]
+      },
+      {
+        "field": "DataProv",
+        "score": 32,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "DataScout OneMap",
+          "DataScout OneMap",
+          "DataScout OneMap"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=12"
+        ]
+      },
+      {
+        "field": "ParcelId",
+        "score": 27,
+        "completeness": 0.96,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "19-205-0128 .16C",
+          "09-201-0102 .19B",
+          "05-002-0604 A"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=50%"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "FID_1",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0",
+          "1",
+          "2"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "coOwnerName": [
+      {
+        "field": "DataProv",
+        "score": 28,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "DataScout OneMap",
+          "DataScout OneMap",
+          "DataScout OneMap"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=8"
+        ]
+      },
+      {
+        "field": "ParcelId",
+        "score": 24,
+        "completeness": 0.96,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "19-205-0128 .16C",
+          "09-201-0102 .19B",
+          "05-002-0604 A"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=50%"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "FID_1",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0",
+          "1",
+          "2"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "CountyFips",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "42065",
+          "42065",
+          "42065"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "sourceRecordId": [
+      {
+        "field": "OBJECTID",
+        "score": 155,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "name:/^objectid$/i=100",
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "FID_1",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0",
+          "1",
+          "2"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "ParcelId",
+        "score": 55,
+        "completeness": 0.96,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "19-205-0128 .16C",
+          "09-201-0102 .19B",
+          "05-002-0604 A"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "Shape__Area",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          34572.77795410156,
+          49.852020263671875,
+          25442.227172851562
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "Shape__Length",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          754.578235456979,
+          417.3211527075217,
+          652.6006247462587
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      }
+    ],
+    "sourceUpdatedAt": [
+      {
+        "field": "CountyFips",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "42065",
+          "42065",
+          "42065"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      },
+      {
+        "field": "AdrNum",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      },
+      {
+        "field": "AdrZip5",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      },
+      {
+        "field": "AssesValue",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      },
+      {
+        "field": "ImpValue",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      }
+    ],
+    "estimatedValue": [
+      {
+        "field": "TotalValue",
+        "score": 139,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "name:/^total_?value$/i=99",
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "FID_1",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0",
+          "1",
+          "2"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "CountyFips",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "42065",
+          "42065",
+          "42065"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "AdrNum",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      }
+    ],
+    "assessmentValue": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "FID_1",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0",
+          "1",
+          "2"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "CountyFips",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "42065",
+          "42065",
+          "42065"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "AdrNum",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "AdrZip5",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ],
+    "landValue": [
+      {
+        "field": "LandValue",
+        "score": 138,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "name:/^land_?value$/i=100",
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "FID_1",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0",
+          "1",
+          "2"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "CountyFips",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "42065",
+          "42065",
+          "42065"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "AdrNum",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ],
+    "buildingValue": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "FID_1",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0",
+          "1",
+          "2"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "CountyFips",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "42065",
+          "42065",
+          "42065"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "AdrNum",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "AdrZip5",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ],
+    "yearBuilt": [
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "FID_1",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0",
+          "1",
+          "2"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "CountyFips",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "42065",
+          "42065",
+          "42065"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "ParcelId",
+        "score": 20,
+        "completeness": 0.96,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "19-205-0128 .16C",
+          "09-201-0102 .19B",
+          "05-002-0604 A"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "AdrNum",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "landAcres": [
+      {
+        "field": "OBJECTID",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "FID_1",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0",
+          "1",
+          "2"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "CountyFips",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "42065",
+          "42065",
+          "42065"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "AdrNum",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "AdrZip5",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      }
+    ],
+    "livingArea": [
+      {
+        "field": "OBJECTID",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "FID_1",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0",
+          "1",
+          "2"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "CountyFips",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "42065",
+          "42065",
+          "42065"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "AdrNum",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "AdrZip5",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      }
+    ],
+    "saleDate": [
+      {
+        "field": "CountyFips",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "42065",
+          "42065",
+          "42065"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      },
+      {
+        "field": "AdrNum",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      },
+      {
+        "field": "AdrZip5",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      },
+      {
+        "field": "AssesValue",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      },
+      {
+        "field": "ImpValue",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      }
+    ],
+    "salePrice": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "FID_1",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "0",
+          "1",
+          "2"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "CountyFips",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          "42065",
+          "42065",
+          "42065"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "AdrNum",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "AdrZip5",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ]
+  },
+  "recordFilter": {
+    "requireAny": [
+      [
+        "ParcelId",
+        "ParcelLgl",
+        "ParcelType"
+      ]
+    ]
+  },
+  "warnings": [],
+  "connectorId": "PA-JEFFERSON",
+  "endpoint": "https://services1.arcgis.com/qXvbYftT9ld1YWzi/arcgis/rest/services/Jefferson_County_Parcels_View/FeatureServer/0/query",
+  "adapter": "arcgis",
+  "manifest": "config/county-connectors/PA-JEFFERSON.json"
+}

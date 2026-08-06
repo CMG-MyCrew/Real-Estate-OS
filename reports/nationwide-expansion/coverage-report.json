@@ -1,17 +1,17 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-06T21:19:46.873Z",
+  "generatedAt": "2026-08-06T23:41:38.792Z",
   "states": {
     "PA": {
       "state": "PA",
       "name": "Pennsylvania",
       "countyCount": 67,
-      "connectorCount": 44,
-      "ready": 43,
+      "connectorCount": 46,
+      "ready": 45,
       "production": 1,
       "reviewRequired": 0,
       "failed": 0,
-      "missing": 23,
+      "missing": 21,
       "counties": [
         {
           "county": "Adams",
@@ -168,10 +168,10 @@
         {
           "county": "Crawford",
           "connectorId": "PA-CRAWFORD",
-          "exists": false,
-          "status": "MISSING",
-          "implementation": "",
-          "datasets": 0
+          "exists": true,
+          "status": "READY",
+          "implementation": "generated",
+          "datasets": 1
         },
         {
           "county": "Cumberland",
@@ -272,10 +272,10 @@
         {
           "county": "Jefferson",
           "connectorId": "PA-JEFFERSON",
-          "exists": false,
-          "status": "MISSING",
-          "implementation": "",
-          "datasets": 0
+          "exists": true,
+          "status": "READY",
+          "implementation": "generated",
+          "datasets": 1
         },
         {
           "county": "Juniata",
@@ -555,11 +555,11 @@
   "totals": {
     "states": 1,
     "counties": 67,
-    "connectors": 44,
-    "ready": 43,
+    "connectors": 46,
+    "ready": 45,
     "production": 1,
     "reviewRequired": 0,
     "failed": 0,
-    "missing": 23
+    "missing": 21
   }
 }

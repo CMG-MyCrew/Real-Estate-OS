@@ -1,0 +1,16 @@
+{
+  "state": "PA",
+  "county": "Lawrence",
+  "dataset": "parcel_inventory",
+  "status": "NO_PUBLIC_QUERY",
+  "reviewedCandidates": [
+    {
+      "title": "Lawrence County PA Parcels",
+      "owner": "wharcgisdeveloper",
+      "type": "Feature Service",
+      "endpoint": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/lawrence_county_pa_parcels/FeatureServer",
+      "usable": false,
+      "reason": "ArcGIS metadata request returned an error; no public queryable parcel layer was available."
+    }
+  ]
+}

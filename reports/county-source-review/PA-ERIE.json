@@ -6,9 +6,28 @@
   "reviewedCandidates": [
     {
       "title": "City of Erie Parcel Boundaries",
-      "endpoint": "https://gis.erie.pa.us/server/rest/services/Hosted/Parcel_Boundaries_Zoning_view_AGOL/FeatureServer/31",
+      "owner": "GIS@erie.pa.us_cityoferie",
+      "endpoint": "https://gis.erie.pa.us/server/rest/services/Hosted/Parcel_Boundaries_Zoning_view_AGOL/FeatureServer/31/query",
+      "count": 36296,
+      "countywide": false,
       "usable": false,
-      "reason": "Covers only the City of Erie, not Erie County."
+      "reason": "Public parcel layer covers only the City of Erie, not Erie County."
+    },
+    {
+      "title": "City Boundary",
+      "owner": "GIS@erie.pa.us_cityoferie",
+      "endpoint": "https://gis.erie.pa.us/server/rest/services/Hosted/City_Boundary/FeatureServer/0/query",
+      "count": 1,
+      "countywide": false,
+      "usable": false,
+      "reason": "Boundary layer only; not a parcel dataset."
+    },
+    {
+      "title": "Erie County PA Parcels",
+      "owner": "wharcgisdeveloper",
+      "endpoint": "https://services6.arcgis.com/drkDXByy6E3bYW3a/arcgis/rest/services/erie_county_pa_parcels/FeatureServer",
+      "usable": false,
+      "reason": "ArcGIS metadata request returned an error."
     }
   ]
 }

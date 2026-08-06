@@ -1,0 +1,16 @@
+{
+  "state": "PA",
+  "county": "Armstrong",
+  "dataset": "parcel_inventory",
+  "status": "NO_PUBLIC_QUERY",
+  "reviewedCandidates": [
+    {
+      "title": "Kiski_Parcels 12132018",
+      "owner": "Daxton01",
+      "endpoint": "https://services9.arcgis.com/QnivACPWgiXOIZ9Y/arcgis/rest/services/Kiski_Parcels_12132018/FeatureServer",
+      "usable": false,
+      "countywide": false,
+      "reason": "ArcGIS metadata request returned an error, and the source appears to represent a Kiski-area parcel subset rather than countywide Armstrong County coverage."
+    }
+  ]
+}
