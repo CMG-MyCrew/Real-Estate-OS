@@ -1,0 +1,142 @@
+{
+  "id": "PA-CRAWFORD",
+  "state": "PA",
+  "county": "Crawford",
+  "version": "1.0.0",
+  "enabled": true,
+  "generatedAt": "2026-08-06T21:30:23.490Z",
+  "datasets": {
+    "parcel_inventory": {
+      "adapter": "arcgis",
+      "endpointProperty": "REOS_COUNTY_PA_CRAWFORD_PARCEL_INVENTORY_URL",
+      "enabled": true,
+      "maxLimit": 2000,
+      "mapping": {
+        "address": [],
+        "city": [
+          "REM_PRCL_LOCN_CITY",
+          "MAD_MAIL_CITY"
+        ],
+        "zip": [
+          "REM_PRCL_LOCN_ZIP",
+          "MAD_MAIL_ZIP"
+        ],
+        "parcelId": [
+          "PARCEL"
+        ],
+        "ownerName": [
+          "SLH_CURRENT_OWNER",
+          "OWN_ID",
+          "OWN_NAME1"
+        ],
+        "coOwnerName": [],
+        "sourceRecordId": [
+          "OBJECTID",
+          "GlobalID"
+        ],
+        "sourceUpdatedAt": [
+          "REM_LAST_UPDATE"
+        ],
+        "estimatedValue": [],
+        "assessmentValue": [],
+        "landValue": [],
+        "buildingValue": [],
+        "yearBuilt": [],
+        "landAcres": [
+          "GIS_ACRES"
+        ],
+        "livingArea": [],
+        "saleDate": [
+          "SLH_SALE_DATE"
+        ],
+        "salePrice": []
+      },
+      "endpoint": "https://services1.arcgis.com/CcJI8wbz22fo71LO/arcgis/rest/services/CivQuest_Core/FeatureServer/1/query",
+      "sourceQuery": {
+        "where": "1=1"
+      },
+      "discovery": {
+        "title": "Crawford County PA Tax Parcels - Open Data",
+        "source": "Crawford County GIS",
+        "sourceScope": "county",
+        "authoritative": true,
+        "reviewStatus": "manual_source_verified",
+        "endpoint": "https://services1.arcgis.com/CcJI8wbz22fo71LO/arcgis/rest/services/CivQuest_Core/FeatureServer/1/query"
+      },
+      "recordFilter": {
+        "requireAny": [
+          [
+            "PARCEL"
+          ]
+        ]
+      },
+      "autoMapping": {
+        "appliedAt": "2026-08-06T21:30:45.125Z",
+        "sampleCount": 50,
+        "report": "reports/county-mapping/PA-CRAWFORD-PARCEL_INVENTORY-MAPPING.json",
+        "minimumScore": 65,
+        "confidence": {
+          "city": {
+            "score": 65,
+            "primaryField": "REM_PRCL_LOCN_CITY",
+            "completeness": 0,
+            "alternatives": [
+              "MAD_MAIL_CITY"
+            ]
+          },
+          "zip": {
+            "score": 65,
+            "primaryField": "REM_PRCL_LOCN_ZIP",
+            "completeness": 0,
+            "alternatives": [
+              "MAD_MAIL_ZIP"
+            ]
+          },
+          "parcelId": {
+            "score": 100,
+            "primaryField": "PARCEL",
+            "completeness": 0,
+            "alternatives": []
+          },
+          "ownerName": {
+            "score": 70,
+            "primaryField": "SLH_CURRENT_OWNER",
+            "completeness": 0,
+            "alternatives": [
+              "OWN_ID",
+              "OWN_NAME1"
+            ]
+          },
+          "sourceRecordId": {
+            "score": 155,
+            "primaryField": "OBJECTID",
+            "completeness": 1,
+            "alternatives": [
+              "GlobalID"
+            ]
+          },
+          "sourceUpdatedAt": {
+            "score": 68,
+            "primaryField": "REM_LAST_UPDATE",
+            "completeness": 0,
+            "alternatives": []
+          },
+          "landAcres": {
+            "score": 105,
+            "primaryField": "GIS_ACRES",
+            "completeness": 1,
+            "alternatives": []
+          },
+          "saleDate": {
+            "score": 80,
+            "primaryField": "SLH_SALE_DATE",
+            "completeness": 0,
+            "alternatives": []
+          }
+        },
+        "warnings": []
+      }
+    }
+  },
+  "updatedAt": "2026-08-06T21:30:45.125Z"
+}

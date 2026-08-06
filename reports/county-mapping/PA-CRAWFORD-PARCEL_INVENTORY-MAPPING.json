@@ -1,0 +1,1436 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-06T21:30:45.095Z",
+  "dataset": "parcel_inventory",
+  "sampleCount": 50,
+  "sourceFields": [
+    "OBJECTID",
+    "CAMA_PIN",
+    "MAP",
+    "PARCEL",
+    "LOT",
+    "PLANS_AVAILABLE",
+    "SEC_MUNI_NAME",
+    "PID",
+    "REM_PID",
+    "REM_PIN",
+    "REM_OWN_NAME",
+    "REM_PRCL_LOCN",
+    "REM_PRCL_LOCN_CITY",
+    "REM_PRCL_LOCN_STT",
+    "REM_PRCL_LOCN_ZIP",
+    "REM_ALT_PRCL_ID",
+    "REM_PRCL_STATUS_DATE",
+    "REM_MBLU_MAP",
+    "REM_MBLU_MAP_CUT",
+    "REM_MBLU_BLOCK",
+    "REM_MBLU_BLOCK_CUT",
+    "REM_MBLU_LOT",
+    "REM_MBLU_LOT_CUT",
+    "REM_MBLU_UNIT",
+    "REM_MBLU_UNIT_CUT",
+    "REM_STATUS_DATE",
+    "REM_INET_SUPPRESS",
+    "REM_IS_CONDO_MAIN",
+    "REM_CMPLX_NAME",
+    "REM_BLDG_NAME",
+    "REM_USE_CODE",
+    "REM_LEGAL_AREA",
+    "REM_LAST_UPDATE",
+    "REM_USRFLD",
+    "REM_USRFLD_DESC",
+    "PID_TEXT",
+    "LND_USE_CODE",
+    "LND_USE_DESC",
+    "LND_DSTRCT",
+    "PRC_PF_LOCN",
+    "PRC_PF_LOCN_DESC",
+    "PRC_USRFLD_09",
+    "PRC_USRFLD_10",
+    "PRC_TTL_ASSESS_BLDG",
+    "PRC_TTL_ASSESS_IMPROVEMENTS",
+    "PRC_TTL_ASSESS_LND",
+    "PRC_TTL_ASSESS_OB",
+    "PRC_VALUE",
+    "PRC_CMPLX_PID",
+    "PRC_CMPLX_DESC",
+    "PRC_CENSUS",
+    "PRC_TTL_MRKT_ASSESS",
+    "PRC_TTL_ASSESS",
+    "OWN_ID",
+    "OWN_NAME1",
+    "OWN_NAME2",
+    "ROW_PID",
+    "ROW_OWN_PCT",
+    "MAD_MAIL_NAME1",
+    "MAD_MAIL_NAME2",
+    "MAD_MAIL_ADDR1",
+    "MAD_MAIL_CITY",
+    "MAD_MAIL_STATE",
+    "MAD_MAIL_ZIP",
+    "MAD_MAIL_ADDR2",
+    "SLH_PID",
+    "SLH_SALE_DATE",
+    "SLH_BOOK",
+    "SLH_PAGE",
+    "SLH_PRICE",
+    "SLH_CURRENT_OWNER",
+    "GIS_ACRES",
+    "LANDEX_URL",
+    "LONGITUDE_X",
+    "LATITUDE_Y",
+    "GlobalID",
+    "Shape__Area",
+    "Shape__Length"
+  ],
+  "mapping": {
+    "address": [],
+    "city": [
+      "REM_PRCL_LOCN_CITY",
+      "MAD_MAIL_CITY"
+    ],
+    "zip": [
+      "REM_PRCL_LOCN_ZIP",
+      "MAD_MAIL_ZIP"
+    ],
+    "parcelId": [
+      "PARCEL"
+    ],
+    "ownerName": [
+      "SLH_CURRENT_OWNER",
+      "OWN_ID",
+      "OWN_NAME1"
+    ],
+    "coOwnerName": [],
+    "sourceRecordId": [
+      "OBJECTID",
+      "GlobalID"
+    ],
+    "sourceUpdatedAt": [
+      "REM_LAST_UPDATE"
+    ],
+    "estimatedValue": [],
+    "assessmentValue": [],
+    "landValue": [],
+    "buildingValue": [],
+    "yearBuilt": [],
+    "landAcres": [
+      "GIS_ACRES"
+    ],
+    "livingArea": [],
+    "saleDate": [
+      "SLH_SALE_DATE"
+    ],
+    "salePrice": []
+  },
+  "confidence": {
+    "city": {
+      "score": 65,
+      "primaryField": "REM_PRCL_LOCN_CITY",
+      "completeness": 0,
+      "alternatives": [
+        "MAD_MAIL_CITY"
+      ]
+    },
+    "zip": {
+      "score": 65,
+      "primaryField": "REM_PRCL_LOCN_ZIP",
+      "completeness": 0,
+      "alternatives": [
+        "MAD_MAIL_ZIP"
+      ]
+    },
+    "parcelId": {
+      "score": 100,
+      "primaryField": "PARCEL",
+      "completeness": 0,
+      "alternatives": []
+    },
+    "ownerName": {
+      "score": 70,
+      "primaryField": "SLH_CURRENT_OWNER",
+      "completeness": 0,
+      "alternatives": [
+        "OWN_ID",
+        "OWN_NAME1"
+      ]
+    },
+    "sourceRecordId": {
+      "score": 155,
+      "primaryField": "OBJECTID",
+      "completeness": 1,
+      "alternatives": [
+        "GlobalID"
+      ]
+    },
+    "sourceUpdatedAt": {
+      "score": 68,
+      "primaryField": "REM_LAST_UPDATE",
+      "completeness": 0,
+      "alternatives": []
+    },
+    "landAcres": {
+      "score": 105,
+      "primaryField": "GIS_ACRES",
+      "completeness": 1,
+      "alternatives": []
+    },
+    "saleDate": {
+      "score": 80,
+      "primaryField": "SLH_SALE_DATE",
+      "completeness": 0,
+      "alternatives": []
+    }
+  },
+  "rankedCandidates": {
+    "address": [
+      {
+        "field": "GlobalID",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "e8ee46eb-3459-4347-b894-be2233c557f1",
+          "1a2a3a5d-44ea-4762-b32f-ee58ef66616d",
+          "7de07c6f-f4f7-447a-852f-fe269219c155"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "addressLike>=80%=25"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "CAMA_PIN",
+        "score": 20,
+        "completeness": 0.98,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "BARBER RUN",
+          "BOLES RUN",
+          "BRITTON RUN"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "PLANS_AVAILABLE",
+        "score": 20,
+        "completeness": 0.98,
+        "uniqueRatio": 0.02040816326530612,
+        "sampleValues": [
+          "N",
+          "N",
+          "N"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "REM_INET_SUPPRESS",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "city": [
+      {
+        "field": "REM_PRCL_LOCN_CITY",
+        "score": 65,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/city/i=65"
+        ]
+      },
+      {
+        "field": "MAD_MAIL_CITY",
+        "score": 65,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/city/i=65"
+        ]
+      },
+      {
+        "field": "CAMA_PIN",
+        "score": 30,
+        "completeness": 0.98,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "BARBER RUN",
+          "BOLES RUN",
+          "BRITTON RUN"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=10"
+        ]
+      },
+      {
+        "field": "GlobalID",
+        "score": 30,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "e8ee46eb-3459-4347-b894-be2233c557f1",
+          "1a2a3a5d-44ea-4762-b32f-ee58ef66616d",
+          "7de07c6f-f4f7-447a-852f-fe269219c155"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=10"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "zip": [
+      {
+        "field": "REM_PRCL_LOCN_ZIP",
+        "score": 65,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/zip/i=65"
+        ]
+      },
+      {
+        "field": "MAD_MAIL_ZIP",
+        "score": 65,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/zip/i=65"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "CAMA_PIN",
+        "score": 20,
+        "completeness": 0.98,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "BARBER RUN",
+          "BOLES RUN",
+          "BRITTON RUN"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "PLANS_AVAILABLE",
+        "score": 20,
+        "completeness": 0.98,
+        "uniqueRatio": 0.02040816326530612,
+        "sampleValues": [
+          "N",
+          "N",
+          "N"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "parcelId": [
+      {
+        "field": "PARCEL",
+        "score": 100,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/^parcel$/i=100"
+        ]
+      },
+      {
+        "field": "CAMA_PIN",
+        "score": 45,
+        "completeness": 0.98,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "BARBER RUN",
+          "BOLES RUN",
+          "BRITTON RUN"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "GIS_ACRES",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          81.99818141,
+          0.04830875,
+          12.07564171
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "GlobalID",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "e8ee46eb-3459-4347-b894-be2233c557f1",
+          "1a2a3a5d-44ea-4762-b32f-ee58ef66616d",
+          "7de07c6f-f4f7-447a-852f-fe269219c155"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      },
+      {
+        "field": "Shape__Area",
+        "score": 45,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          596662.32421875,
+          349.9140625,
+          88043.50390625
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "identifierLike>=80%=25"
+        ]
+      }
+    ],
+    "ownerName": [
+      {
+        "field": "SLH_CURRENT_OWNER",
+        "score": 70,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/owner/i=70"
+        ]
+      },
+      {
+        "field": "OWN_ID",
+        "score": 65,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/^own/i=65"
+        ]
+      },
+      {
+        "field": "OWN_NAME1",
+        "score": 65,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/^own/i=65"
+        ]
+      },
+      {
+        "field": "OWN_NAME2",
+        "score": 65,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/^own/i=65"
+        ]
+      },
+      {
+        "field": "CAMA_PIN",
+        "score": 32,
+        "completeness": 0.98,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "BARBER RUN",
+          "BOLES RUN",
+          "BRITTON RUN"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=12"
+        ]
+      }
+    ],
+    "coOwnerName": [
+      {
+        "field": "CAMA_PIN",
+        "score": 28,
+        "completeness": 0.98,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "BARBER RUN",
+          "BOLES RUN",
+          "BRITTON RUN"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=8"
+        ]
+      },
+      {
+        "field": "GlobalID",
+        "score": 28,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "e8ee46eb-3459-4347-b894-be2233c557f1",
+          "1a2a3a5d-44ea-4762-b32f-ee58ef66616d",
+          "7de07c6f-f4f7-447a-852f-fe269219c155"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "mostlyText>=80%=8"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "PLANS_AVAILABLE",
+        "score": 20,
+        "completeness": 0.98,
+        "uniqueRatio": 0.02040816326530612,
+        "sampleValues": [
+          "N",
+          "N",
+          "N"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "REM_INET_SUPPRESS",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "sourceRecordId": [
+      {
+        "field": "OBJECTID",
+        "score": 155,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "name:/^objectid$/i=100",
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "GlobalID",
+        "score": 149,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "e8ee46eb-3459-4347-b894-be2233c557f1",
+          "1a2a3a5d-44ea-4762-b32f-ee58ef66616d",
+          "7de07c6f-f4f7-447a-852f-fe269219c155"
+        ],
+        "reasons": [
+          "name:/^globalid$/i=94",
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "CAMA_PIN",
+        "score": 55,
+        "completeness": 0.98,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "BARBER RUN",
+          "BOLES RUN",
+          "BRITTON RUN"
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "GIS_ACRES",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          81.99818141,
+          0.04830875,
+          12.07564171
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      },
+      {
+        "field": "Shape__Area",
+        "score": 55,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          596662.32421875,
+          349.9140625,
+          88043.50390625
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "unique>=98%=35"
+        ]
+      }
+    ],
+    "sourceUpdatedAt": [
+      {
+        "field": "REM_LAST_UPDATE",
+        "score": 68,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/update/i=68"
+        ]
+      },
+      {
+        "field": "REM_INET_SUPPRESS",
+        "score": 50,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=30"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 37,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=50%"
+        ]
+      },
+      {
+        "field": "CAMA_PIN",
+        "score": 20,
+        "completeness": 0.98,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "BARBER RUN",
+          "BOLES RUN",
+          "BRITTON RUN"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "PLANS_AVAILABLE",
+        "score": 20,
+        "completeness": 0.98,
+        "uniqueRatio": 0.02040816326530612,
+        "sampleValues": [
+          "N",
+          "N",
+          "N"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "estimatedValue": [
+      {
+        "field": "OBJECTID",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "REM_INET_SUPPRESS",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "GIS_ACRES",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          81.99818141,
+          0.04830875,
+          12.07564171
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "Shape__Area",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          596662.32421875,
+          349.9140625,
+          88043.50390625
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      },
+      {
+        "field": "Shape__Length",
+        "score": 40,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          20119.10381315434,
+          243.40358468631646,
+          21273.13292162797
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=20"
+        ]
+      }
+    ],
+    "assessmentValue": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "REM_INET_SUPPRESS",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "GIS_ACRES",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          81.99818141,
+          0.04830875,
+          12.07564171
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "Shape__Area",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          596662.32421875,
+          349.9140625,
+          88043.50390625
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "Shape__Length",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          20119.10381315434,
+          243.40358468631646,
+          21273.13292162797
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ],
+    "landValue": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "REM_INET_SUPPRESS",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "GIS_ACRES",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          81.99818141,
+          0.04830875,
+          12.07564171
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "Shape__Area",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          596662.32421875,
+          349.9140625,
+          88043.50390625
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "Shape__Length",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          20119.10381315434,
+          243.40358468631646,
+          21273.13292162797
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ],
+    "buildingValue": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "REM_INET_SUPPRESS",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "GIS_ACRES",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          81.99818141,
+          0.04830875,
+          12.07564171
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "Shape__Area",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          596662.32421875,
+          349.9140625,
+          88043.50390625
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "Shape__Length",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          20119.10381315434,
+          243.40358468631646,
+          21273.13292162797
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ],
+    "yearBuilt": [
+      {
+        "field": "OBJECTID",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "CAMA_PIN",
+        "score": 20,
+        "completeness": 0.98,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "BARBER RUN",
+          "BOLES RUN",
+          "BRITTON RUN"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "PLANS_AVAILABLE",
+        "score": 20,
+        "completeness": 0.98,
+        "uniqueRatio": 0.02040816326530612,
+        "sampleValues": [
+          "N",
+          "N",
+          "N"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "REM_INET_SUPPRESS",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "GIS_ACRES",
+        "score": 20,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          81.99818141,
+          0.04830875,
+          12.07564171
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "landAcres": [
+      {
+        "field": "GIS_ACRES",
+        "score": 105,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          81.99818141,
+          0.04830875,
+          12.07564171
+        ],
+        "reasons": [
+          "name:/acre/i=70",
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "REM_INET_SUPPRESS",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "Shape__Area",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          596662.32421875,
+          349.9140625,
+          88043.50390625
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      },
+      {
+        "field": "Shape__Length",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          20119.10381315434,
+          243.40358468631646,
+          21273.13292162797
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=15"
+        ]
+      }
+    ],
+    "livingArea": [
+      {
+        "field": "OBJECTID",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "REM_INET_SUPPRESS",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "GIS_ACRES",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          81.99818141,
+          0.04830875,
+          12.07564171
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "Shape__Area",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          596662.32421875,
+          349.9140625,
+          88043.50390625
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      },
+      {
+        "field": "Shape__Length",
+        "score": 36,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          20119.10381315434,
+          243.40358468631646,
+          21273.13292162797
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=16"
+        ]
+      }
+    ],
+    "saleDate": [
+      {
+        "field": "SLH_SALE_DATE",
+        "score": 80,
+        "completeness": 0,
+        "uniqueRatio": 0,
+        "sampleValues": [],
+        "reasons": [
+          "name:/sale.*date/i=80"
+        ]
+      },
+      {
+        "field": "REM_INET_SUPPRESS",
+        "score": 48,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=80%=28"
+        ]
+      },
+      {
+        "field": "OBJECTID",
+        "score": 35,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "dateLike>=50%"
+        ]
+      },
+      {
+        "field": "CAMA_PIN",
+        "score": 20,
+        "completeness": 0.98,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          "BARBER RUN",
+          "BOLES RUN",
+          "BRITTON RUN"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      },
+      {
+        "field": "PLANS_AVAILABLE",
+        "score": 20,
+        "completeness": 0.98,
+        "uniqueRatio": 0.02040816326530612,
+        "sampleValues": [
+          "N",
+          "N",
+          "N"
+        ],
+        "reasons": [
+          "complete>=95%=20"
+        ]
+      }
+    ],
+    "salePrice": [
+      {
+        "field": "OBJECTID",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          1,
+          2,
+          3
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "REM_INET_SUPPRESS",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 0.02,
+        "sampleValues": [
+          0,
+          0,
+          0
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "GIS_ACRES",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          81.99818141,
+          0.04830875,
+          12.07564171
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "Shape__Area",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          596662.32421875,
+          349.9140625,
+          88043.50390625
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      },
+      {
+        "field": "Shape__Length",
+        "score": 38,
+        "completeness": 1,
+        "uniqueRatio": 1,
+        "sampleValues": [
+          20119.10381315434,
+          243.40358468631646,
+          21273.13292162797
+        ],
+        "reasons": [
+          "complete>=95%=20",
+          "numericLike>=80%=18"
+        ]
+      }
+    ]
+  },
+  "recordFilter": {
+    "requireAny": [
+      [
+        "PARCEL"
+      ]
+    ]
+  },
+  "warnings": [],
+  "connectorId": "PA-CRAWFORD",
+  "endpoint": "https://services1.arcgis.com/CcJI8wbz22fo71LO/arcgis/rest/services/CivQuest_Core/FeatureServer/1/query",
+  "adapter": "arcgis",
+  "manifest": "config/county-connectors/PA-CRAWFORD.json"
+}
