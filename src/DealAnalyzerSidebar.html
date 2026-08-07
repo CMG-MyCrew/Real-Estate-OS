@@ -116,13 +116,14 @@
   </div>
 
 <script>
-  const UI_VERSION = '3.6.0-versioned-deal-logic';
+  const UI_VERSION = '3.6.2-context-refresh';
   const moneyFields = [
     'purchasePrice','arv','repairCost','holdingCost','closingCost',
     'financingCost','sellingCost','assignmentFee','rentMonthly',
     'taxesAnnual','insuranceAnnual','hoaMonthly','loanPaymentMonthly'
   ];
   let busy = false;
+  let dealIndex = {};
 
   document.addEventListener('DOMContentLoaded', init);
 
@@ -135,6 +136,8 @@
       function(data) {
         const select = document.getElementById('dealId');
         const deals = Array.isArray(data && data.deals) ? data.deals : [];
+        dealIndex = {};
+        deals.forEach(function(d) { dealIndex[String(d.dealId || '')] = d; });
         select.innerHTML = '<option value="">Select a deal…</option>' + deals.map(function(d) {
           return '<option value="' + esc(d.dealId) + '">' + esc(d.label) + '</option>';
         }).join('');
@@ -151,18 +154,50 @@
       showStatus('Select a deal to begin.', 'info');
       return;
     }
+
+    renderDealCard_(dealIndex[dealId] || {}, dealId);
     showStatus('Loading deal…', 'info');
+    refreshDealContext_(dealId, null);
+  }
+
+  function refreshDealContext_(dealId, successMessage) {
     runServer_(
       'reosDealAnalyzerGetDealContext',
       [dealId],
       function(data) {
-        const d = (data && data.deal) || {};
-        document.getElementById('dealCard').innerHTML = '<strong>' + esc(d.Address || 'Unnamed property') + '</strong><br>' + esc([d.City, d.State, d.Zip].filter(Boolean).join(', ')) + '<br>Source: ' + esc(d.Source || '—') + ' · Status: ' + esc(d['Deal Status'] || '—');
+        const serverDeal = (data && data.deal) || {};
+        const cachedDeal = dealIndex[dealId] || {};
+        const mergedDeal = Object.assign({}, cachedDeal, serverDeal);
+        renderDealCard_(mergedDeal, dealId);
+
         if (data && data.form) applyValues(data.form);
-        const versionText = data && data.analysisVersion ? 'Latest analysis version: ' + data.analysisVersion + '.' : 'No previous analysis found.';
-        showStatus((d.Address || 'Deal') + ' loaded successfully.\n' + versionText + '\nReady to preview or save.', 'success');
+        document.getElementById('dealId').value = dealId;
+
+        const versionText = data && data.analysisVersion
+          ? 'Latest analysis version: ' + data.analysisVersion + '.'
+          : 'No previous analysis found.';
+        const address = firstValue_(mergedDeal, ['Address','address','Property Address','Street Address','Full Address']) || cachedDeal.address || 'Deal';
+        showStatus(successMessage || (address + ' loaded successfully.\n' + versionText + '\nReady to preview or save.'), 'success');
       }
     );
+  }
+
+  function renderDealCard_(deal, dealId) {
+    deal = deal || {};
+    const cached = dealIndex[dealId] || {};
+    const address = firstValue_(deal, ['Address','address','Property Address','Street Address','Full Address']) || cached.address || selectedDealLabel_(dealId) || 'Unnamed property';
+    const city = firstValue_(deal, ['City','city','Property City']) || cached.city || '';
+    const state = firstValue_(deal, ['State','state','Property State']) || cached.state || '';
+    const zip = firstValue_(deal, ['Zip','ZIP','Zip Code','ZIP Code','zip']) || cached.zip || '';
+    const source = firstValue_(deal, ['Source','source','Lead Source']) || cached.source || '—';
+    const status = firstValue_(deal, ['Deal Status','Status','status']) || cached.status || '—';
+    const location = [city, state, zip].filter(Boolean).join(', ');
+
+    document.getElementById('dealCard').innerHTML =
+      '<strong>' + esc(address) + '</strong>' +
+      (location ? '<br>' + esc(location) : '') +
+      '<br>Deal ID: ' + esc(dealId || '—') +
+      '<br>Source: ' + esc(source) + ' · Status: ' + esc(status);
   }
 
   function requestPayload() {
@@ -202,6 +237,7 @@
 
   function saveDeal() {
     if (busy || !validateRequiredFields(true)) return;
+    const dealId = value('dealId');
     showStatus('Saving versioned analysis and synchronizing REOS…', 'info');
     runServer_('reosDealAnalyzerSubmit', [requestPayload()], function(data) {
       const result = (data && data.result) || {};
@@ -219,8 +255,8 @@
           riskLevel: analysis['Risk Level']
         });
       }
-      showStatus((data && data.message) || 'Deal analysis saved successfully.', 'success');
       document.getElementById('analysisSaveMode').value = 'update_latest';
+      refreshDealContext_(dealId, (data && data.message) || 'Deal analysis saved successfully.');
     });
   }
 
@@ -257,6 +293,23 @@
       if (el.type === 'checkbox') el.checked = Boolean(data[key]);
       else el.value = data[key] === null || data[key] === undefined ? '' : data[key];
     });
+  }
+
+  function firstValue_(object, keys) {
+    for (let i = 0; i < keys.length; i++) {
+      const v = object ? object[keys[i]] : '';
+      if (v !== undefined && v !== null && String(v).trim() !== '') return String(v).trim();
+    }
+    return '';
+  }
+
+  function selectedDealLabel_(dealId) {
+    const select = document.getElementById('dealId');
+    if (!select || select.selectedIndex < 0) return '';
+    const text = String(select.options[select.selectedIndex].text || '').trim();
+    if (!text || text === 'Select a deal…') return '';
+    const suffix = ' — ' + String(dealId || '');
+    return text.endsWith(suffix) ? text.slice(0, -suffix.length) : text;
   }
 
   function setBusy(isBusy) {
