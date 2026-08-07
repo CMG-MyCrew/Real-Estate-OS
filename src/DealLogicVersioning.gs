@@ -1,9 +1,10 @@
 /*
- * REOS Enterprise v3.6.1
+ * REOS Enterprise v3.6.2
  * Deal Logic Versioning
  *
  * Updates the latest analysis by default, creates explicit versions on demand,
- * synchronizes the latest acquisition score, and reuses the active draft offer.
+ * synchronizes the latest acquisition score, reuses the active draft offer,
+ * and verifies each DEAL_ANALYSIS persistence operation.
  */
 
 var REOS = REOS || {};
@@ -51,10 +52,6 @@ REOS.DealLogicVersioning = (function () {
     };
   }
 
-  /**
-   * Safely migrates an existing table by appending only missing columns.
-   * Existing headers, rows, values and column order are preserved.
-   */
   function ensureColumns_(sheetName, requiredHeaders) {
     var sheet = REOS.Database.ensureTable(sheetName, requiredHeaders);
     var existing = REOS.Database.getHeaders(sheetName);
@@ -79,25 +76,42 @@ REOS.DealLogicVersioning = (function () {
     if (!dealId) throw new Error('Deal ID is required.');
     if (!REOS.Database.findById(DEALS, 'Deal ID', dealId)) throw new Error('Deal not found: ' + dealId);
 
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
     var mode = normalizeMode_(options.analysisSaveMode);
     var metrics = REOS.DealAnalyzer.calculate(analysisInput || {});
     var latest = latestForDeal_(ANALYSIS, dealId, 'Updated At', 'Created At');
     var user = getUser_();
     var now = new Date();
-    var version = latest ? Math.max(1, number_(latest['Analysis Version']) || countForDeal_(ANALYSIS, dealId)) : 1;
+    var beforeCount = countForDealExact_(ANALYSIS, dealId);
+    var version = latest ? Math.max(1, number_(latest['Analysis Version']) || beforeCount || 1) : 1;
+    var creatingVersion = mode === 'create_version' || !latest;
+
     var record = buildAnalysisRecord_(dealId, analysisInput || {}, metrics, {
       mode: mode,
       version: mode === 'create_version' && latest ? version + 1 : version,
-      previousAnalysisId: mode === 'create_version' && latest ? latest['Analysis ID'] || '' : latest ? latest['Previous Analysis ID'] || '' : '',
+      previousAnalysisId: mode === 'create_version' && latest
+        ? latest['Analysis ID'] || ''
+        : latest ? latest['Previous Analysis ID'] || '' : '',
       user: user,
       now: now,
-      createdAt: latest ? latest['Created At'] : now,
-      createdBy: latest ? latest['Created By'] : user
+      createdAt: creatingVersion ? now : (latest ? latest['Created At'] : now),
+      createdBy: creatingVersion ? user : (latest ? latest['Created By'] : user)
+    });
+
+    logPersistence_('before-write', {
+      spreadsheetId: ss.getId(),
+      spreadsheetName: ss.getName(),
+      sheet: ANALYSIS,
+      dealId: dealId,
+      mode: mode,
+      latestAnalysisId: latest ? latest['Analysis ID'] : '',
+      beforeCount: beforeCount,
+      creatingVersion: creatingVersion
     });
 
     var analysis;
     var createdVersion = false;
-    if (mode === 'create_version' || !latest) {
+    if (creatingVersion) {
       analysis = REOS.Database.insert(ANALYSIS, record, {
         idField: 'Analysis ID',
         idPrefix: 'ANL'
@@ -108,10 +122,46 @@ REOS.DealLogicVersioning = (function () {
       analysis = REOS.Database.findById(ANALYSIS, 'Analysis ID', latest['Analysis ID']);
     }
 
-    var score = upsertScore_(dealId, analysis, metrics);
+    if (!analysis || !analysis['Analysis ID']) {
+      throw new Error('DEAL_ANALYSIS persistence failed: saved record could not be reloaded.');
+    }
+
+    var persisted = REOS.Database.findById(ANALYSIS, 'Analysis ID', analysis['Analysis ID']);
+    if (!persisted) {
+      throw new Error('DEAL_ANALYSIS persistence verification failed for ' + analysis['Analysis ID']);
+    }
+
+    var afterCount = countForDealExact_(ANALYSIS, dealId);
+    if (creatingVersion && afterCount !== beforeCount + 1) {
+      throw new Error('DEAL_ANALYSIS insert verification failed. Expected ' + (beforeCount + 1) + ' rows for deal, found ' + afterCount + '.');
+    }
+    if (!creatingVersion && afterCount !== beforeCount) {
+      throw new Error('DEAL_ANALYSIS update verification failed. Expected row count ' + beforeCount + ', found ' + afterCount + '.');
+    }
+
+    var persistence = {
+      verified: true,
+      spreadsheetId: ss.getId(),
+      spreadsheetName: ss.getName(),
+      sheet: ANALYSIS,
+      operation: creatingVersion ? 'insert' : 'update',
+      rowNumber: persisted._rowNumber || null,
+      analysisId: persisted['Analysis ID'],
+      dealId: persisted['Deal ID'],
+      analysisVersion: persisted['Analysis Version'],
+      saveMode: persisted['Save Mode'],
+      beforeCount: beforeCount,
+      afterCount: afterCount,
+      createdAt: persisted['Created At'],
+      updatedAt: persisted['Updated At']
+    };
+
+    logPersistence_('after-write', persistence);
+
+    var score = upsertScore_(dealId, persisted, metrics);
     var offer = null;
-    if (options.createDraftOffer !== false && number_(analysis.MAO) > 0) {
-      offer = upsertDraftOffer_(dealId, analysis, options, user, now);
+    if (options.createDraftOffer !== false && number_(persisted.MAO) > 0) {
+      offer = upsertDraftOffer_(dealId, persisted, options, user, now);
     }
 
     if (options.advancePipeline !== false && REOS.AcquisitionPipeline) {
@@ -123,7 +173,7 @@ REOS.DealLogicVersioning = (function () {
           REOS.AcquisitionPipeline.advanceStage(
             dealId,
             'Initial Analysis',
-            'Deal analysis v' + analysis['Analysis Version'] + ' saved. Score ' + score.Score + ' (' + score.Grade + ').'
+            'Deal analysis v' + persisted['Analysis Version'] + ' saved. Score ' + score.Score + ' (' + score.Grade + ').'
           );
         }
       } catch (ignored) {}
@@ -131,8 +181,8 @@ REOS.DealLogicVersioning = (function () {
 
     publish_('deal.logic.saved', {
       dealId: dealId,
-      analysisId: analysis['Analysis ID'],
-      analysisVersion: analysis['Analysis Version'],
+      analysisId: persisted['Analysis ID'],
+      analysisVersion: persisted['Analysis Version'],
       saveMode: mode,
       offerId: offer ? offer['Offer ID'] : '',
       scoreId: score ? score['Score ID'] : ''
@@ -142,9 +192,10 @@ REOS.DealLogicVersioning = (function () {
       ok: true,
       saveMode: mode,
       createdVersion: createdVersion,
-      analysis: analysis,
+      analysis: persisted,
       score: score,
-      offer: offer
+      offer: offer,
+      persistence: persistence
     };
   }
 
@@ -218,7 +269,9 @@ REOS.DealLogicVersioning = (function () {
     var drafts = REOS.Database.getAll(OFFERS).filter(function (row) {
       return String(row['Deal ID'] || '') === String(dealId) && String(row.Status || '').toLowerCase() === 'draft';
     });
-    drafts.sort(function (a, b) { return timestamp_(a['Updated At'] || a['Created At']) - timestamp_(b['Updated At'] || b['Created At']); });
+    drafts.sort(function (a, b) {
+      return timestamp_(a['Updated At'] || a['Created At']) - timestamp_(b['Updated At'] || b['Created At']);
+    });
     var latest = drafts.length ? drafts[drafts.length - 1] : null;
     var record = {
       'Deal ID': dealId,
@@ -278,15 +331,25 @@ REOS.DealLogicVersioning = (function () {
     return rows.length ? rows[rows.length - 1] : null;
   }
 
-  function countForDeal_(sheetName, dealId) {
+  function countForDealExact_(sheetName, dealId) {
     return REOS.Database.getAll(sheetName).filter(function (row) {
       return String(row['Deal ID'] || '') === String(dealId || '');
-    }).length || 1;
+    }).length;
   }
 
   function normalizeMode_(mode) {
     mode = String(mode || 'update_latest').toLowerCase().replace(/[\s-]+/g, '_');
     return mode === 'create_version' || mode === 'new_version' ? 'create_version' : 'update_latest';
+  }
+
+  function logPersistence_(stage, payload) {
+    var entry = {
+      event: 'REOS_DEAL_ANALYSIS_PERSISTENCE',
+      stage: stage,
+      timestamp: new Date().toISOString(),
+      payload: payload || {}
+    };
+    console.log(JSON.stringify(entry, null, 2));
   }
 
   function getUser_() {
@@ -309,7 +372,9 @@ REOS.DealLogicVersioning = (function () {
     try { return JSON.stringify(value); } catch (e) { return '{}'; }
   }
   function publish_(topic, payload) {
-    if (REOS.PluginEventBus && REOS.PluginEventBus.publish) REOS.PluginEventBus.publish(topic, payload, 'acquisitions');
+    if (REOS.PluginEventBus && REOS.PluginEventBus.publish) {
+      REOS.PluginEventBus.publish(topic, payload, 'acquisitions');
+    }
   }
   function assertDependencies_() {
     if (!REOS.Database) throw new Error('REOS.Database is required.');
