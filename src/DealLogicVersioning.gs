@@ -1,5 +1,5 @@
 /*
- * REOS Enterprise v3.6.0
+ * REOS Enterprise v3.6.1
  * Deal Logic Versioning
  *
  * Updates the latest analysis by default, creates explicit versions on demand,
@@ -14,25 +14,63 @@ REOS.DealLogicVersioning = (function () {
   var OFFERS = 'OFFERS';
   var SCORES = 'ACQUISITION_DEAL_SCORES';
 
+  var ANALYSIS_HEADERS = [
+    'Analysis ID','Deal ID','Analysis Version','Previous Analysis ID','Save Mode',
+    'Purchase Price','ARV','Repair Cost','Holding Cost','Closing Cost','Financing Cost',
+    'Selling Cost','Assignment Fee','Rent Monthly','Taxes Annual','Insurance Annual',
+    'HOA Monthly','Loan Payment Monthly','MAO Percent','Operating Expense Percent',
+    'MAO','Flip Profit','ROI %','Cash Required','NOI','Cap Rate %','DSCR',
+    'Recommendation','Risk Level','Summary JSON','Created By','Created At','Updated By','Updated At'
+  ];
+
+  var OFFER_HEADERS = [
+    'Offer ID','Deal ID','Analysis ID','Offer Type','Offer Amount','Status','Terms','Notes',
+    'Created By','Created At','Updated By','Updated At'
+  ];
+
+  var SCORE_HEADERS = [
+    'Score ID','Deal ID','Analysis ID','Score','Grade','MAO','Purchase Price','ROI %','DSCR',
+    'Risk Level','Recommendation','Score Breakdown JSON','Created At','Updated At'
+  ];
+
   function ensureSheets() {
     assertDependencies_();
     REOS.DealAnalyzer.ensureSheets();
-    REOS.Database.ensureTable(ANALYSIS, [
-      'Analysis ID','Deal ID','Analysis Version','Previous Analysis ID','Save Mode',
-      'Purchase Price','ARV','Repair Cost','Holding Cost','Closing Cost','Financing Cost',
-      'Selling Cost','Assignment Fee','Rent Monthly','Taxes Annual','Insurance Annual',
-      'HOA Monthly','Loan Payment Monthly','MAO Percent','Operating Expense Percent',
-      'MAO','Flip Profit','ROI %','Cash Required','NOI','Cap Rate %','DSCR',
-      'Recommendation','Risk Level','Summary JSON','Created By','Created At','Updated By','Updated At'
-    ]);
-    REOS.Database.ensureTable(OFFERS, [
-      'Offer ID','Deal ID','Analysis ID','Offer Type','Offer Amount','Status','Terms','Notes',
-      'Created By','Created At','Updated By','Updated At'
-    ]);
-    REOS.Database.ensureTable(SCORES, [
-      'Score ID','Deal ID','Analysis ID','Score','Grade','MAO','Purchase Price','ROI %','DSCR',
-      'Risk Level','Recommendation','Score Breakdown JSON','Created At','Updated At'
-    ]);
+
+    ensureColumns_(ANALYSIS, ANALYSIS_HEADERS);
+    ensureColumns_(OFFERS, OFFER_HEADERS);
+    ensureColumns_(SCORES, SCORE_HEADERS);
+
+    return {
+      ok: true,
+      sheets: {
+        analysis: ANALYSIS,
+        offers: OFFERS,
+        scores: SCORES
+      }
+    };
+  }
+
+  /**
+   * Safely migrates an existing table by appending only missing columns.
+   * Existing headers, rows, values and column order are preserved.
+   */
+  function ensureColumns_(sheetName, requiredHeaders) {
+    var sheet = REOS.Database.ensureTable(sheetName, requiredHeaders);
+    var existing = REOS.Database.getHeaders(sheetName);
+    var missing = requiredHeaders.filter(function (header) {
+      return existing.indexOf(header) === -1;
+    });
+
+    if (!missing.length) return sheet;
+
+    var startColumn = Math.max(sheet.getLastColumn(), existing.length, 0) + 1;
+    sheet.getRange(1, startColumn, 1, missing.length)
+      .setValues([missing])
+      .setFontWeight('bold')
+      .setWrap(true);
+
+    return sheet;
   }
 
   function save(dealId, analysisInput, options) {
@@ -285,8 +323,7 @@ REOS.DealLogicVersioning = (function () {
 })();
 
 function reosDealLogicEnsureSheets() {
-  REOS.DealLogicVersioning.ensureSheets();
-  return { ok: true, message: 'Deal logic versioning columns are ready.' };
+  return REOS.DealLogicVersioning.ensureSheets();
 }
 
 function reosDealLogicSave(dealId, analysis, options) {
