@@ -1,9 +1,16 @@
 /** REOS Enterprise v3.2.6 - Main Application Bootstrap */
 
 function onOpen(e) {
+  // Build the navigation first so REOS remains usable even if
+  // a downstream initialization module encounters an error.
+  try {
+    REOS.buildMenu_();
+  } catch (menuError) {
+    console.error('REOS menu build failed: ' + menuError.message);
+  }
+
   try {
     REOS.init_();
-    REOS.buildMenu_();
     REOS.log_('INFO', 'Application opened', { event: e ? 'onOpen' : 'manual' });
   } catch (error) {
     REOS.handleError_('onOpen', error);
@@ -94,6 +101,7 @@ REOS.buildMenu_ = function () {
     .addItem('Open CRM Dashboard', 'showCRMDashboard')
     .addItem('Open Acquisitions', 'showAcquisitions')
     .addItem('Open Acquisitions Dashboard', 'showAcquisitionsDashboard')
+    .addItem('Open Deal Analyzer', 'reosOpenDealAnalyzer')
     .addItem('Open Vendors', 'showVendors')
     .addItem('Open Vendor Dashboard', 'showVendorDashboard')
     .addItem('Open Properties', 'showProperties')
