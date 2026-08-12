@@ -59,8 +59,9 @@
       "maxLimit": 2000,
       "mapping": {
         "address": [
-          "address",
+          "STREET_ADDRESS",
           "street_address",
+          "address",
           "property_address",
           "location"
         ],
@@ -69,27 +70,31 @@
           "property_city"
         ],
         "zip": [
+          "ZIP_CODE",
+          "zip_code",
           "zip",
           "zipcode",
-          "zip_code",
           "postal_code"
         ],
         "parcelId": [
+          "OPA_NUMBER",
+          "opa_number",
           "parcel_number",
           "parcel_id",
-          "opa_number",
           "account_number"
         ],
         "ownerName": [
-          "owner_name",
+          "OWNER",
           "owner",
+          "owner_name",
           "legal_owner"
         ],
         "sourceRecordId": [
+          "OBJECTID",
           "objectid",
-          "id",
           "record_id",
-          "parcel_number"
+          "id",
+          "OPA_NUMBER"
         ],
         "sourceUpdatedAt": [
           "updated_at",

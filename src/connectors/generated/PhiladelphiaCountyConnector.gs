@@ -10,9 +10,9 @@ var REOS = REOS || {};
 REOS.GeneratedCountyConnectorRegistrars =
   REOS.GeneratedCountyConnectorRegistrars || [];
 
-REOS.PhiladelphiaGeneratedShadowCountyConnector = (function () {
+REOS.PhiladelphiaCountyConnector = (function () {
   var MANIFEST = {
-    id: "PA-PHILADELPHIA-GENERATED-SHADOW",
+    id: "PA-PHILADELPHIA",
     state: "PA",
     county: "Philadelphia",
     version: "1.0.0",
@@ -72,8 +72,9 @@ REOS.PhiladelphiaGeneratedShadowCountyConnector = (function () {
         maxLimit: 2000,
         mapping: {
           address: [
-            "address",
+            "STREET_ADDRESS",
             "street_address",
+            "address",
             "property_address",
             "location"
           ],
@@ -82,27 +83,31 @@ REOS.PhiladelphiaGeneratedShadowCountyConnector = (function () {
             "property_city"
           ],
           zip: [
+            "ZIP_CODE",
+            "zip_code",
             "zip",
             "zipcode",
-            "zip_code",
             "postal_code"
           ],
           parcelId: [
+            "OPA_NUMBER",
+            "opa_number",
             "parcel_number",
             "parcel_id",
-            "opa_number",
             "account_number"
           ],
           ownerName: [
-            "owner_name",
+            "OWNER",
             "owner",
+            "owner_name",
             "legal_owner"
           ],
           sourceRecordId: [
+            "OBJECTID",
             "objectid",
-            "id",
             "record_id",
-            "parcel_number"
+            "id",
+            "OPA_NUMBER"
           ],
           sourceUpdatedAt: [
             "updated_at",
@@ -824,9 +829,9 @@ REOS.PhiladelphiaGeneratedShadowCountyConnector = (function () {
 REOS.GeneratedCountyConnectorRegistrars.push(function () {
   if (
     !REOS.CountyConnectorSDK.get(
-      REOS.PhiladelphiaGeneratedShadowCountyConnector.connectorId
+      REOS.PhiladelphiaCountyConnector.connectorId
     )
   ) {
-    REOS.PhiladelphiaGeneratedShadowCountyConnector.register();
+    REOS.PhiladelphiaCountyConnector.register();
   }
 });
