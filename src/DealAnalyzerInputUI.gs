@@ -1,5 +1,5 @@
 /**
- * REOS Enterprise v3.6.0
+ * REOS Enterprise v3.7.0
  * Deal Analyzer Input Interface — server-side controller.
  */
 
@@ -22,6 +22,7 @@ REOS.DealAnalyzerInputUI = (function () {
     assertDependencies_();
     REOS.DealAnalyzer.ensureSheets();
     if (REOS.DealLogicVersioning) REOS.DealLogicVersioning.ensureSheets();
+    if (REOS.DealLifecycleWorkflow) REOS.DealLifecycleWorkflow.ensureSheets();
 
     var deals = REOS.Database.getAll(DEALS).map(function (deal) {
       var dealId = String(deal['Deal ID'] || '');
@@ -66,12 +67,22 @@ REOS.DealAnalyzerInputUI = (function () {
 
     var latestAnalysis = latestForDeal_(ANALYSIS, dealId, 'Updated At', 'Created At');
     var latestOffer = latestForDeal_(OFFERS, dealId, 'Updated At', 'Created At');
+    var lifecycle = null;
+    if (REOS.DealLifecycleWorkflow && REOS.DealLifecycleWorkflow.syncDeal) {
+      try {
+        lifecycle = REOS.DealLifecycleWorkflow.syncDeal(dealId, {
+          source: 'deal-analyzer-context'
+        });
+        deal = REOS.Database.findById(DEALS, 'Deal ID', dealId) || deal;
+      } catch (ignored) {}
+    }
 
     return {
       ok: true,
       deal: deal,
       latestAnalysis: latestAnalysis || null,
       latestOffer: latestOffer || null,
+      lifecycle: lifecycle,
       analysisVersion: latestAnalysis ? number_(latestAnalysis['Analysis Version']) || 1 : 0,
       form: latestAnalysis ? analysisToForm_(latestAnalysis) : {}
     };
@@ -128,6 +139,14 @@ REOS.DealAnalyzerInputUI = (function () {
       result = { ok: true, analysis: analysis, offer: offer };
     }
 
+    var lifecycle = null;
+    if (input.options.advancePipeline !== false && REOS.DealLifecycleWorkflow && REOS.DealLifecycleWorkflow.syncDeal) {
+      lifecycle = REOS.DealLifecycleWorkflow.syncDeal(input.dealId, {
+        source: 'deal-analyzer-save'
+      });
+      if (result && typeof result === 'object') result.lifecycle = lifecycle;
+    }
+
     if (REOS.AcquisitionOpportunityView && REOS.AcquisitionOpportunityView.build) {
       try { REOS.AcquisitionOpportunityView.build(); } catch (ignored) {}
     }
@@ -137,9 +156,14 @@ REOS.DealAnalyzerInputUI = (function () {
       ? 'New deal analysis version ' + version + ' created successfully.'
       : 'Latest deal analysis version ' + version + ' updated successfully.';
 
+    if (lifecycle && lifecycle.finalStage) {
+      message += ' Lifecycle stage: ' + lifecycle.finalStage + '.';
+    }
+
     return {
       ok: true,
       message: message,
+      lifecycle: lifecycle,
       result: result
     };
   }
