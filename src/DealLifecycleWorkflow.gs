@@ -39,7 +39,8 @@ REOS.DealLifecycleWorkflow = (function () {
     minimumComps: 3,
     requirePositiveMaoForOfferGeneration: true,
     allowBackward: false,
-    createPipelineIfMissing: true
+    createPipelineIfMissing: true,
+    logNoop: false
   };
 
   function ensureSheets() {
@@ -98,23 +99,29 @@ REOS.DealLifecycleWorkflow = (function () {
 
     synchronizeDealRow_(dealId, finalStage, target.reason);
 
-    var log = writeLog_(dealId, {
-      previousStage: currentStage,
-      targetStage: targetStage,
-      finalStage: finalStage,
-      reason: target.reason,
-      evidence: evidence,
-      source: options.source || 'deal-lifecycle-sync'
-    });
+    var changed = finalStage !== currentStage;
+    var log = null;
+    if (changed || options.logNoop) {
+      log = writeLog_(dealId, {
+        previousStage: currentStage,
+        targetStage: targetStage,
+        finalStage: finalStage,
+        reason: target.reason,
+        evidence: evidence,
+        source: options.source || 'deal-lifecycle-sync'
+      });
+    }
 
-    publish_('deal.lifecycle.synchronized', {
-      dealId: dealId,
-      previousStage: currentStage,
-      targetStage: targetStage,
-      finalStage: finalStage,
-      transitions: transitions.length,
-      reason: target.reason
-    });
+    if (changed) {
+      publish_('deal.lifecycle.synchronized', {
+        dealId: dealId,
+        previousStage: currentStage,
+        targetStage: targetStage,
+        finalStage: finalStage,
+        transitions: transitions.length,
+        reason: target.reason
+      });
+    }
 
     return {
       ok: true,
@@ -122,7 +129,7 @@ REOS.DealLifecycleWorkflow = (function () {
       previousStage: currentStage,
       targetStage: targetStage,
       finalStage: finalStage,
-      changed: finalStage !== currentStage,
+      changed: changed,
       transitions: transitions,
       evidence: evidence,
       reason: target.reason,
@@ -228,8 +235,13 @@ REOS.DealLifecycleWorkflow = (function () {
     if (evidence.submittedOffer) {
       return decision_('Offer Submitted', 'At least one offer has been submitted, sent, or delivered.');
     }
-    if (evidence.draftOffer && (!options.requirePositiveMaoForOfferGeneration || evidence.positiveMao)) {
-      return decision_('Offer Generation', 'A positive draft offer exists for the deal.');
+    if (
+      evidence.validAnalysis &&
+      evidence.compCount >= options.minimumComps &&
+      evidence.draftOffer &&
+      (!options.requirePositiveMaoForOfferGeneration || evidence.positiveMao)
+    ) {
+      return decision_('Offer Generation', 'Valid analysis, minimum comps, and a positive draft offer are present.');
     }
     if (evidence.validAnalysis && evidence.compCount >= options.minimumComps) {
       return decision_('Comparable Analysis', 'Valid analysis exists and minimum comparable count has been met.');
@@ -358,6 +370,7 @@ REOS.DealLifecycleWorkflow = (function () {
       requirePositiveMaoForOfferGeneration: options.requirePositiveMaoForOfferGeneration !== false,
       allowBackward: options.allowBackward === true,
       createPipelineIfMissing: options.createPipelineIfMissing !== false,
+      logNoop: options.logNoop === true,
       source: String(options.source || 'deal-lifecycle-sync')
     };
   }
