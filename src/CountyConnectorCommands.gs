@@ -87,11 +87,6 @@ function REOS_COUNTY_REGISTER_CONNECTORS_() {
     }
   });
 
-  generatedRegistrars.forEach(function (registrar) {
-    if (typeof registrar === 'function') {
-      registrar();
-    }
-  });
 }
 
 function REOS_COUNTY_SETUP() {
