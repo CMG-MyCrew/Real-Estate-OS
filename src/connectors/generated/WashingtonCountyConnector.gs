@@ -159,11 +159,9 @@ REOS.WashingtonCountyConnector = (function () {
         recordFilter: {
           requireAny: [
             [
-              "PROPERTY_ADDRESS_1",
-              "PROPERTY_ADDRESS_2"
-            ],
-            [
-              "PARCEL_ID"
+              "PARCEL_ID",
+              "OBJECTID",
+              "GLOBALID"
             ]
           ]
         },

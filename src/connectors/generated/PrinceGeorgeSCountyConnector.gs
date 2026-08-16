@@ -63,6 +63,8 @@ REOS.PrinceGeorgeSCountyConnector = (function () {
             "PREMZIP"
           ],
           parcelId: [
+            "acctid",
+            "ACCTID",
             "PAMS_PIN",
             "pams_pin",
             "PIN_NODUP",
@@ -161,7 +163,7 @@ REOS.PrinceGeorgeSCountyConnector = (function () {
           salePrice: []
         },
         sourceQuery: {
-          where: "JURSCODE='PRIN'"
+          where: "JURSCODE = 'PRIN'"
         },
         discovery: {
           report: "reports/county-build/MD-PRINCE-GEORGE-S/promotion-input.json",
@@ -180,10 +182,15 @@ REOS.PrinceGeorgeSCountyConnector = (function () {
         recordFilter: {
           requireAny: [
             [
-              "ADDRESS"
+              "ADDRESS",
+              "ST_ADDRESS",
+              "PROP_LOC",
+              "STREET_ADDRESS"
             ],
             [
-              "PARCEL"
+              "PARCEL",
+              "ACCTID",
+              "OBJECTID"
             ]
           ]
         },

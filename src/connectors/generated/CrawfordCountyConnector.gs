@@ -66,7 +66,7 @@ REOS.CrawfordCountyConnector = (function () {
         },
         endpoint: "https://services1.arcgis.com/CcJI8wbz22fo71LO/arcgis/rest/services/CivQuest_Core/FeatureServer/1/query",
         sourceQuery: {
-          where: "1=1"
+          where: "PARCEL IS NOT NULL AND PARCEL <> ''"
         },
         discovery: {
           title: "Crawford County PA Tax Parcels - Open Data",

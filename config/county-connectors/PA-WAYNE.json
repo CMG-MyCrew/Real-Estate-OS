@@ -13,40 +13,9 @@
       "enabled": true,
       "maxLimit": 2000,
       "mapping": {
-        "address": [
-          "ST_ADDRESS",
-          "st_address",
-          "PROP_LOC",
-          "prop_loc",
-          "ADDRESS",
-          "address",
-          "STREET_ADDRESS",
-          "street_address",
-          "property_address",
-          "location",
-          "PROPERTY_ADDRESS_1",
-          "PROPERTY_ADDRESS_2"
-        ],
-        "city": [
-          "CITY_STATE",
-          "city_state",
-          "MUN_NAME",
-          "mun_name",
-          "CITY",
-          "city",
-          "MUNICIPALITY",
-          "municipality",
-          "property_city"
-        ],
-        "zip": [
-          "ZIP",
-          "zip",
-          "ZIP_CODE",
-          "zip_code",
-          "ZIPCODE",
-          "zipcode",
-          "postal_code"
-        ],
+        "address": [],
+        "city": [],
+        "zip": [],
         "parcelId": [
           "PAMS_PIN",
           "pams_pin",
@@ -146,11 +115,8 @@
       "recordFilter": {
         "requireAny": [
           [
-            "PROPERTY_ADDRESS_1",
-            "PROPERTY_ADDRESS_2"
-          ],
-          [
-            "PARCEL_ID"
+            "OBJECTID",
+            "GLOBALID"
           ]
         ]
       },
