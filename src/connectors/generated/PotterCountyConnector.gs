@@ -279,11 +279,121 @@ REOS.PotterCountyConnector = (function () {
       adapterOptions.returnGeometry = false;
     }
 
+    if (definition.adapter === 'html-table') {
+      adapterOptions.parser = getHtmlParser_(
+        definition.parser,
+        context.dataset
+      );
+    }
+
     return REOS.CountyAdapters.Registry.fetch(
       definition.adapter,
       adapterOptions
     );
   }
+
+  function getHtmlParser_(name, dataset) {
+    if (name === 'sheriff_sales') {
+      return function (html) {
+        return parseSheriffRows_(html, dataset);
+      };
+    }
+
+    throw new Error(
+      'Unsupported HTML parser for ' +
+      MANIFEST.id +
+      ': ' +
+      String(name || '')
+    );
+  }
+
+  function parseSheriffRows_(html, dataset) {
+      var records = [];
+      var rowPattern = /<tr\b[^>]*>([\s\S]*?)<\/tr>/gi;
+      var rowMatch;
+
+      while ((rowMatch = rowPattern.exec(html)) !== null) {
+        var cells = [];
+        var cellPattern = /<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi;
+        var cellMatch;
+
+        while (
+          (cellMatch = cellPattern.exec(rowMatch[1])) !== null
+        ) {
+          cells.push(
+            cleanSheriffCell_(cellMatch[1])
+          );
+        }
+
+        if (cells.length < 7) {
+          continue;
+        }
+
+        var auctionId = cells[0];
+        var bookWrit = cells[1];
+        var opaNumber = cells[2];
+        var address = cells[3];
+        var saleType = cells[4];
+        var saleStatus = cells[5];
+        var saleDate = cells[6];
+
+        if (
+          !auctionId ||
+          !opaNumber ||
+          !address ||
+          !/^\d+$/.test(String(opaNumber).replace(/\s/g, ''))
+        ) {
+          continue;
+        }
+
+        if (
+          String(auctionId).toLowerCase() === 'id' ||
+          String(address).toLowerCase() === 'street'
+        ) {
+          continue;
+        }
+
+        records.push({
+          AUCTION_ID: auctionId,
+          BOOK_WRIT: bookWrit,
+          OPA_NUMBER: opaNumber,
+          STREET_ADDRESS: address,
+          SALE_TYPE: saleType ||
+            (
+              dataset === 'sheriff_tax_sales'
+                ? 'TAX DELINQUENT'
+                : 'MORTGAGE FORECLOSURE'
+            ),
+          SALE_STATUS: saleStatus,
+          SALE_DATE: saleDate,
+          SOURCE_URL: ''
+        });
+      }
+
+      return records;
+    }
+
+    function cleanSheriffCell_(value) {
+      return decodeSheriffEntities_(
+        String(value || '')
+          .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+          .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
+          .replace(/<br\s*\/?>/gi, ' ')
+          .replace(/<[^>]+>/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim()
+      );
+    }
+
+    function decodeSheriffEntities_(value) {
+      return String(value || '')
+        .replace(/&nbsp;/gi, ' ')
+        .replace(/&amp;/gi, '&')
+        .replace(/&quot;/gi, '"')
+        .replace(/&#39;/gi, "'")
+        .replace(/&lt;/gi, '<')
+        .replace(/&gt;/gi, '>');
+    }
 
   function normalize_(raw, context) {
     raw = raw || {};
@@ -298,7 +408,7 @@ REOS.PotterCountyConnector = (function () {
       };
     }
 
-    return {
+    var record = {
       Address: first_(raw, mapping.address || []),
       City:
         first_(raw, mapping.city || []) ||
@@ -357,6 +467,99 @@ REOS.PotterCountyConnector = (function () {
         ' / ' +
         context.dataset
     };
+
+    if (context.dataset === 'tax_delinquent') {
+      record['Distress Type'] = 'Tax Delinquent';
+      record['Tax Delinquent Amount'] = numberFirst_(
+        raw,
+        mapping.taxDelinquentAmount || []
+      );
+      record['Tax Principal'] = numberFirst_(
+        raw,
+        mapping.taxPrincipal || []
+      );
+      record['Tax Interest'] = numberFirst_(
+        raw,
+        mapping.taxInterest || []
+      );
+      record['Tax Penalty'] = numberFirst_(
+        raw,
+        mapping.taxPenalty || []
+      );
+    }
+
+    if (context.dataset === 'code_violations') {
+      record['Distress Type'] = 'Code Violation';
+      record['Violation Number'] = first_(
+        raw,
+        mapping.violationNumber || []
+      );
+      record['Violation Type'] = first_(
+        raw,
+        mapping.violationType || []
+      );
+      record['Violation Status'] = first_(
+        raw,
+        mapping.violationStatus || []
+      );
+    }
+
+    if (context.dataset === 'vacant_properties') {
+      record['Distress Type'] = 'Vacant Property';
+      record['Vacancy Status'] = first_(
+        raw,
+        mapping.vacancyStatus || []
+      );
+      record['Vacancy Rank'] = numberFirst_(
+        raw,
+        mapping.vacancyRank || []
+      );
+    }
+
+    if (
+      context.dataset === 'sheriff_tax_sales' ||
+      context.dataset === 'sheriff_mortgage_sales'
+    ) {
+      record['Distress Type'] =
+        context.dataset === 'sheriff_tax_sales'
+          ? 'Sheriff Tax Sale'
+          : 'Sheriff Mortgage Sale';
+
+      record['Sheriff Auction ID'] = first_(
+        raw,
+        mapping.auctionId || []
+      );
+
+      record['Book/Writ'] = first_(
+        raw,
+        mapping.bookWrit || []
+      );
+
+      record['Sale Type'] = first_(
+        raw,
+        mapping.saleType || []
+      );
+
+      record['Sale Status'] = first_(
+        raw,
+        mapping.saleStatus || []
+      );
+
+      record['Sale Date'] = first_(
+        raw,
+        mapping.saleDate || []
+      );
+
+      record['Source Updated At'] =
+        record['Sale Date'] ||
+        record['Source Updated At'];
+    }
+
+    if (context.dataset === 'property_assessment') {
+      record['Distress Type'] = 'Assessment Record';
+    }
+
+    return record;
   }
 
   function validate_(record, context) {
