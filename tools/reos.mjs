@@ -268,7 +268,8 @@ function toAppsScriptLiteral(value, indent = 0) {
 }
 
 function buildConnectorSource(manifest) {
-  const countyClass = `${pascalCase(manifest.county)}CountyConnector`;
+  const countyClass =
+    `${pascalCase(manifest.state)}${pascalCase(manifest.county)}CountyConnector`;
   const manifestLiteral = toAppsScriptLiteral(manifest, 2);
 
   return `/**
@@ -822,7 +823,8 @@ function commandCreate(args) {
     datasets
   });
 
-  const className = `${pascalCase(county)}CountyConnector`;
+  const className =
+    `${pascalCase(state)}${pascalCase(county)}CountyConnector`;
   const connectorPath = path.join(
     CONNECTOR_DIR,
     `${className}.gs`
@@ -974,7 +976,7 @@ function findManifestById(id) {
 
 function connectorPathForManifest(manifest) {
   const className =
-    `${pascalCase(manifest.county)}CountyConnector`;
+    `${pascalCase(manifest.state)}${pascalCase(manifest.county)}CountyConnector`;
 
   return path.join(
     CONNECTOR_DIR,

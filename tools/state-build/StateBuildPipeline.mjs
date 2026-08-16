@@ -42,8 +42,13 @@ function manifestPath(root, state, county) {
   );
 }
 
-function connectorPath(root, county) {
-  const className = String(county || '')
+function connectorPath(root, state, county) {
+  const stateClass = String(state || '')
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, '');
+
+  const countyClass = String(county || '')
     .replace(/[^A-Za-z0-9]+/g, ' ')
     .trim()
     .split(/\s+/)
@@ -59,7 +64,7 @@ function connectorPath(root, county) {
     'src',
     'connectors',
     'generated',
-    `${className}CountyConnector.gs`
+    `${stateClass}${countyClass}CountyConnector.gs`
   );
 }
 
@@ -147,7 +152,7 @@ function isExistingConnector(
       manifestPath(root, state, county)
     ) &&
     fs.existsSync(
-      connectorPath(root, county)
+      connectorPath(root, state, county)
     )
   );
 }

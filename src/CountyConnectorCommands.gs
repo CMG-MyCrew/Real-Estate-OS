@@ -65,13 +65,17 @@ function REOS_COUNTY_REGISTER_CONNECTORS_() {
     throw new Error('CountyConnectorSDK is not loaded.');
   }
 
+  var philadelphiaConnector =
+    REOS.PAPhiladelphiaCountyConnector ||
+    REOS.PhiladelphiaCountyConnector;
+
   if (
-    REOS.PhiladelphiaCountyConnector &&
+    philadelphiaConnector &&
     !REOS.CountyConnectorSDK.get(
-      REOS.PhiladelphiaCountyConnector.connectorId
+      philadelphiaConnector.connectorId
     )
   ) {
-    REOS.PhiladelphiaCountyConnector.register();
+    philadelphiaConnector.register();
   }
 
   var generatedRegistrars =

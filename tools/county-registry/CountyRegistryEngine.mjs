@@ -75,7 +75,7 @@ function generatedConnectorPath(root, manifest) {
     'src',
     'connectors',
     'generated',
-    `${pascalCase(manifest.county)}CountyConnector.gs`
+    `${pascalCase(manifest.state)}${pascalCase(manifest.county)}CountyConnector.gs`
   );
 }
 
