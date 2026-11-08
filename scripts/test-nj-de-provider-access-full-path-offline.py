@@ -66,11 +66,11 @@ class FakeProvider:
         if path=="/sales/count":
             assert not metered and params["status"]=="all"
             total=0
-            if params["state"]=="NJ" and params["county"]=="Sussex" and
-               params["type"]=="mortgage_foreclosure":
+            if (params["state"]=="NJ" and params["county"]=="Sussex" and
+                params["type"]=="mortgage_foreclosure"):
                 total=3
-            if params["state"]=="DE" and params["county"]=="Kent" and
-               params["type"]=="tax_foreclosure":
+            if (params["state"]=="DE" and params["county"]=="Kent" and
+                params["type"]=="tax_foreclosure"):
                 total=2
             filters=dict(params)
             if self.mismatch: filters.pop("type")
