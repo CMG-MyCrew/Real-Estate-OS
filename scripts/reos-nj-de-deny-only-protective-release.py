@@ -37,7 +37,7 @@ STAMP = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 HOME = Path.home()
 WORK = HOME / ("REOS_NJ_DE_DENY_ONLY_" + STAMP)
 PROTECTED = {"production_mutations":0,"versions_created":0,"deployment_updates":0,
-             "credential_files_changed":False,"county_live_enabled":False,
+             "credential_files_changed":False,"write_attempts":0,"mutation_outcome":"NO_WRITES_ATTEMPTED","county_live_enabled":False,
              "mao_offers_enabled":False,"scheduler_executed":False,"triggers_changed":False}
 RESULT = {"capture_utc":STAMP,"release":"NJ_DE_DENY_ONLY_V1",
           "old_version":VERSION,"old_deployment_id":DEPLOYMENT,
@@ -381,17 +381,23 @@ def main():
         if freshdep.get("deploymentConfig",{}).get("versionNumber")!=VERSION:
             raise RuntimeError("Deployment changed after preflight; no production writes")
         # Narrow authorized write sequence; do not retry on uncertain outcomes.
+        PROTECTED["write_attempts"]+=1
+        PROTECTED["mutation_outcome"]="UNKNOWN_PENDING_GOOGLE_RESPONSE"
         response=api("PUT","https://script.googleapis.com/v1/projects/"+SCRIPT+"/content",
                      token,{"files":candidate["files"]})
         PROTECTED["production_mutations"]+=1
+        PROTECTED["mutation_outcome"]="HEAD_UPDATE_ACKNOWLEDGED"
         if content_hash(response)!=content_hash(candidate):
             raise RuntimeError("HEAD PUT response differs; stop, manual recovery required")
         gothead=project_get("/content",token)
         if content_hash(gothead)!=content_hash(candidate):
             raise RuntimeError("HEAD readback differs; stop, manual recovery required")
+        PROTECTED["write_attempts"]+=1
+        PROTECTED["mutation_outcome"]="UNKNOWN_PENDING_VERSION_RESPONSE"
         ver=api("POST","https://script.googleapis.com/v1/projects/"+SCRIPT+"/versions",
                 token,{"description":"REOS NJ/DE DENY-ONLY protective safety release; no county activation"})
         PROTECTED["versions_created"]+=1
+        PROTECTED["mutation_outcome"]="VERSION_CREATION_ACKNOWLEDGED"
         new_ver=ver.get("versionNumber")
         if not isinstance(new_ver,int) or new_ver<=VERSION:
             raise RuntimeError("New immutable version number not attested")
@@ -401,16 +407,20 @@ def main():
         # Protect the same pinned API deployment; creating another while leaving
         # V167 reachable would not close the old write path.
         manifest=orig.get("deploymentConfig",{}).get("manifestFileName","appsscript")
+        PROTECTED["write_attempts"]+=1
+        PROTECTED["mutation_outcome"]="UNKNOWN_PENDING_DEPLOYMENT_RESPONSE"
         updated=api("PUT","https://script.googleapis.com/v1/projects/"+SCRIPT+
               "/deployments/"+DEPLOYMENT,token,
               {"deploymentConfig":{"scriptId":SCRIPT,"versionNumber":new_ver,
                "manifestFileName":manifest,
                "description":"REOS NJ/DE deny-only protective release; no county enablement"}})
         PROTECTED["deployment_updates"]+=1
+        PROTECTED["mutation_outcome"]="DEPLOYMENT_UPDATE_ACKNOWLEDGED"
         if updated.get("deploymentConfig",{}).get("versionNumber")!=new_ver:
             raise RuntimeError("Deployment PUT response mismatch")
         if not attest_protected(token,new_ver,content_hash(candidate)):
             raise RuntimeError("Independent readback failed; manual quarantine and rollback required")
+        PROTECTED["mutation_outcome"]="PROTECTED_DEPLOYMENT_VERIFIED"
         RESULT["status"]="PROTECTIVE_DEPLOYMENT_READBACK_PASS_NO_NJ_DE_ACTIVATION"
         RESULT["new_version"]=new_ver
     except ReadOnlyPrepared:
@@ -429,7 +439,9 @@ def main():
           "SOURCE_COMMIT="+EXPECTED_HEAD,
           "STATUS="+RESULT["status"],
           "NEW_VERSION="+str(RESULT.get("new_version","NONE")),
-          "PRODUCTION_MUTATIONS="+str(PROTECTED["production_mutations"]),
+          "PRODUCTION_MUTATIONS_ACKNOWLEDGED="+str(PROTECTED["production_mutations"]),
+          "WRITE_ATTEMPTS="+str(PROTECTED["write_attempts"]),
+          "MUTATION_OUTCOME="+PROTECTED["mutation_outcome"],
           "IMMUTABLE_VERSIONS_CREATED="+str(PROTECTED["versions_created"]),
           "DEPLOYMENT_UPDATES="+str(PROTECTED["deployment_updates"]),
           "CREDENTIAL_FILES_CHANGED="+str(PROTECTED["credential_files_changed"]),
