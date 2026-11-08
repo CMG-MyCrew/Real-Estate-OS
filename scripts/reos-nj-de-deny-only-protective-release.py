@@ -181,6 +181,50 @@ def file_map(content):
 def content_hash(doc):
     items=sorted((name,typ,text_sha(f.get("source") or "")) for (name,typ),f in file_map(doc).items())
     return text_sha(json.dumps(items,separators=(",",":")))
+def inspect_v167_source_shape(doc):
+    """Source-only fingerprint. Never exports source content, secrets, or API responses."""
+    files=file_map(doc)
+    sdk_file=files.get(("CountyConnectorSDK","SERVER_JS"),{})
+    source=str(sdk_file.get("source") or "")
+    function_names=sorted(set(re.findall(r"(?m)^\s*(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(",source)))[:100]
+    anchors={
+       "register_exact":source.count("function register(connector) {"),
+       "run_exact":source.count("function run(connectorId, options) {"),
+       "persist_exact":source.count("function persist_(record, context) {"),
+       "persist_named":len(re.findall(r"\bfunction\s+persist_\s*\(",source)),
+       "sdk_denial_marker":source.count("NJ_DE_PROTECTIVE_RELEASE_DENY_ONLY")
+    }
+    writes={
+       "database_insert":len(re.findall(r"\b(?:REOS\.)?Database\.insert\s*\(",source)),
+       "database_update":len(re.findall(r"\b(?:REOS\.)?Database\.update\s*\(",source)),
+       "database_getall":len(re.findall(r"\b(?:REOS\.)?Database\.getAll\s*\(",source)),
+       "distress_leads_literal":source.count("DISTRESS_LEADS"),
+       "audit_sheet_literal":source.count("COUNTY_CONNECTOR_RUNS")
+    }
+    related=[]
+    for (name,typ),obj in files.items():
+        if typ!="SERVER_JS" or name=="CountyConnectorSDK":continue
+        txt=obj.get("source") or ""
+        if any(marker in txt for marker in ("REOS_COUNTY_SYNC_ALL",
+             "CountyConnectorSDK.run(","CountyConnectorSDK.runAll(",
+             "CountyConnectorSDK.register(","NJ_DE_PROTECTIVE_RELEASE_DENY_ONLY")):
+            related.append({"file_name":name, "sha256":text_sha(txt),
+              "sdk_run_refs":txt.count("CountyConnectorSDK.run("),
+              "sdk_runall_refs":txt.count("CountyConnectorSDK.runAll("),
+              "all_county_sync_marker":("REOS_COUNTY_SYNC_ALL" in txt)})
+    RESULT["v167_sdk_source_shape"]={
+       "source_sha256":text_sha(source) if source else None,
+       "sdk_file_present":bool(source),
+       "sdk_source_bytes":len(source.encode("utf-8")),
+       "named_function_inventory":function_names,
+       "exact_patch_anchors":anchors,
+       "writer_reference_counts":writes,
+       "related_execution_entrypoints":related[:60],
+       "related_entrypoint_total":len(related),
+       "source_exported":False,
+       "warning":"Names/counts/hashes are structural clues, not proof of safe execution paths"
+    }
+    return anchors
 def get_deployments(token):
     arr=[];page=""
     for i in range(20):
@@ -267,6 +311,7 @@ def require_exact_v167(token):
         raise RuntimeError("PA scheduler source not pinned")
     RESULT["baseline"]={"file_count":len(base),"tree_sha256":content_hash(immutable),
       "pa_scheduler_sha256":PA_SCHED_SHA,"old_api_version":VERSION}
+    inspect_v167_source_shape(immutable)
     return immutable,old
 def inject(source,needle,replacement,label):
     count=source.count(needle)
@@ -424,8 +469,18 @@ def main():
         if RESULT["checks"].get("GOOGLE_PRINCIPAL_PIN",{}).get("status")!="PASS":
             raise RuntimeError("Wrong effective principal")
         immutable,orig= require_exact_v167(token)
-        candidate=build_protected(immutable)
-        offline_behavior_test(candidate)
+        # Preserve structural diagnostics if V167 differs from the staged SDK.
+        try:
+            candidate=build_protected(immutable)
+            offline_behavior_test(candidate)
+            check("V167_SDK_PROTECTIVE_PATCH_COMPATIBLE",True,
+                  "Exact current V167 anchors and 25-file patch validated")
+        except Exception as patch_error:
+            check("V167_SDK_PROTECTIVE_PATCH_COMPATIBLE",False,error(patch_error))
+            RESULT["patch_diagnostic"]={"failure_code":"SDK_SOURCE_ANCHOR_MISMATCH",
+               "source_shape_recorded":bool(RESULT.get("v167_sdk_source_shape")),
+               "no_write_attempted":PROTECTED["write_attempts"]==0}
+            raise
         approved=validate_approvals()
         # Also require verified client project for any write.
         fingerprint=RESULT["checks"].get("OAUTH_CLIENT_PROJECT_PIN",{}).get("status")=="PASS"
@@ -535,6 +590,9 @@ def main():
           "ALTERNATE_API_EXPOSURE_UNVERIFIED="+str(sum(1 for d in RESULT.get("api_deployment_inventory",{}).get("deployments",[]) if not d.get("is_pinned_target") and d.get("possible_nj_de_live_exposure") is None)),
           "OAUTH_CLIENT_PIN="+RESULT.get("checks",{}).get("OAUTH_CLIENT_PROJECT_PIN",{}).get("status","NOT_ATTESTED"),
           "OAUTH_WRITE_SCOPES="+RESULT.get("checks",{}).get("WRITE_SCOPES_ATTESTED_BEFORE_ANY_MUTATION",{}).get("status","NOT_ATTESTED"),
+          "V167_SDK_FUNCTION_COUNT="+str(len(RESULT.get("v167_sdk_source_shape",{}).get("named_function_inventory",[]))),
+          "V167_PERSIST_EXACT_ANCHOR="+str(RESULT.get("v167_sdk_source_shape",{}).get("exact_patch_anchors",{}).get("persist_exact","UNVERIFIED")),
+          "V167_SDK_PATCH_COMPATIBILITY="+RESULT.get("checks",{}).get("V167_SDK_PROTECTIVE_PATCH_COMPATIBLE",{}).get("status","NOT_ATTESTED"),
           "NJ_DE_LIVE_INGESTION=BLOCKED",
           "MAO_AND_OFFERS=BLOCKED",
           "PA_SCHEDULER_EXECUTED=FALSE",
