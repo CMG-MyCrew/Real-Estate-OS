@@ -55,11 +55,14 @@ function setup({withReport=true, corruptPlan=false}={}){
   vm.createContext(ctx);
   new vm.Script(scheduleSource,{filename:'NJDECountyParityScheduler.gs'}).runInContext(ctx);
   if(corruptPlan){
-    const original=ctx.REOS.NJDECountyParityScheduler.plan;
-    ctx.REOS.NJDECountyParityScheduler.plan=(state)=>{
-      const r=original(state);
-      r.tasks[0].sourceCertified=true;
-      return r;
+    const original=ctx.REOS.NJDECountyParityScheduler;
+    ctx.REOS.NJDECountyParityScheduler={
+      ...original,
+      plan(state){
+        const r=original.plan(state);
+        r.tasks[0].sourceCertified=true;
+        return r;
+      }
     };
   }
   if(withReport)new vm.Script(reportSource,{filename:'NJDEMorningReport.gs'}).runInContext(ctx);
