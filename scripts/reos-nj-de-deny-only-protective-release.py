@@ -44,6 +44,8 @@ RESULT = {"capture_utc":STAMP,"release":"NJ_DE_DENY_ONLY_V1",
           "status":"HOLD_NOT_INSTALLED","checks":{},"blockers":[],
           "mutations":PROTECTED}
 CRED = {}
+class ReadOnlyPrepared(Exception):
+    pass
 class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         raise RuntimeError("Redirect refused")
@@ -125,9 +127,11 @@ def read_profile():
                             val=obj.get(k)
                             if isinstance(val,str) and val:return val
                 return ""
+            scope=fld(("scope","scopes"))
             candidates.append({"file":str(p),"where":loc,"access":v.get("access_token") or v.get("accessToken"),
                     "refresh":v.get("refresh_token") or v.get("refreshToken"),
-                    "client":fld(("client_id","clientId")),"secret":fld(("client_secret","clientSecret"))})
+                    "client":fld(("client_id","clientId")),"secret":fld(("client_secret","clientSecret")),
+                    "scope":scope})
     selected=[c for c in candidates if "reos-runtime" in c["where"].lower() or
               "reos-clasp-runtime" in c["file"]]
     if len(selected)!=1:
@@ -136,6 +140,12 @@ def read_profile():
     c=selected[0]
     check("OAUTH_CLIENT_PROJECT_PIN",c["client"].startswith(CLOUD_PROJECT+"-"),
           "Client fingerprint must match pinned Cloud project")
+    scope=c.get("scope") or ""
+    scopes=set(re.split(r"[\s,]+",scope))
+    writes={"https://www.googleapis.com/auth/script.projects",
+            "https://www.googleapis.com/auth/script.deployments"}
+    check("WRITE_SCOPES_ATTESTED_BEFORE_ANY_MUTATION",writes.issubset(scopes),
+          "Existing token metadata must attest both production write scope grants; no new consent")
     token=c["access"]
     try: who=api("GET","https://www.googleapis.com/oauth2/v2/userinfo",token)
     except urllib.error.HTTPError as e:
@@ -357,8 +367,9 @@ def main():
         RESULT["ready_for_controlled_promotion"]=approved and fingerprint
         if not args.apply:
             RESULT["status"]="READ_ONLY_PROTECTIVE_RELEASE_PREPARED"
-            return
-        if not approved or not fingerprint or RESULT["checks"]["PINNED_RELEASE_COMMIT"]["status"]!="PASS":
+            raise ReadOnlyPrepared()
+        scopes_ok=RESULT["checks"].get("WRITE_SCOPES_ATTESTED_BEFORE_ANY_MUTATION",{}).get("status")=="PASS"
+        if not approved or not fingerprint or not scopes_ok or RESULT["checks"]["PINNED_RELEASE_COMMIT"]["status"]!="PASS":
             raise RuntimeError("Release approvals, client fingerprint or source pin missing: no remote writes")
         # Risk boundary: updateContent atomically replaces the complete HEAD;
         # re-read the full current project immediately before writing.
@@ -402,6 +413,8 @@ def main():
             raise RuntimeError("Independent readback failed; manual quarantine and rollback required")
         RESULT["status"]="PROTECTIVE_DEPLOYMENT_READBACK_PASS_NO_NJ_DE_ACTIVATION"
         RESULT["new_version"]=new_ver
+    except ReadOnlyPrepared:
+        pass
     except Exception as e:
         RESULT["blockers"].append("RELEASE_STOPPED:"+error(e))
     finally:
