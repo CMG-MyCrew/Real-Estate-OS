@@ -492,6 +492,8 @@ def main():
             if ready and CHECKS.get("OAUTH_CLIENT_PROJECT_FINGERPRINT",{}).get("status")=="PASS":
                 try:
                     inspect_pa_scheduler(token)
+                    check("PA_V167_READONLY_GETTERS_ATTESTED",True,
+                          "Five immutable-V167 read-only getter invocations completed")
                 except Exception as e:
                     check("PA_V167_READONLY_GETTERS_ATTESTED",False,compact(e))
             else:
