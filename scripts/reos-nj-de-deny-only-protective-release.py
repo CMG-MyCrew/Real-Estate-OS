@@ -229,6 +229,10 @@ def require_exact_v167(token):
                   "nj_de_generated_connectors":len(generated),
                   "explicit_deny_only_sdk_marker":registry_deny,
                   "possible_nj_de_live_exposure":bool(generated) and not registry_deny,
+                  "assessment":("POTENTIAL_UNGUARDED_NJ_DE_GENERATED_CONNECTORS"
+                    if generated and not registry_deny else
+                    "GUARD_MARKER_PRESENT" if generated else
+                    "NO_GENERATED_NJ_DE_CONNECTORS_OTHER_ENTRYPOINTS_UNKNOWN"),
                   "source_tree_sha256":content_hash(contents)
                 }
             except Exception as e:
@@ -430,7 +434,7 @@ def main():
             RESULT["checks"].get("WRITE_SCOPES_ATTESTED_BEFORE_ANY_MUTATION",{}).get("status")=="PASS" and
             RESULT["checks"].get("NO_ALTERNATE_UNGUARDED_API_DEPLOYMENT",{}).get("status")=="PASS")
         if not args.apply:
-            RESULT["status"]="READ_ONLY_PROTECTIVE_RELEASE_PREPARED"
+            RESULT["status"]="READ_ONLY_DIAGNOSTIC_HOLD" if RESULT["blockers"] else "READ_ONLY_PREPARED_REVIEW_REQUIRED"
             raise ReadOnlyPrepared()
         scopes_ok=RESULT["checks"].get("WRITE_SCOPES_ATTESTED_BEFORE_ANY_MUTATION",{}).get("status")=="PASS"
         all_api_closed=(RESULT["checks"].get("NO_ALTERNATE_UNGUARDED_API_DEPLOYMENT",{}).get("status")=="PASS")
@@ -527,6 +531,8 @@ def main():
           "CREDENTIAL_FILES_CHANGED="+str(PROTECTED["credential_files_changed"]),
           "API_EXECUTION_DEPLOYMENTS="+str(RESULT.get("api_deployment_inventory",{}).get("execution_api_deployments","UNVERIFIED")),
           "ALTERNATE_API_DEPLOYMENTS="+str(RESULT.get("api_deployment_inventory",{}).get("alternate_execution_api_deployments","UNVERIFIED")),
+          "ALTERNATE_API_POTENTIAL_NJ_DE_EXPOSURE="+str(sum(1 for d in RESULT.get("api_deployment_inventory",{}).get("deployments",[]) if not d.get("is_pinned_target") and d.get("possible_nj_de_live_exposure") is True)),
+          "ALTERNATE_API_EXPOSURE_UNVERIFIED="+str(sum(1 for d in RESULT.get("api_deployment_inventory",{}).get("deployments",[]) if not d.get("is_pinned_target") and d.get("possible_nj_de_live_exposure") is None)),
           "OAUTH_CLIENT_PIN="+RESULT.get("checks",{}).get("OAUTH_CLIENT_PROJECT_PIN",{}).get("status","NOT_ATTESTED"),
           "OAUTH_WRITE_SCOPES="+RESULT.get("checks",{}).get("WRITE_SCOPES_ATTESTED_BEFORE_ANY_MUTATION",{}).get("status","NOT_ATTESTED"),
           "NJ_DE_LIVE_INGESTION=BLOCKED",
