@@ -35,7 +35,7 @@ REOS.NJDECountyParityScheduler = (function () {
   var STATES = Object.freeze({
     NJ: Object.freeze({
       counties: NJ,
-      proposedHourLocal: 5,
+      proposedHoursLocal: Object.freeze([0, 6, 12, 18]),
       entrypoint: 'REOS_NJ_COUNTY_SCHEDULED_RUN',
       checkpoint: 'REOS_NJ_COUNTY_PARITY_SHADOW_CHECKPOINT_V1',
       audit: 'REOS_NJ_COUNTY_PARITY_SHADOW_AUDIT_V1',
@@ -43,13 +43,17 @@ REOS.NJDECountyParityScheduler = (function () {
     }),
     DE: Object.freeze({
       counties: DE,
-      proposedHourLocal: 6,
+      proposedHoursLocal: Object.freeze([1, 7, 13, 19]),
       entrypoint: 'REOS_DE_COUNTY_SCHEDULED_RUN',
       checkpoint: 'REOS_DE_COUNTY_PARITY_SHADOW_CHECKPOINT_V1',
       audit: 'REOS_DE_COUNTY_PARITY_SHADOW_AUDIT_V1',
       inventoryOnlyDataset: 'parcel_inventory'
     })
   });
+  // Four proposed local wall-clock windows per day, six hours apart;
+  // DST may alter elapsed UTC time. No triggers are installed here.
+  var SCHEDULE_SCHEMA = 'REOS_NJ_DE_SIX_HOUR_SHADOW_V1';
+  var ZONE = 'America/New_York';
   var MAX_PAGE_SIZE = 100;
   var MAX_RETRIES = 3;
   var NO_CERT = 'HOLD_NO_CERTIFIED_DISTRESS_SOURCE';
@@ -93,6 +97,61 @@ REOS.NJDECountyParityScheduler = (function () {
     return result;
   }
 
+  function dateValid_(date) {
+    if (typeof date !== 'string' ||
+        !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      throw new Error('NJ_DE_INVALID_LOCAL_SCHEDULE_DATE');
+    }
+    var asUtc = new Date(date + 'T00:00:00.000Z');
+    if (!Number.isFinite(asUtc.getTime()) ||
+        asUtc.toISOString().slice(0, 10) !== date) {
+      throw new Error('NJ_DE_INVALID_LOCAL_SCHEDULE_DATE');
+    }
+    return date;
+  }
+
+  function padHour_(hour) {
+    return ('0' + hour).slice(-2);
+  }
+
+  function scheduleWindows_(state) {
+    return conf_(state).proposedHoursLocal.map(function (hour) {
+      return padHour_(hour) + ':00';
+    });
+  }
+
+  function slot_(state, localDateTime) {
+    var st = state_(state);
+    if (typeof localDateTime !== 'string' ||
+        !/^\d{4}-\d{2}-\d{2}T\d{2}:00$/.test(localDateTime)) {
+      throw new Error('NJ_DE_INVALID_SIX_HOUR_SLOT');
+    }
+    var date = dateValid_(localDateTime.slice(0, 10));
+    var hour = Number(localDateTime.slice(11, 13));
+    if (conf_(st).proposedHoursLocal.indexOf(hour) === -1) {
+      throw new Error('NJ_DE_SLOT_OUTSIDE_STATE_WINDOW');
+    }
+    return {
+      schemaVersion: SCHEDULE_SCHEMA,
+      timezone: ZONE,
+      state: st,
+      localDateTime: localDateTime,
+      cycleId: st + '|' + localDateTime,
+      checkpointKey: conf_(st).checkpoint + '|' + localDateTime,
+      auditKey: conf_(st).audit + '|' + localDateTime,
+      triggerInstalled: false,
+      productionPermitted: false
+    };
+  }
+
+  function dailySlots(state, localDate) {
+    var st = state_(state);
+    var date = dateValid_(localDate);
+    return conf_(st).proposedHoursLocal.map(function (hour) {
+      return slot_(st, date + 'T' + padHour_(hour) + ':00');
+    });
+  }
+
   function plan(state) {
     var st = state_(state);
     var cfg = conf_(st);
@@ -108,8 +167,15 @@ REOS.NJDECountyParityScheduler = (function () {
       schedulerHandler: cfg.entrypoint,
       suggestedTrigger: {
         timezone: 'America/New_York',
-        cadence: 'DAILY',
-        proposedHourLocal: cfg.proposedHourLocal,
+        cadence: 'FOUR_LOCAL_WINDOWS_PER_DAY',
+        intervalHoursLocalClock: 6,
+        cyclesPerDay: 4,
+        proposedHoursLocal: cfg.proposedHoursLocal.slice(),
+        proposedLocalTimes: scheduleWindows_(st),
+        separateStateOffsetHours: st === 'DE' ? 1 : 0,
+        triggerStrategy: 'FOUR_APPROXIMATE_DAILY_LOCAL_WINDOWS',
+        dstBehavior: 'LOCAL_WALL_CLOCK_SIX_HOUR_SPACING_ELAPSED_UTC_MAY_VARY',
+        concurrencyPolicy: 'FAIL_CLOSED_PENDING_STATE_LOCK_CERTIFICATION',
         installed: false,
         authorizedToInstall: false
       },
@@ -144,11 +210,11 @@ REOS.NJDECountyParityScheduler = (function () {
     };
   }
 
-  function initialCheckpoint_(state) {
+  function initialCheckpoint_(state, cycle) {
     return {
       schemaVersion: SCHEMA,
       state: state,
-      cycle: 'OFFLINE_REHEARSAL_ONLY',
+      cycle: cycle || 'OFFLINE_REHEARSAL_ONLY',
       taskIndex: 0,
       cursor: '',
       pagesProcessed: 0,
@@ -158,16 +224,17 @@ REOS.NJDECountyParityScheduler = (function () {
     };
   }
 
-  function validateCheckpoint_(state, raw, count) {
+  function validateCheckpoint_(state, raw, count, cycle) {
+    var expectedCycle = cycle || 'OFFLINE_REHEARSAL_ONLY';
     if (raw === null || typeof raw === 'undefined') {
-      return initialCheckpoint_(state);
+      return initialCheckpoint_(state, expectedCycle);
     }
     if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
       throw new Error('NJ_DE_CHECKPOINT_MALFORMED');
     }
     var cp = safeClone_(raw);
     if (cp.schemaVersion !== SCHEMA || cp.state !== state ||
-        cp.cycle !== 'OFFLINE_REHEARSAL_ONLY' ||
+        cp.cycle !== expectedCycle ||
         !Number.isInteger(cp.taskIndex) || cp.taskIndex < 0 ||
         cp.taskIndex > count ||
         typeof cp.cursor !== 'string' || cp.cursor.length > 512 ||
@@ -211,7 +278,15 @@ REOS.NJDECountyParityScheduler = (function () {
     }
     rehearsalIo_(io, st);
     var all = tasks_(st);
-    var cp = validateCheckpoint_(st, io.load(conf_(st).checkpoint), all.length);
+    // Optional slotLocal is validated against this state's four proposed
+    // six-hour wall-clock windows. A wrong-state/old-cycle checkpoint fails.
+    // Legacy offline rehearsal without slotLocal stays compatible.
+    var cycle = options.slotLocal ? slot_(st, options.slotLocal) : null;
+    var checkpointKey = cycle ? cycle.checkpointKey : conf_(st).checkpoint;
+    var auditKey = cycle ? cycle.auditKey : conf_(st).audit;
+    var cp = validateCheckpoint_(
+      st, io.load(checkpointKey), all.length, cycle && cycle.cycleId
+    );
     if (cp.completed) {
       return {
         ok: true, state: st, status: 'MOCK_CYCLE_COMPLETE',
@@ -241,7 +316,8 @@ REOS.NJDECountyParityScheduler = (function () {
         countyId: task.countyId,
         feed: task.feed,
         cursor: cp.cursor,
-        limit: MAX_PAGE_SIZE
+        limit: MAX_PAGE_SIZE,
+        cycleId: cycle ? cycle.cycleId : 'OFFLINE_REHEARSAL_ONLY'
       });
       if (!page || !Array.isArray(page.records) ||
           page.records.length > MAX_PAGE_SIZE ||
@@ -283,8 +359,8 @@ REOS.NJDECountyParityScheduler = (function () {
       }
       // Both methods are supplied by offline tests, never ScriptProperties
       // or a production Sheets table. There is no record persistence here.
-      io.save(conf_(st).checkpoint, safeClone_(next));
-      io.auditMock(conf_(st).audit, {
+      io.save(checkpointKey, safeClone_(next));
+      io.auditMock(auditKey, {
         schemaVersion: SCHEMA,
         state: st,
         countyId: task.countyId,
@@ -311,8 +387,8 @@ REOS.NJDECountyParityScheduler = (function () {
       failed.lastStatus = failed.attempts >= MAX_RETRIES
         ? 'MOCK_QUARANTINED_RETRY_LIMIT'
         : 'MOCK_RETRY_PENDING';
-      io.save(conf_(st).checkpoint, safeClone_(failed));
-      io.auditMock(conf_(st).audit, {
+      io.save(checkpointKey, safeClone_(failed));
+      io.auditMock(auditKey, {
         schemaVersion: SCHEMA,
         state: st,
         countyId: task.countyId,
@@ -331,8 +407,11 @@ REOS.NJDECountyParityScheduler = (function () {
 
   return Object.freeze({
     schemaVersion: SCHEMA,
+    scheduleSchemaVersion: SCHEDULE_SCHEMA,
     feedOrder: FEEDS.slice(),
     plan: plan,
+    dailySlots: dailySlots,
+    slot: slot_,
     scheduled: scheduled,
     rehearsalTick: rehearsalTick,
     checkpointKey: function (state) { return conf_(state).checkpoint; },
