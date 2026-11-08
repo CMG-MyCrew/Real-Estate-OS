@@ -4,12 +4,13 @@
  * NEVER calls Google, ScriptApp, PropertiesService or REOS.Database.
  */
 'use strict';
-const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
-const vm = require('node:vm');
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import vm from 'node:vm';
+import { fileURLToPath } from 'node:url';
 
-const src = fs.readFileSync(path.join(__dirname,'..','src','NJDECountyParityScheduler.gs'),'utf8');
+const src = fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)),'..','src','NJDECountyParityScheduler.gs'),'utf8');
 const forbidden = ['ScriptApp.','PropertiesService.','UrlFetchApp.','REOS.Database.','CountyConnectorSDK.run(','REOS_COUNTY_INSTALL_DAILY_TRIGGER('];
 // Comments may name these APIs; executable calls must not.
 const executable=src.split('\n').filter(x=>!x.trim().startsWith('*')&&!x.trim().startsWith('//')).join('\n');
