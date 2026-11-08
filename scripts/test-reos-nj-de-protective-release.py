@@ -90,6 +90,34 @@ console.log('NODE_MOCK_NJ_DE_PERSIST_AND_RUN=PASS');
     if mock.returncode != 0 or 'NODE_MOCK_NJ_DE_PERSIST_AND_RUN=PASS' not in mock.stdout:
         raise AssertionError('Node mock failed: '+mock.stderr[-500:])
     print("NODE_MOCK_NJ_DE_PERSIST_AND_RUN=PASS")
+    # Force an alternate EXECUTION_API deployment in the synthetic production
+    # inventory. A read-only preflight must observe it and retain the block.
+    real_project_get=m.project_get
+    def fake_project_get(path, token):
+        if path=="":return {"scriptId":m.SCRIPT}
+        if path.startswith("/deployments?"):
+            return {"deployments":[
+                {"deploymentId":m.DEPLOYMENT,"deploymentConfig":{"versionNumber":167},
+                 "entryPoints":[{"entryPointType":"EXECUTION_API"}]},
+                {"deploymentId":"SECOND_API_DEPLOYMENT",
+                 "deploymentConfig":{"versionNumber":167},
+                 "entryPoints":[{"entryPointType":"EXECUTION_API"}]}]}
+        if path in ("/content","/content?versionNumber=167"):return immutable
+        raise AssertionError("Unexpected synthetic GET: "+path)
+    try:
+        m.project_get=fake_project_get
+        base_again, target=m.require_exact_v167("TEST_SYNTHETIC_TOKEN")
+        assert len(base_again["files"])==481
+        inventory=m.RESULT["api_deployment_inventory"]
+        assert inventory["execution_api_deployments"]==2
+        assert inventory["alternate_execution_api_deployments"]==1
+        assert inventory["versions"]["167"]["nj_de_generated_connectors"]==24
+        assert inventory["versions"]["167"]["possible_nj_de_live_exposure"] is True
+        assert m.RESULT["checks"]["NO_ALTERNATE_UNGUARDED_API_DEPLOYMENT"]["status"]=="HOLD"
+        assert m.PROTECTED["write_attempts"]==0
+    finally:
+        m.project_get=real_project_get
+    print("ALTERNATE_EXECUTION_API_READONLY_INVENTORY=PASS")
     print("PROTECTIVE_24_CONNECTORS_DISABLED=PASS")
     print("SDK_RUN_AND_PERSIST_GUARDS=PASS")
     print("UNRELATED_456_FILES_PRESERVED=PASS")
