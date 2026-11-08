@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 """Offline source-only regression. Never imports production credentials or calls Google."""
-import hashlib, importlib.util, json, pathlib, string
+import hashlib, importlib.util, json, pathlib, string, subprocess
 p = pathlib.Path(__file__).with_name("reos-nj-de-deny-only-protective-release.py")
 spec = importlib.util.spec_from_file_location("reos_protective_module", p)
 m = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(m)
 sdk = """
 var REOS = REOS || {};
-var CountyConnectorSDK = (function(){
+REOS.CountyConnectorSDK = (function(){
+var REGISTRY = {};
+function validateConnector_(connector) {}
+function ensureInfrastructure() { REOS.writes += 1; }
 function register(connector) {
   validateConnector_(connector);
   REGISTRY[connector.id] = connector;
@@ -15,11 +18,14 @@ function register(connector) {
 function run(connectorId, options) {
   options = options || {};
   ensureInfrastructure();
+  return true;
 }
 function persist_(record, context) {
   if (context.dryRun) return { action: 'skipped' };
-  return Database.insert('DISTRESS_LEADS', record);
+  REOS.writes += 1;
+  return REOS.Database.insert('DISTRESS_LEADS', record);
 }
+return { register: register, run: run, persist: persist_ };
 })();
 """
 pa = "const ALLOWLIST = Object.freeze(['code_violations','vacant_properties','sheriff_tax_sales','sheriff_mortgage_sales','probate']);"
@@ -48,6 +54,39 @@ try:
     assert all(x in [t[0] for t in changed] for x in nj+de)
     assert all(before[k]["source"]==after[k]["source"] for k in before if k not in changed)
     assert m.content_hash(immutable)!=m.content_hash(candidate)
+    driver = r"""
+const fs = require('node:fs');
+const vm = require('node:vm');
+const assert = require('node:assert/strict');
+const REOS = {writes:0, Database:{insert:()=>({ok:true})}};
+vm.runInNewContext(fs.readFileSync(0,'utf8'), {REOS});
+const api=REOS.CountyConnectorSDK;
+const nj={id:'NJ-MOCK',state:'NJ',enabled:true};
+const de={id:'DE-MOCK',state:'DE',enabled:true};
+const pa={id:'PA-MOCK',state:'PA',enabled:true};
+api.register(nj); api.register(de); api.register(pa);
+assert.equal(nj.enabled,false);
+assert.equal(de.enabled,false);
+assert.equal(pa.enabled,true);
+assert.throws(()=>api.run('NJ-MOCK',{}),/NJ_DE_PROTECTIVE_RELEASE_DENY_ONLY/);
+assert.throws(()=>api.run('DE-MOCK',{}),/NJ_DE_PROTECTIVE_RELEASE_DENY_ONLY/);
+assert.equal(REOS.writes,0);
+assert.equal(api.run('PA-MOCK',{}),true);
+assert.equal(REOS.writes,1);
+assert.throws(()=>api.persist({State:'DE'},{dryRun:false,dataset:'code_violations'}),/NON_DISTRESS_OR_NJ_DE_PERSIST_DENIED/);
+assert.throws(()=>api.persist({State:'NJ'},{dryRun:false,dataset:'code_violations'}),/NON_DISTRESS_OR_NJ_DE_PERSIST_DENIED/);
+assert.throws(()=>api.persist({State:'PA'},{dryRun:false,dataset:'parcel_inventory'}),/NON_DISTRESS_OR_NJ_DE_PERSIST_DENIED/);
+assert.throws(()=>api.persist({State:'PA'},{dryRun:false,dataset:'property_assessment'}),/NON_DISTRESS_OR_NJ_DE_PERSIST_DENIED/);
+assert.equal(REOS.writes,1);
+api.persist({State:'PA'},{dryRun:false,dataset:'code_violations'});
+assert.equal(REOS.writes,2);
+console.log('NODE_MOCK_NJ_DE_PERSIST_AND_RUN=PASS');
+"""
+    mock = subprocess.run(['node','-e',driver], input=after[('CountyConnectorSDK','SERVER_JS')]['source'],
+                          text=True,capture_output=True,timeout=15)
+    if mock.returncode != 0 or 'NODE_MOCK_NJ_DE_PERSIST_AND_RUN=PASS' not in mock.stdout:
+        raise AssertionError('Node mock failed: '+mock.stderr[-500:])
+    print("NODE_MOCK_NJ_DE_PERSIST_AND_RUN=PASS")
     print("PROTECTIVE_24_CONNECTORS_DISABLED=PASS")
     print("SDK_RUN_AND_PERSIST_GUARDS=PASS")
     print("UNRELATED_456_FILES_PRESERVED=PASS")
