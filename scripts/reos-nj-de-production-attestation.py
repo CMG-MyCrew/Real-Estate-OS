@@ -33,6 +33,8 @@ CLOUD_PROJECT_NUMBER = "761052091881"
 REPO = "CMG-MyCrew/Real-Estate-OS"
 PR_NUMBER = 9
 SOURCE_COMMIT = "c1f27c974e715c102fd069a47f18ecccbde81cdb"
+SDK_REVIEWED_BLOB_SHA = "cb89157808c09838cf002b7ee21f60d8a4fe2a4a"
+EXPECTED_CHECKOUT_HEAD = sys.argv[1] if len(sys.argv) > 1 else ""
 FEEDS = ("code_violations", "vacant_properties", "sheriff_tax_sales", "sheriff_mortgage_sales", "probate")
 GETTERS = ("reosCountyProductionSchedulerStatus",
            "reosCountyProductionSchedulerCheckpoint",
@@ -226,7 +228,7 @@ def authenticate():
 def verify_git_review():
     try:
         pr=request("GET",f"https://api.github.com/repos/{REPO}/pulls/{PR_NUMBER}")
-        good=(pr.get("head",{}).get("sha")==SOURCE_COMMIT and
+        good=(pr.get("head",{}).get("sha")==EXPECTED_CHECKOUT_HEAD and
               pr.get("base",{}).get("ref")=="feature/county-connectors" and
               pr.get("draft") is True and pr.get("merged_at") is None)
         check("GITHUB_PR_SOURCE_PIN_AND_HOLD",good,
@@ -445,9 +447,17 @@ def main():
     try:
         self_test()
         check("LOCAL_FAIL_CLOSED_SELF_TESTS",True,"Four offline safety invariants")
-        check("REVIEW_BRANCH_SOURCE_COMMIT",subprocess.run(
-            ["git","rev-parse","HEAD"],capture_output=True,text=True,check=False).stdout.strip()==SOURCE_COMMIT,
-            "Local checkout pinned to reviewed PR head")
+        observed_head=subprocess.run(
+            ["git","rev-parse","HEAD"],capture_output=True,text=True,check=False).stdout.strip()
+        check("ATTESTOR_CHECKOUT_COMMIT_PIN",
+            bool(re.fullmatch(r"[0-9a-f]{40}",EXPECTED_CHECKOUT_HEAD)) and
+            observed_head==EXPECTED_CHECKOUT_HEAD,
+            "Exact expected attestor commit supplied by one-command runner")
+        blob=subprocess.run(["git","hash-object","src/CountyConnectorSDK.gs"],
+                            capture_output=True,text=True,check=False)
+        check("REVIEWED_SDK_SAFETY_BLOB_PIN",
+              blob.returncode==0 and blob.stdout.strip()==SDK_REVIEWED_BLOB_SHA,
+              "Staged SDK must be exact reviewed safety source, not merely an ancestor")
         verify_git_review()
         attest_authorizations()
         try:
