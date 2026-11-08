@@ -51,9 +51,9 @@ The above are examples of named gates, **not** authorization to set them. With n
 
 From the repository root after reviewing this change:
 
-`bash
+```bash
 node tests/md-six-hour-scheduler.test.cjs
-`
+```
 
 Test coverage: default disabled with no mutations, 24-ID registration gate, lock, separate MD checkpoints, rotating bounded jobs, cursor advancement, failed-page cursor hold, empty-page refusal, live authorization gate, dry preflight before approved live call, idempotent MD trigger installer preserving existing PA/global triggers. The test uses mocked SDK, PropertiesService, LockService, and ScriptApp only. It does not demonstrate real-source correctness.
 
