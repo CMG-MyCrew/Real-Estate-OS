@@ -596,7 +596,8 @@ def main():
           "V167_SDK_RELEVANT_FUNCTIONS="+",".join(name for name in RESULT.get("v167_sdk_source_shape",{}).get("named_function_inventory",[]) if re.search(r"persist|insert|update|upsert|write|store|save|sync|lead|record|run",name,re.I))[:350],
           "V167_SDK_WRITER_COUNTS="+json.dumps(RESULT.get("v167_sdk_source_shape",{}).get("writer_reference_counts",{}),sort_keys=True,separators=(",",":")),
           "EXECUTION_API_VERSION_SUMMARY="+",".join(str(ver)+":generated="+str(v.get("nj_de_generated_connectors","?"))+":marker="+str(v.get("explicit_deny_only_sdk_marker","?")) for ver,v in sorted(RESULT.get("api_deployment_inventory",{}).get("versions",{}).items(),key=lambda p:p[0]))[:1000],
-          "NJ_DE_LIVE_INGESTION=BLOCKED",
+          "NJ_DE_LIVE_INGESTION_AUTHORITY=BLOCKED",
+          "NJ_DE_HISTORICAL_API_EXECUTION_PATHS=NOT_CLOSED",
           "MAO_AND_OFFERS=BLOCKED",
           "PA_SCHEDULER_EXECUTED=FALSE",
         ]
