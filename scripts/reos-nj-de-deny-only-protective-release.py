@@ -432,6 +432,17 @@ def main():
            file_sha(Path(p))!=s for p,s in CRED.items())
         if RESULT["mutations"]["credential_files_changed"]:
             RESULT["blockers"].append("CREDENTIAL_FILE_HASH_CHANGED")
+        approval_template={
+            "release":"NJ_DE_DENY_ONLY_V1","git_commit":EXPECTED_HEAD,
+            "script_id":SCRIPT,
+            "github_reviewers":{
+                "custodian":"REPLACE_WITH_MATTHEW_VERIFIED_GITHUB_LOGIN",
+                "operations":"REPLACE_WITH_SCOTT_VERIFIED_GITHUB_LOGIN",
+                "independent":"REPLACE_WITH_SYDNEY_VERIFIED_GITHUB_LOGIN"},
+            "note":"Template only; unsigned, no authorization. Three independent exact-commit GitHub approvals required."
+        }
+        (WORK/"UNSIGNED_APPROVAL_TEMPLATE.json").write_text(
+            json.dumps(approval_template,indent=2,sort_keys=True)+"\n")
         report=WORK/"attestation.json"
         report.write_text(json.dumps(RESULT,indent=2,sort_keys=True)+"\n")
         summary=[
