@@ -14,6 +14,7 @@ on:
       - 'scripts/reos-nj-de-live-feed-build-gate.py'
       - 'scripts/reos-nj-de-provider-real-page-conformance.mjs'
       - 'scripts/reos-nj-de-provider-permission-coverage-readonly.py'
+      - 'scripts/test-nj-de-provider-access-full-path-offline.py'
       - 'scripts/test-nj-de-pa-parity-scheduler.mjs'
       - 'scripts/reos-nj-de-pa-parity-consolidated-audit.py'
       - 'scripts/reos-nj-de-public-source-preflight.py'
@@ -47,6 +48,8 @@ jobs:
         env:
           REOS_RELEASE_PIN: ${{ github.sha }}
         run: python3 scripts/reos-nj-de-provider-permission-coverage-readonly.py --self-test
+      - name: Mock valid subscription and complete NJ DE gated API flow without HTTP
+        run: python3 scripts/test-nj-de-provider-access-full-path-offline.py
 
       - name: Consolidated NJ DE 120-source-slot build and safety gate (offline)
         env:
