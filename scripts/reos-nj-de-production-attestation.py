@@ -295,10 +295,20 @@ def attest_deployment(token):
         feed_order=tuple(re.findall(r"dataset:\s*'([^']+)'",source))
     check("IMMUTABLE_PA_FIVE_FEED_ONLY",feed_order==FEEDS,
           "Actual immutable scheduler allowlist contains only approved PA feed order")
+    nj_de_generated=[f.get("name") for f in files
+        if f.get("type")=="SERVER_JS" and
+        re.match(r"^(NJ|DE)[A-Z].*CountyConnector$",str(f.get("name","")))]
+    runtime_guard=any("NJ_DE_PRODUCTION_APPROVAL_REQUIRED" in (f.get("source") or "")
+                      for f in files)
+    check("IMMUTABLE_NJ_DE_LIVE_EXPOSURE_FAIL_CLOSED",
+          not nj_de_generated or runtime_guard,
+          "V167 NJ/DE generated connectors=%s; explicit live guard=%s" %
+          (len(nj_de_generated),runtime_guard))
     observation("actual_script_source",{"v167_file_count":len(files),
         "v167_scheduler_sha256":sched_sha,"head_scheduler_sha256":head_sha,
         "allowlist":list(feed_order),
-        "staged_nj_de_guard_in_v167":any("NJ_DE_PRODUCTION_APPROVAL_REQUIRED" in (f.get("source") or "") for f in files)})
+        "NJ_DE_generated_connector_count_in_V167":len(nj_de_generated),
+        "explicit_NJ_DE_live_guard_in_V167":runtime_guard})
     # This compares scheduler source only. It does not claim entire HEAD equivalence.
     return (CHECKS["IMMUTABLE_GETTER_WRAPPERS_EXACT"]["status"]=="PASS" and
             CHECKS["IMMUTABLE_PA_FIVE_FEED_ONLY"]["status"]=="PASS" and
