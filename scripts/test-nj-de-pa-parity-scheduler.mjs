@@ -43,8 +43,21 @@ assert(!NJ.checkpointNamespace.startsWith('REOS_PA_'));
 assert(!DE.checkpointNamespace.startsWith('REOS_PA_'));
 assert.equal(NJ.suggestedTrigger.installed,false);
 assert.equal(DE.suggestedTrigger.installed,false);
-assert.equal(NJ.suggestedTrigger.proposedHourLocal,5);
-assert.equal(DE.suggestedTrigger.proposedHourLocal,6);
+assert.equal(NJ.suggestedTrigger.cadence,'FOUR_LOCAL_WINDOWS_PER_DAY');
+assert.equal(DE.suggestedTrigger.cadence,'FOUR_LOCAL_WINDOWS_PER_DAY');
+assert.equal(NJ.suggestedTrigger.intervalHoursLocalClock,6);
+assert.equal(DE.suggestedTrigger.intervalHoursLocalClock,6);
+assert.equal(NJ.suggestedTrigger.cyclesPerDay,4);
+assert.equal(DE.suggestedTrigger.cyclesPerDay,4);
+assert.equal(NJ.suggestedTrigger.timezone,'America/New_York');
+assert.equal(DE.suggestedTrigger.timezone,'America/New_York');
+assert.deepEqual(NJ.suggestedTrigger.proposedHoursLocal,[0,6,12,18]);
+assert.deepEqual(DE.suggestedTrigger.proposedHoursLocal,[1,7,13,19]);
+assert.deepEqual(NJ.suggestedTrigger.proposedLocalTimes,['00:00','06:00','12:00','18:00']);
+assert.deepEqual(DE.suggestedTrigger.proposedLocalTimes,['01:00','07:00','13:00','19:00']);
+assert.equal(NJ.suggestedTrigger.concurrencyPolicy,'FAIL_CLOSED_PENDING_STATE_LOCK_CERTIFICATION');
+assert.equal(DE.suggestedTrigger.concurrencyPolicy,'FAIL_CLOSED_PENDING_STATE_LOCK_CERTIFICATION');
+console.log('NJ_DE_SIX_HOUR_LOCAL_CADENCE_STAGGER=PASS');
 const catalog=JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)),'..','config','nj-de-philadelphia-parity-feed-catalog.json'),'utf8'));
 assert.equal(catalog.production_authority,'NONE');
 assert.equal(catalog.states.NJ.feedSlots,105);
@@ -64,6 +77,25 @@ for(const state of ['NJ','DE']){
   }
 }
 assert(catalog.official_discovery_refs.every(x=>!x.pipeline_cleared));
+const scheduleSpec=JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)),'..','config','nj-de-six-hour-shadow-schedule.json'),'utf8'));
+assert.equal(scheduleSpec.schemaVersion,'REOS_NJ_DE_SIX_HOUR_SHADOW_V1');
+assert.equal(scheduleSpec.timezone,'America/New_York');
+assert.equal(scheduleSpec.productionAuthority,'NONE');
+for(const state of ['NJ','DE']){
+  const planned=state==='NJ'?NJ:DE;
+  const meta=scheduleSpec.states[state];
+  assert.deepEqual(meta.localHours,planned.suggestedTrigger.proposedHoursLocal);
+  assert.deepEqual(meta.localTimes,planned.suggestedTrigger.proposedLocalTimes);
+  assert.equal(meta.intervalHoursLocalClock,6);
+  assert.equal(meta.cyclesPerDay,4);
+  assert.equal(meta.checkpointNamespace,planned.checkpointNamespace);
+  assert.equal(meta.auditNamespace,planned.auditNamespace);
+  assert.equal(meta.handler,planned.schedulerHandler);
+  assert.equal(meta.triggerInstalled,false);
+  assert.equal(meta.authorizedToInstall,false);
+  assert.equal(meta.productionIngestionAuthorized,false);
+}
+console.log('SCHEDULE_CONFIG_MATCHES_TWO_STATE_RUNTIME=PASS');
 console.log('CATALOG_120_SLOTS_ALL_FAIL_CLOSED=PASS');
 console.log('NJ_21_COUNTIES_105_FEED_SLOTS=PASS');
 console.log('DE_3_COUNTIES_15_FEED_SLOTS=PASS');
@@ -170,6 +202,78 @@ for(const args of [
 ]){
   assert.throws(()=>sdk.rehearsalTick(...args),/INVALID_STATE|LIVE_RUN_PROHIBITED|REQUIRES_ISOLATED_MOCK_IO/);
 }
+
+// Six-hour shadow cycles use distinct state + local-date/slot checkpoint keys.
+// They are in-memory tests only and NEVER bind Apps Script triggers.
+const DATE='2026-11-08';
+const njSlots=raw(sdk.dailySlots('NJ',DATE));
+const deSlots=raw(sdk.dailySlots('DE',DATE));
+assert.deepEqual(njSlots.map(x=>x.localDateTime),[
+  '2026-11-08T00:00','2026-11-08T06:00',
+  '2026-11-08T12:00','2026-11-08T18:00'
+]);
+assert.deepEqual(deSlots.map(x=>x.localDateTime),[
+  '2026-11-08T01:00','2026-11-08T07:00',
+  '2026-11-08T13:00','2026-11-08T19:00'
+]);
+const allSlots=[...njSlots,...deSlots];
+assert.equal(allSlots.length,8);
+assert.equal(new Set(allSlots.map(x=>x.checkpointKey)).size,8);
+assert.equal(new Set(allSlots.map(x=>x.auditKey)).size,8);
+assert.equal(new Set(allSlots.map(x=>x.cycleId)).size,8);
+assert(allSlots.every(x=>!x.triggerInstalled&&!x.productionPermitted));
+assert(allSlots.every(x=>!x.checkpointKey.startsWith('REOS_PA_')));
+assert(allSlots.every(x=>!x.auditKey.startsWith('REOS_PA_')));
+const dstNJ=raw(sdk.dailySlots('NJ','2026-11-01'));
+const dstDE=raw(sdk.dailySlots('DE','2026-11-01'));
+assert.equal(dstNJ.length,4);
+assert.equal(dstDE.length,4);
+assert.equal(new Set([...dstNJ,...dstDE].map(x=>x.cycleId)).size,8);
+assert.throws(()=>sdk.dailySlots('NJ','2026-02-30'),/INVALID_LOCAL_SCHEDULE_DATE/);
+assert.throws(()=>sdk.dailySlots('PA','2026-11-08'),/INVALID_STATE/);
+assert.throws(()=>sdk.slot('DE','2026-11-08T00:00'),/SLOT_OUTSIDE_STATE_WINDOW/);
+assert.throws(()=>sdk.slot('NJ','2026-11-08T05:00'),/SLOT_OUTSIDE_STATE_WINDOW/);
+assert.throws(()=>sdk.slot('NJ','2026-11-08T06:05'),/INVALID_SIX_HOUR_SLOT/);
+console.log('EIGHT_DAILY_WINDOWS_DST_AND_SCOPE_VALIDATION=PASS');
+
+const slotIo=mockIo('NJ');
+slotIo.syntheticSourceKeys[['NJ',firstNJ.countyId,firstNJ.feed].join('|')]='MOCK_FIXTURE_ONLY';
+let slotCalls=0;
+slotIo.fetchMockPage=(task)=>{
+  slotCalls++;
+  assert(task.cycleId.startsWith('NJ|2026-11-08T'));
+  return {records:[{state:'NJ',countyId:firstNJ.countyId,
+    feed:firstNJ.feed,sourceRecordId:'synthetic_'+task.cycleId}],
+    nextCursor:'',more:false};
+};
+const slotTick=(slotLocal)=>raw(sdk.rehearsalTick('NJ',slotIo,{
+  mode:'OFFLINE_TEST',noRemoteServices:true,slotLocal
+}));
+let firstCycle=slotTick(njSlots[0].localDateTime);
+assert.equal(firstCycle.ok,true);
+assert.equal(firstCycle.checkpoint.cycle,njSlots[0].cycleId);
+assert.equal(firstCycle.checkpoint.taskIndex,1);
+assert.equal(slotIo.backing[njSlots[0].checkpointKey].taskIndex,1);
+assert.equal(slotIo.audits.length,1);
+// Replaying the same cycle does not restart completed work.
+assert.equal(slotTick(njSlots[0].localDateTime).status,'HOLD_NO_CERTIFIED_DISTRESS_SOURCE');
+assert.equal(slotCalls,1);
+// A different six-hour slot gets a distinct checkpoint and starts at task 0.
+let secondCycle=slotTick(njSlots[1].localDateTime);
+assert.equal(secondCycle.ok,true);
+assert.equal(secondCycle.checkpoint.cycle,njSlots[1].cycleId);
+assert.equal(secondCycle.checkpoint.taskIndex,1);
+assert.equal(slotCalls,2);
+assert.notEqual(njSlots[0].checkpointKey,njSlots[1].checkpointKey);
+assert.equal(slotIo.backing[njSlots[0].checkpointKey].cycle,njSlots[0].cycleId);
+assert.equal(slotIo.backing[njSlots[1].checkpointKey].cycle,njSlots[1].cycleId);
+assert(slotIo.audits.every(x=>x.state==='NJ' && x.recordsPersisted===0));
+// Corrupting one local cycle with another's checkpoint must fail closed.
+slotIo.backing[njSlots[2].checkpointKey]=raw(slotIo.backing[njSlots[0].checkpointKey]);
+assert.throws(()=>slotTick(njSlots[2].localDateTime),/CHECKPOINT_STATE_OR_SCHEMA_MISMATCH/);
+assert.equal(slotCalls,2);
+assert.equal(Object.keys(deIo.backing).length,1); // Earlier DE mock remains separate.
+console.log('SIX_HOUR_PER_CYCLE_CHECKPOINT_REPLAY_AND_NO_CROSS_STATE_WRITES=PASS');
 assert.equal(sandbox.fakeWrites,0);
 console.log('NO_PRODUCTION_EXECUTION_OR_MAO_OFFER_AUTHORITY=PASS');
 console.log('OFFLINE_PHILADELPHIA_PARITY_TESTS=ALL_PASS');
