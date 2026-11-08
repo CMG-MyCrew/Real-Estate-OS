@@ -193,7 +193,7 @@ def inspect_v167_source_shape(doc):
        "persist_exact":source.count("function persist_(record, context) {"),
        "persist_named":len(re.findall(r"\bfunction\s+persist_\s*\(",source)),
        "persist_v167_four_arg":len(re.findall(
-          r"(?m)^  function persist_\(\s*record,\s*context,\s*"
+          r"(?m)^[ \t]*function persist_\(\s*record,\s*context,\s*"
           r"pagePersistence,\s*lockContext\s*\)\s*\{",source)),
        "sdk_denial_marker":source.count("NJ_DE_PROTECTIVE_RELEASE_DENY_ONLY")
     }
@@ -346,7 +346,7 @@ def build_protected(immutable):
     # Retain the actual record/context/pagePersistence/lockContext variables and
     # leave every later ScriptLock, deduplication, and PA persistence line intact.
     four_arg_persist_pattern=(
-       r"(?m)^  function persist_\(\s*record,\s*context,\s*"
+       r"(?m)^[ \t]*function persist_\(\s*record,\s*context,\s*"
        r"pagePersistence,\s*lockContext\s*\)\s*\{"
     )
     matches=list(re.finditer(four_arg_persist_pattern,source))
@@ -402,7 +402,7 @@ def offline_behavior_test(candidate):
     if sdk.count("NON_DISTRESS_OR_NJ_DE_PERSIST_DENIED")!=1:
         raise RuntimeError("Persistence guard missing")
     signature=re.search(
-       r"(?m)^  function persist_\(\s*record,\s*context,\s*"
+       r"(?m)^[ \t]*function persist_\(\s*record,\s*context,\s*"
        r"pagePersistence,\s*lockContext\s*\)\s*\{",sdk)
     if not signature:
         raise RuntimeError("Protected V167 four-argument persistence signature changed")
