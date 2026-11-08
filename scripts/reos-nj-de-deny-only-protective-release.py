@@ -383,8 +383,12 @@ def main():
         # Narrow authorized write sequence; do not retry on uncertain outcomes.
         PROTECTED["write_attempts"]+=1
         PROTECTED["mutation_outcome"]="UNKNOWN_PENDING_GOOGLE_RESPONSE"
+        # Only writable source fields go into updateContent. Omit Google
+        # output-only File properties (timestamps, owners, functionSet).
+        update_files=[{"name":x["name"],"type":x["type"],"source":x["source"]}
+                      for x in candidate["files"]]
         response=api("PUT","https://script.googleapis.com/v1/projects/"+SCRIPT+"/content",
-                     token,{"files":candidate["files"]})
+                     token,{"files":update_files})
         PROTECTED["production_mutations"]+=1
         PROTECTED["mutation_outcome"]="HEAD_UPDATE_ACKNOWLEDGED"
         if content_hash(response)!=content_hash(candidate):
