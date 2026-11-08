@@ -1,0 +1,23 @@
+name: REOS NJ DE Philadelphia Parity Shadow Scheduler
+on:
+  push:
+    branches:
+      - feature/nj-de-philadelphia-parity-shadow-20261108
+  pull_request:
+    paths:
+      - 'src/NJDECountyParityScheduler.gs'
+      - 'scripts/test-nj-de-pa-parity-scheduler.mjs'
+      - '.github/workflows/reos-nj-de-parity-scheduler.yml'
+permissions:
+  contents: read
+jobs:
+  nj-de-pa-parity-shadow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Offline source and safety invariants
+        run: node scripts/test-nj-de-pa-parity-scheduler.mjs
