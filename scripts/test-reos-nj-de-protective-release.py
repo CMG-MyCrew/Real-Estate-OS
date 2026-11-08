@@ -117,6 +117,27 @@ console.log('NODE_MOCK_NJ_DE_PERSIST_AND_RUN=PASS');
         assert m.PROTECTED["write_attempts"]==0
     finally:
         m.project_get=real_project_get
+    # Mirror the observed V167 incompatibility: persistence helper is
+    # present under a different name. The builder must fail before writes
+    # but still preserve enough function/writer metadata for review.
+    altered=json.loads(json.dumps(immutable))
+    altfiles=m.file_map(altered)
+    original_source=altfiles[("CountyConnectorSDK","SERVER_JS")]["source"]
+    altfiles[("CountyConnectorSDK","SERVER_JS")]["source"]=original_source.replace(
+        "function persist_(record, context) {",
+        "function persistCountyRecord_(record, context) {")
+    shape=m.inspect_v167_source_shape(altered)
+    assert shape["persist_exact"]==0
+    assert "persistCountyRecord_" in m.RESULT["v167_sdk_source_shape"]["named_function_inventory"]
+    assert m.RESULT["v167_sdk_source_shape"]["source_exported"] is False
+    failed=False
+    try:
+        m.build_protected(altered)
+    except RuntimeError as e:
+        failed="Safety patch anchor mismatch: persist" in str(e)
+    assert failed,"unknown live SDK persist helper must stop the release"
+    assert m.PROTECTED["write_attempts"]==0
+    print("V167_UNKNOWN_SDK_WRITER_SHAPE_FAIL_CLOSED=PASS")
     print("ALTERNATE_EXECUTION_API_READONLY_INVENTORY=PASS")
     print("PROTECTIVE_24_CONNECTORS_DISABLED=PASS")
     print("SDK_RUN_AND_PERSIST_GUARDS=PASS")
