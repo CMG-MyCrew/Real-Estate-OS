@@ -34,8 +34,19 @@ try:
     commands = (src / 'src/CountyConnectorCommands.gs').read_text()
     sdk = (src / 'src/CountyConnectorSDK.gs').read_text()
     check('generated_registry_supported', 'REOS.GeneratedCountyConnectorRegistrars' in commands)
-    check('dry_run_has_no_audit_writes', not ('insertRun_(runId, connector' in sdk and "AUDIT_SHEET = 'COUNTY_CONNECTOR_RUNS'" in sdk), 'SDK dry-run writes COUNTY_CONNECTOR_RUNS')
-    check('parcel_sink_isolated_from_distress_leads', "TARGET_SHEET = 'DISTRESS_LEADS'" not in sdk, 'Current SDK uses DISTRESS_LEADS for county live records')
+    # Execute source-level regression with mocked Google APIs; never call Apps Script.
+    unit = subprocess.run(['node', 'scripts/reos-county-sdk-safety.test.mjs'],
+                          cwd=src, capture_output=True, text=True, timeout=45)
+    detail = ((unit.stdout or '') + ' ' + (unit.stderr or '')).strip()[-800:]
+    check('dry_run_has_no_audit_writes',
+          unit.returncode == 0 and 'DRY_RUN_READ_ONLY=PASS' in unit.stdout
+          and 'DRY_RUN_FAILURE_NO_WRITE=PASS' in unit.stdout, detail)
+    check('parcel_sink_isolated_from_distress_leads',
+          unit.returncode == 0 and 'NON_DISTRESS_LIVE_BLOCKED=PASS' in unit.stdout, detail)
+    check('NJ_DE_LIVE_FAIL_CLOSED',
+          unit.returncode == 0 and 'NJ_DE_LIVE_FAIL_CLOSED=PASS' in unit.stdout, detail)
+    check('PA_LEGACY_LIVE_PATH_PRESERVED',
+          unit.returncode == 0 and 'PA_LEGACY_LIVE_PATH_PRESERVED=PASS' in unit.stdout, detail)
     for p in selected:
         m = json.loads(p.read_text()); cid=m.get('id',''); state=m.get('state',''); county=m.get('county','')
         code_name = re.sub(r'[^A-Za-z0-9]', '', county.title())

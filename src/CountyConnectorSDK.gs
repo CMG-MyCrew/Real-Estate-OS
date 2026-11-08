@@ -53,7 +53,7 @@ REOS.CountyConnectorSDK = (function () {
 
   function run(connectorId, options) {
     options = options || {};
-    ensureInfrastructure();
+    var dryRun = options.dryRun !== false;
 
     var connector = get(connectorId);
 
@@ -79,9 +79,36 @@ REOS.CountyConnectorSDK = (function () {
       );
     }
 
+    // County parcel/assessment inventory is evidence, not an actionable
+    // distress signal. It must never enter the DISTRESS_LEADS table.
+    if (!dryRun &&
+        (dataset === 'parcel_inventory' ||
+         dataset === 'property_assessment')) {
+      throw new Error(
+        'NON_DISTRESS_DATASET_LIVE_BLOCKED: ' + dataset +
+        ' requires a separately certified county inventory sink.'
+      );
+    }
+
+    // Explicit NJ/DE production approval has not been attested. This
+    // fail-closed guard must only be removed after independent approval
+    // of state scope, source, destination, and scheduler separation.
+    var state = String(connector.state || '').toUpperCase();
+    if (!dryRun && (state === 'NJ' || state === 'DE')) {
+      throw new Error(
+        'NJ_DE_PRODUCTION_APPROVAL_REQUIRED: ' + connector.id
+      );
+    }
+
+    // A DRY_RUN must not create tables, audit rows, or sequence IDs.
+    if (!dryRun) {
+      ensureInfrastructure();
+    }
     var started = new Date();
-    var runId = REOS.generateId_('CCR');
-    var mode = options.dryRun === false ? 'LIVE' : 'DRY_RUN';
+    var runId = dryRun
+      ? 'DRY-' + started.getTime() + '-' + connector.id
+      : REOS.generateId_('CCR');
+    var mode = dryRun ? 'DRY_RUN' : 'LIVE';
     var cursor = String(options.cursor || '');
 
     var stats = {
@@ -96,7 +123,9 @@ REOS.CountyConnectorSDK = (function () {
     var validationErrors = [];
     var recordErrors = [];
 
-    insertRun_(runId, connector, dataset, mode, started, cursor);
+    if (!dryRun) {
+      insertRun_(runId, connector, dataset, mode, started, cursor);
+    }
 
     try {
       var context = {
@@ -106,7 +135,7 @@ REOS.CountyConnectorSDK = (function () {
         cursor: cursor,
         limit: Number(options.limit || 500),
         since: options.since || null,
-        dryRun: options.dryRun !== false,
+        dryRun: dryRun,
         config: options.config || {},
         now: started
       };
@@ -195,7 +224,7 @@ REOS.CountyConnectorSDK = (function () {
             });
           }
 
-          if (REOS.Logger && REOS.Logger.error) {
+          if (!dryRun && REOS.Logger && REOS.Logger.error) {
             REOS.Logger.error('County connector record failed', {
               connectorId: connector.id,
               dataset: dataset,
@@ -208,15 +237,17 @@ REOS.CountyConnectorSDK = (function () {
 
       var completed = new Date();
 
-      completeRun_(
-        runId,
-        'Completed',
-        stats,
-        completed,
-        started,
-        cursor,
-        response.message || ''
-      );
+      if (!dryRun) {
+        completeRun_(
+          runId,
+          'Completed',
+          stats,
+          completed,
+          started,
+          cursor,
+          response.message || ''
+        );
+      }
 
       return {
         ok: true,
@@ -231,15 +262,17 @@ REOS.CountyConnectorSDK = (function () {
         completedAt: completed.toISOString()
       };
     } catch (error) {
-      completeRun_(
-        runId,
-        'Failed',
-        stats,
-        new Date(),
-        started,
-        cursor,
-        error.message || String(error)
-      );
+      if (!dryRun) {
+        completeRun_(
+          runId,
+          'Failed',
+          stats,
+          new Date(),
+          started,
+          cursor,
+          error.message || String(error)
+        );
+      }
 
       throw error;
     }
