@@ -27,6 +27,7 @@ function persist_(
   lockContext
 ) {
   if (context.dryRun) return { action: 'skipped' };
+  REOS.Database.assertScriptLockContext(lockContext);
   REOS.writes += 1;
   return REOS.Database.insert('DISTRESS_LEADS', record);
 }
@@ -68,7 +69,7 @@ try:
 const fs = require('node:fs');
 const vm = require('node:vm');
 const assert = require('node:assert/strict');
-const REOS = {writes:0, Database:{insert:()=>({ok:true})}};
+const REOS = {writes:0, lockChecks:0, Database:{insert:()=>({ok:true}), assertScriptLockContext: (ctx)=> { REOS.lockChecks += 1; if (ctx!=='APPROVED_LOCK') throw new Error('SCRIPT_LOCK_REQUIRED'); }}};
 vm.runInNewContext(fs.readFileSync(0,'utf8'), {REOS});
 const api=REOS.CountyConnectorSDK;
 const nj={id:'NJ-MOCK',state:'NJ',enabled:true};
@@ -88,7 +89,11 @@ assert.throws(()=>api.persist({State:'NJ'},{dryRun:false,dataset:'code_violation
 assert.throws(()=>api.persist({State:'PA'},{dryRun:false,dataset:'parcel_inventory'}),/NON_DISTRESS_OR_NJ_DE_PERSIST_DENIED/);
 assert.throws(()=>api.persist({State:'PA'},{dryRun:false,dataset:'property_assessment'}),/NON_DISTRESS_OR_NJ_DE_PERSIST_DENIED/);
 assert.equal(REOS.writes,1);
-api.persist({State:'PA'},{dryRun:false,dataset:'code_violations'});
+assert.equal(REOS.lockChecks,0);
+assert.throws(()=>api.persist({State:'PA'},{dryRun:false,dataset:'code_violations'}),/SCRIPT_LOCK_REQUIRED/);
+assert.equal(REOS.writes,1);
+api.persist({State:'PA'},{dryRun:false,dataset:'code_violations'},null,'APPROVED_LOCK');
+assert.equal(REOS.lockChecks,2);
 assert.equal(REOS.writes,2);
 console.log('NODE_MOCK_NJ_DE_PERSIST_AND_RUN=PASS');
 """
