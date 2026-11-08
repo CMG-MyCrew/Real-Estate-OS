@@ -202,9 +202,7 @@ def authenticate():
     # App execution requires the same Google Cloud client project as production.
     client_verified = client_id.startswith(CLOUD_PROJECT_NUMBER + "-")
     check("OAUTH_CLIENT_PROJECT_FINGERPRINT",client_verified,
-          "Existing OAuth client must match pinned Cloud project number")
-    if not client_verified:
-        return None
+          "Existing OAuth client must match pinned Cloud project number; missing fingerprint forbids scripts.run, not Google GET")
     token = prof["access"]
     try:
         who = request("GET","https://www.googleapis.com/oauth2/v2/userinfo",token)
@@ -471,14 +469,14 @@ def main():
                 inspect_drive(token)
             except Exception as e:
                 check("PRODUCTION_DRIVE_CUSTODY_READ",False,compact(e))
-            if ready:
+            if ready and CHECKS.get("OAUTH_CLIENT_PROJECT_FINGERPRINT",{}).get("status")=="PASS":
                 try:
                     inspect_pa_scheduler(token)
                 except Exception as e:
                     check("PA_V167_READONLY_GETTERS_ATTESTED",False,compact(e))
             else:
                 check("PA_V167_READONLY_GETTERS_ATTESTED",False,
-                      "Immutable source and getter wrappers not fully verified; never execute scripts.run")
+                      "Immutable source or Google client project not verified; scripts.run blocked")
         else:
             for key in ("ACTUAL_V167_DEPLOYMENT_GET","PRODUCTION_WORKBOOK_READ",
                         "PRODUCTION_DRIVE_CUSTODY_READ","PA_V167_READONLY_GETTERS_ATTESTED"):
