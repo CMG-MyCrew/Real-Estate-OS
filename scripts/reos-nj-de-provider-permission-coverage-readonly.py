@@ -367,8 +367,8 @@ def live_stage(report,rows):
         usage=me.get("usage") or {}
         month=(usage.get("month") or {}).get("remaining",0)
         day=(usage.get("day") or {}).get("remaining",0)
-        if not isinstance(month,int) or not isinstance(day,int) or
-           month<MAX_METERED_REQUESTS or day<MAX_METERED_REQUESTS:
+        if (not isinstance(month,int) or not isinstance(day,int) or
+            month<MAX_METERED_REQUESTS or day<MAX_METERED_REQUESTS):
             report["gate"]="ACCOUNT_ALLOWANCE_INSUFFICIENT_FOR_BOUNDED_SAMPLE"
             return
         tested=[]
