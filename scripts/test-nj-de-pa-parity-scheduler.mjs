@@ -45,6 +45,26 @@ assert.equal(NJ.suggestedTrigger.installed,false);
 assert.equal(DE.suggestedTrigger.installed,false);
 assert.equal(NJ.suggestedTrigger.proposedHourLocal,5);
 assert.equal(DE.suggestedTrigger.proposedHourLocal,6);
+const catalog=JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)),'..','config','nj-de-philadelphia-parity-feed-catalog.json'),'utf8'));
+assert.equal(catalog.production_authority,'NONE');
+assert.equal(catalog.states.NJ.feedSlots,105);
+assert.equal(catalog.states.DE.feedSlots,15);
+assert.deepEqual(catalog.states.NJ.feedOrder,NJ.feedOrder);
+assert.deepEqual(catalog.states.DE.feedOrder,DE.feedOrder);
+assert.deepEqual(catalog.states.NJ.counties,NJ.tasks.filter(x=>x.feed==='code_violations').map(x=>x.countyId));
+assert.deepEqual(catalog.states.DE.counties,DE.tasks.filter(x=>x.feed==='code_violations').map(x=>x.countyId));
+for(const state of ['NJ','DE']){
+  for(const slot of catalog.states[state].slots){
+    assert.equal(slot.status,'HOLD_NO_CERTIFIED_DISTRESS_SOURCE');
+    assert.equal(slot.approved_endpoint,null);
+    assert.equal(slot.inventory_sink,null);
+    assert.equal(slot.distress_sink,null);
+    assert.equal(slot.activation_authorized,false);
+    assert.equal(slot.idempotency_certified,false);
+  }
+}
+assert(catalog.official_discovery_refs.every(x=>!x.pipeline_cleared));
+console.log('CATALOG_120_SLOTS_ALL_FAIL_CLOSED=PASS');
 console.log('NJ_21_COUNTIES_105_FEED_SLOTS=PASS');
 console.log('DE_3_COUNTIES_15_FEED_SLOTS=PASS');
 console.log('PA_FIVE_FEED_ORDER_AND_STATE_ISOLATION=PASS');
