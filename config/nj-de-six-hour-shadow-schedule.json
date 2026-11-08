@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "REOS_NJ_DE_SIX_HOUR_SHADOW_V1",
+  "timezone": "America/New_York",
+  "productionAuthority": "NONE",
+  "implementation": "STAGED_SHADOW_ONLY_NO_SCRIPTAPP_TRIGGER_CREATION",
+  "cadence": "FOUR_LOCAL_WINDOWS_PER_DAY",
+  "wallClockIntervalHours": 6,
+  "daylightSavingCaveat": "Fixed local times remain 6 wall-clock hours apart. Elapsed UTC intervals vary on daylight-saving clock transition days; exact production trigger strategy requires independent approval.",
+  "executionPolicy": "FAIL_CLOSED_ON_OVERLAP_MISSING_SOURCE_OR_UNAPPROVED_ACTIVATION",
+  "checkpointPolicy": "STATE_AND_LOCAL_DATE_SLOT_SCOPED_MOCK_KEYS_ONLY",
+  "states": {
+    "NJ": {
+      "countyCount": 21,
+      "feedSlotsPerCycle": 105,
+      "cyclesPerDay": 4,
+      "feedSlotOpportunitiesPerDay": 420,
+      "intervalHoursLocalClock": 6,
+      "localHours": [
+        0,
+        6,
+        12,
+        18
+      ],
+      "localTimes": [
+        "00:00",
+        "06:00",
+        "12:00",
+        "18:00"
+      ],
+      "checkpointNamespace": "REOS_NJ_COUNTY_PARITY_SHADOW_CHECKPOINT_V1",
+      "auditNamespace": "REOS_NJ_COUNTY_PARITY_SHADOW_AUDIT_V1",
+      "handler": "REOS_NJ_COUNTY_SCHEDULED_RUN",
+      "triggerInstalled": false,
+      "authorizedToInstall": false,
+      "productionIngestionAuthorized": false,
+      "feedSourceCertification": "0_OF_105",
+      "existingInventorySource": "property_assessment"
+    },
+    "DE": {
+      "countyCount": 3,
+      "feedSlotsPerCycle": 15,
+      "cyclesPerDay": 4,
+      "feedSlotOpportunitiesPerDay": 60,
+      "intervalHoursLocalClock": 6,
+      "localHours": [
+        1,
+        7,
+        13,
+        19
+      ],
+      "localTimes": [
+        "01:00",
+        "07:00",
+        "13:00",
+        "19:00"
+      ],
+      "checkpointNamespace": "REOS_DE_COUNTY_PARITY_SHADOW_CHECKPOINT_V1",
+      "auditNamespace": "REOS_DE_COUNTY_PARITY_SHADOW_AUDIT_V1",
+      "handler": "REOS_DE_COUNTY_SCHEDULED_RUN",
+      "triggerInstalled": false,
+      "authorizedToInstall": false,
+      "productionIngestionAuthorized": false,
+      "feedSourceCertification": "0_OF_15",
+      "existingInventorySource": "parcel_inventory"
+    }
+  },
+  "paSchedulerModified": false,
+  "paTriggerMutations": 0,
+  "paCheckpointMutations": 0,
+  "googleRequests": 0,
+  "maosAndOffersAuthorized": false,
+  "externalReleaseDependencies": [
+    "13 historical Apps Script execution-API endpoints independently closed",
+    "NJ/DE county and data-source approvals",
+    "schema and identity completeness",
+    "state-specific lock and checkpoint persistence",
+    "effective OAuth and Google principal permission certification",
+    "independent review and signed release approval"
+  ]
+}
