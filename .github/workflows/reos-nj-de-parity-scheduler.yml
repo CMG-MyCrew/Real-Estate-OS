@@ -6,6 +6,9 @@ on:
   pull_request:
     paths:
       - 'src/NJDECountyParityScheduler.gs'
+      - 'src/NJDEMorningReport.gs'
+      - 'src/Notifications.gs'
+      - 'scripts/test-nj-de-morning-report-parity.mjs'
       - 'scripts/test-nj-de-pa-parity-scheduler.mjs'
       - 'scripts/reos-nj-de-pa-parity-consolidated-audit.py'
       - 'scripts/reos-nj-de-public-source-preflight.py'
@@ -29,6 +32,8 @@ jobs:
           node-version: '22'
       - name: Offline source and safety invariants
         run: node scripts/test-nj-de-pa-parity-scheduler.mjs
+      - name: NJ/DE morning digest report model and no-send Gmail mock
+        run: node scripts/test-nj-de-morning-report-parity.mjs
       - name: Consolidated 24-county 120-feed local audit and ZIP evidence
         env:
           REOS_RELEASE_PIN: ${{ github.sha }}
