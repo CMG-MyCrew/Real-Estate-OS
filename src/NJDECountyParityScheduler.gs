@@ -218,6 +218,12 @@ REOS.NJDECountyParityScheduler = (function () {
         checkpoint: safeClone_(cp), recordsPersisted: 0
       };
     }
+    if (cp.attempts >= MAX_RETRIES) {
+      return {
+        ok: false, state: st, status: 'MOCK_QUARANTINED_RETRY_LIMIT',
+        checkpoint: safeClone_(cp), recordsPersisted: 0
+      };
+    }
     var task = all[cp.taskIndex];
     var taskKey = taskKey_(task);
     if (!requireMockSource_(task, io)) {
