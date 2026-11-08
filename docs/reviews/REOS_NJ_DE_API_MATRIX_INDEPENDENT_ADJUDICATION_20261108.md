@@ -15,7 +15,7 @@
 | Versionless/unverified API endpoint | **1** |
 | Potentially exposed NJ/DE source (including V167) | **11** |
 | No generated NJ/DE connectors, other writers still unknown | **1** (V4) |
-| Legacy deployments with semantic/caller compatibility risk | **12** |
+| Deployments flagged for compatibility review (includes V167 lexical inventory uncertainty) | **12** |
 | Complete HEAD = immutable V167 | **PASS** |
 | V167 candidate source changes | **25 / 481 files**; 24 NJ/DE connector manifests disabled |
 | Google GETs | **17** |
