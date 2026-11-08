@@ -138,14 +138,25 @@ def read_profile():
         if len(selected)==0 and len(candidates)==1: selected=candidates
         else: raise RuntimeError("Ambiguous or missing OAuth candidates")
     c=selected[0]
-    check("OAUTH_CLIENT_PROJECT_PIN",c["client"].startswith(CLOUD_PROJECT+"-"),
+    client_ok=c["client"].startswith(CLOUD_PROJECT+"-")
+    check("OAUTH_CLIENT_PROJECT_PIN",client_ok,
           "Client fingerprint must match pinned Cloud project")
     scope=c.get("scope") or ""
     scopes=set(re.split(r"[\s,]+",scope))
     writes={"https://www.googleapis.com/auth/script.projects",
             "https://www.googleapis.com/auth/script.deployments"}
-    check("WRITE_SCOPES_ATTESTED_BEFORE_ANY_MUTATION",writes.issubset(scopes),
+    scope_ok=writes.issubset(scopes)
+    check("WRITE_SCOPES_ATTESTED_BEFORE_ANY_MUTATION",scope_ok,
           "Existing token metadata must attest both production write scope grants; no new consent")
+    RESULT["oauth_evidence"]={
+        "candidate_profiles_found":len(candidates),
+        "client_id_present_in_named_profile":bool(c["client"]),
+        "client_id_project_match":client_ok,
+        "token_scope_metadata_present":bool(scope),
+        "required_deployment_write_scopes_attested":len(writes.intersection(scopes)),
+        "required_deployment_write_scopes_total":len(writes),
+        "raw_client_id_and_token_values_exported":False
+    }
     token=c["access"]
     try: who=api("GET","https://www.googleapis.com/oauth2/v2/userinfo",token)
     except urllib.error.HTTPError as e:
@@ -193,13 +204,52 @@ def require_exact_v167(token):
             old.get("deploymentConfig",{}).get("versionNumber")==VERSION and api_exec,
             "Existing deployed API version and entrypoint"):
         raise RuntimeError("Deployment changed before protection")
-    other_exec=[x.get("deploymentId") for x in deployments if
-       x.get("deploymentId")!=DEPLOYMENT and any(y.get("entryPointType")=="EXECUTION_API"
-          for y in x.get("entryPoints",[]))]
-    if other_exec:
-        check("NO_ALTERNATE_UNGUARDED_API_DEPLOYMENT",False,
-              "Other API deployments require separate inventory")
-        raise RuntimeError("Other execution API deployments exist")
+    # Diagnose EVERY execution-API deployment before any release action.
+    # Existence alone does not mean another version has NJ/DE registrars.
+    # Nonetheless the single-ID installer always holds when alternatives exist.
+    api_deployments=[d for d in deployments
+          if any(x.get("entryPointType")=="EXECUTION_API" for x in d.get("entryPoints",[]))]
+    alternates=[d for d in api_deployments if d.get("deploymentId")!=DEPLOYMENT]
+    observed_versions={}
+    for d in api_deployments:
+        version=d.get("deploymentConfig",{}).get("versionNumber")
+        if not isinstance(version,int) or version<1:
+            observed_versions[str(version)]={"status":"UNVERIFIED_INVALID_VERSION"}
+        elif str(version) not in observed_versions:
+            try:
+                contents=project_get("/content?versionNumber="+str(version),token)
+                sources=file_map(contents)
+                generated=[name for (name,typ) in sources
+                   if typ=="SERVER_JS" and re.match(r"^(NJ|DE)[A-Za-z]+CountyConnector$",name)]
+                sdk=sources.get(("CountyConnectorSDK","SERVER_JS"),{}).get("source","")
+                registry_deny=("NJ_DE_PROTECTIVE_RELEASE_DENY_ONLY" in sdk)
+                observed_versions[str(version)]={
+                  "status":"READ_ONLY_VERSION_SOURCE_OBSERVED",
+                  "source_file_count":len(sources),
+                  "nj_de_generated_connectors":len(generated),
+                  "explicit_deny_only_sdk_marker":registry_deny,
+                  "possible_nj_de_live_exposure":bool(generated) and not registry_deny,
+                  "source_tree_sha256":content_hash(contents)
+                }
+            except Exception as e:
+                observed_versions[str(version)]={"status":"UNVERIFIED_READ_FAILED",
+                                               "error":error(e)}
+    RESULT["api_deployment_inventory"]={
+        "total_deployments":len(deployments),
+        "execution_api_deployments":len(api_deployments),
+        "alternate_execution_api_deployments":len(alternates),
+        "versions":observed_versions,
+        "deployments":[{
+          "deployment_id":d.get("deploymentId"),
+          "version":d.get("deploymentConfig",{}).get("versionNumber"),
+          "is_pinned_target":d.get("deploymentId")==DEPLOYMENT,
+          "source_inspection_status":observed_versions.get(str(d.get("deploymentConfig",{}).get("versionNumber")),{}).get("status"),
+          "possible_nj_de_live_exposure":observed_versions.get(str(d.get("deploymentConfig",{}).get("versionNumber")),{}).get("possible_nj_de_live_exposure")
+        } for d in api_deployments],
+        "inventory_only_not_authorization":True
+    }
+    check("NO_ALTERNATE_UNGUARDED_API_DEPLOYMENT",not alternates,
+          "Single-ID rollout stops if any alternate API deployment exists. Count="+str(len(alternates)))
     immutable=project_get("/content?versionNumber=167",token)
     head=project_get("/content",token)
     base=file_map(immutable); current=file_map(head)
@@ -375,12 +425,16 @@ def main():
         approved=validate_approvals()
         # Also require verified client project for any write.
         fingerprint=RESULT["checks"].get("OAUTH_CLIENT_PROJECT_PIN",{}).get("status")=="PASS"
-        RESULT["ready_for_controlled_promotion"]=approved and fingerprint
+        RESULT["ready_for_controlled_promotion"]=(
+            approved and fingerprint and
+            RESULT["checks"].get("WRITE_SCOPES_ATTESTED_BEFORE_ANY_MUTATION",{}).get("status")=="PASS" and
+            RESULT["checks"].get("NO_ALTERNATE_UNGUARDED_API_DEPLOYMENT",{}).get("status")=="PASS")
         if not args.apply:
             RESULT["status"]="READ_ONLY_PROTECTIVE_RELEASE_PREPARED"
             raise ReadOnlyPrepared()
         scopes_ok=RESULT["checks"].get("WRITE_SCOPES_ATTESTED_BEFORE_ANY_MUTATION",{}).get("status")=="PASS"
-        if not approved or not fingerprint or not scopes_ok or RESULT["checks"]["PINNED_RELEASE_COMMIT"]["status"]!="PASS":
+        all_api_closed=(RESULT["checks"].get("NO_ALTERNATE_UNGUARDED_API_DEPLOYMENT",{}).get("status")=="PASS")
+        if not approved or not fingerprint or not scopes_ok or not all_api_closed or RESULT["checks"]["PINNED_RELEASE_COMMIT"]["status"]!="PASS":
             raise RuntimeError("Release approvals, client fingerprint or source pin missing: no remote writes")
         # Risk boundary: updateContent atomically replaces the complete HEAD;
         # re-read the full current project immediately before writing.
@@ -471,6 +525,10 @@ def main():
           "IMMUTABLE_VERSIONS_CREATED="+str(PROTECTED["versions_created"]),
           "DEPLOYMENT_UPDATES="+str(PROTECTED["deployment_updates"]),
           "CREDENTIAL_FILES_CHANGED="+str(PROTECTED["credential_files_changed"]),
+          "API_EXECUTION_DEPLOYMENTS="+str(RESULT.get("api_deployment_inventory",{}).get("execution_api_deployments","UNVERIFIED")),
+          "ALTERNATE_API_DEPLOYMENTS="+str(RESULT.get("api_deployment_inventory",{}).get("alternate_execution_api_deployments","UNVERIFIED")),
+          "OAUTH_CLIENT_PIN="+RESULT.get("checks",{}).get("OAUTH_CLIENT_PROJECT_PIN",{}).get("status","NOT_ATTESTED"),
+          "OAUTH_WRITE_SCOPES="+RESULT.get("checks",{}).get("WRITE_SCOPES_ATTESTED_BEFORE_ANY_MUTATION",{}).get("status","NOT_ATTESTED"),
           "NJ_DE_LIVE_INGESTION=BLOCKED",
           "MAO_AND_OFFERS=BLOCKED",
           "PA_SCHEDULER_EXECUTED=FALSE",
