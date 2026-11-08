@@ -20,7 +20,12 @@ function run(connectorId, options) {
   ensureInfrastructure();
   return true;
 }
-function persist_(record, context) {
+function persist_(
+  record,
+  context,
+  pagePersistence,
+  lockContext
+) {
   if (context.dryRun) return { action: 'skipped' };
   REOS.writes += 1;
   return REOS.Database.insert('DISTRESS_LEADS', record);
@@ -57,6 +62,8 @@ try:
                "        enabled: true," in after[(name,"SERVER_JS")]["source"]
                for name in nj+de), "Dataset-level enabled flags must remain unchanged"
     assert m.content_hash(immutable)!=m.content_hash(candidate)
+    assert m.inspect_v167_source_shape(immutable)["persist_v167_four_arg"]==1
+    assert "NON_DISTRESS_OR_NJ_DE_PERSIST_DENIED" in after[("CountyConnectorSDK","SERVER_JS")]["source"]
     driver = r"""
 const fs = require('node:fs');
 const vm = require('node:vm');
@@ -124,10 +131,11 @@ console.log('NODE_MOCK_NJ_DE_PERSIST_AND_RUN=PASS');
     altfiles=m.file_map(altered)
     original_source=altfiles[("CountyConnectorSDK","SERVER_JS")]["source"]
     altfiles[("CountyConnectorSDK","SERVER_JS")]["source"]=original_source.replace(
-        "function persist_(record, context) {",
-        "function persistCountyRecord_(record, context) {")
+        "function persist_(\n  record,\n  context,\n  pagePersistence,\n  lockContext\n) {",
+        "function persistCountyRecord_(\n  record,\n  context,\n  pagePersistence,\n  lockContext\n) {")
     shape=m.inspect_v167_source_shape(altered)
     assert shape["persist_exact"]==0
+    assert shape["persist_v167_four_arg"]==0
     assert "persistCountyRecord_" in m.RESULT["v167_sdk_source_shape"]["named_function_inventory"]
     assert m.RESULT["v167_sdk_source_shape"]["source_exported"] is False
     failed=False
