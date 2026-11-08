@@ -255,8 +255,10 @@ def build_protected(immutable):
     for (name,typ),f in items.items():
         if typ!="SERVER_JS" or not re.match(r"^(NJ|DE)[A-Za-z]+CountyConnector$",name):continue
         before=f.get("source") or ""
-        if not re.search(r"(?m)^    enabled: true,$",before):raise RuntimeError("Connector manifest anchor missing: "+name)
-        f["source"]=inject(before,"    enabled: true,","    enabled: false,","disable-"+name)
+        manifest_enable_pattern=r"(?m)^    enabled: true,$"
+        if len(re.findall(manifest_enable_pattern,before))!=1:
+            raise RuntimeError("Connector top-level manifest enabled flag missing/ambiguous: "+name)
+        f["source"]=re.sub(manifest_enable_pattern,"    enabled: false,",before,count=1)
         generated.append(name)
     if len(generated)!=24:raise RuntimeError("Expected precisely 24 NJ/DE generated connectors, got "+str(len(generated)))
     if set(base)!=set(items):raise RuntimeError("Project file set changed")
@@ -310,7 +312,15 @@ def validate_approvals():
         check("THREE_INDEPENDENT_PROTECTIVE_RELEASE_APPROVALS",False,"Reviewer accounts must be distinct")
         return False
     pr=git_get(f"/pulls/{PR_NUMBER}")
-    reviews=git_get(f"/pulls/{PR_NUMBER}/reviews")
+    reviews=[]
+    for page_num in range(1,101):
+        batch=git_get(f"/pulls/{PR_NUMBER}/reviews?per_page=100&page={page_num}")
+        if not isinstance(batch,list):
+            raise RuntimeError("Review pagination returned non-list")
+        reviews.extend(batch)
+        if len(batch)<100:break
+    else:
+        raise RuntimeError("Reviewer history exceeds 100 pages; fail closed")
     if pr.get("head",{}).get("sha")!=EXPECTED_HEAD or pr.get("merged_at") is not None:
         check("THREE_INDEPENDENT_PROTECTIVE_RELEASE_APPROVALS",False,"Wrong PR head or merged")
         return False
@@ -318,7 +328,8 @@ def validate_approvals():
     for r in reviews if isinstance(reviews,list) else []:
         login=str((r.get("user") or {}).get("login","")).lower()
         if login in logins: latest[login]=r
-    valid=all(latest.get(login,{}).get("state")=="APPROVED" and
+    author=str((pr.get("user") or {}).get("login","")).lower()
+    valid=author not in logins and all(latest.get(login,{}).get("state")=="APPROVED" and
         latest[login].get("commit_id")==EXPECTED_HEAD for login in logins)
     check("THREE_INDEPENDENT_PROTECTIVE_RELEASE_APPROVALS",valid,
           "Distinct custodian/operations/independent GitHub approvals, exact commit")
