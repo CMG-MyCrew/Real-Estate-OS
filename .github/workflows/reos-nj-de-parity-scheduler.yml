@@ -42,7 +42,7 @@ jobs:
       - name: Consolidated NJ DE 120-source-slot build and safety gate (offline)
         env:
           REOS_RELEASE_PIN: ${{ github.sha }}
-        run: python3 scripts/reos-nj-de-live-feed-build-gate.py --self-test
+        run: python3 scripts/reos-nj-de-live-feed-build-gate.py --output-dir "$RUNNER_TEMP"
       - name: Consolidated 24-county 120-feed local audit and ZIP evidence
         env:
           REOS_RELEASE_PIN: ${{ github.sha }}
