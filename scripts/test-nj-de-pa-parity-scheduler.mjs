@@ -134,6 +134,11 @@ for(let i=1;i<=3;i++){
 }
 assert.equal(deIo.audits.length,3);
 assert(deIo.audits.every(x=>x.recordsPersisted===0));
+const callsAtQuarantine=deIo.calls.length;
+r=tick('DE',deIo);
+assert.equal(r.status,'MOCK_QUARANTINED_RETRY_LIMIT');
+assert.equal(deIo.calls.length,callsAtQuarantine);
+assert.equal(deIo.audits.length,3);
 assert.equal(njIo.calls.length,2);
 console.log('FAIL_CLOSED_RETRIES_IDENTITY_VALIDATION_QUARANTINE=PASS');
 
