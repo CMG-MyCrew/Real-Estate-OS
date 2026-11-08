@@ -192,6 +192,9 @@ def inspect_v167_source_shape(doc):
        "run_exact":source.count("function run(connectorId, options) {"),
        "persist_exact":source.count("function persist_(record, context) {"),
        "persist_named":len(re.findall(r"\bfunction\s+persist_\s*\(",source)),
+       "persist_v167_four_arg":len(re.findall(
+          r"(?m)^  function persist_\(\s*record,\s*context,\s*"
+          r"pagePersistence,\s*lockContext\s*\)\s*\{",source)),
        "sdk_denial_marker":source.count("NJ_DE_PROTECTIVE_RELEASE_DENY_ONLY")
     }
     writes={
@@ -339,16 +342,29 @@ def build_protected(immutable):
     if (/^(NJ|DE)-/.test(String(connectorId || '').trim().toUpperCase())) {
       throw new Error('NJ_DE_PROTECTIVE_RELEASE_DENY_ONLY');
     }""","run")
-    source=inject(source,
-      "function persist_(record, context) {",
-      """function persist_(record, context) {
-    // Defense in depth: parcel inventory is not actionable distress.
-    var pstate = String((record || {}).State || '').toUpperCase();
-    if (pstate === 'NJ' || pstate === 'DE' ||
-        (context && (context.dataset === 'parcel_inventory' ||
-                     context.dataset === 'property_assessment'))) {
+    # Only the verified V167 four-argument persistence signature is eligible.
+    # Retain the actual record/context/pagePersistence/lockContext variables and
+    # leave every later ScriptLock, deduplication, and PA persistence line intact.
+    four_arg_persist_pattern=(
+       r"(?m)^  function persist_\(\s*record,\s*context,\s*"
+       r"pagePersistence,\s*lockContext\s*\)\s*\{"
+    )
+    matches=list(re.finditer(four_arg_persist_pattern,source))
+    if len(matches)!=1:
+        raise RuntimeError(
+           "Safety patch anchor mismatch: persist_v167_four_arg count="+str(len(matches))
+        )
+    persist_guard="""
+    // DENY-ONLY; existing V167 ScriptLock and idempotency logic below is unchanged.
+    var protectiveState = String((record || {}).State || '').trim().toUpperCase();
+    var protectiveDataset = String((context || {}).dataset || '').trim();
+    if (protectiveState === 'NJ' || protectiveState === 'DE' ||
+        protectiveDataset === 'parcel_inventory' ||
+        protectiveDataset === 'property_assessment') {
       throw new Error('NON_DISTRESS_OR_NJ_DE_PERSIST_DENIED');
-    }""","persist")
+    }
+"""
+    source=source[:matches[0].end()]+persist_guard+source[matches[0].end():]
     items[sdk_key]["source"]=source
     generated=[]
     for (name,typ),f in items.items():
@@ -385,6 +401,11 @@ def offline_behavior_test(candidate):
     if not passed: raise RuntimeError("Live guard not before audit initialization")
     if sdk.count("NON_DISTRESS_OR_NJ_DE_PERSIST_DENIED")!=1:
         raise RuntimeError("Persistence guard missing")
+    signature=re.search(
+       r"(?m)^  function persist_\(\s*record,\s*context,\s*"
+       r"pagePersistence,\s*lockContext\s*\)\s*\{",sdk)
+    if not signature:
+        raise RuntimeError("Protected V167 four-argument persistence signature changed")
     for k,f in v.items():
         if k[1]=="SERVER_JS" and re.match(r"^(NJ|DE)[A-Za-z]+CountyConnector$",k[0]):
             if not re.search(r"(?m)^    enabled: false,$",f.get("source","")):
@@ -592,6 +613,7 @@ def main():
           "OAUTH_WRITE_SCOPES="+RESULT.get("checks",{}).get("WRITE_SCOPES_ATTESTED_BEFORE_ANY_MUTATION",{}).get("status","NOT_ATTESTED"),
           "V167_SDK_FUNCTION_COUNT="+str(len(RESULT.get("v167_sdk_source_shape",{}).get("named_function_inventory",[]))),
           "V167_PERSIST_EXACT_ANCHOR="+str(RESULT.get("v167_sdk_source_shape",{}).get("exact_patch_anchors",{}).get("persist_exact","UNVERIFIED")),
+          "V167_PERSIST_FOUR_ARG_HEADER="+str(RESULT.get("v167_sdk_source_shape",{}).get("exact_patch_anchors",{}).get("persist_v167_four_arg","UNVERIFIED")),
           "V167_SDK_PATCH_COMPATIBILITY="+RESULT.get("checks",{}).get("V167_SDK_PROTECTIVE_PATCH_COMPATIBLE",{}).get("status","NOT_ATTESTED"),
           "V167_SDK_RELEVANT_FUNCTIONS="+",".join(name for name in RESULT.get("v167_sdk_source_shape",{}).get("named_function_inventory",[]) if re.search(r"persist|insert|update|upsert|write|store|save|sync|lead|record|run",name,re.I))[:350],
           "V167_SDK_WRITER_COUNTS="+json.dumps(RESULT.get("v167_sdk_source_shape",{}).get("writer_reference_counts",{}),sort_keys=True,separators=(",",":")),
