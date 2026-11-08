@@ -27,6 +27,7 @@ EXPECTED = {"NJ": 21, "DE": 3}
 CURRENT_TYPES = {"NJ": ("property_assessment",), "DE": ("parcel_inventory",)}
 CATALOG = ROOT / "config/nj-de-philadelphia-parity-feed-catalog.json"
 SCHEDULER = ROOT / "src/NJDECountyParityScheduler.gs"
+SIX_HOUR_SCHEDULE = ROOT / "config/nj-de-six-hour-shadow-schedule.json"
 NODE_TEST = ROOT / "scripts/test-nj-de-pa-parity-scheduler.mjs"
 
 
@@ -73,6 +74,26 @@ def collect():
             "Wrong catalog version")
     require(tuple(catalog.get("states", {}).keys()) == ("NJ", "DE"),
             "Unexpected catalog states")
+    six_hour = load_json(SIX_HOUR_SCHEDULE)
+    require(six_hour.get("schemaVersion") == "REOS_NJ_DE_SIX_HOUR_SHADOW_V1" and
+            six_hour.get("productionAuthority") == "NONE" and
+            six_hour.get("timezone") == "America/New_York" and
+            six_hour.get("paSchedulerModified") is False and
+            six_hour.get("paTriggerMutations") == 0 and
+            six_hour.get("paCheckpointMutations") == 0,
+            "Six-hour schedule or PA immutability contract invalid")
+    for state, hours in (("NJ", [0, 6, 12, 18]), ("DE", [1, 7, 13, 19])):
+        st = six_hour["states"][state]
+        require(st.get("localHours") == hours and st.get("cyclesPerDay") == 4 and
+                st.get("intervalHoursLocalClock") == 6 and
+                st.get("triggerInstalled") is False and
+                st.get("authorizedToInstall") is False and
+                st.get("productionIngestionAuthorized") is False and
+                st.get("feedSlotsPerCycle") == EXPECTED[state] * 5 and
+                st.get("feedSlotOpportunitiesPerDay") == EXPECTED[state] * 5 * 4 and
+                st.get("checkpointNamespace") ==
+                  "REOS_" + state + "_COUNTY_PARITY_SHADOW_CHECKPOINT_V1",
+                "Six-hour state schedule/activation mismatch: " + state)
     scheduler = SCHEDULER.read_text(encoding="utf-8")
     require("function REOS_NJ_COUNTY_SCHEDULED_RUN()" in scheduler and
             "function REOS_DE_COUNTY_SCHEDULED_RUN()" in scheduler,
@@ -183,6 +204,19 @@ def collect():
         "nj_counties": 21, "de_counties": 3,
         "nj_feed_slots": 105, "de_feed_slots": 15,
         "feed_order": list(FEEDS),
+        "shadow_schedule": {
+            "timezone": "America/New_York",
+            "cadence": "FOUR_LOCAL_WINDOWS_PER_DAY",
+            "interval_hours_wall_clock": 6,
+            "nj_local_hours": [0, 6, 12, 18],
+            "de_local_hours": [1, 7, 13, 19],
+            "nj_cycles_per_day": 4, "de_cycles_per_day": 4,
+            "nj_feed_opportunities_per_day": 420,
+            "de_feed_opportunities_per_day": 60,
+            "six_hour_triggers_installed": False,
+            "per_state_per_slot_shadow_checkpoint": True,
+            "dst_elapsed_interval_caveat": True
+        },
         "configured_nj_connector_class": "PROPERTY_ASSESSMENT_ONLY",
         "configured_de_connector_class": "PARCEL_INVENTORY_ONLY",
         "distress_feed_slots_certified": 0,
@@ -245,6 +279,12 @@ def main():
             + "SOURCE_SHA=" + summary["source_git_sha"] + "\n"
             + "NJ_COUNTIES=21\nDE_COUNTIES=3\n"
             + "NJ_FEED_SLOTS=105\nDE_FEED_SLOTS=15\n"
+            + "SHADOW_SCHEDULER_CADENCE=FOUR_LOCAL_WINDOWS_PER_DAY\n"
+            + "NJ_SCHEDULE_LOCAL=00:00,06:00,12:00,18:00\n"
+            + "DE_SCHEDULE_LOCAL=01:00,07:00,13:00,19:00\n"
+            + "NJ_CYCLES_PER_DAY=4\nDE_CYCLES_PER_DAY=4\n"
+            + "STATE_AND_CYCLE_CHECKPOINT_ISOLATION=PASS\n"
+            + "PA_SCHEDULER_CHANGES=NONE\n"
             + "CERTIFIED_DISTRESS_SLOTS=0\nBLOCKED_DISTRESS_SLOTS=120\n"
             + "OFFLINE_REGRESSION=PASS\n"
             + "TRIGGERS_INSTALLED=NONE\n"
@@ -253,6 +293,7 @@ def main():
             + "RESULT=SHADOW_BUILD_READY_SOURCE_CERTIFICATION_HOLD\n"
             + "NJ_DE_ACTIVATION=NO_GO\nMAO_AND_OFFERS=BLOCKED\n"),
         "acceptance.json": json.dumps(summary, sort_keys=True, indent=2) + "\n",
+        "six_hour_schedule_shadow.json": json.dumps(six_hour, sort_keys=True, indent=2) + "\n",
         "feed_certification_backlog.csv": csv_content(slots,
             ["state", "county_id", "feed", "certification", "source_identity",
              "approved_endpoint", "destination", "live_approved", "candidate_official_reference"]),
