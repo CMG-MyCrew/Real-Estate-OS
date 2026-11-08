@@ -1,0 +1,35 @@
+name: REOS NJ-DE Deny-Only Protective Release Offline Tests
+on:
+  push:
+    branches:
+      - safety/nj-de-deny-only-v1-20261108
+  pull_request:
+    paths:
+      - 'scripts/reos-nj-de-deny-only-protective-release.py'
+      - 'scripts/reos-nj-de-independent-protective-attest.py'
+      - 'scripts/reos-nj-de-api-deployment-compatibility-matrix.py'
+      - 'scripts/test-reos-nj-de-api-compatibility-matrix.py'
+      - 'scripts/test-reos-nj-de-protective-release.py'
+      - '.github/workflows/reos-nj-de-protective-tests.yml'
+permissions:
+  contents: read
+jobs:
+  offline-safety-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile offline release and attestation source
+        run: |
+          python3 -m py_compile scripts/reos-nj-de-deny-only-protective-release.py
+          python3 -m py_compile scripts/reos-nj-de-independent-protective-attest.py
+          python3 -m py_compile scripts/test-reos-nj-de-protective-release.py
+          python3 -m py_compile scripts/reos-nj-de-api-deployment-compatibility-matrix.py
+          python3 -m py_compile scripts/test-reos-nj-de-api-compatibility-matrix.py
+      - name: Verify synthetic 481-file patch and denial invariants
+        run: python3 scripts/test-reos-nj-de-protective-release.py
+      - name: Verify read-only multi-deployment function/manifest compatibility matrix
+        run: python3 scripts/test-reos-nj-de-api-compatibility-matrix.py
