@@ -38,7 +38,7 @@ nj = ["NJ"+string.ascii_uppercase[i]+"CountyConnector" for i in range(21)]
 de = ["DE"+string.ascii_uppercase[i]+"CountyConnector" for i in range(3)]
 for name in nj+de:
     files.append({"name":name,"type":"SERVER_JS",
-       "source":"var MANIFEST = {\n    enabled: true,\n    datasets: {}\n};"})
+       "source":"var MANIFEST = {\n    enabled: true,\n    datasets: {\n      parcel_inventory: {\n        enabled: true,\n      }\n    }\n};"})
 # Existing unrelated production source must remain exactly the same.
 for i in range(481-len(files)):
     files.append({"name":"UNTOUCHED_"+str(i),"type":"SERVER_JS","source":"function other"+str(i)+"() {}"})
@@ -53,6 +53,9 @@ try:
     assert ("CountyConnectorSDK","SERVER_JS") in changed
     assert all(x in [t[0] for t in changed] for x in nj+de)
     assert all(before[k]["source"]==after[k]["source"] for k in before if k not in changed)
+    assert all("    enabled: false," in after[(name,"SERVER_JS")]["source"] and
+               "        enabled: true," in after[(name,"SERVER_JS")]["source"]
+               for name in nj+de), "Dataset-level enabled flags must remain unchanged"
     assert m.content_hash(immutable)!=m.content_hash(candidate)
     driver = r"""
 const fs = require('node:fs');
