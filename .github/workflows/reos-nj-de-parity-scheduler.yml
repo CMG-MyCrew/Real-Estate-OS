@@ -10,6 +10,7 @@ on:
       - 'scripts/reos-nj-de-pa-parity-consolidated-audit.py'
       - 'scripts/reos-nj-de-public-source-preflight.py'
       - 'scripts/reos-nj-sussex-sheriff-schema-offline.py'
+      - 'scripts/reos-nj-sussex-sheriff-readonly-schema-preflight.py'
       - 'config/nj-de-philadelphia-parity-feed-catalog.json'
       - '.github/workflows/reos-nj-de-parity-scheduler.yml'
 permissions:
@@ -37,3 +38,5 @@ jobs:
         run: python3 scripts/reos-nj-de-public-source-preflight.py --offline --output-dir "$RUNNER_TEMP"
       - name: Sussex sheriff-sale synthetic schema and idempotency safety
         run: python3 scripts/reos-nj-sussex-sheriff-schema-offline.py
+      - name: Compile read-only Sussex single-page schema probe (no network)
+        run: python3 -m py_compile scripts/reos-nj-sussex-sheriff-readonly-schema-preflight.py
