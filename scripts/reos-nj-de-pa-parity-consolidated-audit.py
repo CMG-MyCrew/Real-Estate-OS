@@ -293,7 +293,7 @@ def main():
             + "RESULT=SHADOW_BUILD_READY_SOURCE_CERTIFICATION_HOLD\n"
             + "NJ_DE_ACTIVATION=NO_GO\nMAO_AND_OFFERS=BLOCKED\n"),
         "acceptance.json": json.dumps(summary, sort_keys=True, indent=2) + "\n",
-        "six_hour_schedule_shadow.json": json.dumps(six_hour, sort_keys=True, indent=2) + "\n",
+        "six_hour_schedule_shadow.json": json.dumps(load_json(SIX_HOUR_SCHEDULE), sort_keys=True, indent=2) + "\n",
         "feed_certification_backlog.csv": csv_content(slots,
             ["state", "county_id", "feed", "certification", "source_identity",
              "approved_endpoint", "destination", "live_approved", "candidate_official_reference"]),
