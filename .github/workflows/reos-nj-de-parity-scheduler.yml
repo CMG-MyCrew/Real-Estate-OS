@@ -12,6 +12,7 @@ on:
       - 'scripts/reos-nj-sussex-sheriff-schema-offline.py'
       - 'scripts/reos-nj-sussex-sheriff-readonly-schema-preflight.py'
       - 'scripts/reos-nj-sussex-sheriff-event-contract-offline.py'
+      - 'scripts/reos-nj-sussex-access-pagination-status-gate.py'
       - 'config/nj-de-philadelphia-parity-feed-catalog.json'
       - '.github/workflows/reos-nj-de-parity-scheduler.yml'
 permissions:
@@ -43,3 +44,7 @@ jobs:
         run: python3 -m py_compile scripts/reos-nj-sussex-sheriff-readonly-schema-preflight.py
       - name: Sussex synthetic-only identity, sale lifecycle, and replay contract
         run: python3 scripts/reos-nj-sussex-sheriff-event-contract-offline.py
+      - name: Sussex consolidated permission and 70-page synthetic coverage gate
+        env:
+          REOS_RELEASE_PIN: ${{ github.sha }}
+        run: python3 scripts/reos-nj-sussex-access-pagination-status-gate.py --output-dir "$RUNNER_TEMP"
