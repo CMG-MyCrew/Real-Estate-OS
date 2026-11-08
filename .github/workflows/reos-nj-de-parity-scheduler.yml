@@ -9,6 +9,9 @@ on:
       - 'src/NJDEMorningReport.gs'
       - 'src/Notifications.gs'
       - 'scripts/test-nj-de-morning-report-parity.mjs'
+      - 'src/NJDELiveFeedContracts.gs'
+      - 'scripts/test-nj-de-live-feed-contracts.mjs'
+      - 'scripts/reos-nj-de-live-feed-build-gate.py'
       - 'scripts/test-nj-de-pa-parity-scheduler.mjs'
       - 'scripts/reos-nj-de-pa-parity-consolidated-audit.py'
       - 'scripts/reos-nj-de-public-source-preflight.py'
@@ -34,6 +37,12 @@ jobs:
         run: node scripts/test-nj-de-pa-parity-scheduler.mjs
       - name: NJ/DE morning digest report model and no-send Gmail mock
         run: node scripts/test-nj-de-morning-report-parity.mjs
+      - name: Five-feed live-source adapters schema and no-live guards
+        run: node scripts/test-nj-de-live-feed-contracts.mjs
+      - name: Consolidated NJ DE 120-source-slot build and safety gate (offline)
+        env:
+          REOS_RELEASE_PIN: ${{ github.sha }}
+        run: python3 scripts/reos-nj-de-live-feed-build-gate.py --self-test
       - name: Consolidated 24-county 120-feed local audit and ZIP evidence
         env:
           REOS_RELEASE_PIN: ${{ github.sha }}
