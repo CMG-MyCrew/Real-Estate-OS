@@ -68,7 +68,10 @@ REOS.Notifications = (function () {
     REOS.Security.requirePermission('reports:read');
     const dashboard = REOS.Dashboard.getExecutiveDashboard();
     const email = REOS.Security.getCurrentUserEmail();
-    const body = [
+    // Preserve the existing daily digest (including any PA/Philadelphia
+    // data supplied by the current dashboard) byte-for-byte before appending
+    // a separately labeled NJ/DE county-status section. Staged code only.
+    const originalBody = [
       'REOS Daily Digest',
       '',
       'Active Leads: ' + value_(dashboard.crm, 'activeLeadsCount'),
@@ -77,6 +80,26 @@ REOS.Notifications = (function () {
       'Rental Cash Flow: $' + value_(dashboard.rentals, 'monthlyCashFlow'),
       'Monthly Net Profit: $' + value_(value_(dashboard.finance, 'currentMonth', {}), 'netProfit')
     ].join('\n');
+
+    // This does not read county sheets or run collectors. If the NJ/DE
+    // staging module is missing or has drifted, fail visible rather than
+    // suppressing the warning or inventing acquisition lead counts.
+    let njdeCountyAppendix = '';
+    try {
+      if (REOS.NJDEMorningReport &&
+          typeof REOS.NJDEMorningReport.renderText === 'function') {
+        njdeCountyAppendix = REOS.NJDEMorningReport.renderText();
+      } else {
+        njdeCountyAppendix = '\nREOS COUNTY MORNING REPORT — NJ / DE\n' +
+          'Status: UNAVAILABLE — county reporting module not deployed.\n' +
+          'Live NJ/DE distress feeds: NOT CERTIFIED; new leads: NOT AVAILABLE.';
+      }
+    } catch (error) {
+      njdeCountyAppendix = '\nREOS COUNTY MORNING REPORT — NJ / DE\n' +
+        'Status: HOLD — state report validation failed; no live data certified.\n' +
+        'New distress leads: NOT AVAILABLE (no verified results).';
+    }
+    const body = originalBody + '\n' + njdeCountyAppendix;
 
     return sendEmail({
       to: email,
