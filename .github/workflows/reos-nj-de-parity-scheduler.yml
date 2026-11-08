@@ -1,0 +1,77 @@
+name: REOS NJ DE Philadelphia Parity Shadow Scheduler
+on:
+  push:
+    branches:
+      - feature/nj-de-philadelphia-parity-shadow-20261108
+  pull_request:
+    paths:
+      - 'src/NJDECountyParityScheduler.gs'
+      - 'src/NJDEMorningReport.gs'
+      - 'src/Notifications.gs'
+      - 'scripts/test-nj-de-morning-report-parity.mjs'
+      - 'src/NJDELiveFeedContracts.gs'
+      - 'scripts/test-nj-de-live-feed-contracts.mjs'
+      - 'scripts/reos-nj-de-live-feed-build-gate.py'
+      - 'scripts/reos-nj-de-provider-real-page-conformance.mjs'
+      - 'scripts/reos-nj-de-provider-permission-coverage-readonly.py'
+      - 'scripts/test-nj-de-provider-access-full-path-offline.py'
+      - 'scripts/test-nj-de-pa-parity-scheduler.mjs'
+      - 'scripts/reos-nj-de-pa-parity-consolidated-audit.py'
+      - 'scripts/reos-nj-de-public-source-preflight.py'
+      - 'scripts/reos-nj-sussex-sheriff-schema-offline.py'
+      - 'scripts/reos-nj-sussex-sheriff-readonly-schema-preflight.py'
+      - 'scripts/reos-nj-sussex-sheriff-event-contract-offline.py'
+      - 'scripts/reos-nj-sussex-access-pagination-status-gate.py'
+      - 'config/nj-de-philadelphia-parity-feed-catalog.json'
+      - 'config/nj-de-six-hour-shadow-schedule.json'
+      - '.github/workflows/reos-nj-de-parity-scheduler.yml'
+permissions:
+  contents: read
+jobs:
+  nj-de-pa-parity-shadow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Offline source and safety invariants
+        run: node scripts/test-nj-de-pa-parity-scheduler.mjs
+      - name: NJ/DE morning digest report model and no-send Gmail mock
+        run: node scripts/test-nj-de-morning-report-parity.mjs
+      - name: Five-feed live-source adapters schema and no-live guards
+        run: node scripts/test-nj-de-live-feed-contracts.mjs
+      - name: Real vendor page adapter conformance fixtures without HTTP
+        run: node scripts/reos-nj-de-provider-real-page-conformance.mjs --fixture-test
+      - name: Complete 24 county API scope mapping and live gate offline self-tests
+        env:
+          REOS_RELEASE_PIN: ${{ github.sha }}
+        run: python3 scripts/reos-nj-de-provider-permission-coverage-readonly.py --self-test
+      - name: Mock valid subscription and complete NJ DE gated API flow without HTTP
+        run: python3 scripts/test-nj-de-provider-access-full-path-offline.py
+
+      - name: Consolidated NJ DE 120-source-slot build and safety gate (offline)
+        env:
+          REOS_RELEASE_PIN: ${{ github.sha }}
+        run: python3 scripts/reos-nj-de-live-feed-build-gate.py --output-dir "$RUNNER_TEMP"
+      - name: Consolidated 24-county 120-feed local audit and ZIP evidence
+        env:
+          REOS_RELEASE_PIN: ${{ github.sha }}
+        run: python3 scripts/reos-nj-de-pa-parity-consolidated-audit.py --output-dir "$RUNNER_TEMP"
+      - name: Official-source URL and redirect safety preflight (no network)
+        run: python3 scripts/reos-nj-de-public-source-preflight.py --self-test
+      - name: Offline source discovery receipt (no network)
+        env:
+          REOS_RELEASE_PIN: ${{ github.sha }}
+        run: python3 scripts/reos-nj-de-public-source-preflight.py --offline --output-dir "$RUNNER_TEMP"
+      - name: Sussex sheriff-sale synthetic schema and idempotency safety
+        run: python3 scripts/reos-nj-sussex-sheriff-schema-offline.py
+      - name: Compile read-only Sussex single-page schema probe (no network)
+        run: python3 -m py_compile scripts/reos-nj-sussex-sheriff-readonly-schema-preflight.py
+      - name: Sussex synthetic-only identity, sale lifecycle, and replay contract
+        run: python3 scripts/reos-nj-sussex-sheriff-event-contract-offline.py
+      - name: Sussex consolidated permission and 70-page synthetic coverage gate
+        env:
+          REOS_RELEASE_PIN: ${{ github.sha }}
+        run: python3 scripts/reos-nj-sussex-access-pagination-status-gate.py --output-dir "$RUNNER_TEMP"
