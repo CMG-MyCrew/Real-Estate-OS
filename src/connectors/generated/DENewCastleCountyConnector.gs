@@ -22,7 +22,7 @@ REOS.DENewCastleCountyConnector = (function () {
       parcel_inventory: {
         adapter: "arcgis",
         endpointProperty: "REOS_COUNTY_DE_NEW_CASTLE_PARCEL_INVENTORY_URL",
-        endpoint: "https://enterprise.firstmaptest.delaware.gov/arcgis/rest/services/PlanningCadastre/DE_StateParcels/FeatureServer/0/query",
+        endpoint: "https://enterprise.firstmap.delaware.gov/arcgis/rest/services/PlanningCadastre/DE_StateParcels/FeatureServer/0/query",
         enabled: true,
         maxLimit: 2000,
         mapping: {
@@ -128,7 +128,7 @@ REOS.DENewCastleCountyConnector = (function () {
           sourceLayerId: "",
           compatibilityScore: 100,
           matchedTerms: [],
-          endpoint: "https://enterprise.firstmaptest.delaware.gov/arcgis/rest/services/PlanningCadastre/DE_StateParcels/FeatureServer/0/query"
+          endpoint: "https://enterprise.firstmap.delaware.gov/arcgis/rest/services/PlanningCadastre/DE_StateParcels/FeatureServer/0/query"
         },
         recordFilter: {
           requireAny: [
