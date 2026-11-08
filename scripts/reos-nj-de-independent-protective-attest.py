@@ -75,9 +75,14 @@ def verify():
         result["candidate_tree_sha256"]=hash_expected
         result["immutable_sha256"]=m.content_hash(immutable)
         result["current_head_sha256"]=m.content_hash(head)
-        # This is an independent second GET verification process, NOT an
-        # independently authorized custodian signing the deployment.
-        result["status"]="READBACK_PASS_NJ_DE_STILL_DISABLED" if not result["blockers"] else "READBACK_INCOMPLETE_HOLD"
+        # This is a second GET-based technical verification process, NOT
+        # a separately approved custodian signed attestation.
+        technical_ok=not result["blockers"]
+        result["technical_readback"]="PASS" if technical_ok else "HOLD"
+        check("SEPARATE_CUSTODIAN_RUNTIME_SIGNOFF",False,
+              "Independent custodian must verify principal and sign this exact immutable version")
+        result["status"]=("TECHNICAL_READBACK_PASS_CUSTODIAN_SIGNOFF_PENDING"
+                          if technical_ok else "READBACK_INCOMPLETE_HOLD")
     except Exception as e:
         result["blockers"].append("ATTESTATION_STOPPED:"+m.error(e))
         result["status"]="READBACK_INCOMPLETE_HOLD"
@@ -95,6 +100,6 @@ def verify():
     print("RESULT="+result["status"])
     print("EVIDENCE_ZIP="+str(out))
     print("EVIDENCE_SHA256="+hashlib.sha256(out.read_bytes()).hexdigest())
-    return 0 if result["status"]=="READBACK_PASS_NJ_DE_STILL_DISABLED" else 2
+    return 0 if result.get("technical_readback")=="PASS" else 2
 if __name__=="__main__":
     sys.exit(verify())
