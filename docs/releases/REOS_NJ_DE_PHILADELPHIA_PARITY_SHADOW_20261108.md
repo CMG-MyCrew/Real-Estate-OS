@@ -1,7 +1,7 @@
 # REOS Enterprise — NJ/DE Philadelphia-Parity County Scheduler (SHADOW V1)
 
 **Date:** November 8, 2026  
-**Release state:** `STAGED_OFFLINE_TESTED_NOT_DEPLOYED`  
+**Release state:** `STAGED_SIX_HOUR_OFFLINE_TESTED_NOT_DEPLOYED`  
 **Approval authority:** `NONE`  
 **Production operation:** `HOLD`  
 **Stacked on:** NJ/DE deny-only protective release PR #10; do **not** merge or deploy until independent release gate.
@@ -18,7 +18,10 @@ This change supplies the same **five-feed orchestration contract** as the Philad
 | Current generated connector type | Existing PA county sources | **Property assessments only** | **Parcel inventory only** |
 | Live distress-source certification | PA scheduler still under separate five-feed certification | **0 of 105** | **0 of 15** |
 | Trigger handler | Existing PA runtime **not touched** | `REOS_NJ_COUNTY_SCHEDULED_RUN` | `REOS_DE_COUNTY_SCHEDULED_RUN` |
-| Daily hour proposal, America/New_York | Preserve existing PA schedule | ~**5 AM** | ~**6 AM** |
+| Six-hour local schedule proposal, America/New_York | Preserve existing PA schedule (no schedule change) | **12 AM / 6 AM / 12 PM / 6 PM** | **1 AM / 7 AM / 1 PM / 7 PM** |
+| Cycles per day | Existing PA owner controls schedule | **4 shadow cycles/day** | **4 shadow cycles/day** |
+| Feed-slot opportunities per day (not certified data pulls) | PA source unchanged | **105 × 4 = 420 blocked opportunities** | **15 × 4 = 60 blocked opportunities** |
+| Cycle checkpoint keys | Existing PA keys untouched | NJ-only namespace + local date/time slot | DE-only namespace + local date/time slot |
 | Production trigger installed | Existing PA state not changed | **No** | **No** |
 | Production handler behavior | Existing PA code untouched | **Return HOLD, zero calls/writes** | **Return HOLD, zero calls/writes** |
 | Checkpoint namespace | Existing PA ownership | `REOS_NJ_COUNTY_PARITY_SHADOW_CHECKPOINT_V1` | `REOS_DE_COUNTY_PARITY_SHADOW_CHECKPOINT_V1` |
@@ -28,10 +31,13 @@ This change supplies the same **five-feed orchestration contract** as the Philad
 
 ## Delivered code
 
-- `src/NJDECountyParityScheduler.gs`: two state-specific public scheduled handlers and plan previews, hard-refusing trigger-install handlers, five-feed order, county plans, and isolated cursor/audit/checkpoint namespaces. These handlers are **inert in production** and do not call REOS CountyConnectorSDK, UrlFetchApp, PropertiesService, ScriptApp, or Sheets. There are **no trigger installation calls** in this source.
+- `src/NJDECountyParityScheduler.gs`: two state-specific public scheduled handlers and plan previews, hard-refusing trigger-install handlers, five-feed order, county plans, four local six-hour windows per day, and isolated **state / date / cycle** cursor/audit/checkpoint namespaces. These handlers are **inert in production** and do not call REOS CountyConnectorSDK, UrlFetchApp, PropertiesService, ScriptApp, or Sheets. There are **no trigger installation calls** in this source.
+- `config/nj-de-six-hour-shadow-schedule.json`: machine-readable four-window proposal per state, staggered NJ/DE hours, state checkpoint/audit namespaces, no installed triggers, and no production authorization. The daily local wall-clock windows can be 5/7 hours apart in elapsed UTC time on daylight-saving transitions; final real-trigger implementation is **not certified**.
 - `config/nj-de-philadelphia-parity-feed-catalog.json`: machine-readable inventory of all 24 county IDs and **120 disabled five-feed slots**, per-slot source/destination/idempotency certification gates, and a small set of official **discovery-only** references. URLs are **not wired as ingestion endpoints**.
-- `scripts/test-nj-de-pa-parity-scheduler.mjs`: Node VM rehearsal with injected **in-memory only** IO, 21/3-county and 105/15-slot checks, five-feed order, cursor/page checkpoint progression, state isolation, bounded 3-attempt quarantine, invalid state/source-record checks, and denial of premature production handlers/trigger installation. Mock records are not persisted to any production table.
+- `scripts/test-nj-de-pa-parity-scheduler.mjs`: Node VM rehearsal with injected **in-memory only** IO, 21/3-county and 105/15-slot checks, five-feed order, **six-hour NJ/DE clock windows, unique per-cycle checkpoint keys, mock replay and wrong-slot checkpoint rejection**, cursor/page progression, state isolation, bounded 3-attempt quarantine, invalid state/source-record checks, and denial of premature production handlers/trigger installation. Mock records are not persisted to any production table.
 - `.github/workflows/reos-nj-de-parity-scheduler.yml`: offline CI on the branch and PR, without runtime Google credentials.
+
+**Six-hour parity scope:** This stages the schedule plan and mock checkpoint isolation only, not the Apps Script production trigger runtime. `rehearsalTick(state, mockIo, {mode:'OFFLINE_TEST', noRemoteServices:true, slotLocal:'2026-11-08T06:00'})` uses a per-state and per-cycle key. A repeated call to the same slot does not reset its checkpoint, while a later slot gets a different checkpoint. A production scheduler will require separately certified locks, time budgets, missed-window recovery, source authority, and idempotent writer controls. Neither NJ nor DE handler starts live execution.
 
 Rehearsal is not a route to live ingestion: its `rehearsalTick` function requires a synthetic in-memory IO harness and a marked mock feed. It cannot call a real REOS connector by default. No read/write of production checkpoints or audit sheets occurs. The existing Pennsylvania scheduler source is not edited or redirected.
 
@@ -69,5 +75,7 @@ Expected automated success markers:
 `PRODUCTION_HANDLERS_AND_TRIGGER_INSTALL_FAIL_CLOSED=PASS`,
 `PAGINATION_CURSOR_CHECKPOINT_AND_AUDIT_REHEARSAL=PASS`,
 `FAIL_CLOSED_RETRIES_IDENTITY_VALIDATION_QUARANTINE=PASS`, `OFFLINE_PHILADELPHIA_PARITY_TESTS=ALL_PASS`.
+
+Additional six-hour schedule acceptance checks: `NJ_DE_SIX_HOUR_LOCAL_CADENCE_STAGGER=PASS`, `SCHEDULE_CONFIG_MATCHES_TWO_STATE_RUNTIME=PASS`, `EIGHT_DAILY_WINDOWS_DST_AND_SCOPE_VALIDATION=PASS`, `SIX_HOUR_PER_CYCLE_CHECKPOINT_REPLAY_AND_NO_CROSS_STATE_WRITES=PASS`.
 
 **This implementation stages a safe scheduler framework. It does not claim 120 operational public feeds, installed triggers, Google authorization, current production data, or certified acquisition lead generation.**
